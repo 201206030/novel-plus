@@ -1,9 +1,10 @@
 package com.java2nb.novel.entity;
 
 import javax.annotation.Generated;
+import java.io.Serializable;
 import java.util.Date;
 
-public class BookSetting  {
+public class BookSetting  implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 

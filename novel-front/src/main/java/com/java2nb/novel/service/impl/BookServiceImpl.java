@@ -1,5 +1,6 @@
 package com.java2nb.novel.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
@@ -18,6 +19,7 @@ import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.vo.BookVO;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -70,15 +72,16 @@ public class BookServiceImpl implements BookService {
     private final CacheService cacheService;
 
 
+    @SneakyThrows
     @Override
     public Map<Byte, List<BookSettingVO>> listBookSettingVO() {
-        Map<Byte, List<BookSettingVO>> result = (Map<Byte, List<BookSettingVO>>) cacheService.getObject(CacheKey.INDEX_BOOK_SETTINGS_KEY);
-        if (result == null || result.size() == 0) {
+        String result = cacheService.get(CacheKey.INDEX_BOOK_SETTINGS_KEY);
+        if (result == null || result.length() < 10) {
             List<BookSettingVO> list = bookSettingMapper.listVO();
-            result = list.stream().collect(Collectors.groupingBy(BookSettingVO::getType));
-            cacheService.setObject(CacheKey.INDEX_BOOK_SETTINGS_KEY, result);
+            result = new ObjectMapper().writeValueAsString(list.stream().collect(Collectors.groupingBy(BookSettingVO::getType)));
+            cacheService.set(CacheKey.INDEX_BOOK_SETTINGS_KEY, result);
         }
-        return result;
+        return new ObjectMapper().readValue(result,Map.class);
     }
 
     @Override
