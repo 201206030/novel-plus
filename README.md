@@ -106,7 +106,7 @@ Springboot+Mybatis+Mysql+Ehcache+Thymeleaf+Layui
 
  Gitee仓库地址： https://gitee.com/xiongxyang/novel-plus
 
- GitHub仓库地址：  https://github.com/201206030/fiction_house 
+ GitHub仓库地址： https://github.com/201206030/novel-plus 
 
 #### QQ交流群
 
