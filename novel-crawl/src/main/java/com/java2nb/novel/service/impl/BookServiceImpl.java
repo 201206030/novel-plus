@@ -51,12 +51,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateCrawlProperties(Integer sourceId, String bookId) {
+    public void updateCrawlProperties(Long id, Integer sourceId, String bookId) {
         bookMapper.update(update(BookDynamicSqlSupport.book)
                 .set(crawlSourceId)
                 .equalTo(sourceId)
                 .set(crawlBookId)
                 .equalTo(bookId)
+                .where(BookDynamicSqlSupport.id,isEqualTo(id))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
     }
@@ -174,6 +175,22 @@ public class BookServiceImpl implements BookService {
         book.setId(bookId);
         book.setCrawlLastTime(new Date());
         bookMapper.updateByPrimaryKeySelective(book);
+    }
+
+    @Override
+    public Book queryBookByBookNameAndAuthorName(String bookName, String authorName) {
+        List<Book> books = bookMapper.selectMany(select(BookDynamicSqlSupport.id).from(BookDynamicSqlSupport.book)
+                .where(BookDynamicSqlSupport.bookName, isEqualTo(bookName))
+                .and(BookDynamicSqlSupport.authorName, isEqualTo(authorName))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+
+        if(books.size()>0){
+            return books.get(0);
+        }
+
+        return null;
+
     }
 
     /**

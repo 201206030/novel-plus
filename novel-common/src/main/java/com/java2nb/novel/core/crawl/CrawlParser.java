@@ -26,7 +26,6 @@ public class CrawlParser {
     public static final Integer BOOK_INDEX_LIST_KEY = 1;
 
     public static final Integer BOOK_CONTENT_LIST_KEY = 2;
-    private static final Integer BOOK_KEY = 3;
 
     @SneakyThrows
     public static Book parseBook(RuleBean ruleBean, String bookId) {

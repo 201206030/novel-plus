@@ -168,11 +168,10 @@ public class CrawlServiceImpl implements CrawlService {
                             String bookId = bookIdMatcher.group(1);
                             Book book = CrawlParser.parseBook(ruleBean, bookId);
                             //这里只做新书入库，查询是否存在这本书
-                            boolean isExist = bookService.queryIsExistByBookNameAndAuthorName(book.getBookName(), book.getAuthorName());
+                            Book existBook = bookService.queryBookByBookNameAndAuthorName(book.getBookName(), book.getAuthorName());
                             //如果该小说不存在，则可以解析入库，但是标记该小说正在入库，30分钟之后才允许再次入库
-                            if (!isExist && StringUtils.isBlank(cacheService.get(CacheKey.NEW_BOOK_IN_SAVE + book.getBookName() + "-" + book.getAuthorName()))) {
+                            if (existBook == null) {
                                 //没有该书，可以入库
-                                cacheService.set(CacheKey.NEW_BOOK_IN_SAVE + book.getBookName() + "-" + book.getAuthorName(), "true", 60 * 30);
                                 book.setCatId(catId);
                                 //根据分类ID查询分类
                                 book.setCatName(bookService.queryCatNameByCatId(catId));
@@ -194,7 +193,7 @@ public class CrawlServiceImpl implements CrawlService {
 
                             } else {
                                 //只更新书籍的爬虫相关字段
-                                bookService.updateCrawlProperties(sourceId, bookId);
+                                bookService.updateCrawlProperties(existBook.getId(),sourceId, bookId);
                             }
                         }catch (Exception e){
                             log.error(e.getMessage(),e);

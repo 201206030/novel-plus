@@ -46,8 +46,4 @@ public interface CacheKey {
      * */
     String RUNNING_CRAWL_THREAD_KEY_PREFIX = "runningCrawlTreadDataKeyPrefix";
 
-    /**
-     * 标记小说是否正在入库
-     * */
-    String NEW_BOOK_IN_SAVE = "newBookInSave";
 }

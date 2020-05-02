@@ -5,7 +5,6 @@ import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +24,10 @@ public interface BookService {
 
     /**
      * 更新书籍的爬虫属性
+     * @param id 本站小说ID
      * @param sourceId 爬虫源ID
-     * @param bookId 源站小说ID
-     * */
-    void updateCrawlProperties(Integer sourceId, String bookId);
+     * @param bookId 源站小说ID  */
+    void updateCrawlProperties(Long id, Integer sourceId, String bookId);
 
     /**
      * 通过分类ID查询分类名
@@ -74,4 +73,12 @@ public interface BookService {
      * @param bookId 小说ID
      * */
     void updateCrawlLastTime(Long bookId);
+
+    /**
+     * 通过小说名和作者名查询已存在的书籍
+     * @param bookName 小说名
+     * @param authorName 作者名
+     * @return 小说对象
+     * */
+    Book queryBookByBookNameAndAuthorName(String bookName, String authorName);
 }
