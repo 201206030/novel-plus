@@ -53,6 +53,7 @@ public class StarterListener implements ServletContextListener {
                             //这里只做老书更新
                             book.setCrawlLastTime(currentDate);
                             book.setId(needUpdateBook.getId());
+                            book.setPicUrl(needUpdateBook.getPicUrl());
                             //查询已存在的章节
                             Map<Integer, BookIndex> existBookIndexMap = bookService.queryExistBookIndexMap(needUpdateBook.getId());
                             //解析章节目录

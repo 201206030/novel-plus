@@ -6,7 +6,9 @@ import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.utils.Constants;
 import lombok.RequiredArgsConstructor;
+import org.mybatis.dynamic.sql.Constant;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlBookId;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlSourceId;
+import static com.java2nb.novel.mapper.BookDynamicSqlSupport.picUrl;
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
@@ -165,6 +168,10 @@ public class BookServiceImpl implements BookService {
         book.setUpdateTime(currentDate);
         book.setBookName(null);
         book.setAuthorName(null);
+        if(book.getPicUrl()!=null && book.getPicUrl().startsWith(Constants.LOCAL_PIC_PREFIX)) {
+            //本地图片则不更新
+            book.setPicUrl(null);
+        }
         bookMapper.updateByPrimaryKeySelective(book);
 
     }
