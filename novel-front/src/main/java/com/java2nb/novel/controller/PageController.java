@@ -1,6 +1,6 @@
 package com.java2nb.novel.controller;
 
-import com.java2nb.novel.core.utils.TemplateUtil;
+import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
@@ -49,7 +49,7 @@ public class PageController{
      * */
     @RequestMapping(path = {"/", "/index", "/index.html"})
     public String index() {
-        return TemplateUtil.getTemplateDir()+"index";
+        return ThreadLocalUtil.getTemplateDir()+"index";
     }
 
     /**
@@ -66,7 +66,7 @@ public class PageController{
     @RequestMapping("book/book_ranking.html")
     public String bookRank() {
 
-        return TemplateUtil.getTemplateDir()+"book/book_ranking";
+        return ThreadLocalUtil.getTemplateDir()+"book/book_ranking";
     }
 
 
@@ -80,7 +80,7 @@ public class PageController{
         //查询首章目录ID
         Long firstBookIndexId = bookService.queryFirstBookIndexId(bookId);
         model.addAttribute("firstBookIndexId",firstBookIndexId);
-        return TemplateUtil.getTemplateDir()+"book/book_detail";
+        return ThreadLocalUtil.getTemplateDir()+"book/book_detail";
     }
 
     /**
@@ -93,7 +93,7 @@ public class PageController{
         List<BookIndex> bookIndexList = bookService.queryIndexList(bookId,null,null);
         model.addAttribute("bookIndexList",bookIndexList);
         model.addAttribute("bookIndexCount",bookIndexList.size());
-        return TemplateUtil.getTemplateDir()+"book/book_index";
+        return ThreadLocalUtil.getTemplateDir()+"book/book_index";
     }
 
     /**
@@ -116,7 +116,7 @@ public class PageController{
         //查询内容
         BookContent bookContent = bookService.queryBookContent(bookIndex.getId());
         model.addAttribute("bookContent",bookContent);
-        return TemplateUtil.getTemplateDir()+"book/book_content";
+        return ThreadLocalUtil.getTemplateDir()+"book/book_content";
     }
 
     /**

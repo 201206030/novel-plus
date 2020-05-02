@@ -15,4 +15,9 @@ public class Constants {
      * 本地图片保存前缀
      * */
     public static final String LOCAL_PIC_PREFIX = "/localPic/";
+
+    /**
+     * 用户客户端标识
+     * */
+    public static final String USER_CLIENT_MARK = "userClientMark";
 }

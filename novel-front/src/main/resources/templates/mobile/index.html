@@ -323,6 +323,10 @@
                 for (var i = 0; i < 10; i++) {
 
                     var updateRankBook = updateRankBooks[i];
+                    var end = updateRankBook.bookDesc.indexOf("<");
+                    if(end != -1) {
+                        updateRankBook.bookDesc = updateRankBook.bookDesc.substring(0,end);
+                    }
 
                         updateRankBookHtml += ("<div style=\"padding-bottom: 30px\"\n" +
                             "                     class=\"layui-col-xs12 layui-col-sm6 layui-col-md6 layui-col-lg6\">\n" +

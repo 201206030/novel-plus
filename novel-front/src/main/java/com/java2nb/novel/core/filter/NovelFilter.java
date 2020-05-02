@@ -2,13 +2,10 @@ package com.java2nb.novel.core.filter;
 
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.utils.BrowserUtil;
-import com.java2nb.novel.core.utils.Constants;
-import com.java2nb.novel.core.utils.SpringUtil;
-import com.java2nb.novel.core.utils.TemplateUtil;
-import org.springframework.beans.factory.annotation.Value;
+import com.java2nb.novel.core.utils.*;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -53,23 +50,29 @@ public class NovelFilter implements Filter {
         }
 
 
+        String userMark = CookieUtil.getCookie(req,Constants.USER_CLIENT_MARK);
+        if(userMark == null){
+            userMark = UUIDUtil.getUUID32();
+            CookieUtil.setCookie(resp,Constants.USER_CLIENT_MARK,userMark);
+        }
+        ThreadLocalUtil.setCientId(userMark);
         //根据浏览器类型选择前端模板
         String to = req.getParameter("to");
         CacheService cacheService = SpringUtil.getBean(CacheService.class);
         if("pc".equals(to)){
             //直接进PC站
-            cacheService.set(CacheKey.TEMPLATE_DIR_KEY,"",60*60*24);
+            cacheService.set(CacheKey.TEMPLATE_DIR_KEY+userMark,"",60*60*24);
         }else if("mobile".equals(to)){
             //直接进手机站
-            cacheService.set(CacheKey.TEMPLATE_DIR_KEY,"mobile/",60*60*24);
+            cacheService.set(CacheKey.TEMPLATE_DIR_KEY+userMark,"mobile/",60*60*24);
         }else{
             //自动识别是PC站还是手机站
             if(BrowserUtil.isMobile(req)){
                 //手机端访问
-                TemplateUtil.setTemplateDir("mobile/");
+                ThreadLocalUtil.setTemplateDir("mobile/");
             }else{
                 //PC端访问
-                TemplateUtil.setTemplateDir("");
+                ThreadLocalUtil.setTemplateDir("");
             }
         }
 

@@ -179,6 +179,11 @@
                     for (var i = 0; i < bookList.length; i++) {
                         var book = bookList[i];
 
+                        var end = book.bookDesc.indexOf("<");
+                        if(end != -1) {
+                            book.bookDesc = book.bookDesc.substring(0,end);
+                        }
+
                         bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
                             "        <a href=\"/book/"+book.id+".html\">\n" +
                             "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
@@ -199,7 +204,7 @@
                             "            <div style=\"margin-top: 5px;color: #4c6978;\">状态："+(book.bookStatus==0?'连载':'完结')+"</div>\n" +
                             "            <div style=\"margin-top: 5px;color: #4c6978;\">更新：<i>"+book.lastIndexUpdateTime+"</i>\n" +
                             "            </div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #4c6978;\">简介："+(book.bookDesc?(book.bookDesc.length>20?(book.bookDesc.substr(0,20)+"..."):bookDesc.length):book.bookDesc)+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #4c6978;\">简介："+(book.bookDesc?(book.bookDesc.length>20?(book.bookDesc.substr(0,20)+"..."):book.bookDesc):book.bookDesc)+"</div>\n" +
                             "\n" +
                             "\n" +
                             "        </div>\n" +
