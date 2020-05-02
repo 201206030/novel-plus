@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  profiles:
+    active: dev
+
+
+admin:
+  username: admin
+  password: admin123456
+
+

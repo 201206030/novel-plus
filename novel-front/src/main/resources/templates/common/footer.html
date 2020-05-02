@@ -1,0 +1,11 @@
+<div th:fragment="footer" class="footer">
+    <div class="box_center cf">
+        <div class="copyright">
+            <ul >
+                <li class="menu"><a href="/?to=mobile">手机站</a><i class="line">|</i><a href="/">网站首页</a><i class="line">|</i><a href="/about/default.html" >关于我们</a><i class="line">|</i><a href="/about/contact.html" >联系我们</a><i class="line">|</i><a href="/user/feedback.html" >反馈留言</a><i class="line">|</i><a href="javascript:layer.alert('待开通，敬请期待！');" >作家专区</a></li>
+                <li th:text="'Copyright (C) '+#{website.domain}+' All rights reserved&nbsp;&nbsp;'+#{website.name}+'版权所有'"></li>
+
+            </ul>
+        </div>
+    </div>
+</div>

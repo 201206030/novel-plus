@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontBookMapper">
+
+    <select id="searchByPage" parameterType="com.java2nb.novel.search.BookSP" resultType="com.java2nb.novel.vo.BookVO">
+        select id,cat_id,cat_name,book_name,author_id,author_name,word_count,last_index_id,last_index_name,score,pic_url,book_status,last_index_update_time,book_desc
+        from book
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (book_name like concat('%',#{keyword},'%') or author_name like concat('%',#{keyword},'%'))
+            </if>
+            <if test="workDirection != null">
+                and work_direction = #{workDirection}
+            </if>
+            <if test="catId != null">
+                and cat_id = #{catId}
+            </if>
+            <if test="isVip != null">
+                and is_vip = #{isVip}
+            </if>
+            <if test="bookStatus != null">
+                and book_status = #{bookStatus}
+            </if>
+            <if test="wordCountMin != null">
+                and word_count >= #{wordCountMin}
+            </if>
+            <if test="wordCountMax != null">
+                and word_count <![CDATA[ < ]]> #{wordCountMax}
+            </if>
+            <if test="updateTimeMin != null">
+                and last_index_update_time >= #{updateTimeMin}
+            </if>
+        </where>
+
+    </select>
+
+    <update id="addVisitCount" parameterType="long">
+        update book set visit_count = visit_count + 1 where id = #{bookId}
+    </update>
+
+    <select id="listRecBookByCatId" parameterType="int" resultType="com.java2nb.novel.entity.Book">
+        select id,pic_url,book_name,book_desc
+        from book
+        where cat_id = #{catId}
+        order by RAND() LIMIT 4
+    </select>
+
+
+    <update id="addCommentCount" parameterType="long">
+        update book set comment_count = comment_count+1
+        where  id = #{bookId}
+    </update>
+
+    <select id="queryNetworkPicBooks" resultType="com.java2nb.novel.entity.Book">
+        select
+        id,pic_url from book
+        where pic_url like 'http://%' or pic_url like 'https://%'
+        limit #{offset},#{limit}
+    </select>
+
+
+</mapper>

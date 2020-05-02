@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontUserBookshelfMapper">
+
+    <select id="listBookShelf" parameterType="long" resultType="com.java2nb.novel.vo.BookShelfVO">
+        select t1.book_id,t1.pre_content_id,t2.book_name,t2.cat_id,t2.cat_name,t2.last_index_id,t2.last_index_name,t2.last_index_update_time
+        from user_bookshelf t1 inner join book t2 on t1.book_id = t2.id and t1.user_id = #{userId}
+        order by t1.create_time desc
+
+    </select>
+
+
+
+</mapper>

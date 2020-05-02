@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.CrawlBookIndexMapper">
+
+    <select id="queryLastIndex" parameterType="long" resultType="com.java2nb.novel.entity.BookIndex">
+
+
+        select id,index_name,update_time
+        from book_index where book_id = #{bookId}
+        order by index_num DESC limit 1
+
+    </select>
+
+
+
+</mapper>

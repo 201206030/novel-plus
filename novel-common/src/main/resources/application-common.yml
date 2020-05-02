@@ -1,0 +1,25 @@
+spring:
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+  thymeleaf:
+    mode: LEGACYHTML5 #去除thymeleaf的html严格校验thymeleaf.mode=LEGACYHTML5
+    cache: false # 是否开启模板缓存，默认true,建议在开发时关闭缓存,不然没法看到实时
+
+# 将所有数字转为 String 类型返回，避免前端数据精度丢失的问题
+  jackson:
+    generator:
+      write-numbers-as-strings: true
+
+
+mybatis:
+  configuration:
+    #自动将数据库带下划线的表字段值映射到Java类的驼峰字段上
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:mybatis/mapping/*.xml
+  type-aliases-package: com.java2nb.novel.entity
+
+logging:
+  config: classpath:logback-boot.xml
+
+

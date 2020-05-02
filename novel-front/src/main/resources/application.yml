@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+
+jwt:
+  secret: novel!#20191230
+  expiration: 604800
+
+#缓存管理密码
+cache:
+  manager:
+    password: novel@2020117
+
+
+

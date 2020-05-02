@@ -1,0 +1,417 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>爬虫管理系统-小说精品屋</title>
+        <link rel="stylesheet" href="/css/base.css?v=1"/>
+        <link rel="stylesheet" href="/css/user.css"/>
+    </head>
+</head>
+<body class="">
+
+<div class="header">
+    <div class="mainNav" id="mainNav">
+        <div class="box_center cf"
+             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+
+            小说精品屋爬虫管理
+
+        </div>
+    </div>
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_1 on" href="/">爬虫源管理</a></li>
+                <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
+                <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+
+                <div class="userBox cf">
+                    <form method="post" action="./register.html" id="form2">
+                        <div class="aspNetHidden">
+                            <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
+                                   value="/wEPDwUKLTIzNjMxNDQxNw9kFgJmD2QWAmYPFgIeBFRleHQFqAE8YSBocmVmPSIvc2VhcmNoLmFzcHg/c2VhcmNoS2V5PeWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqyIgdGFyZ2V0PSJfYmxhbmsiPuWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqzwvYT5kZOquoASBvnvPbc/TYIQiLhSPJ8GKnYQrmk7jGhb5AC5Q">
+                        </div>
+
+                        <div class="aspNetHidden">
+
+                            <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="23AA6834">
+                            <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
+                                   value="/wEdAAVece19BIZ9HiByRfHz3pfnqKSXUE1UN51mNFrIuw38c3Y2+Mc6SrnAqio3oCKbxYZZ1lS+gZUZKpbsAea8j7ASAv40DHFcQ/NE7tJUnABeyQ3d9sFDIcFCYNqlVtprfLoh4JFy0U+R/CcMuyAiWTz7">
+                        </div>
+                        <div class="user_l">
+                            <div></div>
+                            <h3>爬虫源信息填写（示例均为顶点小说网：dingdiann.com）</h3>
+                            <ul class="log_list">
+                                <li><span id="LabErr"></span></li>
+                                示例：<b>新顶点小说网</b>
+                                <li><input type="text" id="sourceName" class="s_input icon_name" placeholder="源站名"></li>
+                                示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
+                                <li><input type="text" id="bookListUrl" class="s_input icon_key"
+                                           placeholder="分类列表页URL规则"></li>
+                                示例：<b>1</b>
+                                <li><input type="text" id="catId1" class="s_input icon_key" placeholder="玄幻奇幻分类ID"></li>
+                                示例：<b>2</b>
+                                <li><input type="text" id="catId2" class="s_input icon_key" placeholder="武侠仙侠分类ID"></li>
+                                示例：<b>3</b>
+                                <li><input type="text" id="catId3" class="s_input icon_key" placeholder="都市言情分类ID"></li>
+                                示例：<b>4</b>
+                                <li><input type="text" id="catId4" class="s_input icon_key" placeholder="历史军事分类ID"></li>
+                                示例：<b>5</b>
+                                <li><input type="text" id="catId5" class="s_input icon_key" placeholder="科幻灵异分类ID"></li>
+                                示例：<b>6</b>
+                                <li><input type="text" id="catId6" class="s_input icon_key" placeholder="网游竞技分类ID"></li>
+                                示例：<b>7</b>
+                                <li><input type="text" id="catId7" class="s_input icon_key" placeholder="女生频道分类ID"></li>
+                                示例：<b>href="/ddk(\d+)/"</b>
+                                <li><input type="text" id="bookIdPatten" class="s_input icon_key"
+                                           placeholder="列表页小说ID正则表达式："></li>
+                                <b>value="(\d+)/\d+"</b>
+                                <li><input type="text" id="pagePatten" class="s_input icon_key"
+                                           placeholder="列表页当前分页页码正则表达式："></li>
+                                <b>value="\d+/(\d+)"</b>
+                                <li><input type="text" id="totalPagePatten" class="s_input icon_key"
+                                           placeholder="列表页分页总页数正则表达式："></li>
+                                <b>http://m.xdingdiann.com/ddk{bookId}</b> (bookId代表小说ID)
+                                <li><input type="text" id="bookDetailUrl" class="s_input icon_key"
+                                           placeholder="详情页URL规则："></li>
+                                示例：<b>&lt;p class="title"&gt;([^/]+)&lt;/p&gt;</b>
+                                <li><input type="text" id="bookNamePatten" class="s_input icon_key"
+                                           placeholder="小说名的正则表达式："></li>
+                                示例：<b>作者：([^/]+)<</b>
+                                <li><input type="text" id="authorNamePatten" class="s_input icon_key"
+                                           placeholder="小说作者的正则表达式："></li>
+                                示例：<b>&lt;img src="([^>]+)"\s+onerror="this.src=</b>
+                                <li><input type="text" id="picUrlPatten" class="s_input icon_key"
+                                           placeholder="小说图片路径的正则表达式："></li>
+                                示例：<b>状态：([^/]+)&lt;/li&gt;</b>
+                                <li><input type="text" id="statusPatten" class="s_input icon_key"
+                                           placeholder="小说状态的正则表达式："></li>
+                                示例：<b>连载</b>
+                                <li><input type="text" id="bookStatus0" class="s_input icon_key"
+                                           placeholder="连载中的小说在此网站的具体表现值："></li>
+                                示例：<b>完结</b>
+                                <li><input type="text" id="bookStatus1" class="s_input icon_key"
+                                           placeholder="全本小说在此网站的具体表现值："></li>
+                                示例：<b>&lt;div\s+class="score"&gt;(\d+\.\d+)分&lt;/div&gt;</b>
+                                <li><input type="text" id="scorePatten" class="s_input icon_key"
+                                           placeholder="小说评分的正则表达式："></li>
+                                示例：<b></b>
+                                <li><input type="text" id="visitCountPatten" class="s_input icon_key"
+                                           placeholder="小说点击量的正则表达式："></li>
+                                示例：<b>&lt;p class=\"review\"&gt;</b>
+                                <li><input type="text" id="descStart" class="s_input icon_key"
+                                           placeholder="小说简介开始截取字符串："></li>
+                                示例：<b>&lt;/p&gt;</b>
+                                <li><input type="text" id="descEnd" class="s_input icon_key" placeholder="小说简介结束截取字符串：">
+                                </li>
+                                示例：<b>更新：(\d+-\d+-\d+\s\d+:\d+:\d+)&lt;/a&gt;</b>
+                                <li><input type="text" id="upadateTimePatten" class="s_input icon_key"
+                                           placeholder="小说更新时间的正则表达式："></li>
+                                示例：<b>yyyy-MM-dd HH:mm:ss</b>
+                                <li><input type="text" id="upadateTimeFormatPatten" class="s_input icon_key"
+                                           placeholder="小说更新时间在此网站的显示模式："></li>
+                                示例：<b>http://m.xdingdiann.com/ddk{bookId}/all.html</b> (bookId代表小说ID)
+                                <li><input type="text" id="bookIndexUrl" class="s_input icon_key"
+                                           placeholder="小说目录页的URL规则："></li>
+                                示例：<b>&lt;a\s+style=""\s+href="/ddk\d+/(\d+)\.html"&gt;[^/]+&lt;/a&gt;</b>
+                                <li><input type="text" id="indexIdPatten" class="s_input icon_key"
+                                           placeholder="目录页目录ID正则表达式："></li>
+                                示例：<b>&lt;a\s+style=""\s+href="/ddk\d+/\d+\.html"&gt;([^/]+)&lt;/a&gt;</b>
+                                <li><input type="text" id="indexNamePatten" class="s_input icon_key"
+                                           placeholder="目录页目录名的正则表达式："></li>
+                                示例：<b>http://m.xdingdiann.com/ddk{bookId}/{indexId}.html</b>
+                                (bookId代表小说ID,{indexId}代表目录ID)
+                                <li><input type="text" id="bookContentUrl" class="s_input icon_key"
+                                           placeholder="小说内容页的URL规则："></li>
+                                示例：<b>id="content"></b>
+                                <li><input type="text" id="contentStart" class="s_input icon_key"
+                                           placeholder="小说内容开始截取字符串："></li>
+                                示例：<b>&lt;script&gt;</b>
+                                <li><input type="text" id="contentEnd" class="s_input icon_key"
+                                           placeholder="小说内容结束截取字符串："></li>
+
+                                <li><input type="button" onclick="addCrawlSource()" name="btnRegister" value="提交"
+                                           id="btnRegister" class="btn_red"></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <!--<div id="divData" class="updateTable">
+                    <table cellpadding="0" cellspacing="0">
+                        <thead>
+                        <tr>
+
+                            <th class="name">
+                                爬虫源（已开启的爬虫源）
+                            </th>
+                            <th class="chapter">
+                                成功爬取数量（websocket实现）
+                            </th>
+                            <th class="time">
+                            目标爬取数量
+                            </th>
+                            <th class="goread">
+                                状态（正在运行，已停止）（一次只能运行一个爬虫源）
+                            </th>
+                            <th class="goread">
+                                操作（启动，停止）
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="bookShelfList">
+
+
+
+                        </tbody>
+                    </table>
+                    <div class="pageBox cf" id="shellPage">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/header.js" type="text/javascript"></script>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    function addCrawlSource() {
+
+        var crawlRule = {};
+        var sourceName = $("#sourceName").val();
+        if (sourceName.length == 0) {
+            layer.alert("源站名必填");
+            return false;
+        }
+
+        var bookListUrl = $("#bookListUrl").val();
+        if (bookListUrl.length == 0) {
+            layer.alert("分类列表页URL规则必填");
+            return false;
+        }
+        crawlRule.bookListUrl = bookListUrl;
+
+        var catIdRule = {};
+
+        for (var i = 1; i <= 7; i++) {
+            var catId = $("#catId" + i).val();
+            if (catId.length > 0) {
+                catIdRule["catId" + i] = catId;
+            }
+        }
+
+        if (Object.keys(catIdRule).length == 0) {
+            layer.alert("分类ID至少要填一项");
+            return false;
+        }
+        crawlRule.catIdRule = catIdRule;
+
+
+        var bookIdPatten = $("#bookIdPatten").val();
+
+
+        if (bookIdPatten.length == 0) {
+            layer.alert("列表页小说ID正则表达式必填");
+            return false;
+        }
+
+        crawlRule.bookIdPatten = bookIdPatten;
+
+        var pagePatten = $("#pagePatten").val();
+
+        if (pagePatten.length > 0) {
+            crawlRule.pagePatten = pagePatten;
+        }
+
+        var totalPagePatten = $("#pagePatten").val();
+
+        if (totalPagePatten.length > 0) {
+            crawlRule.totalPagePatten = totalPagePatten;
+        }
+
+        var bookDetailUrl = $("#bookDetailUrl").val();
+
+        if (bookDetailUrl.length == 0) {
+            layer.alert("详情页URL规则必填");
+            return false;
+        }
+
+        crawlRule.bookDetailUrl = bookDetailUrl;
+
+        var bookNamePatten = $("#bookNamePatten").val();
+
+        if (bookNamePatten.length == 0) {
+            layer.alert("小说名的正则表达式必填");
+            return false;
+        }
+
+        crawlRule.bookNamePatten = bookNamePatten;
+
+        var authorNamePatten = $("#authorNamePatten").val();
+
+        if (authorNamePatten.length == 0) {
+            layer.alert("小说作者的正则表达式必填");
+            return false;
+        }
+
+        crawlRule.authorNamePatten = authorNamePatten;
+
+        var picUrlPatten = $("#picUrlPatten").val();
+
+        if (picUrlPatten.length > 0) {
+            crawlRule.picUrlPatten = picUrlPatten;
+        }
+
+        var statusPatten = $("#statusPatten").val();
+        if (statusPatten.length > 0) {
+            crawlRule.statusPatten = statusPatten;
+        }
+
+        var bookStatusRule = {};
+
+        for (var i = 0; i <= 1; i++) {
+            var bookStatus = $("#bookStatus" + i).val();
+            if (bookStatus.length > 0) {
+                bookStatusRule[bookStatus] = i;
+            }
+        }
+
+        crawlRule.bookStatusRule = bookStatusRule;
+
+        var scorePatten = $("#scorePatten").val();
+
+        if (scorePatten.length > 0) {
+            crawlRule.scorePatten = scorePatten;
+        }
+
+        var visitCountPatten = $("#visitCountPatten").val();
+
+        if (visitCountPatten.length > 0) {
+            crawlRule.visitCountPatten = visitCountPatten;
+        }
+
+        var descStart = $("#descStart").val();
+
+        if (descStart.length == 0) {
+            layer.alert("小说简介开始截取字符串必填");
+            return false;
+        }
+
+        crawlRule.descStart = descStart;
+
+        var descEnd = $("#descEnd").val();
+
+        if (descEnd.length == 0) {
+            layer.alert("小说简介结束截取字符串必填");
+            return false;
+        }
+
+        crawlRule.descEnd = descEnd;
+
+        var upadateTimePatten = $("#upadateTimePatten").val();
+
+        if (upadateTimePatten.length > 0) {
+            crawlRule.upadateTimePatten = upadateTimePatten;
+        }
+
+        var upadateTimeFormatPatten = $("#upadateTimeFormatPatten").val();
+
+        if (upadateTimeFormatPatten.length > 0) {
+            crawlRule.upadateTimeFormatPatten = upadateTimeFormatPatten;
+        }
+
+        var bookIndexUrl = $("#bookIndexUrl").val();
+
+        if (bookIndexUrl.length == 0) {
+            layer.alert("小说目录页的URL规则必填");
+            return false;
+        }
+
+        crawlRule.bookIndexUrl = bookIndexUrl;
+
+        var indexIdPatten = $("#indexIdPatten").val();
+
+        if (indexIdPatten.length == 0) {
+            layer.alert("小说目录页的目录ID正则表达式必填");
+            return false;
+        }
+
+        crawlRule.indexIdPatten = indexIdPatten;
+
+        var indexNamePatten = $("#indexNamePatten").val();
+
+        if (indexNamePatten.length == 0) {
+            layer.alert("小说目录页的目录名正则表达式必填");
+            return false;
+        }
+
+        crawlRule.indexNamePatten = indexNamePatten;
+
+        var bookContentUrl = $("#bookContentUrl").val();
+
+        if (bookContentUrl.length == 0) {
+            layer.alert("小说内容页的URL规则必填");
+            return false;
+        }
+
+        crawlRule.bookContentUrl = bookContentUrl;
+
+        var contentStart = $("#contentStart").val();
+
+        if (contentStart.length == 0) {
+            layer.alert("小说内容开始截取字符串必填");
+            return false;
+        }
+        crawlRule.contentStart = contentStart;
+
+        var contentEnd = $("#contentEnd").val();
+
+        if (contentEnd.length == 0) {
+            layer.alert("小说内容结束截取字符串必填");
+            return false;
+        }
+
+        crawlRule.contentEnd = contentEnd;
+
+
+        $.ajax({
+            type: "POST",
+            url: "/crawl/addCrawlSource",
+            data: {'sourceName': sourceName, 'crawlRule': JSON.stringify(crawlRule)},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+
+                    window.location.href = '/crawl/crawlSource_list.html';
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+</script>
+</html>

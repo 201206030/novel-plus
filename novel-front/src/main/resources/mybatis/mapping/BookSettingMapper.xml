@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontBookSettingMapper">
+    
+    <select id="listVO" resultType="com.java2nb.novel.vo.BookSettingVO">
+        select t1.book_id,t1.type,t1.sort,t2.book_name,t2.author_name,t2.pic_url,t2.book_desc,t2.score
+        from book_setting t1 inner join book t2
+        on t1.book_id = t2.id
+        order by t1.sort
+
+    </select>
+
+
+</mapper>
