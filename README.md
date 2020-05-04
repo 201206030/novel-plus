@@ -84,6 +84,27 @@ Springboot+Mybatis+Mysql+Ehcache+Thymeleaf+Layui
 
 
 
+#### 安装步骤
+
+##### 数据库安装：
+
+1. 安装MySQL软件。
+2. 修改MySQL`max_allowed_packet `配置（建议100M）。
+3. 新建数据库，设置编码为utf8mb4。
+4. 执行sql/novel_plus.sql脚本文件。
+
+##### 爬虫管理系统安装：
+
+1.  修改novel-common模块下application-dev.yml文件中的数据库的配置。
+2. 修改novel-crawl模块下application.yml文件中的管理员账号密码。
+3. 启动程序，打开浏览器，默认8081端口访问。
+4. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始爬取小说数据。
+
+##### 前台小说门户安装：
+
+1. 修改novel-common模块下application-dev.yml文件中的数据库的配置。
+2. 启动程序，打开浏览器，默认8080端口访问。
+
 **喜欢此项目的可以给我的GitHub和Gitee加个Star支持一下 。**
 
 #### 演示地址
