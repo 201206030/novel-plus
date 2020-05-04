@@ -175,8 +175,6 @@
 
 <script>
     var token = localStorage.getItem("token");
-    $.get("/book/addVisit", {"bookId": $("#bookIdHidden").val(),"indexNum":$("#indexNumHidden").val(),"token":token}, function () {
-    });
 </script>
 
 <div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
@@ -318,7 +316,8 @@
         }
     }
 
-
+    $.post("/book/addVisitCount", {"bookId": $("#bookIdHidden").val()}, function () {
+    });
 
 </script>
 

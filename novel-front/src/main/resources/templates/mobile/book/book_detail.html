@@ -292,7 +292,6 @@
 
 
 
-    $.get("/book/addVisitCount",{"bookId":$("#bookIdHidden").val()},function(){});
 
     function toMyCollect(){
         var token = localStorage.getItem("token");
@@ -350,6 +349,9 @@
     function searchBooks(keyword) {
         window.location.href = "/book/book_ranking.html?keyword=" + encodeURI(keyword);
     }
+
+    $.post("/book/addVisitCount", {"bookId": $("#bookIdHidden").val()}, function () {
+    });
 </script>
 
 

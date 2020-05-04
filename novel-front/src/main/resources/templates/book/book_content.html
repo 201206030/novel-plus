@@ -292,6 +292,9 @@
         }
 
     }
+
+    $.post("/book/addVisitCount", {"bookId": $("#bookId").val()}, function () {
+    });
 </script>
 </body>
 </html>
