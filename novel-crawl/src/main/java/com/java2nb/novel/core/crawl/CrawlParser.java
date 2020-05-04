@@ -6,6 +6,7 @@ import com.java2nb.novel.core.utils.RandomBookInfoUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.utils.Constants;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
@@ -116,7 +117,7 @@ public class CrawlParser {
                     book.setScore(RandomBookInfoUtil.getScoreByVisitCount(book.getVisitCount()));
                 } else if (book.getVisitCount() == null && book.getScore() == null) {
                     //都没有，设置成固定值
-                    book.setVisitCount(100L);
+                    book.setVisitCount(Constants.VISIT_COUNT_DEFAULT);
                     book.setScore(6.5f);
                 }
             }

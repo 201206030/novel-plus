@@ -168,6 +168,9 @@ public class BookServiceImpl implements BookService {
         book.setUpdateTime(currentDate);
         book.setBookName(null);
         book.setAuthorName(null);
+        if(Constants.VISIT_COUNT_DEFAULT.equals(book.getVisitCount())) {
+            book.setVisitCount(null);
+        }
         if(book.getPicUrl()!=null && book.getPicUrl().startsWith(Constants.LOCAL_PIC_PREFIX)) {
             //本地图片则不更新
             book.setPicUrl(null);
