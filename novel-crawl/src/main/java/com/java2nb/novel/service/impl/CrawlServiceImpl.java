@@ -153,66 +153,69 @@ public class CrawlServiceImpl implements CrawlService {
         while (page <= totalPage) {
 
             try {
-                //拼接分类URL
-                String catBookListUrl = ruleBean.getBookListUrl()
-                        .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
-                        .replace("{page}", page + "");
 
-                String bookListHtml = getByHttpClient(catBookListUrl);
-                if (bookListHtml != null) {
-                    Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
-                    Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
-                    boolean isFindBookId = bookIdMatcher.find();
-                    while (isFindBookId) {
-                        try {
-                            String bookId = bookIdMatcher.group(1);
-                            Book book = CrawlParser.parseBook(ruleBean, bookId);
-                            //这里只做新书入库，查询是否存在这本书
-                            Book existBook = bookService.queryBookByBookNameAndAuthorName(book.getBookName(), book.getAuthorName());
-                            //如果该小说不存在，则可以解析入库，但是标记该小说正在入库，30分钟之后才允许再次入库
-                            if (existBook == null) {
-                                //没有该书，可以入库
-                                book.setCatId(catId);
-                                //根据分类ID查询分类
-                                book.setCatName(bookService.queryCatNameByCatId(catId));
-                                if (catId == 7) {
-                                    //女频
-                                    book.setWorkDirection((byte) 1);
+                if(StringUtils.isNotBlank(ruleBean.getCatIdRule().get("catId" + catId))) {
+                    //拼接分类URL
+                    String catBookListUrl = ruleBean.getBookListUrl()
+                            .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
+                            .replace("{page}", page + "");
+
+                    String bookListHtml = getByHttpClient(catBookListUrl);
+                    if (bookListHtml != null) {
+                        Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
+                        Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
+                        boolean isFindBookId = bookIdMatcher.find();
+                        while (isFindBookId) {
+                            try {
+                                String bookId = bookIdMatcher.group(1);
+                                Book book = CrawlParser.parseBook(ruleBean, bookId);
+                                //这里只做新书入库，查询是否存在这本书
+                                Book existBook = bookService.queryBookByBookNameAndAuthorName(book.getBookName(), book.getAuthorName());
+                                //如果该小说不存在，则可以解析入库，但是标记该小说正在入库，30分钟之后才允许再次入库
+                                if (existBook == null) {
+                                    //没有该书，可以入库
+                                    book.setCatId(catId);
+                                    //根据分类ID查询分类
+                                    book.setCatName(bookService.queryCatNameByCatId(catId));
+                                    if (catId == 7) {
+                                        //女频
+                                        book.setWorkDirection((byte) 1);
+                                    } else {
+                                        //男频
+                                        book.setWorkDirection((byte) 0);
+                                    }
+                                    book.setCrawlBookId(bookId);
+                                    book.setCrawlSourceId(sourceId);
+                                    book.setCrawlLastTime(new Date());
+                                    book.setId(new IdWorker().nextId());
+                                    //解析章节目录
+                                    Map<Integer, List> indexAndContentList = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0));
+
+                                    bookService.saveBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY));
+
                                 } else {
-                                    //男频
-                                    book.setWorkDirection((byte) 0);
+                                    //只更新书籍的爬虫相关字段
+                                    bookService.updateCrawlProperties(existBook.getId(), sourceId, bookId);
                                 }
-                                book.setCrawlBookId(bookId);
-                                book.setCrawlSourceId(sourceId);
-                                book.setCrawlLastTime(new Date());
-                                book.setId(new IdWorker().nextId());
-                                //解析章节目录
-                                Map<Integer, List> indexAndContentList = CrawlParser.parseBookIndexAndContent(bookId,book, ruleBean, new HashMap<>(0));
-
-                                bookService.saveBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY));
-
-                            } else {
-                                //只更新书籍的爬虫相关字段
-                                bookService.updateCrawlProperties(existBook.getId(),sourceId, bookId);
+                            } catch (Exception e) {
+                                log.error(e.getMessage(), e);
                             }
-                        }catch (Exception e){
-                            log.error(e.getMessage(),e);
+
+
+                            isFindBookId = bookIdMatcher.find();
+                        }
+
+                        Pattern totalPagePatten = Pattern.compile(ruleBean.getTotalPagePatten());
+                        Matcher totalPageMatcher = totalPagePatten.matcher(bookListHtml);
+                        boolean isFindTotalPage = totalPageMatcher.find();
+                        if (isFindTotalPage) {
+
+                            totalPage = Integer.parseInt(totalPageMatcher.group(1));
+
                         }
 
 
-                        isFindBookId = bookIdMatcher.find();
                     }
-
-                    Pattern totalPagePatten = Pattern.compile(ruleBean.getTotalPagePatten());
-                    Matcher totalPageMatcher = totalPagePatten.matcher(bookListHtml);
-                    boolean isFindTotalPage = totalPageMatcher.find();
-                    if (isFindTotalPage) {
-
-                        totalPage = Integer.parseInt(totalPageMatcher.group(1));
-
-                    }
-
-
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
