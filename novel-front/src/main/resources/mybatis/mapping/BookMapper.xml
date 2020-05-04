@@ -59,5 +59,9 @@
         limit #{offset},#{limit}
     </select>
 
+   <select id="selectIdsByScoreAndRandom" parameterType="int" resultType="com.java2nb.novel.entity.Book">
+
+       select id,book_name,author_name,pic_url,book_desc,score from book ORDER BY score,RAND() LIMIT #{limit};
+   </select>
 
 </mapper>

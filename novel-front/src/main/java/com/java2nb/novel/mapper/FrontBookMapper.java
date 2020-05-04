@@ -22,4 +22,11 @@ public interface FrontBookMapper extends BookMapper {
     void addCommentCount(@Param("bookId") Long bookId);
 
     List<Book> queryNetworkPicBooks(@Param("limit") Integer limit,@Param("offset") Integer offset);
+
+    /**
+     * 按评分随机查询小说集合
+     * @param limit 查询条数
+     * @return 小说集合
+     * */
+    List<Book> selectIdsByScoreAndRandom(@Param("limit") int limit);
 }

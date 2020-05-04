@@ -24,11 +24,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.orderbyhelper.OrderByHelper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,13 +78,63 @@ public class BookServiceImpl implements BookService {
     @Override
     public Map<Byte, List<BookSettingVO>> listBookSettingVO() {
         String result = cacheService.get(CacheKey.INDEX_BOOK_SETTINGS_KEY);
-        if (result == null || result.length() < 10) {
+        if (result == null || result.length() < Constants.OBJECT_JSON_CACHE_EXIST_LENGTH) {
             List<BookSettingVO> list = bookSettingMapper.listVO();
+            if(list.size() == 0) {
+                //如果首页小说没有被设置，则初始化首页小说设置
+                list = initIndexBookSetting();
+            }
             result = new ObjectMapper().writeValueAsString(list.stream().collect(Collectors.groupingBy(BookSettingVO::getType)));
             cacheService.set(CacheKey.INDEX_BOOK_SETTINGS_KEY, result);
         }
         return new ObjectMapper().readValue(result,Map.class);
     }
+
+
+    /**
+     * 初始化首页小说设置
+     * */
+    private List<BookSettingVO> initIndexBookSetting() {
+        Date currentDate = new Date();
+        List<Book> books =  bookMapper.selectIdsByScoreAndRandom(Constants.INDEX_BOOK_SETTING_NUM);
+        if(books.size() == Constants.INDEX_BOOK_SETTING_NUM) {
+            List<BookSetting> bookSettingList = new ArrayList<>(Constants.INDEX_BOOK_SETTING_NUM);
+            List<BookSettingVO> bookSettingVOList = new ArrayList<>(Constants.INDEX_BOOK_SETTING_NUM);
+            for (int i = 0; i < books.size(); i++) {
+                Book book = books.get(i);
+                byte type;
+                if (i < 4) {
+                    type = 0;
+                } else if (i < 14) {
+                    type = 1;
+                } else if (i < 20) {
+                    type = 2;
+                } else if (i < 26) {
+                    type = 3;
+                }else{
+                    type = 4;
+                }
+                BookSettingVO bookSettingVO = new BookSettingVO();
+                BookSetting bookSetting = new BookSetting();
+                bookSetting.setType(type);
+                bookSetting.setSort((byte) i);
+                bookSetting.setBookId(book.getId());
+                bookSetting.setCreateTime(currentDate);
+                bookSetting.setUpdateTime(currentDate);
+                bookSettingList.add(bookSetting);
+
+                BeanUtils.copyProperties(book,bookSettingVO);
+                BeanUtils.copyProperties(bookSetting,bookSettingVO);
+                bookSettingVOList.add(bookSettingVO);
+            }
+
+            bookSettingMapper.insertMultiple(bookSettingList);
+
+            return bookSettingVOList;
+        }
+        return new ArrayList<>(0);
+    }
+
 
     @Override
     public List<Book> listClickRank() {

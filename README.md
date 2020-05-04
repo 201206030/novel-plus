@@ -40,31 +40,19 @@ Springboot+Mybatis+Mysql+Ehcache+Thymeleaf+Layui
 
 #### PC站截图
 
-1. 首页
 
-![index](./assets/pc_index.png)
 
-2.列表页
+![index](./assets/1588548668698.gif)
 
-![index](./assets/pc_all.png)
 
-3.排行页
 
-![index](./assets/pc_rank.png)
+![index](./assets/1588548784395.gif)
 
-4.详情页
 
-![index](./assets/pc_detail.png)
 
-5.目录页
+![index](./assets/1588548916980.gif)
 
-![index](./assets/pc_catalog.png)
 
-6.内容页
-
-![index](./assets/pc_content1.png)
-
-![index](./assets/pc_content2.png)
 
 #### 手机站截图
 

@@ -8,6 +8,6 @@ spring:
 
 admin:
   username: admin
-  password: admin123456
+  password: admin
 
 
