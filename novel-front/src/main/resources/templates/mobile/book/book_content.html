@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta th:if="${catId == 9}" name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1">
     <meta th:if="${catId != 9}" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>天女商妃第1章 揍个天花乱坠</title>
+    <title th:text="${book.bookName}+${bookIndex.indexName}"></title>
 
-    <meta name="keywords" th:content="#{website.name}+','+${bookIndex.indexName}">
+    <meta name="keywords" th:content="${book.bookName}+','+${bookIndex.indexName}">
 
     <meta name="description"
-          th:content="#{website.name}+${bookIndex.indexName}+'最新更新章节免费在线阅读TXT下载'">
+          th:content="${book.bookName}+'最新更新章节免费在线阅读TXT下载'">
 
 
 
@@ -169,7 +169,7 @@
 
 <input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
 
-<input type="hidden" id="contentIdHidden" th:value="${bookContent.id}"/>
+<input type="hidden" id="contentIdHidden" th:value="${bookIndex.id}"/>
 
 <input type="hidden" id="indexNumHidden" th:value="${bookIndex.indexNum}"/>
 

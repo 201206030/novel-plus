@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title th:text="#{website.name}+'小说最新章节免费阅读和下载'"></title>
+    <title th:text="${book.bookName}+'小说最新章节免费阅读和下载'"></title>
 
-    <meta name="keywords" th:content="#{website.name}+','+#{website.name}+'最新章节,'+#{website.name}+'免费阅读,'+#{website.name}+'TXT下载'">
+    <meta name="keywords" th:content="${book.bookName}+','+${book.bookName}+'最新章节,'+${book.bookName}+'免费阅读,'+${book.bookName}+'TXT下载'">
 
     <meta name="description"
-          th:content="#{website.name}+'最新章节列表,'+#{website.name}+'最新更新章节免费无广告无弹窗在线阅读,'+#{website.name}+'小说TXT免费下载。'">
+          th:content="${book.bookName}+'最新章节列表,'+${book.bookName}+'最新更新章节免费无广告无弹窗在线阅读,'+${book.bookName}+'小说TXT免费下载。'">
 
 
 
@@ -101,7 +101,6 @@
 
     </style>
 
-    <script src="/js/wap_collect.js"></script>
 
 </head>
 <body>
