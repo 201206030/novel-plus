@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${package}.dao.${className}Dao">
+
+	<select id="get" resultType="${package}.domain.${className}DO">
+		select #foreach($column in $columns)`$column.columnName`#if($velocityCount != $columns.size()),#end#end from ${tableName} where ${pk.columnName} = #{value}
+	</select>
+
+	<select id="list" resultType="${package}.domain.${className}DO">
+		select #foreach($column in $columns)`$column.columnName`#if($velocityCount != $columns.size()),#end#end from ${tableName}
+        <where>  
+		  #foreach($column in $columns)
+		  <if test="$column.attrname != null and $column.attrname.trim() != ''"> and $column.columnName = #{$column.attrname} </if>
+		  #end
+		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ${pk.columnName} desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from ${tableName}
+		 <where>  
+		  #foreach($column in $columns)
+		  <if test="$column.attrname != null and $column.attrname.trim() != ''"> and $column.columnName = #{$column.attrname} </if>
+		  #end
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="${package}.domain.${className}DO"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+		insert into ${tableName}
+		(
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			`$column.columnName`#if($velocityCount != $columns.size()), #end
+
+#end
+#end
+		)
+		values
+		(
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			#{$column.attrname}#if($velocityCount != $columns.size()), #end
+
+#end
+#end
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="${package}.domain.${className}DO"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+		insert into ${tableName}
+		(
+		#foreach($column in $columns)
+			<if test="$column.attrname != null"> `$column.columnName`#if($velocityCount != $columns.size()), #end </if>
+		#end
+		)
+		values
+		(
+		#foreach($column in $columns)
+			<if test="$column.attrname != null"> #{$column.attrname}#if($velocityCount != $columns.size()), #end </if>
+		#end
+		)
+	</insert>
+	 
+	<update id="update" parameterType="${package}.domain.${className}DO">
+		update ${tableName} 
+		<set>
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+			<if test="$column.attrname != null">`$column.columnName` = #{$column.attrname}#if($velocityCount != $columns.size()), #end</if>
+#end
+#end
+		</set>
+		where ${pk.columnName} = #{${pk.attrname}}
+	</update>
+	
+	<delete id="remove">
+		delete from ${tableName} where ${pk.columnName} = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from ${tableName} where ${pk.columnName} in 
+		<foreach item="${pk.attrname}" collection="array" open="(" separator="," close=")">
+			#{${pk.attrname}}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.system.dao.DataPermDao">
+
+	<select id="get" resultType="com.java2nb.system.domain.DataPermDO">
+		select `id`,`name`,`table_name`,`module_name`,`crl_attr_name`,`crl_column_name`,`perm_code`,`order_num`,`gmt_create`,`gmt_modified` from sys_data_perm where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.system.domain.DataPermDO">
+		select `id`,`name`,`table_name`,`module_name`,`crl_attr_name`,`crl_column_name`,`perm_code`,`order_num`,`gmt_create`,`gmt_modified` from sys_data_perm
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="tableName != null and tableName != ''"> and table_name = #{tableName} </if>
+		  		  <if test="moduleName != null and moduleName != ''"> and module_name = #{moduleName} </if>
+		  		  <if test="crlAttrName != null and crlAttrName != ''"> and crl_attr_name = #{crlAttrName} </if>
+		  		  <if test="crlColumnName != null and crlColumnName != ''"> and crl_column_name = #{crlColumnName} </if>
+		  		  <if test="permCode != null and permCode != ''"> and perm_code = #{permCode} </if>
+		  		  <if test="orderNum != null and orderNum != ''"> and order_num = #{orderNum} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="gmtModified != null and gmtModified != ''"> and gmt_modified = #{gmtModified} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from sys_data_perm
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="tableName != null and tableName != ''"> and table_name = #{tableName} </if>
+		  		  <if test="moduleName != null and moduleName != ''"> and module_name = #{moduleName} </if>
+		  		  <if test="crlAttrName != null and crlAttrName != ''"> and crl_attr_name = #{crlAttrName} </if>
+		  		  <if test="crlColumnName != null and crlColumnName != ''"> and crl_column_name = #{crlColumnName} </if>
+		  		  <if test="permCode != null and permCode != ''"> and perm_code = #{permCode} </if>
+		  		  <if test="orderNum != null and orderNum != ''"> and order_num = #{orderNum} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="gmtModified != null and gmtModified != ''"> and gmt_modified = #{gmtModified} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.system.domain.DataPermDO" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_data_perm
+		(
+			`name`, 
+			`table_name`, 
+			`module_name`, 
+			`crl_attr_name`, 
+			`crl_column_name`, 
+			`perm_code`, 
+			`order_num`, 
+			`gmt_create`, 
+			`gmt_modified`
+		)
+		values
+		(
+			#{name}, 
+			#{tableName}, 
+			#{moduleName}, 
+			#{crlAttrName}, 
+			#{crlColumnName}, 
+			#{permCode}, 
+			#{orderNum}, 
+			#{gmtCreate}, 
+			#{gmtModified}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.system.domain.DataPermDO" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_data_perm
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="name != null"> `name`,  </if>
+					<if test="tableName != null"> `table_name`,  </if>
+					<if test="moduleName != null"> `module_name`,  </if>
+					<if test="crlAttrName != null"> `crl_attr_name`,  </if>
+					<if test="crlColumnName != null"> `crl_column_name`,  </if>
+					<if test="permCode != null"> `perm_code`,  </if>
+					<if test="orderNum != null"> `order_num`,  </if>
+					<if test="gmtCreate != null"> `gmt_create`,  </if>
+					<if test="gmtModified != null"> `gmt_modified` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="name != null"> #{name},  </if>
+					<if test="tableName != null"> #{tableName},  </if>
+					<if test="moduleName != null"> #{moduleName},  </if>
+					<if test="crlAttrName != null"> #{crlAttrName},  </if>
+					<if test="crlColumnName != null"> #{crlColumnName},  </if>
+					<if test="permCode != null"> #{permCode},  </if>
+					<if test="orderNum != null"> #{orderNum},  </if>
+					<if test="gmtCreate != null"> #{gmtCreate},  </if>
+					<if test="gmtModified != null"> #{gmtModified} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.system.domain.DataPermDO">
+		update sys_data_perm 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="tableName != null">`table_name` = #{tableName}, </if>
+			<if test="moduleName != null">`module_name` = #{moduleName}, </if>
+			<if test="crlAttrName != null">`crl_attr_name` = #{crlAttrName}, </if>
+			<if test="crlColumnName != null">`crl_column_name` = #{crlColumnName}, </if>
+			<if test="permCode != null">`perm_code` = #{permCode}, </if>
+			<if test="orderNum != null">`order_num` = #{orderNum}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from sys_data_perm where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from sys_data_perm where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+	<select id="listModuleName" resultType="com.java2nb.system.domain.DataPermDO">
+		select distinct `module_name` from sys_data_perm ;
+
+	</select>
+
+	<select id="selectDataPermsByUserId" parameterType="long" resultType="com.java2nb.system.domain.DataPermDO">
+
+		select distinct t1.`table_name`,t1.`module_name`,t1.`crl_attr_name`,t1.`crl_column_name`,t1.`perm_code`
+		from sys_data_perm t1
+		inner join sys_role_data_perm t2 on t1.id = t2.perm_id
+		inner join sys_user_role t3 on t2.role_id = t3.role_id
+		and t3.user_id = #{userId}
+	</select>
+
+</mapper>

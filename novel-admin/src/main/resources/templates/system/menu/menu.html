@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div id="exampleToolbar" role="group" class="t-bar">
+						<button shiro:hasPermission="sys:menu:add" type="button"
+							class="btn btn-primary" title="在根节点下添加菜单" onclick="add('0')">
+							<i class="fa fa-plus" aria-hidden="true"></i>添加
+						</button>
+						<button shiro:hasPermission="sys:menu:batchRemove" type="button"
+							class="btn btn-danger" onclick="batchRemove()">
+							<i class="fa fa-trash" aria-hidden="true"></i>删除
+						</button>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+		<!--shiro控制bootstraptable行内按钮看见性 -->
+		<div>
+			<script type="text/javascript">
+				var s_add_h = 'hidden';
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="sys:menu:add">
+			<script type="text/javascript">
+				s_add_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="sys:menu:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="sys:menu:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script src="/js/appjs/system/menu/menu.js"></script>
+</body>
+
+</html>

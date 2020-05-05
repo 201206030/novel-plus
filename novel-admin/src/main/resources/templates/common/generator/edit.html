@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">作者：</label>
+							<div class="col-sm-8">
+								<input id="author" name="author" class="form-control"
+									type="text" th:value="${property.author}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">邮箱：</label>
+							<div class="col-sm-8">
+								<input id="email" name="email" class="form-control" type="text"
+									th:value="${property.email}" readonly>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">本地项目Src路径：</label>
+							<div class="col-sm-8">
+								<input id="srcPath" name="srcPath" class="form-control"
+									   type="text" th:value="${property.srcPath}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">包名：</label>
+							<div class="col-sm-8">
+								<input id="package" name="package" class="form-control"
+									type="text" th:value="${property.package}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">自动去掉表前缀：</label>
+							<div class="col-sm-2  i-checks icheckbox_square-green checked">
+								<input id="autoRemovePre" name="autoRemovePre"
+									class="form-control" type="checkbox"
+									value="true"
+									th:checked="${property.autoRemovePre}">
+							</div>
+
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">去掉指定表前缀：</label>
+							<div class="col-sm-8">
+								<input id="tablePrefix" name="tablePrefix" class="form-control"
+									type="text" th:value="${property.tablePrefix}">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="submit" class="btn btn-primary">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/common/generator/edit.js">
+	</script>
+</body>
+</html>

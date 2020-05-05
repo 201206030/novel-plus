@@ -1,0 +1,51 @@
+body { font-family: "Helvetica Neue"; }
+.container {margin: 0 auto;width: 90%;padding: 0 5% 20px 5%;max-width: 960px;}
+
+a { text-decoration: none;color: #4988C6; }
+p {color: #444;}
+h1 span {color: #ddd;font-size: 26px;}
+
+.title {font-weight: 800;font-size: 12px;text-transform: uppercase;padding: 15px 0 0 0;display: block;}
+pre {background-color: #fafafa;padding: 20px;overflow: auto;border: 1px solid #f1f1f1;color: #000;}
+.note {color: #999;font-size: 14px;}
+.download_button {padding: 15px 0;background: #F2F2F2;display: block;margin: 30px auto;width: 100%;max-width: 200px;text-align: center;color: #4988C6;text-decoration: none;font-weight: 800;font-size: 12px;border-bottom: 3px solid #ddd;}
+.download_button:active {position: relative;top: 3px;border-bottom: 0;}
+.download_button:hover {background-color: #eaeaea;}
+
+button, a.button {
+	border: none;padding: 0 20px;height: 40px;background-color: #eee;color: #333;text-decoration: none;display: inline-block;line-height: 40px;
+	margin: 0;vertical-align: top;font-weight: 200;border-bottom: 1px solid #ddd;font-family: "Helvetica Neue";
+	-moz-box-sizing: content-box;-webkit-box-sizing: content-box;box-sizing: content-box;font-size: 14px;cursor: pointer;margin: 5px 0;
+}
+button::-moz-focus-inner { border: 0px; }
+button:hover, a.button:hover {
+	background-color: #f1f1f1;
+}
+button:active, a.button:active{
+	background-color: #e9e9e9;
+}
+textarea {
+	width: 98%;height: 100px;padding: 1%;border: 1px solid #eee;
+}
+#ui-datepicker-div {
+	font-size: 12px;
+}
+.examplecode {
+	padding: 15px 2%;background-color: #fffef1;border-top: 2px dotted #eee;border-bottom: 2px dotted #eee;margin-top: 10px;
+}
+.examplecode pre {
+	background-color: #ffffff;
+}
+hr {
+	border: 0;margin-top: 20px;
+	color: #eee;background-color: #eee;height: 3px;
+}
+.inputtable.custom textarea {
+	width: 96%;margin:0;padding:5px 2%;border: 0;resize: none;height: 100px;
+}
+.inputtable.custom textarea:focus {
+	background-color: #fafafa;
+}
+.inputtable.custom input[type=text]{
+	height: 110px;
+}

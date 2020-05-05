@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="${pk.columnName}" name="${pk.columnName}" th:value="${${classname}.${pk.columnName}}"
+                               type="hidden">
+                        #foreach($column in $columns)
+                            #if($column.columnName != $pk.columnName)
+                                <div class="form-group">
+                                    #if($column.pageType != 11 && $column.pageType != 12)
+                                        <label class="col-sm-3 control-label">${column.columnLabel}：</label>
+                                    #end
+                                    <div class="col-sm-8">
+                                        #if($column.pageType == 4)
+                                            <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="${column.attrname}"
+                                                   name="${column.attrname}"
+                                                   th:value="${${classname}.${column.attrname}}==null?null:${#dates.format(${classname}.${column.attrname},'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                        #elseif($column.pageType == 1)
+                                            <input id="${column.attrname}" name="${column.attrname}"
+                                                   th:value="${${classname}.${column.attrname}}"
+                                                   class="form-control"
+                                                   type="text">
+                                        #elseif($column.pageType == 2)
+
+                                            <select data-placeholder="--选择--" id="${column.attrname}"
+                                                    name="${column.attrname}"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="${column.dictType}"
+                                                    th:attr="dict-value=${${classname}.${column.attrname}}" >
+                                            </select>
+                                        #elseif($column.pageType == 3)
+                                            <input id="${column.attrname}" name="${column.attrname}"
+                                                   th:value="${${classname}.${column.attrname}}"
+                                                   class="form-control"
+                                                   type="number">
+                                        #elseif($column.pageType == 5)
+                                            <textarea id="${column.attrname}" name="${column.attrname}"
+                                                      class="form-control"  th:text="${${classname}.${column.attrname}}"></textarea>
+                                        #elseif($column.pageType == 6)
+                                            <input type="hidden" id="${column.attrname}" name="${column.attrname}" th:value="${${classname}.${column.attrname}}"/>
+                                            <div id="contentEditor${column.attrname}">
+
+                                            </div>
+                                        #elseif($column.pageType == 7)
+                                            <img title="点击选择图片" id="picImage${column.attrname}"
+                                                 style="cursor:pointer;width: 100px;height: 100px"
+                                                 th:src="${${classname}.${column.attrname}}==null?'/img/webuploader.png':${${classname}.${column.attrname}}"/>
+                                            <input id="${column.attrname}" name="${column.attrname}" th:value="${${classname}.${column.attrname}}"
+                                                   class="form-control"
+                                                   type="hidden">
+                                        #elseif($column.pageType == 11)
+                                            <input type="hidden" id="${column.attrname}" name="${column.attrname}" th:value="${${classname}.${column.attrname}}"/>
+                                        #*#else
+                                            <input id="${column.attrname}" name="${column.attrname}"
+                                                   class="form-control"
+                                                   type="text">*#
+                                        #end
+                                    </div>
+                                </div>
+                            #end
+                        #end
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/wangEditor/release/wangEditor.js"></script>
+<script type="text/javascript" src="/js/appjs/${pathName}/${classname}/edit.js">
+</script>
+</body>
+</html>

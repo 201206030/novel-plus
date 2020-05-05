@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="${pk.columnName}" name="${pk.columnName}" th:value="${${classname}.${pk.columnName}}"
+                       type="hidden">
+                #foreach($column in $columns)
+                    #if($column.columnName != $pk.columnName)
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">${column.columnLabel}：</label>
+
+                        #if($column.pageType == 4)
+                            <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${${classname}.${column.attrname}}==null?null:${#dates.format(${classname}.${column.attrname},'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        #elseif($column.pageType == 2)
+                            <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="${column.dictType}"
+                                 th:attr="dict-value=${${classname}.${column.attrname}}">
+                            </div>
+
+                        #elseif($column.pageType == 6)
+                            <div style="padding-top:8px" class="col-sm-8"
+                                 th:utext="${${classname}.${column.attrname}}"></div>
+                        #elseif($column.pageType == 7)
+                            <div style="padding-top:8px" class="col-sm-8">
+                            <img id="picImage${column.attrname}"
+                                 style="cursor:pointer;width: 100px;height: 100px"
+                                 th:src="${${classname}.${column.attrname}}==null?'/img/webuploader.png':${${classname}.${column.attrname}}"/>
+                        </div>
+                        #else
+                            <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${${classname}.${column.attrname}}">
+                            </div>
+                        #*#else
+                            <input id="${column.attrname}" name="${column.attrname}"
+                                   class="form-control"
+                                   type="text">*#
+                        #end
+
+
+                    </div>
+                    #end
+                #end
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

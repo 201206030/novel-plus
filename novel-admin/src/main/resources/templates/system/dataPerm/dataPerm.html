@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <div class="columns pull-left">
+                        <button shiro:hasPermission="system:dataPerm:add" type="button"
+                                class="btn  btn-primary" onclick="add()">
+                            <i class="fa fa-plus" aria-hidden="true"></i>添加
+                        </button>
+                        <button shiro:hasPermission="system:dataPerm:batchRemove" type="button"
+                                class="btn  btn-danger"
+                                onclick="batchRemove()">
+                            <i class="fa fa-trash" aria-hidden="true"></i>删除
+                        </button>
+                    </div>
+                    <div class="columns pull-right">
+                        <button class="btn btn-success" onclick="reLoad()">查询</button>
+                    </div>
+
+                    <form id="searchForm">
+                        <div class="columns pull-right col-md-2">
+                            <select id="moduleName" name="moduleName" data-placeholder="选择模块" class="form-control chosen-select"
+                                    tabindex="2" style="width: 100%">
+                                <option value="">选择模块</option>
+                            </select>
+                        </div>
+                    </form>
+
+                </div>
+                <table id="exampleTable" data-mobile-responsive="true">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 -->
+<div>
+    <script type="text/javascript">
+        var s_detail_h = 'hidden';
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="test:order:detail">
+    <script type="text/javascript">
+        s_detail_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="system:dataPerm:edit">
+    <script type="text/javascript">
+        s_edit_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="system:dataPerm:remove">
+    <script type="text/javascript">
+        var s_remove_h = '';
+    </script>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/system/dataPerm/dataPerm.js"></script>
+</body>
+</html>

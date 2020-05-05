@@ -1,0 +1,94 @@
+package ${package}.dao;
+
+import ${package}.domain.${className}DO;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Mapper
+public interface ${className}Mapper {
+
+	@Select("select #foreach($column in $columns)
+`$column.columnName`#if($velocityCount != $columns.size()), #end	
+#end from ${tableName} where ${pk.columnName} = #{id}")
+	${className}DO get(${pk.javaType} ${pk.attrname});
+	
+	@Select("<script>" +
+	"select * from ${tableName} " + 
+			"<where>" + 
+		  #foreach($column in $columns)
+		  "<if test=\"$column.attrname != null and $column.attrname.trim() != ''\">"+ "and $column.columnName = #{$column.attrname} " + "</if>" + 
+		  #end
+			"</where>"+ 
+			" <choose>" + 
+	            "<when test=\"sort != null and sort.trim() != ''\">" + 
+	                "order by ${sort} ${order}" + 
+	            "</when>" + 
+				"<otherwise>" + 
+	                "order by ${pk.columnName} desc" + 
+				"</otherwise>" + 
+	        "</choose>"+
+			"<if test=\"offset != null and limit != null\">"+
+			"limit #{offset}, #{limit}" + 
+			"</if>"+
+			"</script>")
+	List<${className}DO> list(Map<String,Object> map);
+	
+	@Select("<script>" +
+	"select count(*) from ${tableName} " + 
+			"<where>" + 
+		  #foreach($column in $columns)
+		  "<if test=\"$column.attrname != null and $column.attrname.trim() != ''\">"+ "and $column.columnName = #{$column.attrname} " + "</if>" + 
+		  #end
+			"</where>"+ 
+			"</script>")
+	int count(Map<String,Object> map);
+	
+	@Insert("insert into ${tableName} (#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+`$column.columnName`#if($velocityCount != $columns.size()), #end
+#end			
+#end)"
+	+ "values (#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+#{$column.attrname}#if($velocityCount != $columns.size()), #end
+#end			
+#end)")
+	int save(${className}DO ${classname});
+
+    int saveSelective(${className}DO ${classname});
+	
+	@Update("<script>"+ 
+			"update ${tableName} " + 
+					"<set>" + 
+		  #foreach($column in $columns)
+          "<if test=\"$column.attrname != null\">`$column.columnName` = #{$column.attrname}, </if>" + 
+          #end
+					"</set>" + 
+					"where ${pk.columnName} = #{${pk.attrname}}"+
+			"</script>")
+	int update(${className}DO ${classname});
+	
+	@Delete("delete from ${tableName} where ${pk.columnName} =#{${pk.attrname}}")
+	int remove(${pk.javaType} ${pk.columnName});
+	
+	@Delete("<script>"+ 
+			"delete from ${tableName} where ${pk.columnName} in " + 
+					"<foreach item=\"${pk.attrname}\" collection=\"array\" open=\"(\" separator=\",\" close=\")\">" + 
+						"#{${pk.attrname}}" + 
+					"</foreach>"+
+			"</script>")
+	int batchRemove(${pk.javaType}[] ${pk.attrname}s);
+}

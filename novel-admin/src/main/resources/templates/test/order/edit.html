@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="id" name="id" th:value="${order.id}"
+                               type="hidden">
+                                                                                                                                        <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">付呗商户号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="fbMerchantCode" name="fbMerchantCode"
+                                                   th:value="${order.fbMerchantCode}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">第三方商户的订单号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="merchantOrderSn" name="merchantOrderSn"
+                                                   th:value="${order.merchantOrderSn}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">付呗订单号：</label>
+                                                                        <div class="col-sm-8">
+                                        
+                                            <select data-placeholder="--选择--" id="orderSn"
+                                                    name="orderSn"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="color"
+                                                    th:attr="dict-value=${order.orderSn}" >
+                                            </select>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">平台方订单号：</label>
+                                                                        <div class="col-sm-8">
+                                        
+                                            <select data-placeholder="--选择--" id="platformOrderNo"
+                                                    name="platformOrderNo"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="oa_leave_type"
+                                                    th:attr="dict-value=${order.platformOrderNo}" >
+                                            </select>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">商户单号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="hidden" id="tradeNo" name="tradeNo" th:value="${order.tradeNo}"/>
+                                            <div id="contentEditortradeNo">
+
+                                            </div>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">订单状态，1：未支付，2：支付成功，3：支付失败，4：支付取消：</label>
+                                                                        <div class="col-sm-8">
+                                        
+                                            <select data-placeholder="--选择--" id="orderState"
+                                                    name="orderState"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="yes_no"
+                                                    th:attr="dict-value=${order.orderState}" >
+                                            </select>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">蜂鸟优惠卷抵扣：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="fnCoupon" name="fnCoupon"
+                                                   th:value="${order.fnCoupon}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">红包抵扣：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="redPacket" name="redPacket"
+                                                   th:value="${order.redPacket}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">实收金额(元)：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="totalFee" name="totalFee"
+                                                   th:value="${order.totalFee}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">订单金额：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="orderPrice" name="orderPrice"
+                                                   th:value="${order.orderPrice}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">手续费(元)：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="fee" name="fee"
+                                                   th:value="${order.fee}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">对商品或交易的描述：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <img title="点击选择图片" id="picImagebody"
+                                                 style="cursor:pointer;width: 100px;height: 100px"
+                                                 th:src="${order.body}==null?'/img/webuploader.png':${order.body}"/>
+                                            <input id="body" name="body" th:value="${order.body}"
+                                                   class="form-control"
+                                                   type="hidden">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">附加数据：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="hidden" id="attach" name="attach" th:value="${order.attach}"/>
+                                            <div id="contentEditorattach">
+
+                                            </div>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">付呗系统的门店id：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="storeId" name="storeId"
+                                                   th:value="${order.storeId}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">付呗系统的收银员id：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="cashierId" name="cashierId"
+                                                   th:value="${order.cashierId}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">设备终端号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="deviceNo" name="deviceNo"
+                                                   th:value="${order.deviceNo}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">微信顾客支付授权的“open_id”或者支付宝顾客的“buyer_user_id”：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="userId" name="userId"
+                                                   th:value="${order.userId}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">支付宝顾客的账号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <textarea id="userLogonId" name="userLogonId"
+                                                      class="form-control"  th:text="${order.userLogonId}"></textarea>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">交易成功的时间：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="payTime"
+                                                   name="payTime"
+                                                   th:value="${order.payTime}==null?null:${#dates.format(order.payTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">支付通道:1微信、2支付宝、3银联：</label>
+                                                                        <div class="col-sm-8">
+                                        
+                                            <select data-placeholder="--选择--" id="payChannel"
+                                                    name="payChannel"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="del_flag"
+                                                    th:attr="dict-value=${order.payChannel}" >
+                                            </select>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">免充值代金券金额(元)：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="noCashCouponFee" name="noCashCouponFee"
+                                                   th:value="${order.noCashCouponFee}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">预充值代金券金额(元)：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="cashCouponFee" name="cashCouponFee"
+                                                   th:value="${order.cashCouponFee}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">顾客实际支付金额(元)：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="cashFee" name="cashFee"
+                                                   th:value="${order.cashFee}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">签名：</label>
+                                                                        <div class="col-sm-8">
+                                        
+                                            <select data-placeholder="--选择--" id="sign"
+                                                    name="sign"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="theme"
+                                                    th:attr="dict-value=${order.sign}" >
+                                            </select>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">其它选项：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <img title="点击选择图片" id="picImageoptions"
+                                                 style="cursor:pointer;width: 100px;height: 100px"
+                                                 th:src="${order.options}==null?'/img/webuploader.png':${order.options}"/>
+                                            <input id="options" name="options" th:value="${order.options}"
+                                                   class="form-control"
+                                                   type="hidden">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">创建时间：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="createTime"
+                                                   name="createTime"
+                                                   th:value="${order.createTime}==null?null:${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">推送时间：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="pushTime"
+                                                   name="pushTime"
+                                                   th:value="${order.pushTime}==null?null:${#dates.format(order.pushTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">推送IP：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="hidden" id="pushIp" name="pushIp" th:value="${order.pushIp}"/>
+                                            <div id="contentEditorpushIp">
+
+                                            </div>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">商户id：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="mchtId" name="mchtId"
+                                                   th:value="${order.mchtId}"
+                                                   class="form-control"
+                                                   type="number">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">QR编号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="sn" name="sn"
+                                                   th:value="${order.sn}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                            <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/wangEditor/release/wangEditor.js"></script>
+<script type="text/javascript" src="/js/appjs/test/order/edit.js">
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.common.dao.GenColumnsDao">
+
+	<select id="get" resultType="com.java2nb.common.domain.GenColumnsDO">
+		select `id`,`table_name`,`column_name`,`column_type`,`java_type`,`column_comment`,`column_sort`,`column_label`,`page_type`,`is_required`,`dict_type` from sys_gen_columns where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.common.domain.GenColumnsDO">
+		select `id`,`table_name`,`column_name`,`column_type`,`java_type`,`column_comment`,`column_sort`,`column_label`,`page_type`,`is_required`,`dict_type` from sys_gen_columns
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="tableName != null and tableName != ''"> and table_name = #{tableName} </if>
+			<if test="columnName != null and columnName != ''"> and column_name = #{columnName} </if>
+			<if test="columnType != null and columnType != ''"> and column_type = #{columnType} </if>
+			<if test="javaType != null and javaType != ''"> and java_type = #{javaType} </if>
+			<if test="columnComment != null and columnComment != ''"> and column_comment = #{columnComment} </if>
+			<if test="columnSort != null and columnSort != ''"> and column_sort = #{columnSort} </if>
+			<if test="columnLabel != null and columnLabel != ''"> and column_label = #{columnLabel} </if>
+			<if test="pageType != null and pageType != ''"> and page_type = #{pageType} </if>
+			<if test="isRequired != null and isRequired != ''"> and is_required = #{isRequired} </if>
+			<if test="dictType != null and dictType != ''"> and dict_type = #{dictType} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from sys_gen_columns
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="tableName != null and tableName != ''"> and table_name = #{tableName} </if>
+			<if test="columnName != null and columnName != ''"> and column_name = #{columnName} </if>
+			<if test="columnType != null and columnType != ''"> and column_type = #{columnType} </if>
+			<if test="javaType != null and javaType != ''"> and java_type = #{javaType} </if>
+			<if test="columnComment != null and columnComment != ''"> and column_comment = #{columnComment} </if>
+			<if test="columnSort != null and columnSort != ''"> and column_sort = #{columnSort} </if>
+			<if test="columnLabel != null and columnLabel != ''"> and column_label = #{columnLabel} </if>
+			<if test="pageType != null and pageType != ''"> and page_type = #{pageType} </if>
+			<if test="isRequired != null and isRequired != ''"> and is_required = #{isRequired} </if>
+			<if test="dictType != null and dictType != ''"> and dict_type = #{dictType} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.java2nb.common.domain.GenColumnsDO" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_gen_columns
+		(
+			`table_name`,
+			`column_name`,
+			`column_type`,
+			`java_type`,
+			`column_comment`,
+			`column_sort`,
+			`column_label`,
+			`page_type`,
+			`is_required`,
+			`dict_type`
+		)
+		values
+		(
+			#{tableName},
+			#{columnName},
+			#{columnType},
+			#{javaType},
+			#{columnComment},
+			#{columnSort},
+			#{columnLabel},
+			#{pageType},
+			#{isRequired},
+			#{dictType}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.java2nb.common.domain.GenColumnsDO">
+		update sys_gen_columns
+		<set>
+			<if test="tableName != null">`table_name` = #{tableName}, </if>
+			<if test="columnName != null">`column_name` = #{columnName}, </if>
+			<if test="columnType != null">`column_type` = #{columnType}, </if>
+			<if test="javaType != null">`java_type` = #{javaType}, </if>
+			<if test="columnComment != null">`column_comment` = #{columnComment}, </if>
+			<if test="columnSort != null">`column_sort` = #{columnSort}, </if>
+			<if test="columnLabel != null">`column_label` = #{columnLabel}, </if>
+			<if test="pageType != null">`page_type` = #{pageType}, </if>
+			<if test="isRequired != null">`is_required` = #{isRequired}, </if>
+			<if test="dictType != null">`dict_type` = #{dictType}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="remove">
+		delete from sys_gen_columns where id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from sys_gen_columns where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+    <insert id="saveBatch" parameterType="java.util.List">
+        insert into sys_gen_columns
+		(
+		`table_name`,
+		`column_name`,
+		`column_type`,
+		`java_type`,
+		`column_comment`,
+		`column_sort`,
+		`column_label`,
+		`page_type`,
+		`is_required`,
+		`dict_type`
+		)
+        values
+        <foreach collection="list" item="item" index="index"
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+				#{item.tableName},
+				#{item.columnName},
+				#{item.columnType},
+				#{item.javaType},
+				#{item.columnComment},
+				#{item.columnSort},
+				#{item.columnLabel},
+				#{item.pageType},
+				#{item.isRequired},
+				#{item.dictType}
+            </trim>
+        </foreach>
+
+    </insert>
+
+	<delete id="deleteByTableName" parameterType="string">
+		delete from sys_gen_columns  where table_name = #{tableName}
+	</delete>
+
+
+</mapper>

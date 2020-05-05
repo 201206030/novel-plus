@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.system.dao.RoleDataPermDao">
+
+	<select id="get" resultType="com.java2nb.system.domain.RoleDataPermDO">
+		select `id`,`role_id`,`perm_id` from sys_role_data_perm where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.system.domain.RoleDataPermDO">
+		select `id`,`role_id`,`perm_id` from sys_role_data_perm
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="roleId != null and roleId != ''"> and role_id = #{roleId} </if>
+		  		  <if test="permId != null and permId != ''"> and perm_id = #{permId} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from sys_role_data_perm
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="roleId != null and roleId != ''"> and role_id = #{roleId} </if>
+		  		  <if test="permId != null and permId != ''"> and perm_id = #{permId} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.system.domain.RoleDataPermDO" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_role_data_perm
+		(
+			`role_id`, 
+			`perm_id`
+		)
+		values
+		(
+			#{roleId}, 
+			#{permId}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.system.domain.RoleDataPermDO" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_role_data_perm
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="roleId != null"> `role_id`,  </if>
+					<if test="permId != null"> `perm_id` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="roleId != null"> #{roleId},  </if>
+					<if test="permId != null"> #{permId} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.system.domain.RoleDataPermDO">
+		update sys_role_data_perm 
+		<set>
+			<if test="roleId != null">`role_id` = #{roleId}, </if>
+			<if test="permId != null">`perm_id` = #{permId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from sys_role_data_perm where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from sys_role_data_perm where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<delete id="removeByRoleId">
+		DELETE FROM sys_role_data_perm WHERE role_id=#{roleId}
+	</delete>
+
+	<insert id="batchSave">
+		INSERT INTO sys_role_data_perm(role_id, perm_id) values
+		<foreach item="item" index="index" collection="list"
+				 separator=",">
+			(#{item.roleId},#{item.permId})
+		</foreach>
+	</insert>
+
+
+	<select id="listPermIdByRoleId" resultType="long">
+		select perm_id from sys_role_data_perm
+		<where>role_id = #{roleId}</where>
+	</select>
+
+</mapper>

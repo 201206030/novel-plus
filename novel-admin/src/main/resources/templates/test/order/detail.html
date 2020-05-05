@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${order.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">付呗商户号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.fbMerchantCode}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">第三方商户的订单号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.merchantOrderSn}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">付呗订单号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="color"
+                                 th:attr="dict-value=${order.orderSn}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">平台方订单号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="oa_leave_type"
+                                 th:attr="dict-value=${order.platformOrderNo}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">商户单号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:utext="${order.tradeNo}"></div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">订单状态，1：未支付，2：支付成功，3：支付失败，4：支付取消：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="yes_no"
+                                 th:attr="dict-value=${order.orderState}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">蜂鸟优惠卷抵扣：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.fnCoupon}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">红包抵扣：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.redPacket}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">实收金额(元)：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.totalFee}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">订单金额：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.orderPrice}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">手续费(元)：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.fee}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">对商品或交易的描述：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8">
+                            <img id="picImagebody"
+                                 style="cursor:pointer;width: 100px;height: 100px"
+                                 th:src="${order.body}==null?'/img/webuploader.png':${order.body}"/>
+                        </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">附加数据：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:utext="${order.attach}"></div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">付呗系统的门店id：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.storeId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">付呗系统的收银员id：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.cashierId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">设备终端号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.deviceNo}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">微信顾客支付授权的“open_id”或者支付宝顾客的“buyer_user_id”：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.userId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">支付宝顾客的账号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.userLogonId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">交易成功的时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.payTime}==null?null:${#dates.format(order.payTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">支付通道:1微信、2支付宝、3银联：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="del_flag"
+                                 th:attr="dict-value=${order.payChannel}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">免充值代金券金额(元)：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.noCashCouponFee}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">预充值代金券金额(元)：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.cashCouponFee}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">顾客实际支付金额(元)：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.cashFee}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">签名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="theme"
+                                 th:attr="dict-value=${order.sign}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">其它选项：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8">
+                            <img id="picImageoptions"
+                                 style="cursor:pointer;width: 100px;height: 100px"
+                                 th:src="${order.options}==null?'/img/webuploader.png':${order.options}"/>
+                        </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.createTime}==null?null:${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">推送时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.pushTime}==null?null:${#dates.format(order.pushTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">推送IP：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:utext="${order.pushIp}"></div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">商户id：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.mchtId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">QR编号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${order.sn}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>
