@@ -58,7 +58,7 @@ public class StarterListener implements ServletContextListener {
                             Map<Integer, BookIndex> existBookIndexMap = bookService.queryExistBookIndexMap(needUpdateBook.getId());
                             //解析章节目录
                             Map<Integer, List> indexAndContentList = CrawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(),book, ruleBean, existBookIndexMap);
-                            bookService.updateBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY));
+                            bookService.updateBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY),existBookIndexMap);
                         }catch (Exception e){
                             log.error(e.getMessage(), e);
                             //解析异常中断，更新一下小说的最后解析时间

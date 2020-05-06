@@ -8,7 +8,6 @@ import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.utils.Constants;
 import lombok.RequiredArgsConstructor;
-import org.mybatis.dynamic.sql.Constant;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlBookId;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlSourceId;
-import static com.java2nb.novel.mapper.BookDynamicSqlSupport.picUrl;
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
@@ -119,7 +117,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateBookAndIndexAndContent(Book book, List<BookIndex> bookIndexList, List<BookContent> bookContentList) {
+    public void updateBookAndIndexAndContent(Book book, List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap) {
         Date currentDate = new Date();
         for (int i = 0; i < bookIndexList.size(); i++) {
             BookIndex bookIndex = bookIndexList.get(i);
@@ -160,11 +158,17 @@ public class BookServiceImpl implements BookService {
         }
 
         //更新小说主表
-        book.setWordCount(queryTotalWordCount(book.getId()));
-        BookIndex lastIndex = queryLastIndex(book.getId());
-        book.setLastIndexId(lastIndex.getId());
-        book.setLastIndexName(lastIndex.getIndexName());
-        book.setLastIndexUpdateTime(lastIndex.getUpdateTime());
+        if(bookIndexList.size()>0) {
+            //有更新章节，才需要更新以下字段
+            book.setWordCount(queryTotalWordCount(book.getId()));
+            BookIndex lastIndex = bookIndexList.get(bookIndexList.size()-1);
+            if(!existBookIndexMap.containsKey(lastIndex.getIndexNum())) {
+                //如果最新章节不在已存在章节中，那么更新小说表最新章节信息
+                book.setLastIndexId(lastIndex.getId());
+                book.setLastIndexName(lastIndex.getIndexName());
+                book.setLastIndexUpdateTime(currentDate);
+            }
+        }
         book.setUpdateTime(currentDate);
         book.setBookName(null);
         book.setAuthorName(null);
