@@ -180,10 +180,6 @@ public class BookServiceImpl implements BookService {
         if(Constants.VISIT_COUNT_DEFAULT.equals(book.getVisitCount())) {
             book.setVisitCount(null);
         }
-        if(book.getPicUrl()!=null && book.getPicUrl().startsWith(Constants.LOCAL_PIC_PREFIX)) {
-            //本地图片则不更新
-            book.setPicUrl(null);
-        }
         bookMapper.updateByPrimaryKeySelective(book);
 
     }

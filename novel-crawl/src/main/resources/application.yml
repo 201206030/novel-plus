@@ -1,3 +1,4 @@
+#端口号
 server:
   port: 8081
 
@@ -5,9 +6,16 @@ spring:
   profiles:
     active: dev
 
-
+#登录用户名密码
 admin:
   username: admin
   password: admin
+
+#爬虫自动更新的线程数
+#建议小说数量不多或者正在运行新书入库爬虫的情况下设置为1即可
+#随着小说数量的增多可以逐渐增加，但建议不要超出CPU的线程数
+crawl:
+  update:
+    thread: 1
 
 
