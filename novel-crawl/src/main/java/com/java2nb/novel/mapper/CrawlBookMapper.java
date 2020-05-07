@@ -25,4 +25,11 @@ public interface CrawlBookMapper extends BookMapper {
      * @return 小说总字数
      * */
     Integer queryTotalWordCount(@Param("bookId") Long bookId);
+
+    /**
+     * 批量更新小说最后抓取时间
+     * @param books 需要更新的小说集合
+     * @param currentDate 当前时间
+     * */
+    void updateCrawlLastTime(@Param("books") List<Book> books,@Param("currentDate") Date currentDate);
 }

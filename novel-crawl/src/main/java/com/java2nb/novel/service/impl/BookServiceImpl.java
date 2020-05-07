@@ -99,7 +99,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> queryNeedUpdateBook(Date startDate, int limit) {
-        return bookMapper.queryNeedUpdateBook(startDate, limit);
+        List<Book> books = bookMapper.queryNeedUpdateBook(startDate, limit);
+        if(books.size()>0) {
+            //更新最后抓取时间为当前时间
+            bookMapper.updateCrawlLastTime(books, new Date());
+        }
+        return books;
     }
 
     @Override

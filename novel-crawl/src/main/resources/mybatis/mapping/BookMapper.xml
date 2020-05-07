@@ -19,5 +19,13 @@
         on t1.id = t2.book_id and t1.id = #{bookId}
     </select>
 
+    <update id="updateCrawlLastTime">
+        update book set crawl_last_time = #{currentDate}
+        where id in
+        <foreach item="book" collection="books" open="(" separator="," close=")">
+            #{book.id}
+        </foreach>
+    </update>
+
 
 </mapper>

@@ -51,7 +51,6 @@ public class StarterListener implements ServletContextListener {
                             //解析小说基本信息
                             Book book = CrawlParser.parseBook(ruleBean, needUpdateBook.getCrawlBookId());
                             //这里只做老书更新
-                            book.setCrawlLastTime(currentDate);
                             book.setId(needUpdateBook.getId());
                             book.setPicUrl(needUpdateBook.getPicUrl());
                             //查询已存在的章节
@@ -61,8 +60,6 @@ public class StarterListener implements ServletContextListener {
                             bookService.updateBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY),existBookIndexMap);
                         }catch (Exception e){
                             log.error(e.getMessage(), e);
-                            //解析异常中断，更新一下小说的最后解析时间
-                            bookService.updateCrawlLastTime(needUpdateBook.getId());
                         }
 
                     }
