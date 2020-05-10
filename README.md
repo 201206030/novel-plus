@@ -2,9 +2,13 @@
 
 # 小说精品屋-plus
 
+#### 演示地址
+
+[点击前往](http://www.java2nb.com)（前台门户）
+
 #### 前言
 
-小说精品屋-plus致力于打造一个完整的商用小说门户平台。
+小说精品屋-plus致力于打造一个完整的商用小说门户平台，使用前建议先阅读该文档。
 
 #### 项目介绍
 
@@ -107,9 +111,13 @@ Springboot+Mybatis+Mysql+Ehcache+Thymeleaf+Layui
 
 **喜欢此项目的可以给我的GitHub和Gitee加个Star支持一下 。**
 
-#### 演示地址
+#### 其他安装教程
 
-[点击前往](http://www.java2nb.com)（前台门户）
+包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4272630) 
+
+宝塔安装教程（非官方）：[点击前往](https://www.daniao.org/9166.html) 
+
+docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 #### 代码仓库
 
