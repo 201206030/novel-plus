@@ -2,9 +2,9 @@ spring:
   profiles:
     include: [common]
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/novel_biz?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
-    password:
+    password: test123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 

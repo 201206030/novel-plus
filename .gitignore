@@ -11,3 +11,5 @@
 /novel-crawl/novel-crawl.iml
 /novel-crawl/target
 /novel-admin/target
+/*.iml
+/novel-admin/*.iml

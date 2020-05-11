@@ -4,6 +4,7 @@ server:
 spring:
   profiles:
     active: dev
+    include: alipay
 
 jwt:
   secret: novel!#20191230
@@ -23,3 +24,6 @@ xss:
   excludes: /system/notice/*
   # 匹配链接 （多个用逗号分隔）
   urlPatterns: /book/addBookComment,/user/addFeedBack
+
+
+

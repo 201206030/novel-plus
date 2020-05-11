@@ -117,4 +117,9 @@ public interface UserService {
     void updatePassword(Long userId, String oldPassword, String newPassword);
 
 
+    /**
+     * 增加用户余额
+     * @param userId 用户ID
+     * @param amount 增加的余额 */
+    void addAmount(Long userId, int amount);
 }

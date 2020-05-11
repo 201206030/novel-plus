@@ -211,7 +211,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User userInfo(Long userId) {
-        SelectStatementProvider selectStatement = select(username, nickName, userPhoto,userSex)
+        SelectStatementProvider selectStatement = select(username, nickName, userPhoto,userSex,accountBalance)
                 .from(user)
                 .where(id, isEqualTo(userId))
                 .build()
@@ -256,6 +256,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addAmount(Long userId, int amount) {
+        User user = this.userInfo(userId);
+        user.setId(userId);
+        user.setAccountBalance(user.getAccountBalance()+amount);
+        userMapper.updateByPrimaryKeySelective(user);
+
+    }
 
 
 }

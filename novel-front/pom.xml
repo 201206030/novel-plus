@@ -26,6 +26,13 @@
             <artifactId>jjwt</artifactId>
             <version>${jjwt.version}</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.9.153.ALL</version>
+        </dependency>
     </dependencies>
 
     <build>

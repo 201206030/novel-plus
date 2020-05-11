@@ -30,7 +30,7 @@
                     <p class="my_name" id="my_name">
                         </p>
                     <ul class="my_list">
-                        <li class="my_gold"><i>账户余额：</i><em class="red">0</em>屋币<em class="red">+</em><em class="red">0</em>代金券<a href="javascript:layer.alert('充值通道待开通，敬请期待！');" class="btn_link">立即充值</a></li>
+                        <li class="my_gold"><i>账户余额：</i><em class="red" id="accountBalance">0</em>屋币<!--<em class="red">+</em><em class="red">0</em>代金券--><a href="/pay/index.html" class="btn_link">立即充值</a></li>
                         <li class="my_baonian"></li>
 
                     </ul>
@@ -95,6 +95,8 @@
                 }else{
                     $("#my_name").html(data.data.username);
                 }
+
+                $("#accountBalance").html(data.data.accountBalance);
 
             } else if (data.code == 1001) {
                 //未登录
