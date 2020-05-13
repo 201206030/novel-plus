@@ -276,7 +276,7 @@ public class UserServiceImpl implements UserService {
                 .and(UserBuyRecordDynamicSqlSupport.bookIndexId,isEqualTo(bookIndexId))) > 0;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void buyBookIndex(Long userId, UserBuyRecord buyRecord) {
         //查询用户余额

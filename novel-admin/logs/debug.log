@@ -1,3 +1,5 @@
-2020-05-07 04:15:36,250 INFO (StartupInfoLogger.java:50)- Starting TestDemo on USER-20180729KA with PID 9748 (started by Administrator in E:\baseprojectparent\novel-plus\novel-admin)
-2020-05-07 04:15:36,253 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.0.1.RELEASE, Spring v5.0.5.RELEASE
-2020-05-07 04:15:36,260 INFO (SpringApplication.java:663)- The following profiles are active: dev
+2020-05-13 21:52:00,972 INFO (StartupInfoLogger.java:50)- Starting TestDemo on USER-20180729KA with PID 3532 (started by Administrator in E:\baseprojectparent\novel-plus\novel-admin)
+2020-05-13 21:52:01,113 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.0.1.RELEASE, Spring v5.0.5.RELEASE
+2020-05-13 21:52:01,131 INFO (SpringApplication.java:663)- The following profiles are active: dev
+2020-05-13 21:52:54,469 DEBUG (ApplicationContextRegister.java:29)- ApplicationContext registed-->org.springframework.web.context.support.GenericWebApplicationContext@5b529706: startup date [Wed May 13 21:52:01 CST 2020]; root of context hierarchy
+2020-05-13 21:53:49,622 INFO (StartupInfoLogger.java:59)- Started TestDemo in 114.268 seconds (JVM running for 124.957)

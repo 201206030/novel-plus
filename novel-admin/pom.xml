@@ -50,10 +50,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-       <!-- NekoHTML 是一个简单地HTML扫描器和标签补偿器(tag balancer) ,使得程序能解析HTML文档并用标准的XML接口来访问其中的信息。
-        这个解析器能投扫描HTML文件并“修正”许多作者（人或机器）在编写HTML文档过程中常犯的错误。
-        NekoHTML 能增补缺失的父元素、自动用结束标签关闭相应的元素，以及不匹配的内嵌元素标签。
-        NekoHTML 的开发使用了Xerces Native Interface (XNI)，后者是Xerces2的实现基础。-->
+        <!-- NekoHTML 是一个简单地HTML扫描器和标签补偿器(tag balancer) ,使得程序能解析HTML文档并用标准的XML接口来访问其中的信息。
+         这个解析器能投扫描HTML文件并“修正”许多作者（人或机器）在编写HTML文档过程中常犯的错误。
+         NekoHTML 能增补缺失的父元素、自动用结束标签关闭相应的元素，以及不匹配的内嵌元素标签。
+         NekoHTML 的开发使用了Xerces Native Interface (XNI)，后者是Xerces2的实现基础。-->
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
@@ -147,13 +147,13 @@
         <!--</dependency>-->
         <!-- quartz -->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-cache</artifactId>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-cache</artifactId>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>net.sf.ehcache</groupId>-->
-            <!--<artifactId>ehcache</artifactId>-->
+        <!--<groupId>net.sf.ehcache</groupId>-->
+        <!--<artifactId>ehcache</artifactId>-->
         <!--</dependency>-->
 
 
@@ -186,7 +186,6 @@
             <artifactId>jedis</artifactId>
             <version>2.9.0</version>
         </dependency>
-
 
 
         <dependency>
@@ -239,18 +238,22 @@
                 </configuration>
             </plugin>-->
             <!--SpringBoot项目默认使用spring-boot-maven-plugin，要打成被其他项目引用的jar包，需要更换此插件-->
+            <!-- <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <configuration>
+                     <source>1.8</source>
+                     <target>1.8</target>
+                     <encoding>UTF-8</encoding>
+                 </configuration>
+             </plugin>-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
+    <!--<distributionManagement>
         <repository>
             <id>nexus_release</id>
             <name>release</name>
@@ -261,5 +264,5 @@
             <name>snapshots</name>
             <url>http://47.106.243.172:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 </project>

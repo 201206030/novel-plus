@@ -51,7 +51,7 @@ public class PageController extends BaseController{
             UserDetails user = getUserDetails(request);
             if (user == null) {
                 //未登录
-                return "redirect:/user/login.html?originUrl=" + URLEncoder.encode(request.getRequestURL().toString());
+                return "redirect:/user/login.html?originUrl=" + request.getRequestURI();
             }
 
             boolean isAuthor = authorService.isAuthor(user.getId());
