@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${authorCode.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">邀请码：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${authorCode.inviteCode}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">有效时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${authorCode.validityTime}==null?null:${#dates.format(authorCode.validityTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">是否使用过，0：未使用，1:使用过：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${authorCode.isUse}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${authorCode.createTime}==null?null:${#dates.format(authorCode.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建人ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${authorCode.createUserId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

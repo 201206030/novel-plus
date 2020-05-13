@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="id" name="id" th:value="${author.id}"
+                               type="hidden">
+                                                                                                                                        <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">用户ID：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="userId" name="userId"
+                                                   th:value="${author.userId}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">邀请码：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="inviteCode" name="inviteCode"
+                                                   th:value="${author.inviteCode}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">笔名：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="penName" name="penName"
+                                                   th:value="${author.penName}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">手机号码：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="telPhone" name="telPhone"
+                                                   th:value="${author.telPhone}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">QQ或微信账号：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="chatAccount" name="chatAccount"
+                                                   th:value="${author.chatAccount}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">电子邮箱：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="email" name="email"
+                                                   th:value="${author.email}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">作品方向，0：男频，1：女频：</label>
+                                                                        <div class="col-sm-8">
+                                        
+                                            <select data-placeholder="--选择--" id="workDirection"
+                                                    name="workDirection"
+                                                    class="form-control chosen-select" tabindex="2"
+                                                    dict-type="work_direction"
+                                                    th:attr="dict-value=${author.workDirection}" >
+                                            </select>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">入驻时间：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="createTime"
+                                                   name="createTime"
+                                                   th:value="${author.createTime}==null?null:${#dates.format(author.createTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">0：正常，1：封禁：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="status" name="status"
+                                                   th:value="${author.status}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                            <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/wangEditor/release/wangEditor.js"></script>
+<script type="text/javascript" src="/js/appjs/novel/author/edit.js">
+</script>
+</body>
+</html>

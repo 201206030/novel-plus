@@ -191,4 +191,37 @@ public interface BookService {
      * @param bookId 小说ID
      */
     void updateBookPicToLocal(String picUrl, Long bookId);
+
+    /**
+     * 通过作者ID查询小说分页列表
+     * @param userId 用户ID
+     * @param page 页码
+     * @param pageSize 分页大小
+     * */
+    List<Book> listBookPageByUserId(Long userId, int page, int pageSize);
+
+    /**
+     * 发布小说
+     * @param book 小说信息
+     * @param authorId 作家ID
+     * @param penName 作家笔名
+     * */
+    void addBook(Book book, Long authorId, String penName);
+
+    /**
+     * 更新小说状态,上架或下架
+     * @param bookId 小说ID
+     * @param status 更新的状态
+     * @param authorId 作者ID
+     * */
+    void updateBookStatus(Long bookId, Byte status, Long authorId);
+
+    /**
+     * 发布章节内容
+     * @param bookId 小说ID
+     * @param indexName 章节名
+     * @param content 章节内容
+     * @param authorId 作者ID
+     * */
+    void addBookContent(Long bookId, String indexName, String content, Long authorId);
 }

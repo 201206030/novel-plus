@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.AuthorDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.AuthorDO">
+		select `id`,`user_id`,`invite_code`,`pen_name`,`tel_phone`,`chat_account`,`email`,`work_direction`,`create_time`,`status` from author where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.AuthorDO">
+		select `id`,`user_id`,`invite_code`,`pen_name`,`tel_phone`,`chat_account`,`email`,`work_direction`,`create_time`,`status` from author
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="userId != null and userId != ''"> and user_id = #{userId} </if>
+		  		  <if test="inviteCode != null and inviteCode != ''"> and invite_code = #{inviteCode} </if>
+		  		  <if test="penName != null and penName != ''"> and pen_name = #{penName} </if>
+		  		  <if test="telPhone != null and telPhone != ''"> and tel_phone = #{telPhone} </if>
+		  		  <if test="chatAccount != null and chatAccount != ''"> and chat_account = #{chatAccount} </if>
+		  		  <if test="email != null and email != ''"> and email = #{email} </if>
+		  		  <if test="workDirection != null and workDirection != ''"> and work_direction = #{workDirection} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from author
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="userId != null and userId != ''"> and user_id = #{userId} </if>
+		  		  <if test="inviteCode != null and inviteCode != ''"> and invite_code = #{inviteCode} </if>
+		  		  <if test="penName != null and penName != ''"> and pen_name = #{penName} </if>
+		  		  <if test="telPhone != null and telPhone != ''"> and tel_phone = #{telPhone} </if>
+		  		  <if test="chatAccount != null and chatAccount != ''"> and chat_account = #{chatAccount} </if>
+		  		  <if test="email != null and email != ''"> and email = #{email} </if>
+		  		  <if test="workDirection != null and workDirection != ''"> and work_direction = #{workDirection} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.AuthorDO" useGeneratedKeys="true" keyProperty="id">
+		insert into author
+		(
+			`user_id`, 
+			`invite_code`, 
+			`pen_name`, 
+			`tel_phone`, 
+			`chat_account`, 
+			`email`, 
+			`work_direction`, 
+			`create_time`, 
+			`status`
+		)
+		values
+		(
+			#{userId}, 
+			#{inviteCode}, 
+			#{penName}, 
+			#{telPhone}, 
+			#{chatAccount}, 
+			#{email}, 
+			#{workDirection}, 
+			#{createTime}, 
+			#{status}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.AuthorDO" useGeneratedKeys="true" keyProperty="id">
+		insert into author
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="userId != null"> `user_id`,  </if>
+					<if test="inviteCode != null"> `invite_code`,  </if>
+					<if test="penName != null"> `pen_name`,  </if>
+					<if test="telPhone != null"> `tel_phone`,  </if>
+					<if test="chatAccount != null"> `chat_account`,  </if>
+					<if test="email != null"> `email`,  </if>
+					<if test="workDirection != null"> `work_direction`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="status != null"> `status` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="userId != null"> #{userId},  </if>
+					<if test="inviteCode != null"> #{inviteCode},  </if>
+					<if test="penName != null"> #{penName},  </if>
+					<if test="telPhone != null"> #{telPhone},  </if>
+					<if test="chatAccount != null"> #{chatAccount},  </if>
+					<if test="email != null"> #{email},  </if>
+					<if test="workDirection != null"> #{workDirection},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="status != null"> #{status} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.AuthorDO">
+		update author 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="inviteCode != null">`invite_code` = #{inviteCode}, </if>
+			<if test="penName != null">`pen_name` = #{penName}, </if>
+			<if test="telPhone != null">`tel_phone` = #{telPhone}, </if>
+			<if test="chatAccount != null">`chat_account` = #{chatAccount}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+			<if test="workDirection != null">`work_direction` = #{workDirection}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from author where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from author where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

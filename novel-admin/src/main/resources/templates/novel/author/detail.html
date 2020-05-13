@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${author.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">用户ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.userId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">邀请码：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.inviteCode}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">笔名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.penName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">手机号码：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.telPhone}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">QQ或微信账号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.chatAccount}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">电子邮箱：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.email}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">作品方向，0：男频，1：女频：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="work_direction"
+                                 th:attr="dict-value=${author.workDirection}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">入驻时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.createTime}==null?null:${#dates.format(author.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">0：正常，1：封禁：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${author.status}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

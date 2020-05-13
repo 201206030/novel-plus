@@ -1,0 +1,178 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>
+    申请作者
+</title><link rel="stylesheet" type="text/css" href="/css/easyui.css" />
+    <link href="/css/public.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/javascript/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="/javascript/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/javascript/easyui-lang-zh_CN.js"></script>
+    <script src="/javascript/YT.js" type="text/javascript"></script>
+    <style type="text/css">
+        .ipage a
+        {
+            border: 1px dotted #cccccc;
+            color: #555555;
+            display: block;
+            float: left;
+            height: 30px;
+            line-height: 30px;
+            margin: 0 15px 0 0;
+            text-align: center;
+            width: 122px;
+        }
+        .ipage a:hover,.ahover
+        {
+            background-color: #fff; color: #f00!important; border:1px solid #f00!important
+        }
+    </style>
+    <script src="/javascript/ycUtils.js" type="text/javascript"></script>
+</head>
+<body style="background-color: #444;">
+<div style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 150px;">
+    <form method="post" action="/author/register.html" id="form1" onsubmit="return $(this).form(&quot;validate&quot;);">
+        <div class="aspNetHidden">
+            <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTcyNTY0MjQ5NGRk++It0MqlJDSbyu54vkeAbEa5OUhkaoZyC53OelRtDeg=" />
+        </div>
+
+        <div class="aspNetHidden">
+
+            <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="799CC77D" />
+            <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAkIOs3R4B2+v3nSsFBLSe3g1MEpq666rzQ7jjzhNwecX7wsg773N8DhSUPLdYYjtuwvQ8kN6tkIkhd/68qh+xm6RWIUm/02TrSmncT3Z6CDZUrw+Qm6bt8NGm9h/X+a2xTq1sAiXqGUGwYVZVK+kL9fPOaW1pQztoQA36D1w/+bXZEqukB3SRMoY9NENNgXVe/neqc7kNqcr4JW0Rj8Hcw3qispLYQVy/s36rQl1WiEaw==" />
+        </div>
+        <div id="main">
+            <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic" style="line-height:40px;">
+                <tr>
+                    <td colspan="3" style="text-align: left;">
+                        <div style="padding-left: 15px; height: 40px; line-height: 40px;">
+                            我是网络小说写手，我要注册为小说精品屋签约作者：</div>
+                    </td>
+                </tr>
+                <tr><td align="right">邀请码：</td><td><input name="inviteCode" th:value="${author.inviteCode}" type="text" maxlength="12" id="TxtGetCode" class="easyui-validatebox inpMain" data-options="required:true" /></td>
+                    <td>
+                        <span class="notes"> *</span> 小说精品屋分配给作者的邀请码
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        作者笔名：
+                    </td>
+                    <td>
+                        <input name="penName" th:value="${author.penName}" type="text" maxlength="8" id="TxtNiceName" class="easyui-validatebox inpMain" data-options="required:true" validType="checkNiceName" />
+
+                    </td>
+                    <td>
+                        <span class="notes"> *</span> 长度为2到8位的中英文
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        手机号码：
+                    </td>
+                    <td>
+                        <input name="telPhone" th:value="${author.telPhone}" type="text" id="TxtMobile" class="easyui-validatebox inpMain" data-options="required:true" validType="chinaMobile" />
+                    </td>
+                    <td>
+                        <span class="notes"> *</span> 小说精品屋的编辑会通过这个号码与您联系
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        QQ或微信：
+                    </td>
+                    <td>
+                        <input name="chatAccount" th:value="${author.chatAccount}" type="text" id="TxtQQ" class="easyui-validatebox inpMain" data-options="required:true" />
+                    </td>
+                    <td>
+                        <span class="notes"> *</span> 小说精品屋的编辑会通过这个号码与您联系
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        电子邮箱：
+                    </td>
+                    <td>
+                        <input name="email" th:value="${author.email}" type="text" id="TxtEmail" class="easyui-validatebox inpMain w300" data-options="required:true" validType="email" />
+                    </td>
+                    <td>
+                        <span class="notes"> *</span> 长度为2到15位的中英文，数字
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        男女主角：
+                    </td>
+                    <td>
+                        <div>
+                            <ul class="ipage">
+                                <input type="hidden" name="workDirection" id="HidSexclass" /><!-- th:attr="class=${author.workDirection} == '0'? 'ahover':''"-->
+                                <a href="javascript:void(0);" val="0">男性主角选男频</a>
+                                <a href="javascript:void(0);" val="1">
+                                女性主角选女频</a>
+                                <div class="clear">
+                                </div>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="notes"> *</span> 请选择作品方向
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
+            <tr>
+                <td>
+                    <div style="padding-left: 110px; margin-top: 10px; margin-bottom: 5px;">
+
+                        <input type="submit" name="btnSubmit" value="立即开始您的作者生涯" id="btnSubmit" class="btnGray" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="LabErr" th:text="${LabErr}"></span>
+
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="HidUId" id="HidUId" value="1095" />
+    </form>
+</div>
+<script language="javascript" type="text/javascript">
+
+    $(function () {
+        $(".ipage a").click(function () {
+            $(".ipage a").each(function () {
+                $(this).removeClass("ahover");
+            });
+            $(this).addClass("ahover");
+            $("#HidSexclass").val($(this).attr("val"));
+            $("#btnSubmit").removeAttr("disabled");
+            $("#btnSubmit").removeClass("btnGray");
+            $("#btnSubmit").addClass("btn");
+
+        });
+
+        var sexClass = $("#HidSexclass").val();
+        if (sexClass == 1 || sexClass == 2) {
+            $(".ipage a").each(function () {
+                $(this).removeClass("ahover");
+                if (sexClass == $(this).attr("val")) {
+                    $(this).addClass("ahover");
+                }
+            });
+            $("#btnSubmit").removeClass("btnGray");
+            $("#btnSubmit").addClass("btn");
+        }
+        else {
+            $("#btnSubmit").attr("disabled", "disabled");
+        }
+    });
+
+</script>
+</body>
+</html>
+

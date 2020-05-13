@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.AuthorCodeDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.AuthorCodeDO">
+		select `id`,`invite_code`,`validity_time`,`is_use`,`create_time`,`create_user_id` from author_code where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.AuthorCodeDO">
+		select `id`,`invite_code`,`validity_time`,`is_use`,`create_time`,`create_user_id` from author_code
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="inviteCode != null and inviteCode != ''"> and invite_code = #{inviteCode} </if>
+		  		  <if test="validityTime != null and validityTime != ''"> and validity_time = #{validityTime} </if>
+		  		  <if test="isUse != null and isUse != ''"> and is_use = #{isUse} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by create_time desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from author_code
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="inviteCode != null and inviteCode != ''"> and invite_code = #{inviteCode} </if>
+		  		  <if test="validityTime != null and validityTime != ''"> and validity_time = #{validityTime} </if>
+		  		  <if test="isUse != null and isUse != ''"> and is_use = #{isUse} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.AuthorCodeDO" useGeneratedKeys="true" keyProperty="id">
+		insert into author_code
+		(
+			`invite_code`, 
+			`validity_time`, 
+			`is_use`, 
+			`create_time`, 
+			`create_user_id`
+		)
+		values
+		(
+			#{inviteCode}, 
+			#{validityTime}, 
+			#{isUse}, 
+			#{createTime}, 
+			#{createUserId}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.AuthorCodeDO" useGeneratedKeys="true" keyProperty="id">
+		insert into author_code
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="inviteCode != null"> `invite_code`,  </if>
+					<if test="validityTime != null"> `validity_time`,  </if>
+					<if test="isUse != null"> `is_use`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="createUserId != null"> `create_user_id` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="inviteCode != null"> #{inviteCode},  </if>
+					<if test="validityTime != null"> #{validityTime},  </if>
+					<if test="isUse != null"> #{isUse},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="createUserId != null"> #{createUserId} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.AuthorCodeDO">
+		update author_code 
+		<set>
+			<if test="inviteCode != null">`invite_code` = #{inviteCode}, </if>
+			<if test="validityTime != null">`validity_time` = #{validityTime}, </if>
+			<if test="isUse != null">`is_use` = #{isUse}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from author_code where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from author_code where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

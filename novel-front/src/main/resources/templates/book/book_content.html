@@ -86,7 +86,42 @@
                                 作者：<a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'" th:text="${book.authorName}"></a><span th:text="'字数：'+${bookIndex.wordCount}"></span><span th:text="'更新时间：'+${#dates.format(bookIndex.updateTime, 'yy/MM/dd HH:mm:ss')}"></span>
                             </div>
                         </div>
-                        <div class="txtwrap">
+                        <div class="txtwrap" th:if="${bookIndex.isVip == 1}">
+                            <div id="showReading" class="readBox" style="font-size: 16px; font-family: microsoft yahei">
+                                <p>
+
+                                </p>
+
+                                <div class="pc_bar" style="display: none;">
+                                    <a href="javascript:void(0);" class="icon_pc" onclick="javascript:uFans.startSupportRead();">
+                                        <span><i class="icon_yb"></i><em>捧场</em></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="showBooking" class="orderBox">
+                                <h3>此章为VIP章节，需要订阅后才能继续阅读</h3>
+                                <form method="post" action="./2052117.html?bid=302&amp;cid=2052117" id="Form1">
+                                    <div class="aspNetHidden">
+                                        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTI5NzI4MTkzMQ9kFgRmD2QWAmYPFgIeBFRleHQFqAE8YSBocmVmPSIvc2VhcmNoLmFzcHg/c2VhcmNoS2V5PeWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqyIgdGFyZ2V0PSJfYmxhbmsiPuWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqzwvYT5kAgEPZBYIZg8WAh8ABQnkupHmg7PlrrlkAgEPFgIfAAUEMTE0NmQCAg8WAh8ABREyMDIwLzEvNyAxMDoxOTo1MWQCBA9kFgICAQ9kFg5mDxYCHwAFBDExNDZkAgEPFgIfAAUBNmQCAg8WAh8ABQEwZAIDDxYCHwAFATBkAgQPFgIeB1Zpc2libGVnZAIFDxYCHwFnZAIGDxYCHwFoZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQUOY2J4QXV0b0Jvb2tpbmfqQ909Hciz2aB+AfEr2lQsyt0OxDFr478jb+bXR8kVYA==">
+                                    </div>
+
+                                    <div class="aspNetHidden">
+
+                                        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="0F20AF34">
+                                        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAX4WEeZOhVYVmRzc9paH9JSy/08L4LdXX0bnEtd0tA2crFh4MPja1O/9L0Y0B5Q7Mkw2OnJlkYmOh3/iyqfPkkn99UiP/cCDJ38/2cPKg8P57VHEmkKJr8/tJbwExBtkfhGxxoA1kMIQUaw59BH5iPe">
+                                    </div>
+                                    <ul class="order_list">
+                                        <li>价格：<span class="red">10屋币(1元=100屋币)</span></li>
+                                        <li id="panelPay" class="btns"><a class="btn_red" href="/pay?cid=2052117" >购买</a></li>
+
+                                    </ul>
+                                    <input type="hidden" name="HidCId" id="HidCId" value="2052117">
+                                    <input type="hidden" name="HidBId" id="HidBId" value="302">
+                                    <input type="hidden" name="HidCRank" id="HidCRank" value="49">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="txtwrap" th:if="${bookIndex.isVip != 1}">
                             <div id="showReading" class="readBox" style="font-size: 16px; font-family: microsoft yahei" th:utext="${bookContent.content}">
 
 

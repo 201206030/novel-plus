@@ -49,6 +49,15 @@ public enum ResponseStatus {
      * */
     HAS_COMMENTS(3001, "已评价过该书籍！"),
 
+    /**
+     * 作者相关错误
+     * */
+    INVITE_CODE_INVALID(4001, "邀请码无效！"),
+    AUTHOR_STATUS_FORBIDDEN(4002, "作者状态异常，暂不能管理小说！")
+    , BOOKNAME_EXISTS(4003,"已发布过同名小说！")
+
+    ,
+
 
     /**
      * 其他通用错误

@@ -3,7 +3,7 @@ server:
 #    tomcat:
 #        max-threads: 1000
 #        min-spare-threads: 30
-  port: 8082
+  port: 80
 #    uri-encoding: utf-8
 #security:
 #  basic:

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <div class="columns pull-left">
+                    </div>
+                    <div class="columns pull-right">
+                        <button class="btn btn-success" onclick="reLoad()">查询</button>
+                    </div>
+
+                    <form id="searchForm">
+                        <div class="columns pull-right col-md-2">
+                            <input id="penName" name="penName" type="text" class="form-control"
+                                   placeholder="笔名">
+                        </div>
+                    </form>
+
+                </div>
+                <table id="exampleTable" data-mobile-responsive="true">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 -->
+<div>
+    <script type="text/javascript">
+        var s_detail_h = 'hidden';
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="test:order:detail">
+    <script type="text/javascript">
+        s_detail_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="novel:author:edit">
+    <script type="text/javascript">
+        s_edit_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="novel:author:remove">
+    <script type="text/javascript">
+        var s_remove_h = '';
+    </script>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/novel/author/author.js"></script>
+</body>
+</html>

@@ -14,6 +14,7 @@ import com.java2nb.novel.entity.*;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
@@ -72,6 +73,8 @@ public class BookServiceImpl implements BookService {
     private final BookAuthorMapper bookAuthorMapper;
 
     private final CacheService cacheService;
+
+    private final AuthorService authorService;
 
 
     @SneakyThrows
@@ -194,7 +197,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book queryBookDetail(Long bookId) {
-        SelectStatementProvider selectStatement = select(id, catName, catId, picUrl, bookName, authorId, authorName, bookDesc, bookStatus, visitCount, wordCount, lastIndexId, lastIndexName, lastIndexUpdateTime,score)
+        SelectStatementProvider selectStatement = select(id, catName, catId, picUrl, bookName, authorId, authorName, bookDesc, bookStatus, visitCount, wordCount, lastIndexId, lastIndexName, lastIndexUpdateTime,score,status)
                 .from(book)
                 .where(id, isEqualTo(bookId))
                 .build()
@@ -211,7 +214,7 @@ public class BookServiceImpl implements BookService {
             PageHelper.startPage(1,limit);
         }
 
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime)
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime,BookIndexDynamicSqlSupport.isVip)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
                 .build()
@@ -222,7 +225,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookIndex queryBookIndex(Long bookIndexId) {
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.updateTime)
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.updateTime,BookIndexDynamicSqlSupport.isVip)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.id, isEqualTo(bookIndexId))
                 .build()
@@ -302,6 +305,7 @@ public class BookServiceImpl implements BookService {
         }
         SelectStatementProvider selectStatement = select(id, catId, catName, bookName, lastIndexId, lastIndexName, authorId, authorName, picUrl, bookDesc, wordCount, lastIndexUpdateTime)
                 .from(book)
+                .where(wordCount,isGreaterThan(0))
                 .orderBy(sortSpecification)
                 .limit(limit)
                 .build()
@@ -451,6 +455,104 @@ public class BookServiceImpl implements BookService {
                 .where(id,isEqualTo(bookId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
+
+    }
+
+    @Override
+    public List<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
+
+        PageHelper.startPage(page,pageSize);
+
+        SelectStatementProvider selectStatement = select(id, bookName, visitCount, lastIndexName, status)
+                .from(book)
+                .where(authorId, isEqualTo(authorService.queryAuthor(userId).getId()))
+                .orderBy(BookDynamicSqlSupport.createTime.descending())
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return bookMapper.selectMany(selectStatement);
+
+    }
+
+    @Override
+    public void addBook(Book book, Long authorId, String penName) {
+        //判断小说名是否存在
+        if(queryIdByNameAndAuthor(book.getBookName(),penName)!=null){
+            //该作者发布过此书名的小说
+            throw new BusinessException(ResponseStatus.BOOKNAME_EXISTS);
+        };
+        book.setAuthorName(penName);
+        book.setAuthorId(authorId);
+        book.setVisitCount(0L);
+        book.setWordCount(0);
+        book.setScore(6.5f);
+        book.setLastIndexName("");
+        book.setCreateTime(new Date());
+        book.setUpdateTime(book.getCreateTime());
+        bookMapper.insertSelective(book);
+
+    }
+
+    @Override
+    public void updateBookStatus(Long bookId, Byte status, Long authorId) {
+        bookMapper.update(update(book)
+                .set(BookDynamicSqlSupport.status)
+                .equalTo(status)
+                .where(id,isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId,isEqualTo(authorId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Transactional
+    @Override
+    public void addBookContent(Long bookId, String indexName, String content, Long authorId) {
+
+        Book book = queryBookDetail(bookId);
+        if(!authorId.equals(book.getAuthorId())){
+            //并不是更新自己的小说
+            return;
+        }
+        Long lastIndexId = new IdWorker().nextId();
+        Date currentDate = new Date();
+        int wordCount = content.length();
+
+        //更新小说主表信息
+        bookMapper.update(update(BookDynamicSqlSupport.book)
+                .set(BookDynamicSqlSupport.lastIndexId)
+                .equalTo(lastIndexId)
+                .set(BookDynamicSqlSupport.lastIndexName)
+                .equalTo(indexName)
+                .set(BookDynamicSqlSupport.lastIndexUpdateTime)
+                .equalTo(currentDate)
+                .set(BookDynamicSqlSupport.wordCount)
+                .equalTo(book.getWordCount()+wordCount)
+                .where(id,isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId,isEqualTo(authorId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        //更新小说目录表
+        int indexNum = 0;
+        if(book.getLastIndexId() != null){
+            indexNum =  queryBookIndex(book.getLastIndexId()).getIndexNum()+1;
+        }
+        BookIndex lastBookIndex = new BookIndex();
+        lastBookIndex.setId(lastIndexId);
+        lastBookIndex.setWordCount(wordCount);
+        lastBookIndex.setIndexName(indexName);
+        lastBookIndex.setIndexNum(indexNum);
+        lastBookIndex.setBookId(bookId);
+        lastBookIndex.setIsVip(book.getStatus());
+        lastBookIndex.setCreateTime(currentDate);
+        lastBookIndex.setUpdateTime(currentDate);
+        bookIndexMapper.insertSelective(lastBookIndex);
+
+        //更新小说内容表
+        BookContent bookContent = new BookContent();
+        bookContent.setIndexId(lastIndexId);
+        bookContent.setContent(content);
+        bookContentMapper.insertSelective(bookContent);
+
+
 
     }
 
