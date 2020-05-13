@@ -141,7 +141,7 @@ public class PageController extends BaseController{
         BookContent bookContent = bookService.queryBookContent(bookIndex.getId());
         model.addAttribute("bookContent",bookContent);
         //判断该目录是否收费
-        if(bookIndex.getIsVip() == 1){
+        if(bookIndex.getIsVip()!=null && bookIndex.getIsVip() == 1 ){
             UserDetails user = getUserDetails(request);
             if(user == null){
                 //未登录
