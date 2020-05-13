@@ -3,14 +3,12 @@ package com.java2nb.novel.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.BeanUtil;
+import com.java2nb.novel.entity.*;
+import com.java2nb.novel.entity.User;
 import com.java2nb.novel.form.UserForm;
 import com.java2nb.novel.service.UserService;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
-import com.java2nb.novel.entity.User;
-import com.java2nb.novel.entity.UserBookshelf;
-import com.java2nb.novel.entity.UserFeedback;
-import com.java2nb.novel.entity.UserReadHistory;
 import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.vo.BookReadHistoryVO;
 import com.java2nb.novel.vo.BookShelfVO;
@@ -31,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static com.java2nb.novel.mapper.BookDynamicSqlSupport.book;
+import static com.java2nb.novel.mapper.BookDynamicSqlSupport.id;
 import static com.java2nb.novel.mapper.UserBookshelfDynamicSqlSupport.userBookshelf;
 import static com.java2nb.novel.mapper.UserDynamicSqlSupport.*;
 import static com.java2nb.novel.mapper.UserFeedbackDynamicSqlSupport.userFeedback;
@@ -53,6 +53,8 @@ public class UserServiceImpl implements UserService {
     private final FrontUserReadHistoryMapper userReadHistoryMapper;
 
     private final UserFeedbackMapper userFeedbackMapper;
+
+    private final UserBuyRecordMapper userBuyRecordMapper;
 
 
 
@@ -265,6 +267,41 @@ public class UserServiceImpl implements UserService {
         userMapper.updateByPrimaryKeySelective(user);
 
     }
+
+    @Override
+    public boolean queryIsBuyBookIndex(Long userId, Long bookIndexId) {
+
+        return userBuyRecordMapper.count(c ->
+                c.where(UserBuyRecordDynamicSqlSupport.userId, isEqualTo(userId))
+                .and(UserBuyRecordDynamicSqlSupport.bookIndexId,isEqualTo(bookIndexId))) > 0;
+    }
+
+    @Transactional
+    @Override
+    public void buyBookIndex(Long userId, UserBuyRecord buyRecord) {
+        //查询用户余额
+        long balance = userInfo(userId).getAccountBalance();
+        if(balance<10){
+            //余额不足
+            throw new BusinessException(ResponseStatus.USER_NO_BALANCE);
+        }
+        buyRecord.setUserId(userId);
+        buyRecord.setCreateTime(new Date());
+        buyRecord.setBuyAmount(10);
+        //生成购买记录
+        userBuyRecordMapper.insertSelective(buyRecord);
+
+        //减少用户余额
+        userMapper.update(update(user)
+                .set(UserDynamicSqlSupport.accountBalance)
+                .equalTo(balance-10)
+                .where(id,isEqualTo(userId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+
+
 
 
 }

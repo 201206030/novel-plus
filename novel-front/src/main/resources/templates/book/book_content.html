@@ -36,6 +36,9 @@
       onselect="document.selection.empty()">
 
 <input type="hidden" id="bookId" th:value="${book.id}"/>
+<input type="hidden" id="bookName" th:value="${book.bookName}"/>
+<input type="hidden" id="preIndexName" th:value="${bookIndex.indexName}"/>
+
 <input type="hidden" id="preContentId" th:value="${bookIndex.id}"/>
 
 <div th:replace="common/top :: top('10')">
@@ -86,7 +89,7 @@
                                 作者：<a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'" th:text="${book.authorName}"></a><span th:text="'字数：'+${bookIndex.wordCount}"></span><span th:text="'更新时间：'+${#dates.format(bookIndex.updateTime, 'yy/MM/dd HH:mm:ss')}"></span>
                             </div>
                         </div>
-                        <div class="txtwrap" th:if="${bookIndex.isVip == 1}">
+                        <div class="txtwrap" th:if="${needBuy}">
                             <div id="showReading" class="readBox" style="font-size: 16px; font-family: microsoft yahei">
                                 <p>
 
@@ -112,7 +115,7 @@
                                     </div>
                                     <ul class="order_list">
                                         <li>价格：<span class="red">10屋币(1元=100屋币)</span></li>
-                                        <li id="panelPay" class="btns"><a class="btn_red" href="/pay?cid=2052117" >购买</a></li>
+                                        <li id="panelPay" class="btns"><a class="btn_red" href="javascript:buyBookIndex()" >购买</a></li>
 
                                     </ul>
                                     <input type="hidden" name="HidCId" id="HidCId" value="2052117">
@@ -121,7 +124,7 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="txtwrap" th:if="${bookIndex.isVip != 1}">
+                        <div class="txtwrap" th:if="${!needBuy}">
                             <div id="showReading" class="readBox" style="font-size: 16px; font-family: microsoft yahei" th:utext="${bookContent.content}">
 
 
@@ -325,6 +328,33 @@
         }else{
             layer.alert("已经是最新章节了！");
         }
+
+    }
+
+    function buyBookIndex(){
+        $.ajax({
+            type: "POST",
+            url: "/user/buyBookIndex",
+            data: {'bookId':$("#bookId").val(),"bookName":$("#bookName").val(),
+                "bookIndexId":$("#preContentId").val(),"bookIndexName":$("#preIndexName").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                   location.reload();
+
+
+                } else if(data.code == 1001){
+                    //未登录
+
+                }else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
 
     }
 

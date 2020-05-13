@@ -2,6 +2,7 @@ package com.java2nb.novel.service;
 
 
 import com.java2nb.novel.core.bean.UserDetails;
+import com.java2nb.novel.entity.UserBuyRecord;
 import com.java2nb.novel.form.UserForm;
 import com.java2nb.novel.vo.BookReadHistoryVO;
 import com.java2nb.novel.vo.BookShelfVO;
@@ -122,4 +123,19 @@ public interface UserService {
      * @param userId 用户ID
      * @param amount 增加的余额 */
     void addAmount(Long userId, int amount);
+
+    /**
+     * 判断用户是否购买过该小说章节
+     * @param userId 用户ID
+     * @param bookIndexId 章节目录ID
+     * @return true:购买过，false:没购买
+     * */
+    boolean queryIsBuyBookIndex(Long userId, Long bookIndexId);
+
+    /**
+     * 购买小说章节
+     * @param userId 用户ID
+     * @param buyRecord 购买信息
+     * */
+    void buyBookIndex(Long userId, UserBuyRecord buyRecord);
 }

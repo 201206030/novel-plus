@@ -116,7 +116,11 @@ public class BookController extends BaseController{
     public ResultBean queryBookIndexAbout(Long bookId,Long lastBookIndexId) {
         Map<String,Object> data = new HashMap<>(2);
         data.put("bookIndexCount",bookService.queryIndexCount(bookId));
-        data.put("lastBookContent",bookService.queryBookContent(lastBookIndexId).getContent().substring(0,42));
+        String lastBookContent = bookService.queryBookContent(lastBookIndexId).getContent();
+        if(lastBookContent.length()>42){
+            lastBookContent=lastBookContent.substring(0,42);
+        }
+        data.put("lastBookContent",lastBookContent);
         return ResultBean.ok(data);
     }
 
@@ -157,6 +161,8 @@ public class BookController extends BaseController{
     public ResultBean queryNewIndexList(Long bookId){
        return ResultBean.ok(bookService.queryIndexList(bookId,"index_num desc",10));
     }
+
+
 
 
 

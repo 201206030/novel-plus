@@ -44,7 +44,7 @@
         </javaClientGenerator>
 
         <!--生成全部表tableName设为%-->
-        <table tableName="author_code" domainObjectName="AuthorCode"/>
+        <table tableName="user_buy_record" domainObjectName="UserBuyRecord"/>
 
         <!-- 指定数据库表 -->
         <!--<table schema="jly" tableName="job_position" domainObjectName="JobPositionTest"/>-->

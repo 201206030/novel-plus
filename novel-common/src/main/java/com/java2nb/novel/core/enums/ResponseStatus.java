@@ -43,6 +43,7 @@ public enum ResponseStatus {
     USERNAME_PASS_ERROR(1004,"手机号或密码错误！"),
     TWO_PASSWORD_DIFF(1005, "两次输入的新密码不匹配!"),
     OLD_PASSWORD_ERROR(1006, "旧密码不匹配!"),
+    USER_NO_BALANCE(1007, "用户余额不足"),
 
     /**
      * 评论相关错误

@@ -7,6 +7,7 @@ import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.NewsService;
+import com.java2nb.novel.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,8 @@ public class PageController extends BaseController{
     private final NewsService newsService;
 
     private final AuthorService authorService;
+
+    private final UserService userService;
 
 
     @RequestMapping("{url}.html")
@@ -121,7 +124,7 @@ public class PageController extends BaseController{
      * 内容页
      * */
     @RequestMapping("/book/{bookId}/{bookIndexId}.html")
-    public String indexList(@PathVariable("bookId") Long bookId,@PathVariable("bookIndexId") Long bookIndexId, Model model) {
+    public String indexList(@PathVariable("bookId") Long bookId,@PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request,Model model) {
         //查询书籍
         Book book = bookService.queryBookDetail(bookId);
         model.addAttribute("book",book);
@@ -137,6 +140,23 @@ public class PageController extends BaseController{
         //查询内容
         BookContent bookContent = bookService.queryBookContent(bookIndex.getId());
         model.addAttribute("bookContent",bookContent);
+        //判断该目录是否收费
+        if(bookIndex.getIsVip() == 1){
+            UserDetails user = getUserDetails(request);
+            if(user == null){
+                //未登录
+                return "redirect:/user/login.html?originUrl="+request.getRequestURI();
+            }
+            //收费，判断用户是否购买过该目录
+            boolean isBuy = userService.queryIsBuyBookIndex(user.getId(),bookIndexId);
+            if(!isBuy){
+                //没有购买过，需要购买
+                bookContent.setContent(null);
+                model.addAttribute("needBuy",true);
+                return "book/book_content";
+            }
+        }
+        model.addAttribute("needBuy",false);
         return ThreadLocalUtil.getTemplateDir()+"book/book_content";
     }
 
