@@ -11,4 +11,6 @@ public class UserDetails {
     private Long id;
 
     private String username;
+
+    private String nickName;
 }

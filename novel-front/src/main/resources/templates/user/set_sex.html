@@ -59,7 +59,7 @@
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                if(data.data.userSex === 0){
+                if(data.data.userSex === '0'){
                     $("input[name=sex]").eq(0).attr("checked",true);
                 }
 
