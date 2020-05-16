@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link})">
-    <title th:text="${book.bookName}+'目录,'+${book.bookName}+'最新章节列表_'+#{website.name}"></title>
+    <title th:utext="${book.bookName}+'目录,'+${book.bookName}+'最新章节列表_'+#{website.name}"></title>
     <meta name="keywords" th:content="${book.bookName}+','+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表'"/>
     <meta name="description"
           th:content="#{website.name}+'小说为您提供'+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表,'+${book.bookName}+'全文阅读,'+${book.bookName}+'免费阅读,'+${book.bookName}+'下载'"/>
@@ -26,11 +26,11 @@
             <div class="bookCover cf">
                 <div class="book_info1">
                     <div class="tit">
-                        <h1 th:text="${book.bookName}"></h1><!--<i class="vip_b">VIP</i>-->
+                        <h1 th:utext="${book.bookName}"></h1><!--<i class="vip_b">VIP</i>-->
                     </div>
                     <ul class="list">
                         <li>
-                            <span>作者：<a href="javascript:void(0)" th:text="${book.authorName}"></a></span>
+                            <span>作者：<a href="javascript:void(0)" th:utext="${book.authorName}"></a></span>
                             <span>类别：<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a></span>
                             <span th:switch="${book.bookStatus}">状态：<em class="black3" th:case="'0'">连载中</em><em class="black3"
                                                                                   th:case="*">已完结</em></span>
@@ -45,7 +45,7 @@
                 <div class="dirList">
                     <ul th:each="bookIndex : ${bookIndexList}">
                         <li><a th:if="${bookIndex.isVip} != '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" >
-                            <span th:text="${bookIndex.indexName}"></span><i class="red" > [免费]</i>
+                            <span th:utext="${bookIndex.indexName}"></span><i class="red" > [免费]</i>
                         </a>
                             <a th:if="${bookIndex.isVip} == '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" th:text="${bookIndex.indexName}">
                             </a></li>

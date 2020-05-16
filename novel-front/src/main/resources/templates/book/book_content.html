@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link})">
-    <title th:text="${book.bookName}+'_'+${bookIndex.indexName}+'_'+#{website.name}"></title>
+    <title th:utext="${book.bookName}+'_'+${bookIndex.indexName}+'_'+#{website.name}"></title>
     <meta name="keywords" th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节,'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'" />
     <meta name="description" th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+#{website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+#{website.name}+'。'" />
     <link rel="stylesheet" href="/css/read.css" />
@@ -74,7 +74,7 @@
             <div class="readWrap">
                 <div class="bookNav">
                     <a href="/" >首页 </a>&gt; <a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}">
-                </a>&gt; <a th:href="'/book/'+${book.id}+'.html'" th:text="${book.bookName}">
+                </a>&gt; <a th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}">
 
                 </a>
                 </div>
@@ -82,11 +82,11 @@
                     <div class="textbox cf">
 
                         <div class="book_title">
-                            <h1 th:text="${bookIndex.indexName}">
+                            <h1 th:utext="${bookIndex.indexName}">
                                 </h1>
                             <div class="textinfo">
                                 类别：<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>
-                                作者：<a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'" th:text="${book.authorName}"></a><span th:text="'字数：'+${bookIndex.wordCount}"></span><span th:text="'更新时间：'+${#dates.format(bookIndex.updateTime, 'yy/MM/dd HH:mm:ss')}"></span>
+                                作者：<a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'" th:utext="${book.authorName}"></a><span th:text="'字数：'+${bookIndex.wordCount}"></span><span th:text="'更新时间：'+${#dates.format(bookIndex.updateTime, 'yy/MM/dd HH:mm:ss')}"></span>
                             </div>
                         </div>
                         <div class="txtwrap" th:if="${needBuy}">

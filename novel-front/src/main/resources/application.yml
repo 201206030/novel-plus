@@ -23,7 +23,7 @@ xss:
   # 排除链接（多个用逗号分隔）
   excludes: /system/notice/*
   # 匹配链接 （多个用逗号分隔）
-  urlPatterns: /book/addBookComment,/user/addFeedBack
+  urlPatterns: /book/addBookComment,/user/addFeedBack,/author/addBook,/author/addBookContent,/author/register.html
 
 
 

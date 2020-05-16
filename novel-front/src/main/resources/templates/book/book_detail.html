@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link})">
-    <title th:text="${book.bookName}+'_'+${book.authorName}+'_'+${book.bookName}+'txt下载'+'_'+${book.bookName}+'无弹窗_'+#{website.name}"></title>
+    <title th:utext="${book.bookName}+'_'+${book.authorName}+'_'+${book.bookName}+'txt下载'+'_'+${book.bookName}+'无弹窗_'+#{website.name}"></title>
     <meta name="keywords"
           th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'"/>
     <meta name="description"
@@ -31,8 +31,8 @@
                                                       th:attr="alt=${book.bookName}"/></a>
             <div class="book_info">
                 <div class="tit">
-                    <h1 th:text="${book.bookName}"></h1><!--<i class="vip_b">VIP</i>--><a class="author"
-                                                                                          th:text="${book.authorName}+' 著'"></a>
+                    <h1 th:utext="${book.bookName}"></h1><!--<i class="vip_b">VIP</i>--><a class="author"
+                                                                                          th:utext="${book.authorName}+' 著'"></a>
                 </div>
                 <ul class="list">
                     <li><span class="item">类别：<em th:text="${book.catName}"></em></span>
@@ -70,7 +70,7 @@
                         </div>
                         <ul class="list cf">
                             <li>
-                                <span class="fl font16"> <a th:href="'/book/'+${book.id}+'/'+${book.lastIndexId}+'.html'" th:text="${book.lastIndexName}"><!--<i class="vip">VIP</i>--></a></span>
+                                <span class="fl font16"> <a th:href="'/book/'+${book.id}+'/'+${book.lastIndexId}+'.html'" th:utext="${book.lastIndexName}"><!--<i class="vip">VIP</i>--></a></span>
                                 <span class="black9 fr"
                                       th:text="'更新时间：'+${#dates.format(book.lastIndexUpdateTime, 'yy/MM/dd HH:mm:ss')}"></span>
                             </li>
@@ -143,7 +143,7 @@
                     <div class="msg">
                         <span class="icon_qyzz">签约作家</span>
                         <h4><a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'"
-                               th:text="${book.authorName}"></a></h4>
+                               th:utext="${book.authorName}"></a></h4>
                     </div>
                 </div>
                 <div class="author_intro cf">
