@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.BookDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.BookDO">
+		select `id`,`work_direction`,`cat_id`,`cat_name`,`pic_url`,`book_name`,`author_id`,`author_name`,`book_desc`,`score`,`book_status`,`visit_count`,`word_count`,`comment_count`,`last_index_id`,`last_index_name`,`last_index_update_time`,`is_vip`,`status`,`update_time`,`create_time`,`crawl_source_id`,`crawl_book_id`,`crawl_last_time`,`crawl_is_stop` from book where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.BookDO">
+		select `id`,`work_direction`,`cat_id`,`cat_name`,`pic_url`,`book_name`,`author_id`,`author_name`,`book_desc`,`score`,`book_status`,`visit_count`,`word_count`,`comment_count`,`last_index_id`,`last_index_name`,`last_index_update_time`,`is_vip`,`status`,`update_time`,`create_time`,`crawl_source_id`,`crawl_book_id`,`crawl_last_time`,`crawl_is_stop` from book
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="workDirection != null and workDirection != ''"> and work_direction = #{workDirection} </if>
+		  		  <if test="catId != null and catId != ''"> and cat_id = #{catId} </if>
+		  		  <if test="catName != null and catName != ''"> and cat_name = #{catName} </if>
+		  		  <if test="picUrl != null and picUrl != ''"> and pic_url = #{picUrl} </if>
+		  		  <if test="bookName != null and bookName != ''"> and book_name = #{bookName} </if>
+		  		  <if test="authorId != null and authorId != ''"> and author_id = #{authorId} </if>
+		  		  <if test="authorName != null and authorName != ''"> and author_name = #{authorName} </if>
+		  		  <if test="bookDesc != null and bookDesc != ''"> and book_desc = #{bookDesc} </if>
+		  		  <if test="score != null and score != ''"> and score = #{score} </if>
+		  		  <if test="bookStatus != null and bookStatus != ''"> and book_status = #{bookStatus} </if>
+		  		  <if test="visitCount != null and visitCount != ''"> and visit_count = #{visitCount} </if>
+		  		  <if test="wordCount != null and wordCount != ''"> and word_count = #{wordCount} </if>
+		  		  <if test="commentCount != null and commentCount != ''"> and comment_count = #{commentCount} </if>
+		  		  <if test="lastIndexId != null and lastIndexId != ''"> and last_index_id = #{lastIndexId} </if>
+		  		  <if test="lastIndexName != null and lastIndexName != ''"> and last_index_name = #{lastIndexName} </if>
+		  		  <if test="lastIndexUpdateTime != null and lastIndexUpdateTime != ''"> and last_index_update_time = #{lastIndexUpdateTime} </if>
+		  		  <if test="isVip != null and isVip != ''"> and is_vip = #{isVip} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="crawlSourceId != null and crawlSourceId != ''"> and crawl_source_id = #{crawlSourceId} </if>
+		  		  <if test="crawlBookId != null and crawlBookId != ''"> and crawl_book_id = #{crawlBookId} </if>
+		  		  <if test="crawlLastTime != null and crawlLastTime != ''"> and crawl_last_time = #{crawlLastTime} </if>
+		  		  <if test="crawlIsStop != null and crawlIsStop != ''"> and crawl_is_stop = #{crawlIsStop} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from book
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="workDirection != null and workDirection != ''"> and work_direction = #{workDirection} </if>
+		  		  <if test="catId != null and catId != ''"> and cat_id = #{catId} </if>
+		  		  <if test="catName != null and catName != ''"> and cat_name = #{catName} </if>
+		  		  <if test="picUrl != null and picUrl != ''"> and pic_url = #{picUrl} </if>
+		  		  <if test="bookName != null and bookName != ''"> and book_name = #{bookName} </if>
+		  		  <if test="authorId != null and authorId != ''"> and author_id = #{authorId} </if>
+		  		  <if test="authorName != null and authorName != ''"> and author_name = #{authorName} </if>
+		  		  <if test="bookDesc != null and bookDesc != ''"> and book_desc = #{bookDesc} </if>
+		  		  <if test="score != null and score != ''"> and score = #{score} </if>
+		  		  <if test="bookStatus != null and bookStatus != ''"> and book_status = #{bookStatus} </if>
+		  		  <if test="visitCount != null and visitCount != ''"> and visit_count = #{visitCount} </if>
+		  		  <if test="wordCount != null and wordCount != ''"> and word_count = #{wordCount} </if>
+		  		  <if test="commentCount != null and commentCount != ''"> and comment_count = #{commentCount} </if>
+		  		  <if test="lastIndexId != null and lastIndexId != ''"> and last_index_id = #{lastIndexId} </if>
+		  		  <if test="lastIndexName != null and lastIndexName != ''"> and last_index_name = #{lastIndexName} </if>
+		  		  <if test="lastIndexUpdateTime != null and lastIndexUpdateTime != ''"> and last_index_update_time = #{lastIndexUpdateTime} </if>
+		  		  <if test="isVip != null and isVip != ''"> and is_vip = #{isVip} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="crawlSourceId != null and crawlSourceId != ''"> and crawl_source_id = #{crawlSourceId} </if>
+		  		  <if test="crawlBookId != null and crawlBookId != ''"> and crawl_book_id = #{crawlBookId} </if>
+		  		  <if test="crawlLastTime != null and crawlLastTime != ''"> and crawl_last_time = #{crawlLastTime} </if>
+		  		  <if test="crawlIsStop != null and crawlIsStop != ''"> and crawl_is_stop = #{crawlIsStop} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.BookDO" useGeneratedKeys="true" keyProperty="id">
+		insert into book
+		(
+			`work_direction`, 
+			`cat_id`, 
+			`cat_name`, 
+			`pic_url`, 
+			`book_name`, 
+			`author_id`, 
+			`author_name`, 
+			`book_desc`, 
+			`score`, 
+			`book_status`, 
+			`visit_count`, 
+			`word_count`, 
+			`comment_count`, 
+			`last_index_id`, 
+			`last_index_name`, 
+			`last_index_update_time`, 
+			`is_vip`, 
+			`status`, 
+			`update_time`, 
+			`create_time`, 
+			`crawl_source_id`, 
+			`crawl_book_id`, 
+			`crawl_last_time`, 
+			`crawl_is_stop`
+		)
+		values
+		(
+			#{workDirection}, 
+			#{catId}, 
+			#{catName}, 
+			#{picUrl}, 
+			#{bookName}, 
+			#{authorId}, 
+			#{authorName}, 
+			#{bookDesc}, 
+			#{score}, 
+			#{bookStatus}, 
+			#{visitCount}, 
+			#{wordCount}, 
+			#{commentCount}, 
+			#{lastIndexId}, 
+			#{lastIndexName}, 
+			#{lastIndexUpdateTime}, 
+			#{isVip}, 
+			#{status}, 
+			#{updateTime}, 
+			#{createTime}, 
+			#{crawlSourceId}, 
+			#{crawlBookId}, 
+			#{crawlLastTime}, 
+			#{crawlIsStop}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.BookDO" useGeneratedKeys="true" keyProperty="id">
+		insert into book
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="workDirection != null"> `work_direction`,  </if>
+					<if test="catId != null"> `cat_id`,  </if>
+					<if test="catName != null"> `cat_name`,  </if>
+					<if test="picUrl != null"> `pic_url`,  </if>
+					<if test="bookName != null"> `book_name`,  </if>
+					<if test="authorId != null"> `author_id`,  </if>
+					<if test="authorName != null"> `author_name`,  </if>
+					<if test="bookDesc != null"> `book_desc`,  </if>
+					<if test="score != null"> `score`,  </if>
+					<if test="bookStatus != null"> `book_status`,  </if>
+					<if test="visitCount != null"> `visit_count`,  </if>
+					<if test="wordCount != null"> `word_count`,  </if>
+					<if test="commentCount != null"> `comment_count`,  </if>
+					<if test="lastIndexId != null"> `last_index_id`,  </if>
+					<if test="lastIndexName != null"> `last_index_name`,  </if>
+					<if test="lastIndexUpdateTime != null"> `last_index_update_time`,  </if>
+					<if test="isVip != null"> `is_vip`,  </if>
+					<if test="status != null"> `status`,  </if>
+					<if test="updateTime != null"> `update_time`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="crawlSourceId != null"> `crawl_source_id`,  </if>
+					<if test="crawlBookId != null"> `crawl_book_id`,  </if>
+					<if test="crawlLastTime != null"> `crawl_last_time`,  </if>
+					<if test="crawlIsStop != null"> `crawl_is_stop` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="workDirection != null"> #{workDirection},  </if>
+					<if test="catId != null"> #{catId},  </if>
+					<if test="catName != null"> #{catName},  </if>
+					<if test="picUrl != null"> #{picUrl},  </if>
+					<if test="bookName != null"> #{bookName},  </if>
+					<if test="authorId != null"> #{authorId},  </if>
+					<if test="authorName != null"> #{authorName},  </if>
+					<if test="bookDesc != null"> #{bookDesc},  </if>
+					<if test="score != null"> #{score},  </if>
+					<if test="bookStatus != null"> #{bookStatus},  </if>
+					<if test="visitCount != null"> #{visitCount},  </if>
+					<if test="wordCount != null"> #{wordCount},  </if>
+					<if test="commentCount != null"> #{commentCount},  </if>
+					<if test="lastIndexId != null"> #{lastIndexId},  </if>
+					<if test="lastIndexName != null"> #{lastIndexName},  </if>
+					<if test="lastIndexUpdateTime != null"> #{lastIndexUpdateTime},  </if>
+					<if test="isVip != null"> #{isVip},  </if>
+					<if test="status != null"> #{status},  </if>
+					<if test="updateTime != null"> #{updateTime},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="crawlSourceId != null"> #{crawlSourceId},  </if>
+					<if test="crawlBookId != null"> #{crawlBookId},  </if>
+					<if test="crawlLastTime != null"> #{crawlLastTime},  </if>
+					<if test="crawlIsStop != null"> #{crawlIsStop} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.BookDO">
+		update book 
+		<set>
+			<if test="workDirection != null">`work_direction` = #{workDirection}, </if>
+			<if test="catId != null">`cat_id` = #{catId}, </if>
+			<if test="catName != null">`cat_name` = #{catName}, </if>
+			<if test="picUrl != null">`pic_url` = #{picUrl}, </if>
+			<if test="bookName != null">`book_name` = #{bookName}, </if>
+			<if test="authorId != null">`author_id` = #{authorId}, </if>
+			<if test="authorName != null">`author_name` = #{authorName}, </if>
+			<if test="bookDesc != null">`book_desc` = #{bookDesc}, </if>
+			<if test="score != null">`score` = #{score}, </if>
+			<if test="bookStatus != null">`book_status` = #{bookStatus}, </if>
+			<if test="visitCount != null">`visit_count` = #{visitCount}, </if>
+			<if test="wordCount != null">`word_count` = #{wordCount}, </if>
+			<if test="commentCount != null">`comment_count` = #{commentCount}, </if>
+			<if test="lastIndexId != null">`last_index_id` = #{lastIndexId}, </if>
+			<if test="lastIndexName != null">`last_index_name` = #{lastIndexName}, </if>
+			<if test="lastIndexUpdateTime != null">`last_index_update_time` = #{lastIndexUpdateTime}, </if>
+			<if test="isVip != null">`is_vip` = #{isVip}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="crawlSourceId != null">`crawl_source_id` = #{crawlSourceId}, </if>
+			<if test="crawlBookId != null">`crawl_book_id` = #{crawlBookId}, </if>
+			<if test="crawlLastTime != null">`crawl_last_time` = #{crawlLastTime}, </if>
+			<if test="crawlIsStop != null">`crawl_is_stop` = #{crawlIsStop}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from book where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from book where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
