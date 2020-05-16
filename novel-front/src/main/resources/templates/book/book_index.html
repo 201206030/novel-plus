@@ -47,7 +47,7 @@
                         <li><a th:if="${bookIndex.isVip} != '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" >
                             <span th:utext="${bookIndex.indexName}"></span><i class="red" > [免费]</i>
                         </a>
-                            <a th:if="${bookIndex.isVip} == '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" th:text="${bookIndex.indexName}">
+                            <a th:if="${bookIndex.isVip} == '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" th:utext="${bookIndex.indexName}">
                             </a></li>
                     </ul>
                 </div>
