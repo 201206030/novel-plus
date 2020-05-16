@@ -98,7 +98,12 @@
             <optional>true</optional>
         </dependency>
 
-
+        <!--druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.28</version>
+        </dependency>
 
     </dependencies>
 
