@@ -95,6 +95,10 @@
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
+
+                    if(data.data.token){
+                        $.cookie('Authorization', data.data.token,{ path: '/'  });
+                    }
                     window.location.href = '/user/setup.html';
 
                 } else if (data.code == 1001) {
