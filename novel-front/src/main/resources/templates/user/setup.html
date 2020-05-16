@@ -59,9 +59,9 @@
                 }else{
                     $("#my_name").html(data.data.username+"<em class=\"ml10\">[修改]</em>");
                 }
-                if(data.data.userSex === 0){
+                if(data.data.userSex === '0'){
                     $("#my_sex").html("男<em class=\"ml10\">[修改]</em>");
-                }else if(data.data.userSex === 1){
+                }else if(data.data.userSex === '1'){
                     $("#my_sex").html("女<em class=\"ml10\">[修改]</em>");
                 }else{
                     $("#my_sex").html("请选择");

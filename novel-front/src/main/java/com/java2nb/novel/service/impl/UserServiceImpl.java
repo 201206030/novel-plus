@@ -86,13 +86,14 @@ public class UserServiceImpl implements UserService {
         UserDetails userDetails = new UserDetails();
         userDetails.setId(id);
         userDetails.setUsername(entity.getUsername());
+        userDetails.setNickName(entity.getNickName());
         return userDetails;
     }
 
     @Override
     public UserDetails login(UserForm form) {
         //根据用户名密码查询记录
-        SelectStatementProvider selectStatement = select(id, username)
+        SelectStatementProvider selectStatement = select(id, username,nickName)
                 .from(user)
                 .where(username, isEqualTo(form.getUsername()))
                 .and(password, isEqualTo(MD5Util.MD5Encode(form.getPassword(), Charsets.UTF_8.name())))
@@ -104,7 +105,9 @@ public class UserServiceImpl implements UserService {
         }
         //生成UserDetail对象并返回
         UserDetails userDetails = new UserDetails();
-        userDetails.setId(users.get(0).getId());
+        User user = users.get(0);
+        userDetails.setId(user.getId());
+        userDetails.setNickName(user.getNickName());
         userDetails.setUsername(form.getUsername());
         return userDetails;
     }

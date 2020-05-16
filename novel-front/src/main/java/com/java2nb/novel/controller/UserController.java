@@ -101,7 +101,9 @@ public class UserController extends BaseController {
             token = jwtTokenUtil.refreshToken(token);
             Map<String, Object> data = new HashMap<>(2);
             data.put("token", token);
-            data.put("username", jwtTokenUtil.getUserDetailsFromToken(token).getUsername());
+            UserDetails userDetail = jwtTokenUtil.getUserDetailsFromToken(token);
+            data.put("username", userDetail.getUsername());
+            data.put("nickName", userDetail.getNickName());
             return ResultBean.ok(data);
 
         } else {
