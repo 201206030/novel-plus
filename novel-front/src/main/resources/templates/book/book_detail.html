@@ -23,7 +23,7 @@
 <div class="main box_center cf mb50">
     <div class="nav_sub">
         <a href="/" th:text="#{website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
-            th:href="'/book/'+${book.id}+'.html'" th:text="${book.bookName}"></a>
+            th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}"></a>
     </div>
     <div class="channelWrap channelBookInfo cf">
         <div class="bookCover cf">

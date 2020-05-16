@@ -17,7 +17,7 @@
 <div class="main box_center cf">
     <div class="nav_sub">
         <a href="/" th:text="#{website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
-            th:href="'/book/'+${book.id}+'.html'" th:text="${book.bookName}"></a>&gt;<a
+            th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}"></a>&gt;<a
             th:href="'/book/indexList-'+${book.id}+'.html'">作品目录</a>
     </div>
     <div class="channelWrap channelChapterlist cf mb50">
