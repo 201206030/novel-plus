@@ -13,3 +13,4 @@
 /novel-admin/target
 /*.iml
 /novel-admin/*.iml
+.DS_Store
