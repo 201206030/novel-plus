@@ -641,7 +641,13 @@ INSERT INTO `sys_menu` VALUES ('230', '228', '新增', null, 'novel:authorCode:a
 INSERT INTO `sys_menu` VALUES ('231', '228', '修改', null, 'novel:authorCode:edit', '2', null, '6', null, null);
 INSERT INTO `sys_menu` VALUES ('232', '228', '删除', null, 'novel:authorCode:remove', '2', null, '6', null, null);
 INSERT INTO `sys_menu` VALUES ('233', '228', '批量删除', null, 'novel:authorCode:batchRemove', '2', null, '6', null, null);
-
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`,`gmt_modified`) VALUES ('234', '0', '小说管理', '', '', '0', 'fa fa-book', null, null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`,`gmt_modified`) VALUES ('235', '234', '小说列表', 'novel/book', 'novel:book:book', '1', 'fa fa-bars', null, null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`,`gmt_modified`) VALUES ('236', '234', '查看', '/novel/book/detail', 'novel:book:detail', '2', '', '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`,`gmt_modified`) VALUES ('237', '234', '新增', '/novel/book/add', 'novel:book:add', '2', '', '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`,`gmt_modified`) VALUES ('238', '234', '修改', null, 'novel:book:edit', '2', null, '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('239', '234', '删除', null, 'novel:book:remove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`,`gmt_modified`) VALUES ('240', '234', '批量删除', 'novel/book/batchRemove', 'novel:book:batchRemove', '2', '', '6', null, null);
 -- ----------------------------
 -- Table structure for sys_role
 -- ----------------------------
@@ -1080,6 +1086,15 @@ INSERT INTO `sys_role_menu` VALUES ('4826', '1', '230');
 INSERT INTO `sys_role_menu` VALUES ('4827', '1', '229');
 INSERT INTO `sys_role_menu` VALUES ('4828', '1', '221');
 INSERT INTO `sys_role_menu` VALUES ('4829', '1', '-1');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4830', '1', '234');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4831', '1', '240');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4832', '1', '239');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4833', '1', '238');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4834', '1', '237');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4935', '1', '236');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4936', '1', '235');
+INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES ('4937', '1', '-1');
+
 
 -- ----------------------------
 -- Table structure for sys_user

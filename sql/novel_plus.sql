@@ -886,6 +886,13 @@ INSERT INTO `sys_menu` VALUES ('211', '209', '新增', null, 'system:dataPerm:ad
 INSERT INTO `sys_menu` VALUES ('212', '209', '修改', null, 'system:dataPerm:edit', '2', null, '6', null, null);
 INSERT INTO `sys_menu` VALUES ('213', '209', '删除', null, 'system:dataPerm:remove', '2', null, '6', null, null);
 INSERT INTO `sys_menu` VALUES ('214', '209', '批量删除', null, 'system:dataPerm:batchRemove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('215', '0', '小说管理', '', '', '0', 'fa fa-book', null, null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('216', '215', '小说列表', 'novel/book', 'novel:book:book', '1', 'fa fa-bars', null, null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('217', '215', '查看', '/novel/book/detail', 'novel:book:detail', '2', '', '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('218', '215', '新增', '/novel/book/add', 'novel:book:add', '2', '', '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('219', '215', '修改', null, 'novel:book:edit', '2', null, '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('220', '215', '删除', null, 'novel:book:remove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`, `gmt_create`, `gmt_modified`) VALUES ('221', '215', '批量删除', 'novel/book/batchRemove', 'novel:book:batchRemove', '2', '', '6', null, null);
 
 -- ----------------------------
 -- Table structure for sys_role
