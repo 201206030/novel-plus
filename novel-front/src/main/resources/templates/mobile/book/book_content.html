@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta th:if="${catId == 9}" name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1">
     <meta th:if="${catId != 9}" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title th:text="${book.bookName}+${bookIndex.indexName}"></title>
+    <title th:utext="${book.bookName}+${bookIndex.indexName}"></title>
 
     <meta name="keywords" th:content="${book.bookName}+','+${bookIndex.indexName}">
 
@@ -183,7 +183,7 @@
         <a href="javascript:history.go(-1)">
             <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
     </div>
-    <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b style="padding-left: 5%;float: left;width: 69%" class="line-limit-length" th:text="${bookIndex.indexName}+' '+${book.bookName}"></b></a>
+    <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b style="padding-left: 5%;float: left;width: 69%" class="line-limit-length" th:utext="${bookIndex.indexName}+' '+${book.bookName}"></b></a>
     <div style="width:10%;float: right;margin-right: 10px"><a href="/">
         <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i>
     </a>

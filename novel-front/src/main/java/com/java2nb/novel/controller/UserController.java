@@ -234,6 +234,12 @@ public class UserController extends BaseController {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
         }
         userService.updateUserInfo(userDetails.getId(),user);
+        if(user.getNickName() != null){
+            userDetails.setNickName(user.getNickName());
+            Map<String, Object> data = new HashMap<>(1);
+            data.put("token", jwtTokenUtil.generateToken(userDetails));
+            return ResultBean.ok(data);
+        }
         return ResultBean.ok();
     }
 

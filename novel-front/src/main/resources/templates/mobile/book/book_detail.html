@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title th:text="${book.bookName}+'小说最新章节免费阅读和下载'"></title>
+    <title th:utext="${book.bookName}+'小说最新章节免费阅读和下载'"></title>
 
     <meta name="keywords" th:content="${book.bookName}+','+${book.bookName}+'最新章节,'+${book.bookName}+'免费阅读,'+${book.bookName}+'TXT下载'">
 
@@ -121,7 +121,7 @@
         <a href="javascript:history.go(-1)">
             <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
     </div>
-    <b class="layui-icon" th:text="${book.bookName}"></b>
+    <b class="layui-icon" th:utext="${book.bookName}"></b>
     <div style="float: right;margin-right: 10px">
         <a href="/"><i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i></a>
     </div>
@@ -133,7 +133,7 @@
 
     </div>
         <div style="position:relative;padding: 10px 20px" class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
-            <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'"><div style=";color: #4c6978;" th:text="'作者：'+ ${book.authorName}"></div></a>
+            <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'"><div style=";color: #4c6978;" th:utext="'作者：'+ ${book.authorName}"></div></a>
             <a th:href="'/book/book_ranking.html?catId='+${book.catId}"><div style="margin-top: 5px;color: #4c6978;" th:text="'类别：'+ ${book.catName}"></div></a>
             <div style="margin-top: 5px;color: #4c6978;" th:text="'状态：'+ ${book.bookStatus==0?'连载':'完结'}"></div>
             <div style="margin-top: 5px;color: #4c6978;">更新：<i th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd')}"></i></div>
