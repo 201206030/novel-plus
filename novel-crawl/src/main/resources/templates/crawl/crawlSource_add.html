@@ -57,6 +57,9 @@
                                 <li><span id="LabErr"></span></li>
                                 示例：<b>新顶点小说网</b>
                                 <li><input type="text" id="sourceName" class="s_input icon_name" placeholder="源站名"></li>
+                                <!--示例：<b>https://m.xdingdiann.com/sort/0/1.html</b>
+                                <li><input type="text" id="updateBookListUrl" class="s_input icon_key"
+                                           placeholder="小说更新列表url"></li>-->
                                 示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
                                 <li><input type="text" id="bookListUrl" class="s_input icon_key"
                                            placeholder="分类列表页URL规则"></li>
@@ -95,6 +98,9 @@
                                 示例：<b>&lt;img src="([^>]+)"\s+onerror="this.src=</b>
                                 <li><input type="text" id="picUrlPatten" class="s_input icon_key"
                                            placeholder="小说图片路径的正则表达式："></li>
+                                <b>可空，适用于图片路径为相对路径的源站，加上小说图片路径，则为完整的可访问的图片路径</b>
+                                <li><input type="text" id="picUrlPrefix" class="s_input icon_key"
+                                           placeholder="小说图片访问路径前缀："></li>
                                 示例：<b>状态：([^/]+)&lt;/li&gt;</b>
                                 <li><input type="text" id="statusPatten" class="s_input icon_key"
                                            placeholder="小说状态的正则表达式："></li>
@@ -125,6 +131,9 @@
                                 示例：<b>http://m.xdingdiann.com/ddk{bookId}/all.html</b> (bookId代表小说ID)
                                 <li><input type="text" id="bookIndexUrl" class="s_input icon_key"
                                            placeholder="小说目录页的URL规则："></li>
+                                <b>可空，适用于最新章节列表和全部章节列表在同一个页面的源站</b>
+                                <li><input type="text" id="bookIndexStart" class="s_input icon_key"
+                                           placeholder="小说目录页内容开始截取字符串："></li>
                                 示例：<b>&lt;a\s+style=""\s+href="/ddk\d+/(\d+)\.html"&gt;[^/]+&lt;/a&gt;</b>
                                 <li><input type="text" id="indexIdPatten" class="s_input icon_key"
                                            placeholder="目录页目录ID正则表达式："></li>
@@ -278,6 +287,12 @@
             crawlRule.picUrlPatten = picUrlPatten;
         }
 
+        var picUrlPrefix = $("#picUrlPrefix").val();
+
+        if (picUrlPrefix.length > 0) {
+            crawlRule.picUrlPrefix = picUrlPrefix;
+        }
+
         var statusPatten = $("#statusPatten").val();
         if (statusPatten.length > 0) {
             crawlRule.statusPatten = statusPatten;
@@ -344,6 +359,13 @@
         }
 
         crawlRule.bookIndexUrl = bookIndexUrl;
+
+
+        var bookIndexStart = $("#bookIndexStart").val();
+
+        if (bookIndexStart.length > 0) {
+            crawlRule.bookIndexStart = bookIndexStart;
+        }
 
         var indexIdPatten = $("#indexIdPatten").val();
 

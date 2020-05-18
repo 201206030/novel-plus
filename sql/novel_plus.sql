@@ -2,18 +2,64 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50624
+Source Server Version : 50725
 Source Host           : localhost:3306
-Source Database       : novel_biz
+Source Database       : novel_plus
 
 Target Server Type    : MYSQL
-Target Server Version : 50624
+Target Server Version : 50725
 File Encoding         : 65001
 
-Date: 2020-05-02 10:53:04
+Date: 2020-05-18 13:59:04
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for author
+-- ----------------------------
+DROP TABLE IF EXISTS `author`;
+CREATE TABLE `author` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
+  `invite_code` varchar(20) DEFAULT NULL COMMENT '邀请码',
+  `pen_name` varchar(20) DEFAULT NULL COMMENT '笔名',
+  `tel_phone` varchar(20) DEFAULT NULL COMMENT '手机号码',
+  `chat_account` varchar(50) DEFAULT NULL COMMENT 'QQ或微信账号',
+  `email` varchar(50) DEFAULT NULL COMMENT '电子邮箱',
+  `work_direction` tinyint(4) DEFAULT NULL COMMENT '作品方向，0：男频，1：女频',
+  `status` tinyint(4) DEFAULT '0' COMMENT '0：正常，1：封禁',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='作者表';
+
+-- ----------------------------
+-- Records of author
+-- ----------------------------
+INSERT INTO `author` VALUES ('1', null, 'reerer', 'abc', '13560487656', '23484388', '23484388@qq.com', '0', '0', null);
+INSERT INTO `author` VALUES ('2', '1255060328322027520', 'rwrr445554', '梦入神机', '13560421324', '1179705413', 'reerer@qq.com', '0', '0', '2020-05-13 14:01:31');
+
+-- ----------------------------
+-- Table structure for author_code
+-- ----------------------------
+DROP TABLE IF EXISTS `author_code`;
+CREATE TABLE `author_code` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `invite_code` varchar(100) DEFAULT NULL COMMENT '邀请码',
+  `validity_time` datetime DEFAULT NULL COMMENT '有效时间',
+  `is_use` tinyint(1) DEFAULT '0' COMMENT '是否使用过，0：未使用，1:使用过',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` bigint(20) DEFAULT NULL COMMENT '创建人ID',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_code` (`invite_code`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='作家邀请码表';
+
+-- ----------------------------
+-- Records of author_code
+-- ----------------------------
+INSERT INTO `author_code` VALUES ('3', 'reerer', '2020-05-27 22:43:45', '1', '2020-05-13 11:40:56', '1');
+INSERT INTO `author_code` VALUES ('4', '123456', '2020-05-28 00:00:00', '0', '2020-05-13 14:09:55', '1');
+INSERT INTO `author_code` VALUES ('5', 'ww34343', '2020-05-21 00:00:00', '0', '2020-05-13 14:18:58', '1');
 
 -- ----------------------------
 -- Table structure for book
@@ -49,7 +95,7 @@ CREATE TABLE `book` (
   UNIQUE KEY `key_uq_bookName_authorName` (`book_name`,`author_name`) USING BTREE,
   KEY `key_lastIndexUpdateTime` (`last_index_update_time`) USING BTREE,
   KEY `key_createTime` (`create_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1256127379949019137 DEFAULT CHARSET=utf8mb4 COMMENT='小说表';
+) ENGINE=InnoDB AUTO_INCREMENT=1262260513468559361 DEFAULT CHARSET=utf8mb4 COMMENT='小说表';
 
 -- ----------------------------
 -- Records of book
@@ -156,7 +202,7 @@ CREATE TABLE `book_content` (
   `content` mediumtext COMMENT '小说章节内容',
   PRIMARY KEY (`id`),
   UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3342428 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+) ENGINE=InnoDB AUTO_INCREMENT=3347665 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
 
 -- ----------------------------
 -- Records of book_content
@@ -179,7 +225,7 @@ CREATE TABLE `book_index` (
   UNIQUE KEY `key_uq_bookId_indexNum` (`book_id`,`index_num`) USING BTREE,
   KEY `key_bookId` (`book_id`) USING BTREE,
   KEY `key_indexNum` (`index_num`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1256373101432717313 DEFAULT CHARSET=utf8mb4 COMMENT='小说目录表';
+) ENGINE=InnoDB AUTO_INCREMENT=1262260612777095169 DEFAULT CHARSET=utf8mb4 COMMENT='小说目录表';
 
 -- ----------------------------
 -- Records of book_index
@@ -303,13 +349,14 @@ CREATE TABLE `crawl_source` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='爬虫源表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='爬虫源表';
 
 -- ----------------------------
 -- Records of crawl_source
 -- ----------------------------
 INSERT INTO `crawl_source` VALUES ('2', '百书斋', '{\r\n	\"bookListUrl\": \"https://m.baishuzhai.com/blhb/{catId}/{page}.html\",\r\n	\"catIdRule\": {\r\n		\"catId1\": \"1\",\r\n		\"catId2\": \"2\",\r\n		\"catId3\": \"3\",\r\n		\"catId4\": \"4\",\r\n		\"catId5\": \"5\",\r\n		\"catId6\": \"6\",\r\n		\"catId7\": \"7\"\r\n	},\r\n	\"bookIdPatten\": \"href=\\\"/ibook/(\\\\d+/\\\\d+)/\\\"\",\r\n	\"pagePatten\": \"value=\\\"(\\\\d+)/\\\\d+\\\"\",\r\n	\"totalPagePatten\": \"value=\\\"\\\\d+/(\\\\d+)\\\"\",\r\n	\"bookDetailUrl\": \"https://m.baishuzhai.com/ibook/{bookId}/\",\r\n	\"bookNamePatten\": \"<span class=\\\"title\\\">([^/]+)</span>\",\r\n	\"authorNamePatten\": \">作者：([^/]+)<\",\r\n	\"picUrlPatten\": \"<img src=\\\"([^>]+)\\\"\\\\s+onerror=\\\"this.src=\",\r\n	\"statusPatten\": \"状态：([^/]+)</li>\",\r\n	\"bookStatusRule\": {\r\n		\"连载\": 0,\r\n		\"完成\": 1\r\n	},\r\n	\"scorePatten\": \"<em>([^<]+)</em>\",\r\n	\"descStart\": \"<p class=\\\"review\\\">\",\r\n	\"descEnd\": \"</p>\",\r\n	\"upadateTimePatten\": \"更新：(\\\\d+-\\\\d+-\\\\d+)</li>\",\r\n	\"upadateTimeFormatPatten\": \"yy-MM-dd\",\r\n	\"bookIndexUrl\": \"https://m.baishuzhai.com/ibook/{bookId}/all.html\",\r\n	\"indexIdPatten\": \"<a\\\\s+style=\\\"\\\"\\\\s+href=\\\"/ibook/\\\\d+/\\\\d+/(\\\\d+)\\\\.html\\\">[^/]+</a>\",\r\n	\"indexNamePatten\": \"<a\\\\s+style=\\\"\\\"\\\\s+href=\\\"/ibook/\\\\d+/\\\\d+/\\\\d+\\\\.html\\\">([^/]+)</a>\",\r\n	\"bookContentUrl\": \"https://baishuzhai.com/ibook/{bookId}/{indexId}.html\",\r\n	\"contentStart\": \"id=\\\"content\\\">\",\r\n	\"contentEnd\": \"<script>\"\r\n}', '0', '2020-05-01 14:22:50', '2020-05-01 14:22:50');
 INSERT INTO `crawl_source` VALUES ('3', '书包网', '{\r\n	\"bookListUrl\": \"https://www.bookbao8.com/booklist-p_{page}-c_{catId}-t_0-o_0.html\",\r\n	\"catIdRule\": {\r\n		\"catId1\": \"5\",\r\n		\"catId2\": \"4\",\r\n		\"catId3\": \"8\",\r\n		\"catId4\": \"9\",\r\n		\"catId5\": \"3\",\r\n		\"catId6\": \"7\"\r\n	},\r\n	\"bookIdPatten\": \"href=\\\"/book/(\\\\d+/\\\\d+/id_[^.]+).html\\\"\",\r\n	\"pagePatten\": \"<span\\\\s+class=\\\"current\\\">([^<]+)</span>\",\r\n	\"totalPagePatten\": \"/共(\\\\d+)页\",\r\n	\"bookDetailUrl\": \"https://www.bookbao8.com/book/{bookId}.html\",\r\n	\"bookNamePatten\": \"<div\\\\s+id=\\\"info\\\">\\\\s*<h1>([^<]+)</h1>\",\r\n	\"authorNamePatten\": \"<p>作者：<a\\\\s+href=\\\"/Search/[^\\\"]+\\\"\\\\s+target=\\\"_blank\\\">([^<]+)</a></p>\",\r\n	\"picUrlPatten\": \"<div\\\\s+id=\\\"fmimg\\\">\\\\s*<img\\\\s+alt=\\\"[^\\\"]+\\\"\\\\s+src=\\\"([^\\\"]+)\\\"\",\r\n	\"statusPatten\": \"<p>状态：([^<]+)</p>\",\r\n	\"bookStatusRule\": {\r\n		\"连载中\": 0,\r\n		\"已完结\": 1\r\n	},\r\n	\"visitCountPatten\": \"<em\\\\s+id=\\\"hits\\\">(\\\\d+)</em>\",\r\n	\"descStart\": \"<div class=\\\"infocontent\\\">\",\r\n	\"descEnd\": \"</div>\",\r\n	\"upadateTimePatten\": \"<p>更新时间：(\\\\d+-\\\\d+-\\\\d+\\\\s\\\\d+:\\\\d+:\\\\d+)</p>\",\r\n	\"upadateTimeFormatPatten\": \"yyyy-MM-dd HH:mm:ss\",\r\n	\"bookIndexUrl\": \"https://www.bookbao8.com/book/{bookId}.html\",\r\n	\"indexIdPatten\": \"<li>\\\\s*<a\\\\s+href=\\\"/views/\\\\d+/\\\\d+/id_[^_]+_(\\\\d+).html\\\"\\\\s+target=\\\"_blank\\\">\",\r\n	\"indexNamePatten\": \"<li>\\\\s*<a\\\\s+href=\\\"/views/\\\\d+/\\\\d+/id_[^_]+_\\\\d+.html\\\"\\\\s+target=\\\"_blank\\\">([^<]+)</a>\",\r\n	\"bookContentUrl\": \"https://www.bookbao8.com/views/{bookId}_{indexId}.html\",\r\n	\"contentStart\": \"<dd id=\\\"contents\\\">\",\r\n	\"contentEnd\": \"</dd>\"\r\n}', '0', '2020-05-04 17:42:22', '2020-05-04 17:42:22');
+INSERT INTO `crawl_source` VALUES ('4', '书趣阁', '{\r\n	\"bookListUrl\": \"http://m.shuquge.com/sort/{catId}/0_{page}.html\",\r\n	\"catIdRule\": {\r\n		\"catId1\": \"1\",\r\n		\"catId2\": \"2\",\r\n		\"catId3\": \"3\",\r\n		\"catId4\": \"4\",\r\n		\"catId5\": \"7\",\r\n		\"catId6\": \"6\",\r\n		\"catId7\": \"8\"\r\n	},\r\n	\"bookIdPatten\": \"href=\\\"/s/(\\\\d+)\\\\.html\\\"\",\r\n	\"pagePatten\": \"第(\\\\d+)/\\\\d+页\",\r\n	\"totalPagePatten\": \"第\\\\d+/(\\\\d+)页\",\r\n	\"bookDetailUrl\": \"http://m.shuquge.com/s/{bookId}.html\",\r\n	\"bookNamePatten\": \"<a\\\\s+href=\\\"/s/\\\\d+\\\\.html\\\"><h2>([^/]+)</h2></a>\",\r\n	\"authorNamePatten\": \"<p>作者：([^/]+)</p>\",\r\n	\"picUrlPatten\": \"src=\\\"(http://www.shuquge.com/files/article/image/\\\\d+/\\\\d+/\\\\d+s\\\\.jpg)\\\"\",\r\n	\"statusPatten\": \"<p>状态：([^/]+)</p>\",\r\n	\"bookStatusRule\": {\r\n		\"连载中\": 0,\r\n		\"完本\": 1\r\n	},\r\n	\"descStart\": \"<div class=\\\"intro_info\\\">\",\r\n	\"descEnd\": \"最新章节推荐地址\",\r\n	\"bookIndexUrl\": \"http://www.shuquge.com/txt/{bookId}/index.html\",\r\n	\"bookIndexStart\": \"》正文卷\",\r\n	\"indexIdPatten\": \"<dd><a\\\\s+href=\\\"(\\\\d+)\\\\.html\\\">[^/]+</a></dd>\",\r\n	\"indexNamePatten\": \"<dd><a\\\\s+href=\\\"\\\\d+\\\\.html\\\">([^/]+)</a></dd>\",\r\n	\"bookContentUrl\": \"http://www.shuquge.com/txt/{bookId}/{indexId}.html\",\r\n	\"contentStart\": \"<div id=\\\"content\\\" class=\\\"showtxt\\\">\",\r\n	\"contentEnd\": \"http://www.shuquge.com\"\r\n}', '1', '2020-05-18 12:02:34', '2020-05-18 12:02:34');
 
 -- ----------------------------
 -- Table structure for friend_link
@@ -377,6 +424,27 @@ CREATE TABLE `news_category` (
 -- ----------------------------
 INSERT INTO `news_category` VALUES ('1', '招募', '10', null, null, null, null);
 INSERT INTO `news_category` VALUES ('3', '公告', '11', null, null, null, null);
+
+-- ----------------------------
+-- Table structure for order_pay
+-- ----------------------------
+DROP TABLE IF EXISTS `order_pay`;
+CREATE TABLE `order_pay` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `out_trade_no` bigint(20) NOT NULL COMMENT '商户订单号',
+  `trade_no` varchar(64) DEFAULT NULL COMMENT '支付宝/微信交易号',
+  `pay_channel` tinyint(1) NOT NULL DEFAULT '1' COMMENT '支付渠道，1：支付宝，2：微信',
+  `total_amount` int(11) NOT NULL COMMENT '交易金额(单位元)',
+  `user_id` bigint(20) NOT NULL COMMENT '支付用户ID',
+  `pay_status` tinyint(1) DEFAULT '2' COMMENT '支付状态：0：支付失败，1：支付成功，2：待支付',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COMMENT='充值订单';
+
+-- ----------------------------
+-- Records of order_pay
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_data_perm
@@ -456,7 +524,7 @@ CREATE TABLE `sys_dict` (
   KEY `sys_dict_value` (`value`),
   KEY `sys_dict_label` (`name`),
   KEY `sys_dict_del_flag` (`del_flag`)
-) ENGINE=InnoDB AUTO_INCREMENT=140 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='字典表';
+) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='字典表';
 
 -- ----------------------------
 -- Records of sys_dict
@@ -589,6 +657,8 @@ INSERT INTO `sys_dict` VALUES ('136', '富文本', '6', 'page_type', '页面显�
 INSERT INTO `sys_dict` VALUES ('137', '上传图片【单文件】', '7', 'page_type', '页面显示类型', '7', null, null, null, null, null, '', null);
 INSERT INTO `sys_dict` VALUES ('138', '隐藏域', '11', 'page_type', '页面显示类型', '11', null, null, null, null, null, '', null);
 INSERT INTO `sys_dict` VALUES ('139', '不显示', '12', 'page_type', '页面显示类型', '12', null, null, null, null, null, '', null);
+INSERT INTO `sys_dict` VALUES ('140', '男频', '0', 'work_direction', '作品方向', '0', null, null, null, null, null, '', null);
+INSERT INTO `sys_dict` VALUES ('141', '女频', '1', 'work_direction', '作品方向', '1', null, null, null, null, null, '', null);
 
 -- ----------------------------
 -- Table structure for sys_file
@@ -664,7 +734,7 @@ CREATE TABLE `sys_gen_columns` (
   `is_required` tinyint(1) DEFAULT NULL COMMENT '是否必填',
   `dict_type` varchar(100) CHARACTER SET utf8 DEFAULT '' COMMENT '页面显示为下拉时使用，字典类型从字典表中取出',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=801 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=815 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_gen_columns
@@ -728,6 +798,20 @@ INSERT INTO `sys_gen_columns` VALUES ('797', 'fb_order', 'push_time', 'datetime'
 INSERT INTO `sys_gen_columns` VALUES ('798', 'fb_order', 'push_ip', 'varchar', 'String', '推送IP', '31', '推送IP', '6', '0', 'del_flag');
 INSERT INTO `sys_gen_columns` VALUES ('799', 'fb_order', 'mcht_id', 'bigint', 'BigDecimal', '商户id', '90', '商户id', '3', '0', 'theme');
 INSERT INTO `sys_gen_columns` VALUES ('800', 'fb_order', 'sn', 'char', 'String', 'QR编号', '100', 'QR编号', '1', '0', 'del_flag');
+INSERT INTO `sys_gen_columns` VALUES ('801', 'author', 'user_id', 'bigint', 'Long', '用户ID', '2', '用户ID', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('802', 'author', 'invite_code', 'varchar', 'String', '邀请码', '3', '邀请码', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('803', 'author', 'pen_name', 'varchar', 'String', '笔名', '4', '笔名', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('804', 'author', 'tel_phone', 'varchar', 'String', '手机号码', '5', '手机号码', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('805', 'author', 'chat_account', 'varchar', 'String', 'QQ或微信账号', '6', 'QQ或微信账号', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('806', 'author', 'email', 'varchar', 'String', '电子邮箱', '7', '电子邮箱', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('807', 'author', 'work_direction', 'tinyint', 'Integer', '作品方向，0：男频，1：女频', '8', '作品方向，0：男频，1：女频', '2', '0', 'work_direction');
+INSERT INTO `sys_gen_columns` VALUES ('808', 'author', 'status', 'tinyint', 'Integer', '0：正常，1：封禁', '10', '0：正常，1：封禁', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('809', 'author', 'create_time', 'datetime', 'Date', '创建时间', '9', '入驻时间', '4', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('810', 'author_code', 'invite_code', 'varchar', 'String', '邀请码', '2', '邀请码', '1', '1', null);
+INSERT INTO `sys_gen_columns` VALUES ('811', 'author_code', 'validity_time', 'datetime', 'Date', '有效时间', '3', '有效时间', '4', '1', null);
+INSERT INTO `sys_gen_columns` VALUES ('812', 'author_code', 'is_use', 'tinyint', 'Integer', '是否使用过，0：未使用，1:使用过', '4', '是否使用过，0：未使用，1:使用过', '1', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('813', 'author_code', 'create_time', 'datetime', 'Date', '创建时间', '5', '创建时间', '4', '0', null);
+INSERT INTO `sys_gen_columns` VALUES ('814', 'author_code', 'create_user_id', 'bigint', 'Long', '创建人ID', '6', '创建人ID', '1', '0', null);
 
 -- ----------------------------
 -- Table structure for sys_gen_table
@@ -807,11 +891,54 @@ CREATE TABLE `sys_log` (
   `ip` varchar(64) DEFAULT NULL COMMENT 'IP地址',
   `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1369 DEFAULT CHARSET=utf8 COMMENT='系统日志';
+) ENGINE=InnoDB AUTO_INCREMENT=1412 DEFAULT CHARSET=utf8 COMMENT='系统日志';
 
 -- ----------------------------
 -- Records of sys_log
 -- ----------------------------
+INSERT INTO `sys_log` VALUES ('1369', '-1', '获取用户信息为空', '登录', '462', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:09:21');
+INSERT INTO `sys_log` VALUES ('1370', '-1', '获取用户信息为空', '登录', '19', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:09:26');
+INSERT INTO `sys_log` VALUES ('1371', '1', 'admin', '登录', '98', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:09:33');
+INSERT INTO `sys_log` VALUES ('1372', '1', 'admin', '请求访问主页', '372', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:09:33');
+INSERT INTO `sys_log` VALUES ('1373', '1', 'admin', '请求访问主页', '28', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:12:41');
+INSERT INTO `sys_log` VALUES ('1374', '1', 'admin', '编辑角色', '11', 'com.java2nb.system.controller.RoleController.edit()', null, '127.0.0.1', '2020-05-13 11:18:42');
+INSERT INTO `sys_log` VALUES ('1375', '1', 'admin', '添加菜单', '2', 'com.java2nb.system.controller.MenuController.add()', null, '127.0.0.1', '2020-05-13 11:19:55');
+INSERT INTO `sys_log` VALUES ('1376', '1', 'admin', '保存菜单', '225', 'com.java2nb.system.controller.MenuController.save()', null, '127.0.0.1', '2020-05-13 11:24:42');
+INSERT INTO `sys_log` VALUES ('1377', '1', 'admin', '编辑菜单', '15', 'com.java2nb.system.controller.MenuController.edit()', null, '127.0.0.1', '2020-05-13 11:24:54');
+INSERT INTO `sys_log` VALUES ('1378', '1', 'admin', '编辑菜单', '11', 'com.java2nb.system.controller.MenuController.edit()', null, '127.0.0.1', '2020-05-13 11:24:58');
+INSERT INTO `sys_log` VALUES ('1379', '1', 'admin', '更新菜单', '241', 'com.java2nb.system.controller.MenuController.update()', null, '127.0.0.1', '2020-05-13 11:25:12');
+INSERT INTO `sys_log` VALUES ('1380', '1', 'admin', '编辑菜单', '8', 'com.java2nb.system.controller.MenuController.edit()', null, '127.0.0.1', '2020-05-13 11:25:16');
+INSERT INTO `sys_log` VALUES ('1381', '1', 'admin', '更新菜单', '199', 'com.java2nb.system.controller.MenuController.update()', null, '127.0.0.1', '2020-05-13 11:25:26');
+INSERT INTO `sys_log` VALUES ('1382', '1', 'admin', '编辑角色', '13', 'com.java2nb.system.controller.RoleController.edit()', null, '127.0.0.1', '2020-05-13 11:26:11');
+INSERT INTO `sys_log` VALUES ('1383', '1', 'admin', '更新角色', '931', 'com.java2nb.system.controller.RoleController.update()', null, '127.0.0.1', '2020-05-13 11:26:36');
+INSERT INTO `sys_log` VALUES ('1384', '-1', '获取用户信息为空', '登录', '11', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:27:02');
+INSERT INTO `sys_log` VALUES ('1385', '1', 'admin', '登录', '19', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:27:08');
+INSERT INTO `sys_log` VALUES ('1386', '1', 'admin', '请求访问主页', '27', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:27:08');
+INSERT INTO `sys_log` VALUES ('1387', '1', 'admin', '登录', '272', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:27:56');
+INSERT INTO `sys_log` VALUES ('1388', '1', 'admin', '请求访问主页', '109', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:27:56');
+INSERT INTO `sys_log` VALUES ('1389', '1', 'admin', '编辑角色', '8', 'com.java2nb.system.controller.RoleController.edit()', null, '127.0.0.1', '2020-05-13 11:30:36');
+INSERT INTO `sys_log` VALUES ('1390', '1', 'admin', '更新角色', '567', 'com.java2nb.system.controller.RoleController.update()', null, '127.0.0.1', '2020-05-13 11:30:42');
+INSERT INTO `sys_log` VALUES ('1391', '-1', '获取用户信息为空', '登录', '246', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:31:38');
+INSERT INTO `sys_log` VALUES ('1392', '1', 'admin', '登录', '38', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:31:42');
+INSERT INTO `sys_log` VALUES ('1393', '1', 'admin', '请求访问主页', '110', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:31:43');
+INSERT INTO `sys_log` VALUES ('1394', '1', 'admin', 'error', null, 'http://127.0.0.1/test/order/list', 'org.springframework.jdbc.BadSqlGrammarException: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table \'novel_plus.fb_order\' doesn\'t exist\r\n### The error may exist in file [E:\\baseprojectparent\\novel-plus\\novel-admin\\target\\classes\\mybatis\\test\\OrderMapper.xml]\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: select `id`,`fb_merchant_code`,`merchant_order_sn`,`order_sn`,`platform_order_no`,`trade_no`,`order_state`,`fn_coupon`,`red_packet`,`total_fee`,`order_price`,`fee`,`body`,`attach`,`store_id`,`cashier_id`,`device_no`,`user_id`,`user_logon_id`,`pay_time`,`pay_channel`,`no_cash_coupon_fee`,`cash_coupon_fee`,`cash_fee`,`sign`,`options`,`create_time`,`push_time`,`push_ip`,`mcht_id`,`sn` from fb_order                                      order by id desc             limit ?, ?\r\n### Cause: java.sql.SQLSyntaxErrorException: Table \'novel_plus.fb_order\' doesn\'t exist\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Table \'novel_plus.fb_order\' doesn\'t exist', null, '2020-05-13 11:33:27');
+INSERT INTO `sys_log` VALUES ('1395', '1', 'admin', '登录', '276', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:39:20');
+INSERT INTO `sys_log` VALUES ('1396', '1', 'admin', '请求访问主页', '95', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:39:20');
+INSERT INTO `sys_log` VALUES ('1397', '1', 'admin', '登录', '285', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:47:00');
+INSERT INTO `sys_log` VALUES ('1398', '1', 'admin', '请求访问主页', '90', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:47:00');
+INSERT INTO `sys_log` VALUES ('1399', '1', 'admin', '登录', '251', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:48:28');
+INSERT INTO `sys_log` VALUES ('1400', '1', 'admin', '请求访问主页', '95', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:48:28');
+INSERT INTO `sys_log` VALUES ('1401', '1', 'admin', '登录', '302', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 14:09:33');
+INSERT INTO `sys_log` VALUES ('1402', '1', 'admin', '请求访问主页', '88', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 14:09:34');
+INSERT INTO `sys_log` VALUES ('1403', '1', 'admin', '请求更改用户密码', '3', 'com.java2nb.system.controller.UserController.resetPwd()', null, '127.0.0.1', '2020-05-13 14:11:49');
+INSERT INTO `sys_log` VALUES ('1404', '1', 'admin', 'admin提交更改用户密码', '140', 'com.java2nb.system.controller.UserController.adminResetPwd()', null, '127.0.0.1', '2020-05-13 14:11:50');
+INSERT INTO `sys_log` VALUES ('1405', '1', 'admin', '请求更改用户密码', '4', 'com.java2nb.system.controller.UserController.resetPwd()', null, '127.0.0.1', '2020-05-13 14:12:11');
+INSERT INTO `sys_log` VALUES ('1406', '1', 'admin', '登录', '275', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 14:14:26');
+INSERT INTO `sys_log` VALUES ('1407', '1', 'admin', '请求访问主页', '73', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 14:14:27');
+INSERT INTO `sys_log` VALUES ('1408', '1', 'admin', 'error', null, 'http://127.0.0.1/novel/author/update', 'org.springframework.validation.BindException: org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object \'authorDO\' on field \'id\': rejected value [1,1]; codes [typeMismatch.authorDO.id,typeMismatch.id,typeMismatch.java.lang.Long,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [authorDO.id,id]; arguments []; default message [id]]; default message [Failed to convert property value of type \'java.lang.String\' to required type \'java.lang.Long\' for property \'id\'; nested exception is java.lang.NumberFormatException: For input string: \"1,1\"]', null, '2020-05-13 14:14:38');
+INSERT INTO `sys_log` VALUES ('1409', '1', 'admin', 'error', null, 'http://127.0.0.1/novel/author/update', 'org.springframework.validation.BindException: org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object \'authorDO\' on field \'id\': rejected value [1,1]; codes [typeMismatch.authorDO.id,typeMismatch.id,typeMismatch.java.lang.Long,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [authorDO.id,id]; arguments []; default message [id]]; default message [Failed to convert property value of type \'java.lang.String\' to required type \'java.lang.Long\' for property \'id\'; nested exception is java.lang.NumberFormatException: For input string: \"1,1\"]', null, '2020-05-13 14:14:47');
+INSERT INTO `sys_log` VALUES ('1410', '1', 'admin', '登录', '261', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 14:18:07');
+INSERT INTO `sys_log` VALUES ('1411', '1', 'admin', '请求访问主页', '83', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 14:18:07');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -829,7 +956,7 @@ CREATE TABLE `sys_menu` (
   `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
   `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
+) ENGINE=InnoDB AUTO_INCREMENT=234 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
 
 -- ----------------------------
 -- Records of sys_menu
@@ -886,6 +1013,19 @@ INSERT INTO `sys_menu` VALUES ('211', '209', '新增', null, 'system:dataPerm:ad
 INSERT INTO `sys_menu` VALUES ('212', '209', '修改', null, 'system:dataPerm:edit', '2', null, '6', null, null);
 INSERT INTO `sys_menu` VALUES ('213', '209', '删除', null, 'system:dataPerm:remove', '2', null, '6', null, null);
 INSERT INTO `sys_menu` VALUES ('214', '209', '批量删除', null, 'system:dataPerm:batchRemove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('221', '0', '作家管理', '', '', '0', 'fa fa-user-o', '10', null, null);
+INSERT INTO `sys_menu` VALUES ('222', '221', '作者列表', 'novel/author', 'novel:author:author', '1', 'fa', '6', null, null);
+INSERT INTO `sys_menu` VALUES ('223', '222', '查看', null, 'novel:author:detail', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('224', '222', '新增', null, 'novel:author:add', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('225', '222', '修改', null, 'novel:author:edit', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('226', '222', '删除', null, 'novel:author:remove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('227', '222', '批量删除', null, 'novel:author:batchRemove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('228', '221', '邀请码管理', 'novel/authorCode', 'novel:authorCode:authorCode', '1', 'fa', '3', null, null);
+INSERT INTO `sys_menu` VALUES ('229', '228', '查看', null, 'novel:authorCode:detail', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('230', '228', '新增', null, 'novel:authorCode:add', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('231', '228', '修改', null, 'novel:authorCode:edit', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('232', '228', '删除', null, 'novel:authorCode:remove', '2', null, '6', null, null);
+INSERT INTO `sys_menu` VALUES ('233', '228', '批量删除', null, 'novel:authorCode:batchRemove', '2', null, '6', null, null);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -919,22 +1059,22 @@ CREATE TABLE `sys_role_data_perm` (
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
   `perm_id` bigint(20) DEFAULT NULL COMMENT '权限ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COMMENT='角色与数据权限对应关系';
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8 COMMENT='角色与数据权限对应关系';
 
 -- ----------------------------
 -- Records of sys_role_data_perm
 -- ----------------------------
-INSERT INTO `sys_role_data_perm` VALUES ('49', '1', '214');
-INSERT INTO `sys_role_data_perm` VALUES ('50', '1', '213');
-INSERT INTO `sys_role_data_perm` VALUES ('51', '1', '212');
-INSERT INTO `sys_role_data_perm` VALUES ('52', '1', '211');
-INSERT INTO `sys_role_data_perm` VALUES ('53', '1', '210');
-INSERT INTO `sys_role_data_perm` VALUES ('54', '1', '1199168630769283072');
-INSERT INTO `sys_role_data_perm` VALUES ('55', '1', '-1');
-INSERT INTO `sys_role_data_perm` VALUES ('56', '1', '1199168630454710272');
 INSERT INTO `sys_role_data_perm` VALUES ('60', '60', '211');
 INSERT INTO `sys_role_data_perm` VALUES ('61', '60', '-1');
 INSERT INTO `sys_role_data_perm` VALUES ('62', '60', '1199170283966787584');
+INSERT INTO `sys_role_data_perm` VALUES ('71', '1', '214');
+INSERT INTO `sys_role_data_perm` VALUES ('72', '1', '213');
+INSERT INTO `sys_role_data_perm` VALUES ('73', '1', '212');
+INSERT INTO `sys_role_data_perm` VALUES ('74', '1', '211');
+INSERT INTO `sys_role_data_perm` VALUES ('75', '1', '210');
+INSERT INTO `sys_role_data_perm` VALUES ('76', '1', '1260412100929482752');
+INSERT INTO `sys_role_data_perm` VALUES ('77', '1', '-1');
+INSERT INTO `sys_role_data_perm` VALUES ('78', '1', '1260412099998347264');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -945,7 +1085,7 @@ CREATE TABLE `sys_role_menu` (
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
   `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4704 DEFAULT CHARSET=utf8 COMMENT='角色与菜单对应关系';
+) ENGINE=InnoDB AUTO_INCREMENT=4830 DEFAULT CHARSET=utf8 COMMENT='角色与菜单对应关系';
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -1166,59 +1306,6 @@ INSERT INTO `sys_role_menu` VALUES ('3280', '59', '3');
 INSERT INTO `sys_role_menu` VALUES ('3281', '59', '78');
 INSERT INTO `sys_role_menu` VALUES ('3282', '59', '1');
 INSERT INTO `sys_role_menu` VALUES ('3283', '59', '-1');
-INSERT INTO `sys_role_menu` VALUES ('4505', '1', '208');
-INSERT INTO `sys_role_menu` VALUES ('4506', '1', '207');
-INSERT INTO `sys_role_menu` VALUES ('4507', '1', '206');
-INSERT INTO `sys_role_menu` VALUES ('4508', '1', '205');
-INSERT INTO `sys_role_menu` VALUES ('4509', '1', '204');
-INSERT INTO `sys_role_menu` VALUES ('4510', '1', '92');
-INSERT INTO `sys_role_menu` VALUES ('4511', '1', '57');
-INSERT INTO `sys_role_menu` VALUES ('4512', '1', '30');
-INSERT INTO `sys_role_menu` VALUES ('4513', '1', '29');
-INSERT INTO `sys_role_menu` VALUES ('4514', '1', '28');
-INSERT INTO `sys_role_menu` VALUES ('4515', '1', '104');
-INSERT INTO `sys_role_menu` VALUES ('4516', '1', '48');
-INSERT INTO `sys_role_menu` VALUES ('4517', '1', '214');
-INSERT INTO `sys_role_menu` VALUES ('4518', '1', '213');
-INSERT INTO `sys_role_menu` VALUES ('4519', '1', '212');
-INSERT INTO `sys_role_menu` VALUES ('4520', '1', '211');
-INSERT INTO `sys_role_menu` VALUES ('4521', '1', '210');
-INSERT INTO `sys_role_menu` VALUES ('4522', '1', '76');
-INSERT INTO `sys_role_menu` VALUES ('4523', '1', '75');
-INSERT INTO `sys_role_menu` VALUES ('4524', '1', '74');
-INSERT INTO `sys_role_menu` VALUES ('4525', '1', '62');
-INSERT INTO `sys_role_menu` VALUES ('4526', '1', '56');
-INSERT INTO `sys_role_menu` VALUES ('4527', '1', '55');
-INSERT INTO `sys_role_menu` VALUES ('4528', '1', '15');
-INSERT INTO `sys_role_menu` VALUES ('4529', '1', '26');
-INSERT INTO `sys_role_menu` VALUES ('4530', '1', '25');
-INSERT INTO `sys_role_menu` VALUES ('4531', '1', '24');
-INSERT INTO `sys_role_menu` VALUES ('4532', '1', '14');
-INSERT INTO `sys_role_menu` VALUES ('4533', '1', '13');
-INSERT INTO `sys_role_menu` VALUES ('4534', '1', '12');
-INSERT INTO `sys_role_menu` VALUES ('4535', '1', '61');
-INSERT INTO `sys_role_menu` VALUES ('4536', '1', '22');
-INSERT INTO `sys_role_menu` VALUES ('4537', '1', '21');
-INSERT INTO `sys_role_menu` VALUES ('4538', '1', '20');
-INSERT INTO `sys_role_menu` VALUES ('4539', '1', '83');
-INSERT INTO `sys_role_menu` VALUES ('4540', '1', '81');
-INSERT INTO `sys_role_menu` VALUES ('4541', '1', '80');
-INSERT INTO `sys_role_menu` VALUES ('4542', '1', '79');
-INSERT INTO `sys_role_menu` VALUES ('4543', '1', '71');
-INSERT INTO `sys_role_menu` VALUES ('4544', '1', '203');
-INSERT INTO `sys_role_menu` VALUES ('4545', '1', '202');
-INSERT INTO `sys_role_menu` VALUES ('4546', '1', '27');
-INSERT INTO `sys_role_menu` VALUES ('4547', '1', '91');
-INSERT INTO `sys_role_menu` VALUES ('4548', '1', '77');
-INSERT INTO `sys_role_menu` VALUES ('4549', '1', '209');
-INSERT INTO `sys_role_menu` VALUES ('4550', '1', '73');
-INSERT INTO `sys_role_menu` VALUES ('4551', '1', '7');
-INSERT INTO `sys_role_menu` VALUES ('4552', '1', '6');
-INSERT INTO `sys_role_menu` VALUES ('4553', '1', '2');
-INSERT INTO `sys_role_menu` VALUES ('4554', '1', '3');
-INSERT INTO `sys_role_menu` VALUES ('4555', '1', '78');
-INSERT INTO `sys_role_menu` VALUES ('4556', '1', '1');
-INSERT INTO `sys_role_menu` VALUES ('4557', '1', '-1');
 INSERT INTO `sys_role_menu` VALUES ('4611', '61', '208');
 INSERT INTO `sys_role_menu` VALUES ('4612', '61', '207');
 INSERT INTO `sys_role_menu` VALUES ('4613', '61', '206');
@@ -1312,6 +1399,72 @@ INSERT INTO `sys_role_menu` VALUES ('4700', '60', '78');
 INSERT INTO `sys_role_menu` VALUES ('4701', '60', '1');
 INSERT INTO `sys_role_menu` VALUES ('4702', '60', '-1');
 INSERT INTO `sys_role_menu` VALUES ('4703', '60', '3');
+INSERT INTO `sys_role_menu` VALUES ('4764', '1', '227');
+INSERT INTO `sys_role_menu` VALUES ('4765', '1', '226');
+INSERT INTO `sys_role_menu` VALUES ('4766', '1', '225');
+INSERT INTO `sys_role_menu` VALUES ('4767', '1', '224');
+INSERT INTO `sys_role_menu` VALUES ('4768', '1', '223');
+INSERT INTO `sys_role_menu` VALUES ('4769', '1', '208');
+INSERT INTO `sys_role_menu` VALUES ('4770', '1', '207');
+INSERT INTO `sys_role_menu` VALUES ('4771', '1', '206');
+INSERT INTO `sys_role_menu` VALUES ('4772', '1', '205');
+INSERT INTO `sys_role_menu` VALUES ('4773', '1', '204');
+INSERT INTO `sys_role_menu` VALUES ('4774', '1', '92');
+INSERT INTO `sys_role_menu` VALUES ('4775', '1', '57');
+INSERT INTO `sys_role_menu` VALUES ('4776', '1', '30');
+INSERT INTO `sys_role_menu` VALUES ('4777', '1', '29');
+INSERT INTO `sys_role_menu` VALUES ('4778', '1', '28');
+INSERT INTO `sys_role_menu` VALUES ('4779', '1', '104');
+INSERT INTO `sys_role_menu` VALUES ('4780', '1', '48');
+INSERT INTO `sys_role_menu` VALUES ('4781', '1', '214');
+INSERT INTO `sys_role_menu` VALUES ('4782', '1', '213');
+INSERT INTO `sys_role_menu` VALUES ('4783', '1', '212');
+INSERT INTO `sys_role_menu` VALUES ('4784', '1', '211');
+INSERT INTO `sys_role_menu` VALUES ('4785', '1', '210');
+INSERT INTO `sys_role_menu` VALUES ('4786', '1', '76');
+INSERT INTO `sys_role_menu` VALUES ('4787', '1', '75');
+INSERT INTO `sys_role_menu` VALUES ('4788', '1', '74');
+INSERT INTO `sys_role_menu` VALUES ('4789', '1', '62');
+INSERT INTO `sys_role_menu` VALUES ('4790', '1', '56');
+INSERT INTO `sys_role_menu` VALUES ('4791', '1', '55');
+INSERT INTO `sys_role_menu` VALUES ('4792', '1', '15');
+INSERT INTO `sys_role_menu` VALUES ('4793', '1', '26');
+INSERT INTO `sys_role_menu` VALUES ('4794', '1', '25');
+INSERT INTO `sys_role_menu` VALUES ('4795', '1', '24');
+INSERT INTO `sys_role_menu` VALUES ('4796', '1', '14');
+INSERT INTO `sys_role_menu` VALUES ('4797', '1', '13');
+INSERT INTO `sys_role_menu` VALUES ('4798', '1', '12');
+INSERT INTO `sys_role_menu` VALUES ('4799', '1', '61');
+INSERT INTO `sys_role_menu` VALUES ('4800', '1', '22');
+INSERT INTO `sys_role_menu` VALUES ('4801', '1', '21');
+INSERT INTO `sys_role_menu` VALUES ('4802', '1', '20');
+INSERT INTO `sys_role_menu` VALUES ('4803', '1', '83');
+INSERT INTO `sys_role_menu` VALUES ('4804', '1', '81');
+INSERT INTO `sys_role_menu` VALUES ('4805', '1', '80');
+INSERT INTO `sys_role_menu` VALUES ('4806', '1', '79');
+INSERT INTO `sys_role_menu` VALUES ('4807', '1', '71');
+INSERT INTO `sys_role_menu` VALUES ('4808', '1', '222');
+INSERT INTO `sys_role_menu` VALUES ('4809', '1', '203');
+INSERT INTO `sys_role_menu` VALUES ('4810', '1', '202');
+INSERT INTO `sys_role_menu` VALUES ('4811', '1', '27');
+INSERT INTO `sys_role_menu` VALUES ('4812', '1', '91');
+INSERT INTO `sys_role_menu` VALUES ('4813', '1', '77');
+INSERT INTO `sys_role_menu` VALUES ('4814', '1', '209');
+INSERT INTO `sys_role_menu` VALUES ('4815', '1', '73');
+INSERT INTO `sys_role_menu` VALUES ('4816', '1', '7');
+INSERT INTO `sys_role_menu` VALUES ('4817', '1', '6');
+INSERT INTO `sys_role_menu` VALUES ('4818', '1', '2');
+INSERT INTO `sys_role_menu` VALUES ('4819', '1', '3');
+INSERT INTO `sys_role_menu` VALUES ('4820', '1', '78');
+INSERT INTO `sys_role_menu` VALUES ('4821', '1', '1');
+INSERT INTO `sys_role_menu` VALUES ('4822', '1', '228');
+INSERT INTO `sys_role_menu` VALUES ('4823', '1', '233');
+INSERT INTO `sys_role_menu` VALUES ('4824', '1', '232');
+INSERT INTO `sys_role_menu` VALUES ('4825', '1', '231');
+INSERT INTO `sys_role_menu` VALUES ('4826', '1', '230');
+INSERT INTO `sys_role_menu` VALUES ('4827', '1', '229');
+INSERT INTO `sys_role_menu` VALUES ('4828', '1', '221');
+INSERT INTO `sys_role_menu` VALUES ('4829', '1', '-1');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -1355,7 +1508,7 @@ INSERT INTO `sys_user` VALUES ('134', 'lyh', '李彦宏', 'dc26092b3244d9d432863
 INSERT INTO `sys_user` VALUES ('135', 'wjl', '王健林', '3967697dfced162cf6a34080259b83aa', '6', 'wjl@bootod.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
 INSERT INTO `sys_user` VALUES ('136', 'gdg', '郭德纲', '3bb1bda86bc02bf6478cd91e42135d2f', '9', 'gdg@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
 INSERT INTO `sys_user` VALUES ('137', 'test2', 'test2', '649169898e69272c0e5bc899baf1e904', null, '1179705413@qq.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('138', 'test3', 'test3', '4428f69c806f51128f3974f948a2f272', '16', '1179705413@qq.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_user` VALUES ('138', 'test3', 'test3', '79ba2d0b58d8a2e94f6b18744c8cd280', '16', '1179705413@qq.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -1459,6 +1612,29 @@ INSERT INTO `user_bookshelf` VALUES ('38', '1255664783722586112', '1254674396451
 INSERT INTO `user_bookshelf` VALUES ('39', '1255060328322027520', '1254681071191785472', '1254681071552495616', '2020-04-30 09:37:47', null);
 INSERT INTO `user_bookshelf` VALUES ('40', '1255060328322027520', '1254676970567565312', '3264258', '2020-04-30 09:57:18', '2020-04-30 19:19:11');
 INSERT INTO `user_bookshelf` VALUES ('41', '1255060328322027520', '1254675594315759616', '1254675594496114688', '2020-04-30 18:37:18', null);
+
+-- ----------------------------
+-- Table structure for user_buy_record
+-- ----------------------------
+DROP TABLE IF EXISTS `user_buy_record`;
+CREATE TABLE `user_buy_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `book_id` bigint(20) DEFAULT NULL COMMENT '购买的小说ID',
+  `book_name` varchar(50) DEFAULT NULL COMMENT '购买的小说名',
+  `book_index_id` bigint(20) DEFAULT NULL COMMENT '购买的章节ID',
+  `book_index_name` varchar(100) DEFAULT NULL COMMENT '购买的章节名',
+  `buy_amount` int(11) DEFAULT NULL COMMENT '购买使用的屋币数量',
+  `create_time` datetime DEFAULT NULL COMMENT '购买时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_userId_indexId` (`user_id`,`book_index_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='用户消费记录表';
+
+-- ----------------------------
+-- Records of user_buy_record
+-- ----------------------------
+INSERT INTO `user_buy_record` VALUES ('1', '1255060328322027520', '1260400284744613890', '我是一只消消乐2', '1260522024606953472', '第三章', '10', '2020-05-13 21:29:09');
+INSERT INTO `user_buy_record` VALUES ('2', '1255060328322027520', '1260400284744613890', '我是一只消消乐2', '1260564410687107072', '第四章', '10', '2020-05-13 21:40:38');
 
 -- ----------------------------
 -- Table structure for user_feedback

@@ -11,6 +11,14 @@ import java.util.Map;
 @Data
 public class RuleBean {
 
+    /**
+     * 小说更新列表url
+     * */
+    private String updateBookListUrl;
+
+    /**
+     * 分类列表页URL规则
+     * */
     private String bookListUrl;
 
     private Map<String,String> catIdRule;
@@ -37,6 +45,11 @@ public class RuleBean {
     private String bookContentUrl;
     private String contentStart;
     private String contentEnd;
+
+
+    private String picUrlPrefix;
+
+    private String bookIndexStart;
 
 
 }
