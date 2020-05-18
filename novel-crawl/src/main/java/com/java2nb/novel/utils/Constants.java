@@ -18,5 +18,5 @@ public class Constants {
     /**
      * 爬取小说http请求中无效的内容长度
      */
-    public static final int INVALID_HTML_LENGTH = 1000;
+    public static final int INVALID_HTML_LENGTH = 1500;
 }
