@@ -36,6 +36,8 @@ public class CrawlParser {
 
     private static RestTemplate restTemplate = RestTemplateUtil.getInstance("utf-8");
 
+    private static ThreadLocal <Integer> retryCount = new ThreadLocal<>();
+
     @SneakyThrows
     public static Book parseBook(RuleBean ruleBean, String bookId) {
         Book book = new Book();
@@ -148,10 +150,12 @@ public class CrawlParser {
         //读取目录
         String indexListUrl = ruleBean.getBookIndexUrl().replace("{bookId}", sourceBookId);
         String indexListHtml = getByHttpClient(indexListUrl);
-        if(StringUtils.isNotBlank(ruleBean.getBookIndexStart())){
-            indexListHtml = indexListHtml.substring(indexListHtml.indexOf(ruleBean.getBookIndexStart()) + ruleBean.getBookIndexStart().length());
-        }
+
         if (indexListHtml != null) {
+            if(StringUtils.isNotBlank(ruleBean.getBookIndexStart())){
+                indexListHtml = indexListHtml.substring(indexListHtml.indexOf(ruleBean.getBookIndexStart()) + ruleBean.getBookIndexStart().length());
+            }
+
             Pattern indexIdPatten = compile(ruleBean.getIndexIdPatten());
             Matcher indexIdMatch = indexIdPatten.matcher(indexListHtml);
 
@@ -177,7 +181,7 @@ public class CrawlParser {
 
                     //查询章节内容
                     String contentHtml = getByHttpClient(contentUrl);
-                    if (contentHtml != null) {
+                    if (contentHtml != null && !contentHtml.contains("正在手打中")) {
                         String content = contentHtml.substring(contentHtml.indexOf(ruleBean.getContentStart()) + ruleBean.getContentStart().length());
                         content = content.substring(0, content.indexOf(ruleBean.getContentEnd()));
                         //TODO插入章节目录和章节内容
@@ -259,17 +263,30 @@ public class CrawlParser {
                 log.debug("body长度："+body.length());
                 if(body.length() < Constants.INVALID_HTML_LENGTH){
                     log.debug("获取html页面内容失败");
-                    Thread.sleep(  new Random().nextInt(10*1000));
-                    return getByHttpClient(url);
+                    return processErrorHttpResult(url);
                 }
+                //成功获得html内容
                 return body;
-            } else {
-                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        return processErrorHttpResult(url);
+
+    }
+
+    @SneakyThrows
+    private static String processErrorHttpResult(String url){
+        Integer count = retryCount.get();
+        if(count == null){
+            count = 0;
+        }
+        if(count < Constants.HTTP_FAIL_RETRY_COUNT){
+            Thread.sleep(  new Random().nextInt(10*1000));
+            retryCount.set(++count);
+            return getByHttpClient(url);
+        }
+        return null;
     }
 
 

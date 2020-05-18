@@ -19,4 +19,9 @@ public class Constants {
      * 爬取小说http请求中无效的内容长度
      */
     public static final int INVALID_HTML_LENGTH = 1500;
+
+    /**
+     * 爬取小说http请求失败重试次数
+     */
+    public static final Integer HTTP_FAIL_RETRY_COUNT = 5;
 }
