@@ -57,7 +57,7 @@ public class RestTemplateUtil {
         requestFactory.setHttpClient(httpClient);
         requestFactory.setConnectionRequestTimeout(3000);
         requestFactory.setConnectTimeout(3000);
-        requestFactory.setReadTimeout(10000);
+        requestFactory.setReadTimeout(30000);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         List<HttpMessageConverter<?>> list = restTemplate.getMessageConverters();
         for (HttpMessageConverter<?> httpMessageConverter : list) {
