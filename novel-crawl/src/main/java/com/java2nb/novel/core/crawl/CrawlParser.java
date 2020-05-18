@@ -260,9 +260,7 @@ public class CrawlParser {
             ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
             if (forEntity.getStatusCode() == HttpStatus.OK) {
                 String body = forEntity.getBody();
-                log.debug("body长度："+body.length());
                 if(body.length() < Constants.INVALID_HTML_LENGTH){
-                    log.debug("获取html页面内容失败");
                     return processErrorHttpResult(url);
                 }
                 //成功获得html内容
