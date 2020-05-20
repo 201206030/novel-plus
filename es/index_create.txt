@@ -11,17 +11,20 @@ PUT /novel
         },
         "authorName" : {
           "type" : "text",
-          "analyzer": "ik_smart"
+          "analyzer": "ik_smart",
+          "boost": 1
         },
 
         "bookName" : {
           "type" : "text",
-          "analyzer": "ik_smart"
+          "analyzer": "ik_smart",
+          "boost": 2
         },
 
         "bookDesc" : {
           "type" : "text",
-          "analyzer": "ik_smart"
+          "analyzer": "ik_smart",
+          "boost": 0.1
         },
 
         "bookStatus" : {
@@ -34,7 +37,8 @@ PUT /novel
 
         "catName" : {
           "type" : "text",
-          "analyzer": "ik_smart"
+          "analyzer": "ik_smart",
+          "boost": 0.5
         },
 
         "lastIndexId" : {
@@ -43,7 +47,8 @@ PUT /novel
 
         "lastIndexName" : {
           "type" : "text",
-          "analyzer": "ik_smart"
+          "analyzer": "ik_smart",
+          "boost": 0.1
         },
 
         "lastIndexUpdateTime" : {

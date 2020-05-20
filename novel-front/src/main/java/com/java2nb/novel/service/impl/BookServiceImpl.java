@@ -64,7 +64,7 @@ public class BookServiceImpl implements BookService {
 
     /**
      * 本地图片保存路径
-     * */
+     */
     @Value("${pic.save.path}")
     private String picSavePath;
 
@@ -98,24 +98,24 @@ public class BookServiceImpl implements BookService {
         String result = cacheService.get(CacheKey.INDEX_BOOK_SETTINGS_KEY);
         if (result == null || result.length() < Constants.OBJECT_JSON_CACHE_EXIST_LENGTH) {
             List<BookSettingVO> list = bookSettingMapper.listVO();
-            if(list.size() == 0) {
+            if (list.size() == 0) {
                 //如果首页小说没有被设置，则初始化首页小说设置
                 list = initIndexBookSetting();
             }
             result = new ObjectMapper().writeValueAsString(list.stream().collect(Collectors.groupingBy(BookSettingVO::getType)));
             cacheService.set(CacheKey.INDEX_BOOK_SETTINGS_KEY, result);
         }
-        return new ObjectMapper().readValue(result,Map.class);
+        return new ObjectMapper().readValue(result, Map.class);
     }
 
 
     /**
      * 初始化首页小说设置
-     * */
+     */
     private List<BookSettingVO> initIndexBookSetting() {
         Date currentDate = new Date();
-        List<Book> books =  bookMapper.selectIdsByScoreAndRandom(Constants.INDEX_BOOK_SETTING_NUM);
-        if(books.size() == Constants.INDEX_BOOK_SETTING_NUM) {
+        List<Book> books = bookMapper.selectIdsByScoreAndRandom(Constants.INDEX_BOOK_SETTING_NUM);
+        if (books.size() == Constants.INDEX_BOOK_SETTING_NUM) {
             List<BookSetting> bookSettingList = new ArrayList<>(Constants.INDEX_BOOK_SETTING_NUM);
             List<BookSettingVO> bookSettingVOList = new ArrayList<>(Constants.INDEX_BOOK_SETTING_NUM);
             for (int i = 0; i < books.size(); i++) {
@@ -129,7 +129,7 @@ public class BookServiceImpl implements BookService {
                     type = 2;
                 } else if (i < 26) {
                     type = 3;
-                }else{
+                } else {
                     type = 4;
                 }
                 BookSettingVO bookSettingVO = new BookSettingVO();
@@ -141,8 +141,8 @@ public class BookServiceImpl implements BookService {
                 bookSetting.setUpdateTime(currentDate);
                 bookSettingList.add(bookSetting);
 
-                BeanUtils.copyProperties(book,bookSettingVO);
-                BeanUtils.copyProperties(bookSetting,bookSettingVO);
+                BeanUtils.copyProperties(book, bookSettingVO);
+                BeanUtils.copyProperties(bookSetting, bookSettingVO);
                 bookSettingVOList.add(bookSettingVO);
             }
 
@@ -179,13 +179,12 @@ public class BookServiceImpl implements BookService {
         List<BookVO> result = (List<BookVO>) cacheService.getObject(CacheKey.INDEX_UPDATE_BOOK_KEY);
         if (result == null || result.size() == 0) {
             List<Book> bookPOList = listRank((byte) 2, 23);
-            result = BeanUtil.copyList(bookPOList,BookVO.class);
+            result = BeanUtil.copyList(bookPOList, BookVO.class);
             cacheService.setObject(CacheKey.INDEX_UPDATE_BOOK_KEY, result, 60 * 10);
         }
         return result;
     }
 
-    @SneakyThrows
     @Override
     public PageInfo searchByPage(BookSP params, int page, int pageSize) {
 
@@ -197,149 +196,155 @@ public class BookServiceImpl implements BookService {
             params.setUpdateTimeMin(new Date(time));
         }
 
-        if(esEnable == 1) {
-            List<EsBookVO> bookList = new ArrayList<>(0);
+        if (esEnable == 1) {
 
-            //使用搜索引擎搜索
-            BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-            // 构造查询哪个字段
-            if (StringUtils.isNoneBlank(params.getKeyword())) {
-                boolQueryBuilder = boolQueryBuilder.must(QueryBuilders.queryStringQuery(params.getKeyword()));
-            }
 
-            // 作品方向
-            if (params.getWorkDirection() != null) {
-                boolQueryBuilder.filter(QueryBuilders.termQuery("workDirection", params.getWorkDirection()));
-            }
+            try {
+                List<EsBookVO> bookList = new ArrayList<>(0);
 
-            // 分类
-            if (params.getCatId() != null) {
-                boolQueryBuilder.filter(QueryBuilders.termQuery("catId", params.getCatId()));
-            }
-            if (params.getBookStatus() != null) {
-                boolQueryBuilder.filter(QueryBuilders.termQuery("bookStatus", params.getBookStatus()));
-            }
+                //使用搜索引擎搜索
+                BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+                // 构造查询哪个字段
+                if (StringUtils.isNoneBlank(params.getKeyword())) {
+                    boolQueryBuilder = boolQueryBuilder.must(QueryBuilders.queryStringQuery(params.getKeyword()));
+                }
 
-            if(params.getWordCountMin() == null){
-                params.setWordCountMin(0);
-            }
-            if(params.getWordCountMax() == null){
-                params.setWordCountMax(Integer.MAX_VALUE);
-            }
+                // 作品方向
+                if (params.getWorkDirection() != null) {
+                    boolQueryBuilder.filter(QueryBuilders.termQuery("workDirection", params.getWorkDirection()));
+                }
 
-            boolQueryBuilder.filter(QueryBuilders.rangeQuery("wordCount").gte(params.getWordCountMin()).lte(params.getWordCountMax()));
+                // 分类
+                if (params.getCatId() != null) {
+                    boolQueryBuilder.filter(QueryBuilders.termQuery("catId", params.getCatId()));
+                }
+                if (params.getBookStatus() != null) {
+                    boolQueryBuilder.filter(QueryBuilders.termQuery("bookStatus", params.getBookStatus()));
+                }
 
-            if(params.getUpdateTimeMin() != null){
-                boolQueryBuilder.filter(QueryBuilders.rangeQuery("lastIndexUpdateTime").gte(params.getUpdateTimeMin()));
-            }
+                if (params.getWordCountMin() == null) {
+                    params.setWordCountMin(0);
+                }
+                if (params.getWordCountMax() == null) {
+                    params.setWordCountMax(Integer.MAX_VALUE);
+                }
 
-            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-            searchSourceBuilder.query(boolQueryBuilder);
+                boolQueryBuilder.filter(QueryBuilders.rangeQuery("wordCount").gte(params.getWordCountMin()).lte(params.getWordCountMax()));
 
-            Count count = new Count.Builder().addIndex("novel").addType("book")
-                    .query(searchSourceBuilder.toString()).build();
-            CountResult results = jestClient.execute(count);
-            Double total = results.getCount();
+                if (params.getUpdateTimeMin() != null) {
+                    boolQueryBuilder.filter(QueryBuilders.rangeQuery("lastIndexUpdateTime").gte(params.getUpdateTimeMin()));
+                }
 
-            // 设置高亮字段
 
-            // 临时屏蔽小程序未处理的高亮字段，等小程序处理后再放开
-            HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.field("authorName");
-            highlightBuilder.field("bookName");
-            highlightBuilder.field("bookDesc");
-            highlightBuilder.field("lastIndexName");
-            highlightBuilder.field("catName");
-            highlightBuilder.preTags("<span style='color:red'>").postTags("</span>");
-            highlightBuilder.fragmentSize(200);
-            searchSourceBuilder.highlighter(highlightBuilder);
 
-            //设置排序
-            if(params.getSort() != null){
-                searchSourceBuilder.sort(StringUtil.camelName(params.getSort()), SortOrder.DESC);
-            }
+                SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+                searchSourceBuilder.query(boolQueryBuilder);
 
-            // 设置分页
-            searchSourceBuilder.from((page - 1) * pageSize);
-            searchSourceBuilder.size(pageSize);
 
-            // 构建Search对象
-            Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("novel").addType("book").build();
-            log.debug(search.toString());
-            SearchResult result ;
-            result = jestClient.execute(search);
-            log.debug(result.getJsonString());
+                Count count = new Count.Builder().addIndex("novel").addType("book")
+                        .query(searchSourceBuilder.toString()).build();
+                CountResult results = jestClient.execute(count);
+                Double total = results.getCount();
 
-            Map resultMap = new ObjectMapper().readValue(result.getJsonString(), Map.class);
-            if (resultMap.get("hits") != null) {
-                Map hitsMap = (Map) resultMap.get("hits");
-                if (hitsMap.size() > 0 && hitsMap.get("hits") != null) {
-                    List hitsList = (List) hitsMap.get("hits");
-                    if (hitsList.size() > 0 && result.getSourceAsString() != null) {
 
-                        JavaType jt = new ObjectMapper().getTypeFactory().constructParametricType(ArrayList.class, EsBookVO.class);
-                        bookList = new ObjectMapper().readValue("[" + result.getSourceAsString() + "]", jt);
+                // 临时屏蔽小程序未处理的高亮字段，等小程序处理后再放开
+                HighlightBuilder highlightBuilder = new HighlightBuilder();
+                highlightBuilder.field("authorName");
+                highlightBuilder.field("bookName");
+                highlightBuilder.field("bookDesc");
+                highlightBuilder.field("lastIndexName");
+                highlightBuilder.field("catName");
+                highlightBuilder.preTags("<span style='color:red'>").postTags("</span>");
+                highlightBuilder.fragmentSize(20000);
+                searchSourceBuilder.highlighter(highlightBuilder);
 
-                        if (bookList != null) {
-                            for (int i = 0; i < bookList.size(); i++) {
-                                hitsMap = (Map) hitsList.get(i);
-                                Map highlightMap = (Map) hitsMap.get("highlight");
-                                if (highlightMap != null && highlightMap.size() > 0) {
 
-                                    List<String> authorNameList = (List<String>) highlightMap.get("authorName");
-                                    if (authorNameList != null && authorNameList.size() > 0) {
-                                        bookList.get(i).setAuthorName(authorNameList.get(0));
-                                    }
+                //设置排序
+                if (params.getSort() != null) {
+                    searchSourceBuilder.sort(StringUtil.camelName(params.getSort()), SortOrder.DESC);
+                }
 
-                                    List<String> bookNameList = (List<String>) highlightMap.get("bookName");
-                                    if (bookNameList != null && bookNameList.size() > 0) {
-                                        bookList.get(i).setBookName(bookNameList.get(0));
-                                    }
+                // 设置分页
+                searchSourceBuilder.from((page - 1) * pageSize);
+                searchSourceBuilder.size(pageSize);
 
-                                    List<String> bookDescList = (List<String>) highlightMap.get("bookDesc");
-                                    if (bookDescList != null && bookDescList.size() > 0) {
-                                        bookList.get(i).setBookDesc(bookDescList.get(0));
-                                    }
+                // 构建Search对象
+                Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("novel").addType("book").build();
+                log.debug(search.toString());
+                SearchResult result;
+                result = jestClient.execute(search);
+                if (result.isSucceeded()) {
+                    log.debug(result.getJsonString());
 
-                                    List<String> lastIndexNameList = (List<String>) highlightMap.get("lastIndexName");
-                                    if (lastIndexNameList != null && lastIndexNameList.size() > 0) {
-                                        bookList.get(i).setLastIndexName(lastIndexNameList.get(0));
-                                    }
+                    Map resultMap = new ObjectMapper().readValue(result.getJsonString(), Map.class);
+                    if (resultMap.get("hits") != null) {
+                        Map hitsMap = (Map) resultMap.get("hits");
+                        if (hitsMap.size() > 0 && hitsMap.get("hits") != null) {
+                            List hitsList = (List) hitsMap.get("hits");
+                            if (hitsList.size() > 0 && result.getSourceAsString() != null) {
 
-                                    List<String> catNameList = (List<String>) highlightMap.get("catName");
-                                    if (catNameList != null && catNameList.size() > 0) {
-                                        bookList.get(i).setCatName(catNameList.get(0));
+                                JavaType jt = new ObjectMapper().getTypeFactory().constructParametricType(ArrayList.class, EsBookVO.class);
+                                bookList = new ObjectMapper().readValue("[" + result.getSourceAsString() + "]", jt);
+
+                                if (bookList != null) {
+                                    for (int i = 0; i < bookList.size(); i++) {
+                                        hitsMap = (Map) hitsList.get(i);
+                                        Map highlightMap = (Map) hitsMap.get("highlight");
+                                        if (highlightMap != null && highlightMap.size() > 0) {
+
+                                            List<String> authorNameList = (List<String>) highlightMap.get("authorName");
+                                            if (authorNameList != null && authorNameList.size() > 0) {
+                                                bookList.get(i).setAuthorName(authorNameList.get(0));
+                                            }
+
+                                            List<String> bookNameList = (List<String>) highlightMap.get("bookName");
+                                            if (bookNameList != null && bookNameList.size() > 0) {
+                                                bookList.get(i).setBookName(bookNameList.get(0));
+                                            }
+
+                                            List<String> bookDescList = (List<String>) highlightMap.get("bookDesc");
+                                            if (bookDescList != null && bookDescList.size() > 0) {
+                                                bookList.get(i).setBookDesc(bookDescList.get(0));
+                                            }
+
+                                            List<String> lastIndexNameList = (List<String>) highlightMap.get("lastIndexName");
+                                            if (lastIndexNameList != null && lastIndexNameList.size() > 0) {
+                                                bookList.get(i).setLastIndexName(lastIndexNameList.get(0));
+                                            }
+
+                                            List<String> catNameList = (List<String>) highlightMap.get("catName");
+                                            if (catNameList != null && catNameList.size() > 0) {
+                                                bookList.get(i).setCatName(catNameList.get(0));
+                                            }
+
+
+                                        }
                                     }
 
 
                                 }
                             }
-
-
-
                         }
                     }
+
+                    PageInfo<EsBookVO> pageInfo = new PageInfo<>(bookList);
+                    pageInfo.setTotal(total.longValue());
+                    pageInfo.setPageNum(page);
+                    pageInfo.setPageSize(pageSize);
+                    return pageInfo;
                 }
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
 
-            PageInfo<EsBookVO> pageInfo = new PageInfo<>(bookList);
-            pageInfo.setTotal(total.longValue());
-            pageInfo.setPageNum(page);
-            pageInfo.setPageSize(pageSize);
-            return pageInfo;
 
-
-
-
-
-        }else{
-            PageHelper.startPage(page, pageSize);
-
-            if (StringUtils.isNotBlank(params.getSort())) {
-                OrderByHelper.orderBy(params.getSort() + " desc");
-            }
-            return new PageInfo<>(bookMapper.searchByPage(params));
         }
+        PageHelper.startPage(page, pageSize);
+
+        if (StringUtils.isNotBlank(params.getSort())) {
+            OrderByHelper.orderBy(params.getSort() + " desc");
+        }
+        return new PageInfo<>(bookMapper.searchByPage(params));
 
 
     }
@@ -365,15 +370,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookIndex> queryIndexList(Long bookId,String orderBy, Integer limit) {
-        if(StringUtils.isNotBlank(orderBy)){
+    public List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer limit) {
+        if (StringUtils.isNotBlank(orderBy)) {
             OrderByHelper.orderBy(orderBy);
         }
-        if(limit != null){
-            PageHelper.startPage(1,limit);
+        if (limit != null) {
+            PageHelper.startPage(1, limit);
         }
 
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime,BookIndexDynamicSqlSupport.isVip)
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime, BookIndexDynamicSqlSupport.isVip)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
                 .build()
@@ -384,7 +389,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookIndex queryBookIndex(Long bookIndexId) {
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.updateTime,BookIndexDynamicSqlSupport.isVip)
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.updateTime, BookIndexDynamicSqlSupport.isVip)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.id, isEqualTo(bookIndexId))
                 .build()
@@ -430,7 +435,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookContent queryBookContent(Long bookIndexId) {
-        SelectStatementProvider selectStatement = select(BookContentDynamicSqlSupport.id,BookContentDynamicSqlSupport.content)
+        SelectStatementProvider selectStatement = select(BookContentDynamicSqlSupport.id, BookContentDynamicSqlSupport.content)
                 .from(bookContent)
                 .where(BookContentDynamicSqlSupport.indexId, isEqualTo(bookIndexId))
                 .limit(1)
@@ -464,7 +469,7 @@ public class BookServiceImpl implements BookService {
         }
         SelectStatementProvider selectStatement = select(id, catId, catName, bookName, lastIndexId, lastIndexName, authorId, authorName, picUrl, bookDesc, wordCount, lastIndexUpdateTime)
                 .from(book)
-                .where(wordCount,isGreaterThan(0))
+                .where(wordCount, isGreaterThan(0))
                 .orderBy(sortSpecification)
                 .limit(limit)
                 .build()
@@ -475,7 +480,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void addVisitCount(Long bookId) {
-        bookMapper.addVisitCount(bookId,new Date());
+        bookMapper.addVisitCount(bookId, new Date());
     }
 
     @Override
@@ -507,10 +512,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookCommentVO> listCommentByPage(Long userId,Long bookId, int page, int pageSize) {
+    public List<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         OrderByHelper.orderBy("t1.create_time desc");
-        return bookCommentMapper.listCommentByPage(userId,bookId);
+        return bookCommentMapper.listCommentByPage(userId, bookId);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -519,11 +524,11 @@ public class BookServiceImpl implements BookService {
         //判断该用户是否已评论过该书籍
         SelectStatementProvider selectStatement = select(count(BookCommentDynamicSqlSupport.id))
                 .from(bookComment)
-                .where(BookCommentDynamicSqlSupport.createUserId,isEqualTo(userId))
-                .and(BookCommentDynamicSqlSupport.bookId,isEqualTo(comment.getBookId()))
+                .where(BookCommentDynamicSqlSupport.createUserId, isEqualTo(userId))
+                .and(BookCommentDynamicSqlSupport.bookId, isEqualTo(comment.getBookId()))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        if(bookCommentMapper.count(selectStatement)>0){
+        if (bookCommentMapper.count(selectStatement) > 0) {
             throw new BusinessException(ResponseStatus.HAS_COMMENTS);
         }
         //增加评论
@@ -532,7 +537,7 @@ public class BookServiceImpl implements BookService {
         bookCommentMapper.insertSelective(comment);
         //增加书籍评论数
         bookMapper.addCommentCount(comment.getBookId());
-        
+
     }
 
     @Override
@@ -540,14 +545,14 @@ public class BookServiceImpl implements BookService {
         Long authorId;
         SelectStatementProvider selectStatement = select(BookAuthorDynamicSqlSupport.id)
                 .from(BookAuthorDynamicSqlSupport.bookAuthor)
-                .where(BookAuthorDynamicSqlSupport.penName,isEqualTo(authorName))
+                .where(BookAuthorDynamicSqlSupport.penName, isEqualTo(authorName))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<BookAuthor> bookAuthors = bookAuthorMapper.selectMany(selectStatement);
-        if(bookAuthors.size()>0){
+        if (bookAuthors.size() > 0) {
             //作者存在
             authorId = bookAuthors.get(0).getId();
-        }else{
+        } else {
             //作者不存在，先创建作者
             Date currentDate = new Date();
             authorId = new IdWorker().nextId();
@@ -567,18 +572,17 @@ public class BookServiceImpl implements BookService {
     }
 
 
-
     @Override
     public Long queryIdByNameAndAuthor(String bookName, String author) {
         //查询小说ID
         SelectStatementProvider selectStatement = select(id)
                 .from(book)
-                .where(BookDynamicSqlSupport.bookName,isEqualTo(bookName))
-                .and(BookDynamicSqlSupport.authorName,isEqualTo(authorName))
+                .where(BookDynamicSqlSupport.bookName, isEqualTo(bookName))
+                .and(BookDynamicSqlSupport.authorName, isEqualTo(authorName))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<Book> books = bookMapper.selectMany(selectStatement);
-        if(books.size()>0){
+        if (books.size() > 0) {
             return books.get(0).getId();
         }
         return null;
@@ -588,7 +592,7 @@ public class BookServiceImpl implements BookService {
     public List<Integer> queryIndexNumByBookId(Long bookId) {
         SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.indexNum)
                 .from(BookIndexDynamicSqlSupport.bookIndex)
-                .where(BookIndexDynamicSqlSupport.bookId,isEqualTo(bookId))
+                .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -597,20 +601,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> queryNetworkPicBooks(Integer limit, Integer offset) {
-        return bookMapper.queryNetworkPicBooks(limit,offset);
+        return bookMapper.queryNetworkPicBooks(limit, offset);
     }
 
     @Override
     public void updateBookPicToLocal(String picUrl, Long bookId) {
 
-        picUrl = FileUtil.network2Local(picUrl,picSavePath, Constants.LOCAL_PIC_PREFIX);
+        picUrl = FileUtil.network2Local(picUrl, picSavePath, Constants.LOCAL_PIC_PREFIX);
 
         bookMapper.update(update(book)
                 .set(BookDynamicSqlSupport.picUrl)
                 .equalTo(picUrl)
                 .set(updateTime)
                 .equalTo(new Date())
-                .where(id,isEqualTo(bookId))
+                .where(id, isEqualTo(bookId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
 
@@ -619,7 +623,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
 
-        PageHelper.startPage(page,pageSize);
+        PageHelper.startPage(page, pageSize);
 
         SelectStatementProvider selectStatement = select(id, bookName, visitCount, lastIndexName, status)
                 .from(book)
@@ -634,10 +638,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addBook(Book book, Long authorId, String penName) {
         //判断小说名是否存在
-        if(queryIdByNameAndAuthor(book.getBookName(),penName)!=null){
+        if (queryIdByNameAndAuthor(book.getBookName(), penName) != null) {
             //该作者发布过此书名的小说
             throw new BusinessException(ResponseStatus.BOOKNAME_EXISTS);
-        };
+        }
+        ;
         book.setAuthorName(penName);
         book.setAuthorId(authorId);
         book.setVisitCount(0L);
@@ -655,8 +660,8 @@ public class BookServiceImpl implements BookService {
         bookMapper.update(update(book)
                 .set(BookDynamicSqlSupport.status)
                 .equalTo(status)
-                .where(id,isEqualTo(bookId))
-                .and(BookDynamicSqlSupport.authorId,isEqualTo(authorId))
+                .where(id, isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
     }
@@ -666,7 +671,7 @@ public class BookServiceImpl implements BookService {
     public void addBookContent(Long bookId, String indexName, String content, Long authorId) {
 
         Book book = queryBookDetail(bookId);
-        if(!authorId.equals(book.getAuthorId())){
+        if (!authorId.equals(book.getAuthorId())) {
             //并不是更新自己的小说
             return;
         }
@@ -683,15 +688,15 @@ public class BookServiceImpl implements BookService {
                 .set(BookDynamicSqlSupport.lastIndexUpdateTime)
                 .equalTo(currentDate)
                 .set(BookDynamicSqlSupport.wordCount)
-                .equalTo(book.getWordCount()+wordCount)
-                .where(id,isEqualTo(bookId))
-                .and(BookDynamicSqlSupport.authorId,isEqualTo(authorId))
+                .equalTo(book.getWordCount() + wordCount)
+                .where(id, isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
         //更新小说目录表
         int indexNum = 0;
-        if(book.getLastIndexId() != null){
-            indexNum =  queryBookIndex(book.getLastIndexId()).getIndexNum()+1;
+        if (book.getLastIndexId() != null) {
+            indexNum = queryBookIndex(book.getLastIndexId()).getIndexNum() + 1;
         }
         BookIndex lastBookIndex = new BookIndex();
         lastBookIndex.setId(lastIndexId);
@@ -711,18 +716,17 @@ public class BookServiceImpl implements BookService {
         bookContentMapper.insertSelective(bookContent);
 
 
-
     }
 
     @Override
     public List<Book> queryBookByUpdateTimeByPage(Date startDate, Date endDate, int page, int pageSize) {
 
-        PageHelper.startPage(page,pageSize);
+        PageHelper.startPage(page, pageSize);
 
         return bookMapper.selectMany(select(book.allColumns())
                 .from(book)
-                .where(updateTime,isGreaterThanOrEqualTo(startDate))
-                .and(updateTime,isLessThan(endDate))
+                .where(updateTime, isGreaterThanOrEqualTo(startDate))
+                .and(updateTime, isLessThan(endDate))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
     }
