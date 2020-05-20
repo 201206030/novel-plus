@@ -46,4 +46,8 @@ public interface CacheKey {
      * */
     String RUNNING_CRAWL_THREAD_KEY_PREFIX = "runningCrawlTreadDataKeyPrefix";
 
+    /**
+     * 上一次搜索引擎更新的时间
+     * */
+    String ES_LAST_UPDATE_TIME = "esLastUpdateTime";
 }

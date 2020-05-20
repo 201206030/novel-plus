@@ -1,12 +1,14 @@
 package com.java2nb.novel.service;
 
 
+import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.search.BookSP;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.vo.BookVO;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,9 +46,9 @@ public interface BookService {
      * @param params 搜索参数
      * @param page 页码
      * @param pageSize 分页大小
-     * @return 小说集合
+     * @return 小说集合分页信息
      * */
-    List<BookVO> searchByPage(BookSP params, int page, int pageSize);
+    PageInfo searchByPage(BookSP params, int page, int pageSize);
 
     /**
      * 查询小说分类列表
@@ -224,4 +226,15 @@ public interface BookService {
      * @param authorId 作者ID
      * */
     void addBookContent(Long bookId, String indexName, String content, Long authorId);
+
+
+    /**
+     * 根据更新时间分页查询书籍列表
+     * @param startDate 开始时间，包括该时间
+     * @param endDate 结束时间，不包括该时间
+     * @param page  页码
+     * @param pageSize 每页数量
+     * @return 书籍列表
+     * */
+    List<Book> queryBookByUpdateTimeByPage(Date startDate, Date endDate, int page, int pageSize);
 }

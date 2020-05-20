@@ -34,8 +34,9 @@
 
     </select>
 
-    <update id="addVisitCount" parameterType="long">
-        update book set visit_count = visit_count + 1 where id = #{bookId}
+    <update id="addVisitCount" >
+        update book set visit_count = visit_count + 1 , update_time = #{date}
+        where id = #{bookId}
     </update>
 
     <select id="listRecBookByCatId" parameterType="int" resultType="com.java2nb.novel.entity.Book">

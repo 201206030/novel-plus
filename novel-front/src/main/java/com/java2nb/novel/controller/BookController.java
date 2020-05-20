@@ -79,8 +79,8 @@ public class BookController extends BaseController{
      * */
     @PostMapping("searchByPage")
     public ResultBean searchByPage(BookSP bookSP, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "20") int pageSize){
-        List<BookVO> books = bookService.searchByPage(bookSP,page,pageSize);
-        return ResultBean.ok(new PageInfo<>(books));
+        PageInfo<BookVO> pageInfo = bookService.searchByPage(bookSP,page,pageSize);
+        return ResultBean.ok(pageInfo);
     }
 
     /**

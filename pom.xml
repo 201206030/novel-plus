@@ -36,6 +36,8 @@
         <orderbyhelper.version>1.0.2</orderbyhelper.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <jjwt.version>0.9.0</jjwt.version>
+        <elasticsearch.version>6.2.2</elasticsearch.version>
+        <jest.version>6.3.1</jest.version>
     </properties>
 
     <dependencyManagement>

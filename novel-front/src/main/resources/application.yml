@@ -6,6 +6,15 @@ spring:
     active: dev
     include: alipay
 
+
+  elasticsearch:
+    #是否开启搜索引擎，1：开启，0：不开启
+    enable: 0
+    jest:
+      uris: http://198.245.61.51:9200
+
+
+
 jwt:
   secret: novel!#20191230
   expiration: 604800
