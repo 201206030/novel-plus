@@ -247,7 +247,7 @@ public class BookServiceImpl implements BookService {
                 Double total = results.getCount();
 
 
-                // 临时屏蔽小程序未处理的高亮字段，等小程序处理后再放开
+                // 高亮字段
                 HighlightBuilder highlightBuilder = new HighlightBuilder();
                 highlightBuilder.field("authorName");
                 highlightBuilder.field("bookName");
