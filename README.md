@@ -40,7 +40,7 @@ novel-plus -- 父工程
 ```
 
 #### 技术选型
-Springboot+Mybatis+Mysql+Ehcache+Thymeleaf+Layui
+Springboot+Mybatis+Mysql+ElasticSearch+Ehcache+Thymeleaf+Layui
 
 #### PC站截图
 
@@ -52,35 +52,43 @@ Springboot+Mybatis+Mysql+Ehcache+Thymeleaf+Layui
 
 ![img](https://oscimg.oschina.net/oscnet/up-d0b2e03129bfae47b8bb96a491b73d383c5.png)
 
-3. 排行榜
+3. 搜索页
+
+   
+
+   ![img](./assets/QQ20200520-215756.png)
+
+   
+
+4. 排行榜
 
 ![img](https://oscimg.oschina.net/oscnet/up-78d5a68586cd92a86c669311f414508f922.png)
 
-4. 详情页
+5. 详情页
 
 ![img](https://oscimg.oschina.net/oscnet/up-8be2495a2869f93626b0c9c1df6f329747a.png)
 
-5. 阅读页
+6. 阅读页
 
 ![img](https://oscimg.oschina.net/oscnet/up-517c84148d2db8e11717a8bbecc57fa1be7.png)
 
-6. 用户中心
+7. 用户中心
 
 ![img](https://oscimg.oschina.net/oscnet/up-805a30e7a663a3fd5cb39a7ea26bc132a01.png)
 
-7. 充值
+8. 充值
 
 ![img](https://oscimg.oschina.net/oscnet/up-5a601b0b3af3224d0bebcfe12fc15075d34.png)
 
 ![img](https://oscimg.oschina.net/oscnet/up-face25d02c07b05b2ce954cc4bf4ee6a0cc.png)
 
-8.作家专区
+9. 作家专区
 
 ![img](https://oscimg.oschina.net/oscnet/up-30766372cc7f56480ff1d7d55198204f6ea.png)
 
 ![img](https://oscimg.oschina.net/oscnet/up-9737995e465b86f3bee3211221f6c3b8a56.png)
 
-9.购买
+10. 购买
 
 ![img](https://oscimg.oschina.net/oscnet/up-ce0f585efd82a9670335f118cf5897c85e9.png)
 

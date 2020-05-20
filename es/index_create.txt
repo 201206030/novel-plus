@@ -12,7 +12,7 @@ PUT /novel
         "authorName" : {
           "type" : "text",
           "analyzer": "ik_smart",
-          "boost": 1
+          "boost": 1.9
         },
 
         "bookName" : {
@@ -38,7 +38,7 @@ PUT /novel
         "catName" : {
           "type" : "text",
           "analyzer": "ik_smart",
-          "boost": 0.5
+          "boost": 1.0
         },
 
         "lastIndexId" : {
