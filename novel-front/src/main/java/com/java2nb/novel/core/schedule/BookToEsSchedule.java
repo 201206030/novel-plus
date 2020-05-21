@@ -43,13 +43,12 @@ public class BookToEsSchedule {
     private boolean lock = false;
 
     /**
-     * 5秒导入一次
+     * 1分钟导入一次
      */
-    @Scheduled(fixedRate = 1000 * 5)
+    @Scheduled(fixedRate = 1000 * 60)
     public void saveToEs() {
         if (!lock) {
             lock = true;
-            Date currentDate = new Date();
             try {
                 //查询需要更新的小说
                 Date lastDate = (Date) cacheService.getObject(CacheKey.ES_LAST_UPDATE_TIME);
@@ -58,10 +57,9 @@ public class BookToEsSchedule {
                 }
 
                 long count ;
-                int page = 1;
                 do {
 
-                    List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate, currentDate,page,100);
+                    List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate,100);
                     for(Book book : books) {
                         //导入到ES
                         EsBookVO esBookVO = new EsBookVO();
@@ -71,14 +69,15 @@ public class BookToEsSchedule {
 
                         jestClient.execute(action);
 
+                        lastDate = book.getUpdateTime();
+
                     }
 
                     count = books.size();
-                    page++;
 
                 }while (count == 100);
 
-                cacheService.setObject(CacheKey.ES_LAST_UPDATE_TIME, currentDate);
+                cacheService.setObject(CacheKey.ES_LAST_UPDATE_TIME, lastDate);
 
             } catch (Exception e) {
                 log.error(e.getMessage(),e);

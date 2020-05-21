@@ -231,10 +231,8 @@ public interface BookService {
     /**
      * 根据更新时间分页查询书籍列表
      * @param startDate 开始时间，包括该时间
-     * @param endDate 结束时间，不包括该时间
-     * @param page  页码
-     * @param pageSize 每页数量
+     * @param limit 查询数量
      * @return 书籍列表
      * */
-    List<Book> queryBookByUpdateTimeByPage(Date startDate, Date endDate, int page, int pageSize);
+    List<Book> queryBookByUpdateTimeByPage(Date startDate, int limit);
 }

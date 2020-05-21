@@ -55,7 +55,7 @@
     <select id="queryNetworkPicBooks" resultType="com.java2nb.novel.entity.Book">
         select
         id,pic_url from book
-        where pic_url like 'http://%' or pic_url like 'https://%'
+        where pic_url like 'http%'
         limit #{offset},#{limit}
     </select>
 

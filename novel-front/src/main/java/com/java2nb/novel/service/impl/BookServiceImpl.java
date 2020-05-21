@@ -719,14 +719,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> queryBookByUpdateTimeByPage(Date startDate, Date endDate, int page, int pageSize) {
+    public List<Book> queryBookByUpdateTimeByPage(Date startDate,  int limit) {
 
-        PageHelper.startPage(page, pageSize);
 
         return bookMapper.selectMany(select(book.allColumns())
                 .from(book)
-                .where(updateTime, isGreaterThanOrEqualTo(startDate))
-                .and(updateTime, isLessThan(endDate))
+                .where(updateTime, isGreaterThan(startDate))
+                .orderBy(updateTime)
+                .limit(limit)
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
     }
