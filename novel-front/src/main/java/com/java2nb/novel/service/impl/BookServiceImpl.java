@@ -600,8 +600,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> queryNetworkPicBooks(Integer limit, Integer offset) {
-        return bookMapper.queryNetworkPicBooks(limit, offset);
+    public List<Book> queryNetworkPicBooks(Integer limit) {
+        return bookMapper.queryNetworkPicBooks(limit);
     }
 
     @Override

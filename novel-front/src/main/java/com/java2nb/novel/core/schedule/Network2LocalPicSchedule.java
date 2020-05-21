@@ -13,9 +13,10 @@ import java.util.List;
 
 /**
  * 网络图片转存本地任务
+ *
  * @author Administrator
  */
-@ConditionalOnProperty(prefix = "pic.save",name = "type",havingValue = "2")
+@ConditionalOnProperty(prefix = "pic.save", name = "type", havingValue = "2")
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,15 +39,10 @@ public class Network2LocalPicSchedule {
         log.info("Network2LocalPicSchedule。。。。。。。。。。。。");
 
 
-        Integer offset = 0, limit = 100;
-        List<Book> networkPicBooks;
-        do {
-            networkPicBooks = bookService.queryNetworkPicBooks(limit, offset);
-            for (Book book : networkPicBooks) {
-                bookService.updateBookPicToLocal(book.getPicUrl(), book.getId());
-            }
-            offset += limit;
-        } while (networkPicBooks.size() > 0);
+        List<Book> networkPicBooks = bookService.queryNetworkPicBooks(100);
+        for (Book book : networkPicBooks) {
+            bookService.updateBookPicToLocal(book.getPicUrl(), book.getId());
+        }
 
 
     }

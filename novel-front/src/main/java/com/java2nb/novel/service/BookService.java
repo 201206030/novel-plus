@@ -181,10 +181,9 @@ public interface BookService {
     /**
      * 查询网络图片的小说
      * @param limit 查询条数
-     * @param offset 开始行数
      * @return 返回小说集合
      * */
-    List<Book> queryNetworkPicBooks(Integer limit, Integer offset);
+    List<Book> queryNetworkPicBooks(Integer limit);
 
 
     /**
