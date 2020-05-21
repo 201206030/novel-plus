@@ -3,6 +3,7 @@ package com.java2nb.novel.core.schedule;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.BookService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,6 +35,7 @@ public class Network2LocalPicSchedule {
      * 10分钟转一次
      */
     @Scheduled(fixedRate = 1000 * 60 * 10)
+    @SneakyThrows
     public void trans() {
 
         log.info("Network2LocalPicSchedule。。。。。。。。。。。。");
@@ -42,6 +44,8 @@ public class Network2LocalPicSchedule {
         List<Book> networkPicBooks = bookService.queryNetworkPicBooks(100);
         for (Book book : networkPicBooks) {
             bookService.updateBookPicToLocal(book.getPicUrl(), book.getId());
+            //3秒钟转化一张图片，10分钟转化200张
+            Thread.sleep(3000);
         }
 
 

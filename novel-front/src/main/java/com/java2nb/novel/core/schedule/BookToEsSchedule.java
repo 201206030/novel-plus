@@ -43,9 +43,9 @@ public class BookToEsSchedule {
     private boolean lock = false;
 
     /**
-     * 1分钟导入一次
+     * 2分钟导入一次
      */
-    @Scheduled(fixedRate = 1000 * 60)
+    @Scheduled(fixedRate = 1000 * 60 * 2)
     public void saveToEs() {
         if (!lock) {
             lock = true;
@@ -70,6 +70,8 @@ public class BookToEsSchedule {
                         jestClient.execute(action);
 
                         lastDate = book.getUpdateTime();
+                        //1秒钟导入一本书，1分钟导入60本
+                        Thread.sleep(1000);
 
                     }
 
