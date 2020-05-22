@@ -130,31 +130,41 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
+
+    var lock = false;
     function addBook() {
+        if(lock){
+            return;
+        }
+        lock = true;
+
 
 
         var bookName = $("#bookName").val();
         if(!bookName){
             $("#LabErr").html("小说名不能为空！");
+            lock = false;
             return;
         }
         if(bookName.length > 20){
             $("#LabErr").html("小说名太长！");
+            lock = false;
             return;
         }
 
         var picUrl = $("#picUrl").val();
         if(!picUrl){
             $("#LabErr").html("封面图片不能为空！");
+            lock = false;
             return;
         }
 
         var bookDesc = $("#bookDesc").val();
         if(!bookDesc){
             $("#LabErr").html("简介不能为空！");
+            lock = false;
             return;
         }
-
 
 
         $.ajax({
@@ -171,11 +181,13 @@
 
 
                 } else {
+                    lock = false;
                     $("#LabErr").html(data.msg);
                 }
 
             },
             error: function () {
+                lock = false;
                 layer.alert('网络异常');
             }
         })

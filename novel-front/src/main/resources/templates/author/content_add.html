@@ -58,10 +58,8 @@
                                 <b>章节名：</b>
                                 <li><input type="text" id="bookIndex" name="bookIndex" class="s_input" ></li>
                                 <b>章节内容：</b>
-                                <input type="hidden" id="bookContent" name="bookContent"  >
-                                <div style="width:600px" id="contentEditor">
-
-                                </div>
+                                <textarea name="bookContent" rows="30" cols="80" id="bookContent"
+                                          class="textarea"></textarea>
                                 <li style="margin-top: 10px"><input type="button" onclick="addBookContent()" name="btnRegister" value="提交"
                                            id="btnRegister" class="btn_red">
 
@@ -114,42 +112,17 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script src="/javascript/common.js" type="text/javascript"></script>
-<script type="text/javascript" src="/wangEditor/release/wangEditor.js"></script>
 
 <script language="javascript" type="text/javascript">
 
-    var E = window.wangEditor;
-    var editor2 = new E('#contentEditor');
-    // 自定义菜单配置
-    editor2.customConfig.menus = [
-        'head',  // 标题
-        'bold',  // 粗体
-        'fontSize',  // 字号
-        'fontName',  // 字体
-        'italic',  // 斜体
-        'underline',  // 下划线
-        'strikeThrough',  // 删除线
-        'foreColor',  // 文字颜色
-        //'backColor',  // 背景颜色
-        //'link',  // 插入链接
-        'list',  // 列表
-        'justify',  // 对齐方式
-        'quote',  // 引用
-        'emoticon',  // 表情
-        'image',  // 插入图片
-        //'table',  // 表格
-        //'video',  // 插入视频
-        //'code',  // 插入代码
-        'undo',  // 撤销
-        'redo'  // 重复
-    ];
-    editor2.customConfig.onchange = function (html) {
-        // html 即变化之后的内容
-        $("#bookContent").val(html);
-    }
-    editor2.create();
 
+    var lock = false;
     function addBookContent() {
+
+        if(lock){
+            return;
+        }
+        lock = true;
 
 
         var bookId = getSearchString("bookId");
@@ -158,12 +131,14 @@
         var indexName = $("#bookIndex").val();
         if(!indexName){
             $("#LabErr").html("章节名不能为空！");
+            lock = false;
             return;
         }
 
         var content = $("#bookContent").val();
-        if(!content && content.length<=13){
+        if(!content){
             $("#LabErr").html("章节内容不能为空！");
+            lock = false;
             return;
         }
 
@@ -182,11 +157,13 @@
 
 
                 } else {
+                    lock = false;
                     $("#LabErr").html(data.msg);
                 }
 
             },
             error: function () {
+                lock = false;
                 layer.alert('网络异常');
             }
         })

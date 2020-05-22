@@ -55,7 +55,7 @@ public class AuthorController extends BaseController{
      * 发布小说
      * */
     @PostMapping("addBook")
-    public ResultBean addBook(Book book,HttpServletRequest request){
+    public ResultBean addBook(@RequestParam("bookDesc") String bookDesc,Book book,HttpServletRequest request){
 
         //查询作家信息
         Author author = authorService.queryAuthor(getUserDetails(request).getId());
@@ -67,6 +67,10 @@ public class AuthorController extends BaseController{
 
         }
 
+        //bookDesc不能使用book对象来接收，否则会自动去掉前面的空格
+        book.setBookDesc(bookDesc
+                .replaceAll("\\n","<br>")
+                .replaceAll("\\s","&nbsp;"));
         //发布小说
         bookService.addBook(book,author.getId(),author.getPenName());
 
@@ -109,6 +113,8 @@ public class AuthorController extends BaseController{
             return ResultBean.fail(ResponseStatus.AUTHOR_STATUS_FORBIDDEN);
         }
 
+        content = content.replaceAll("\\n","<br>")
+                .replaceAll("\\s","&nbsp;");
         //发布章节内容
         bookService.addBookContent(bookId,indexName,content,author.getId());
 
