@@ -185,7 +185,7 @@
                         }*/
 
                         if(book.bookDesc){
-                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"");
+                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"").replace(/&nbsp;/g,"");
                         }
 
                         bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
@@ -206,7 +206,7 @@
                             "            </a>\n" +
                             "            <div style=\"margin-top: 5px;color: #4c6978;\">类别："+book.catName+"</div>\n" +
                             "            <div style=\"margin-top: 5px;color: #4c6978;\">状态："+(book.bookStatus==0?'连载':'完结')+"</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #4c6978;\">更新：<i>"+book.lastIndexUpdateTime+"</i>\n" +
+                            "            <div style=\"margin-top: 5px;color: #4c6978;\">更新：<i>"+book.lastIndexUpdateTime.substr(0,11)+"</i>\n" +
                             "            </div>\n" +
                             "            <div style=\"margin-top: 5px;color: #4c6978;\">简介："+(book.bookDesc?(book.bookDesc.length>20?(book.bookDesc.substr(0,20)+"..."):book.bookDesc):book.bookDesc)+"</div>\n" +
                             "\n" +
