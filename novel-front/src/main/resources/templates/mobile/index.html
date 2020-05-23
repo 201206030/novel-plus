@@ -276,6 +276,10 @@
                 for (var i = 0; i < 6; i++) {
                     var hotRecBook = hotRecBooks[i];
 
+                    if(hotRecBook.bookDesc){
+                        hotRecBook.bookDesc = hotRecBook.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"");
+                    }
+
                     hotRecBooksHtml += ("<div style=\"margin-bottom: 5px\" class=\"layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4\">\n" +
                         "                        <a href=\"/book/"+hotRecBook.bookId+".html\">\n" +
                         "                            <div class=\"layui-col-xs5 layui-col-sm4 layui-col-md4 layui-col-lg4\" >\n" +
@@ -323,9 +327,8 @@
                 for (var i = 0; i < 10; i++) {
 
                     var updateRankBook = updateRankBooks[i];
-                    var end = updateRankBook.bookDesc.indexOf("<");
-                    if(end != -1) {
-                        updateRankBook.bookDesc = updateRankBook.bookDesc.substring(0,end);
+                    if(updateRankBook.bookDesc){
+                        updateRankBook.bookDesc = updateRankBook.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"");
                     }
 
                         updateRankBookHtml += ("<div style=\"padding-bottom: 30px\"\n" +

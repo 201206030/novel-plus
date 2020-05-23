@@ -167,6 +167,11 @@ public class CrawlServiceImpl implements CrawlService {
                         boolean isFindBookId = bookIdMatcher.find();
                         while (isFindBookId) {
                             try {
+                                if(Thread.currentThread().isInterrupted()){
+                                    return;
+                                }
+
+
                                 String bookId = bookIdMatcher.group(1);
                                 Book book = CrawlParser.parseBook(ruleBean, bookId);
                                 //这里只做新书入库，查询是否存在这本书

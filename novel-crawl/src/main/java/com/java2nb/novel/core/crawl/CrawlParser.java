@@ -94,6 +94,8 @@ public class CrawlParser {
 
                     String desc = bookDetailHtml.substring(bookDetailHtml.indexOf(ruleBean.getDescStart()) + ruleBean.getDescStart().length());
                     desc = desc.substring(0, desc.indexOf(ruleBean.getDescEnd()));
+                    //过滤掉简介中的a标签
+                    desc = desc.replaceAll("<a[^<]+</a>","");
                     //设置书籍简介
                     book.setBookDesc(desc);
                     if (StringUtils.isNotBlank(ruleBean.getStatusPatten())) {
@@ -173,6 +175,7 @@ public class CrawlParser {
             String lastIndexName = null;
 
             while (isFindIndex) {
+
                 BookIndex hasIndex = hasIndexs.get(indexNum);
                 String indexName = indexNameMatch.group(1);
 
