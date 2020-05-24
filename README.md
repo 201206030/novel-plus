@@ -60,6 +60,10 @@ Springboot+Mybatis+Mysql+ElasticSearch+Ehcache+Thymeleaf+Layui
 
    
 
+   ![](https://oscimg.oschina.net/oscnet/up-ed5f689557718924acac76bc3ebca36afcb.png)
+
+   
+
 4. 排行榜
 
 ![img](https://oscimg.oschina.net/oscnet/up-78d5a68586cd92a86c669311f414508f922.png)
