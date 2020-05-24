@@ -30,6 +30,8 @@ import static java.util.regex.Pattern.compile;
 @Slf4j
 public class CrawlParser {
 
+    private static IdWorker idWorker = new IdWorker();
+
     public static final Integer BOOK_INDEX_LIST_KEY = 1;
 
     public static final Integer BOOK_CONTENT_LIST_KEY = 2;
@@ -202,7 +204,7 @@ public class CrawlParser {
                         if(hasIndexs.size() == 0){
                             //新书入库
                             //设置目录和章节内容
-                            Long indexId = new IdWorker().nextId();
+                            Long indexId = idWorker.nextId();
                             lastIndexId = indexId;
                             lastIndexName = indexName;
                             bookIndex.setId(indexId);
