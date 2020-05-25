@@ -41,12 +41,12 @@ public class BookToEsSchedule {
 
 
     /**
-     * 2分钟导入一次
+     * 10秒钟导入一次
      */
-    @Scheduled(fixedRate = 1000 * 60 * 2)
+    @Scheduled(fixedRate = 1000 * 10)
     public void saveToEs() {
         if (cacheService.get(CacheKey.ES_TRANS_LOCK) == null) {
-            cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 60);
+            cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 5);
             try {
                 //查询需要更新的小说
                 Date lastDate = (Date) cacheService.getObject(CacheKey.ES_LAST_UPDATE_TIME);
@@ -54,28 +54,22 @@ public class BookToEsSchedule {
                     lastDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-01-01");
                 }
 
-                long count;
-                do {
 
-                    List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate, 100);
-                    for (Book book : books) {
-                        //导入到ES
-                        EsBookVO esBookVO = new EsBookVO();
-                        BeanUtils.copyProperties(book, esBookVO, "lastIndexUpdateTime");
-                        esBookVO.setLastIndexUpdateTime(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(book.getLastIndexUpdateTime()));
-                        Index action = new Index.Builder(esBookVO).index("novel").type("book").id(book.getId().toString()).build();
+                List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate, 100);
+                for (Book book : books) {
+                    //导入到ES
+                    EsBookVO esBookVO = new EsBookVO();
+                    BeanUtils.copyProperties(book, esBookVO, "lastIndexUpdateTime");
+                    esBookVO.setLastIndexUpdateTime(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(book.getLastIndexUpdateTime()));
+                    Index action = new Index.Builder(esBookVO).index("novel").type("book").id(book.getId().toString()).build();
 
-                        jestClient.execute(action);
+                    jestClient.execute(action);
 
-                        lastDate = book.getUpdateTime();
-                        //1秒钟导入一本书，1分钟导入60本
-                        Thread.sleep(1000);
+                    lastDate = book.getUpdateTime();
 
-                    }
+                }
 
-                    count = books.size();
 
-                } while (count == 100);
 
                 cacheService.setObject(CacheKey.ES_LAST_UPDATE_TIME, lastDate);
 
