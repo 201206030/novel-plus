@@ -1,24 +1,25 @@
 package com.java2nb.novel.core.cache.impl;
 
 import com.java2nb.novel.core.cache.CacheService;
+import lombok.RequiredArgsConstructor;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 /**
  * @author xxy
  */
+@ConditionalOnProperty(prefix = "cache", name = "type", havingValue = "ehcache")
+@RequiredArgsConstructor
 @Service
 public class EhCacheServiceImpl implements CacheService {
 	
-	@Autowired
-	private CacheManager cacheManager ;
+	private final CacheManager cacheManager ;
  
-	private static final String CACHE_NAME = "utilCache";
- 
-	
+
 	/**
 	 * 获得一个Cache，没有则创建一个。
 	 * @return
@@ -30,14 +31,6 @@ public class EhCacheServiceImpl implements CacheService {
 	}
 	
  
-	public  CacheManager getCacheManager() {
-		return cacheManager;
-	}
-	
-	
-
-
-
 	@Override
 	public String get(String key) {
 		Element element = getCache().get(key);
@@ -124,20 +117,6 @@ public class EhCacheServiceImpl implements CacheService {
 		
 	}
 
-
-	@Override
-	public void refresh(String key) {
-		Element element = getCache().get(key);
-		if (element != null) {
-			Object value = element.getValue();
-			int timeToLive = element.getTimeToLive();
-			element = new Element(key, value);
-			element.setTimeToLive(timeToLive);
-			Cache cache = getCache();
-			cache.put(element);
-		}
-		
-	}
 
 
 

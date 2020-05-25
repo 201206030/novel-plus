@@ -40,15 +40,13 @@ public class BookToEsSchedule {
     private final JestClient jestClient;
 
 
-    private boolean lock = false;
-
     /**
      * 2分钟导入一次
      */
     @Scheduled(fixedRate = 1000 * 60 * 2)
     public void saveToEs() {
-        if (!lock) {
-            lock = true;
+        if (cacheService.get(CacheKey.ES_TRANS_LOCK) == null) {
+            cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 60);
             try {
                 //查询需要更新的小说
                 Date lastDate = (Date) cacheService.getObject(CacheKey.ES_LAST_UPDATE_TIME);
@@ -56,14 +54,14 @@ public class BookToEsSchedule {
                     lastDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-01-01");
                 }
 
-                long count ;
+                long count;
                 do {
 
-                    List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate,100);
-                    for(Book book : books) {
+                    List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate, 100);
+                    for (Book book : books) {
                         //导入到ES
                         EsBookVO esBookVO = new EsBookVO();
-                        BeanUtils.copyProperties(book,esBookVO,"lastIndexUpdateTime");
+                        BeanUtils.copyProperties(book, esBookVO, "lastIndexUpdateTime");
                         esBookVO.setLastIndexUpdateTime(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(book.getLastIndexUpdateTime()));
                         Index action = new Index.Builder(esBookVO).index("novel").type("book").id(book.getId().toString()).build();
 
@@ -77,16 +75,16 @@ public class BookToEsSchedule {
 
                     count = books.size();
 
-                }while (count == 100);
+                } while (count == 100);
 
                 cacheService.setObject(CacheKey.ES_LAST_UPDATE_TIME, lastDate);
 
             } catch (Exception e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
+            cacheService.del(CacheKey.ES_TRANS_LOCK);
 
 
-            lock = false;
         }
 
 

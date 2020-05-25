@@ -50,4 +50,9 @@ public interface CacheKey {
      * 上一次搜索引擎更新的时间
      * */
     String ES_LAST_UPDATE_TIME = "esLastUpdateTime";
+
+    /**
+     * 搜索引擎转换锁
+     * */
+    String ES_TRANS_LOCK = "esTransLock";
 }

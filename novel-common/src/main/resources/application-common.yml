@@ -11,6 +11,9 @@ spring:
     generator:
       write-numbers-as-strings: true
 
+#缓存类型，ehcache(默认)、redis
+cache:
+  type: ehcache
 
 mybatis:
   configuration:

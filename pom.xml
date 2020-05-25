@@ -38,6 +38,7 @@
         <jjwt.version>0.9.0</jjwt.version>
         <elasticsearch.version>6.2.2</elasticsearch.version>
         <jest.version>6.3.1</jest.version>
+        <redis.version>1.4.1.RELEASE</redis.version>
     </properties>
 
     <dependencyManagement>

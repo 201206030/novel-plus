@@ -51,9 +51,5 @@ public interface CacheService {
 	 * */
 	void expire(String key, long timeout);
 
-	/**
-	 * 刷新缓存
-	 * */
-	void refresh(String key);
 
 }
