@@ -54,15 +54,9 @@ Springboot+Mybatis+Mysql+ElasticSearch+Ehcache+Thymeleaf+Layui
 
 3. 搜索页
 
-   
+![img](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ20200520-215756.png)
 
-   ![img](./assets/QQ20200520-215756.png)
-
-   
-
-   ![](https://oscimg.oschina.net/oscnet/up-ed5f689557718924acac76bc3ebca36afcb.png)
-
-   
+![img](https://oscimg.oschina.net/oscnet/up-ed5f689557718924acac76bc3ebca36afcb.png)
 
 4. 排行榜
 
@@ -98,35 +92,27 @@ Springboot+Mybatis+Mysql+ElasticSearch+Ehcache+Thymeleaf+Layui
 
 ![img](https://oscimg.oschina.net/oscnet/up-f849960f4c1303fea77d26e64fc505a7180.png)
 
-
-
 #### 手机站截图
 
 1. 首页
 
-   ![index](./assets/QQ%E5%9B%BE%E7%89%8720191018162208.jpg)
-
-   
+   ![index](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ%E5%9B%BE%E7%89%8720191018162208.jpg)
 
 2. 小说详情页
 
-   ![微信图片_20190904181558](./assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190904181558.png)
-
-   
+   ![微信图片_20190904181558](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190904181558.png)
 
 3. 目录页
 
-   ![QQ图片20191018161901](./assets/QQ%E5%9B%BE%E7%89%8720191108022250.png)
+   ![QQ图片20191018161901](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ%E5%9B%BE%E7%89%8720191108022250.png)
 
 4. 小说阅读页
 
-   ![QQ图片20191018161901](./assets/QQ%E5%9B%BE%E7%89%8720191018161901.png)
-
-   
+   ![QQ图片20191018161901](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ%E5%9B%BE%E7%89%8720191018161901.png)
 
 #### 爬虫管理系统截图
 
-![QQ图片20191018161901](./assets/crawl_index.png)
+![img](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.2/assets/crawl_index.png)
 
 #### 后台管理系统截图
 
