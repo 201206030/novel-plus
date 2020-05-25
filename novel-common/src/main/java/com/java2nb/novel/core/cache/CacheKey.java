@@ -55,4 +55,14 @@ public interface CacheKey {
      * 搜索引擎转换锁
      * */
     String ES_TRANS_LOCK = "esTransLock";
+
+    /**
+     * 上一次搜索引擎是否更新过小说点击量
+     * */
+    String ES_IS_UPDATE_VISIT = "esIsUpdateVisit";
+
+    /**
+     * 累积的小说点击量
+     * */
+    String BOOK_ADD_VISIT_COUNT = "bookAddVisitCount";
 }

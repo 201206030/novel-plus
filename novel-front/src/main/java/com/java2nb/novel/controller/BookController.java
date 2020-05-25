@@ -12,6 +12,8 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +34,11 @@ import java.util.Map;
 public class BookController extends BaseController{
 
     private final BookService bookService;
+
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.enable}")
+    private Integer enableMq;
 
 
     /**
@@ -105,7 +112,11 @@ public class BookController extends BaseController{
      * */
     @PostMapping("addVisitCount")
     public ResultBean addVisitCount(Long bookId){
-        bookService.addVisitCount(bookId);
+        if(enableMq == 1) {
+            rabbitTemplate.convertAndSend("ADD-BOOK-VISIT-EXCHANGE", null, bookId);
+        }else {
+            bookService.addVisitCount(bookId);
+        }
         return ResultBean.ok();
     }
 
