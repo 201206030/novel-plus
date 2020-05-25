@@ -48,6 +48,8 @@ public class BookToEsSchedule {
      */
     @Scheduled(fixedRate = 1000 * 60)
     public void saveToEs() {
+        //TODO 引入Redisson框架实现分布式锁
+        //可以重复更新，只是效率可能略有降低，所以暂不实现分布式锁
         if (cacheService.get(CacheKey.ES_TRANS_LOCK) == null) {
             cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 20);
             try {
