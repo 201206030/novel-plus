@@ -16,5 +16,12 @@ public interface SearchService {
      */
     void importToEs(Book book);
 
+    /**
+     * 搜索
+     * @param params 搜索参数
+     * @param page 当前页码
+     * @param pageSize 每页大小
+     * @return 分页信息
+     */
     PageInfo searchBook(BookSP params, int page, int pageSize);
 }

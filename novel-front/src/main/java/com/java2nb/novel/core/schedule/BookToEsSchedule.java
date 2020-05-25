@@ -49,7 +49,7 @@ public class BookToEsSchedule {
     @Scheduled(fixedRate = 1000 * 60)
     public void saveToEs() {
         if (cacheService.get(CacheKey.ES_TRANS_LOCK) == null) {
-            cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 5);
+            cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 20);
             try {
                 //查询需要更新的小说
                 Date lastDate = (Date) cacheService.getObject(CacheKey.ES_LAST_UPDATE_TIME);
@@ -62,7 +62,7 @@ public class BookToEsSchedule {
                 for (Book book : books) {
                     searchService.importToEs(book);
                     lastDate = book.getUpdateTime();
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
 
                 }
 
