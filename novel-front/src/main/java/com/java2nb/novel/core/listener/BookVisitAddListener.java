@@ -4,6 +4,7 @@ import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.service.SearchService;
 import com.java2nb.novel.vo.EsBookVO;
 import com.rabbitmq.client.Channel;
 import io.searchbox.client.JestClient;
@@ -34,7 +35,7 @@ public class BookVisitAddListener {
 
     private final CacheService cacheService;
 
-    private final JestClient jestClient;
+    private final SearchService searchService;
 
 
 
@@ -73,11 +74,7 @@ public class BookVisitAddListener {
             try {
                 Thread.sleep(1000 * 5);
                 Book book = bookService.queryBookDetail(bookId);
-                EsBookVO esBookVO = new EsBookVO();
-                BeanUtils.copyProperties(book, esBookVO, "lastIndexUpdateTime");
-                esBookVO.setLastIndexUpdateTime(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(book.getLastIndexUpdateTime()));
-                Index action = new Index.Builder(esBookVO).index("novel").type("book").id(book.getId().toString()).build();
-                jestClient.execute(action);
+                searchService.importToEs(book);
                 cacheService.set(CacheKey.ES_IS_UPDATE_VISIT + bookId, "1", 60 * 60);
             }catch (Exception e){
                 cacheService.del(CacheKey.ES_IS_UPDATE_VISIT + bookId);

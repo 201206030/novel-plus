@@ -58,13 +58,16 @@ public enum ResponseStatus {
     , BOOKNAME_EXISTS(4003,"已发布过同名小说！")
 
     ,
+    /**
+     * 搜索引擎相关错误
+     * */
+    ES_SEARCH_FAIL(9001,"密码错误！"),
 
 
     /**
      * 其他通用错误
      * */
     PASSWORD_ERROR(88001,"密码错误！");
-
     private int code;
     private String msg;
 

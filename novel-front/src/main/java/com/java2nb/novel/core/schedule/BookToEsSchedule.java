@@ -5,6 +5,7 @@ import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.service.SearchService;
 import com.java2nb.novel.vo.EsBookVO;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.DocumentResult;
@@ -37,7 +38,9 @@ public class BookToEsSchedule {
 
     private final CacheService cacheService;
 
-    private final JestClient jestClient;
+
+
+    private final SearchService searchService;
 
 
     /**
@@ -57,16 +60,8 @@ public class BookToEsSchedule {
 
                 List<Book> books = bookService.queryBookByUpdateTimeByPage(lastDate, 100);
                 for (Book book : books) {
-                    //导入到ES
-                    EsBookVO esBookVO = new EsBookVO();
-                    BeanUtils.copyProperties(book, esBookVO, "lastIndexUpdateTime");
-                    esBookVO.setLastIndexUpdateTime(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(book.getLastIndexUpdateTime()));
-                    Index action = new Index.Builder(esBookVO).index("novel").type("book").id(book.getId().toString()).build();
-
-                    jestClient.execute(action);
-
+                    searchService.importToEs(book);
                     lastDate = book.getUpdateTime();
-
                     Thread.sleep(1000);
 
                 }

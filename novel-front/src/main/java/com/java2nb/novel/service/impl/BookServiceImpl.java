@@ -15,6 +15,7 @@ import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.search.BookSP;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.service.SearchService;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.vo.BookVO;
@@ -89,7 +90,7 @@ public class BookServiceImpl implements BookService {
 
     private final AuthorService authorService;
 
-    private final JestClient jestClient;
+    private final SearchService searchService;
 
 
     @SneakyThrows
@@ -200,139 +201,8 @@ public class BookServiceImpl implements BookService {
 
 
             try {
-                List<EsBookVO> bookList = new ArrayList<>(0);
+                return searchService.searchBook(params,page,pageSize);
 
-                //使用搜索引擎搜索
-                BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-                // 构造查询哪个字段
-                if (StringUtils.isNoneBlank(params.getKeyword())) {
-                    boolQueryBuilder = boolQueryBuilder.must(QueryBuilders.queryStringQuery(params.getKeyword()));
-                }
-
-                // 作品方向
-                if (params.getWorkDirection() != null) {
-                    boolQueryBuilder.filter(QueryBuilders.termQuery("workDirection", params.getWorkDirection()));
-                }
-
-                // 分类
-                if (params.getCatId() != null) {
-                    boolQueryBuilder.filter(QueryBuilders.termQuery("catId", params.getCatId()));
-                }
-                if (params.getBookStatus() != null) {
-                    boolQueryBuilder.filter(QueryBuilders.termQuery("bookStatus", params.getBookStatus()));
-                }
-
-                if (params.getWordCountMin() == null) {
-                    params.setWordCountMin(0);
-                }
-                if (params.getWordCountMax() == null) {
-                    params.setWordCountMax(Integer.MAX_VALUE);
-                }
-
-                boolQueryBuilder.filter(QueryBuilders.rangeQuery("wordCount").gte(params.getWordCountMin()).lte(params.getWordCountMax()));
-
-                if (params.getUpdateTimeMin() != null) {
-                    boolQueryBuilder.filter(QueryBuilders.rangeQuery("lastIndexUpdateTime").gte(params.getUpdateTimeMin()));
-                }
-
-
-
-                SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-                searchSourceBuilder.query(boolQueryBuilder);
-
-
-                Count count = new Count.Builder().addIndex("novel").addType("book")
-                        .query(searchSourceBuilder.toString()).build();
-                CountResult results = jestClient.execute(count);
-                Double total = results.getCount();
-
-
-                // 高亮字段
-                HighlightBuilder highlightBuilder = new HighlightBuilder();
-                highlightBuilder.field("authorName");
-                highlightBuilder.field("bookName");
-                highlightBuilder.field("bookDesc");
-                highlightBuilder.field("lastIndexName");
-                highlightBuilder.field("catName");
-                highlightBuilder.preTags("<span style='color:red'>").postTags("</span>");
-                highlightBuilder.fragmentSize(20000);
-                searchSourceBuilder.highlighter(highlightBuilder);
-
-
-                //设置排序
-                if (params.getSort() != null) {
-                    searchSourceBuilder.sort(StringUtil.camelName(params.getSort()), SortOrder.DESC);
-                }
-
-                // 设置分页
-                searchSourceBuilder.from((page - 1) * pageSize);
-                searchSourceBuilder.size(pageSize);
-
-                // 构建Search对象
-                Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("novel").addType("book").build();
-                log.debug(search.toString());
-                SearchResult result;
-                result = jestClient.execute(search);
-                if (result.isSucceeded()) {
-                    log.debug(result.getJsonString());
-
-                    Map resultMap = new ObjectMapper().readValue(result.getJsonString(), Map.class);
-                    if (resultMap.get("hits") != null) {
-                        Map hitsMap = (Map) resultMap.get("hits");
-                        if (hitsMap.size() > 0 && hitsMap.get("hits") != null) {
-                            List hitsList = (List) hitsMap.get("hits");
-                            if (hitsList.size() > 0 && result.getSourceAsString() != null) {
-
-                                JavaType jt = new ObjectMapper().getTypeFactory().constructParametricType(ArrayList.class, EsBookVO.class);
-                                bookList = new ObjectMapper().readValue("[" + result.getSourceAsString() + "]", jt);
-
-                                if (bookList != null) {
-                                    for (int i = 0; i < bookList.size(); i++) {
-                                        hitsMap = (Map) hitsList.get(i);
-                                        Map highlightMap = (Map) hitsMap.get("highlight");
-                                        if (highlightMap != null && highlightMap.size() > 0) {
-
-                                            List<String> authorNameList = (List<String>) highlightMap.get("authorName");
-                                            if (authorNameList != null && authorNameList.size() > 0) {
-                                                bookList.get(i).setAuthorName(authorNameList.get(0));
-                                            }
-
-                                            List<String> bookNameList = (List<String>) highlightMap.get("bookName");
-                                            if (bookNameList != null && bookNameList.size() > 0) {
-                                                bookList.get(i).setBookName(bookNameList.get(0));
-                                            }
-
-                                            List<String> bookDescList = (List<String>) highlightMap.get("bookDesc");
-                                            if (bookDescList != null && bookDescList.size() > 0) {
-                                                bookList.get(i).setBookDesc(bookDescList.get(0));
-                                            }
-
-                                            List<String> lastIndexNameList = (List<String>) highlightMap.get("lastIndexName");
-                                            if (lastIndexNameList != null && lastIndexNameList.size() > 0) {
-                                                bookList.get(i).setLastIndexName(lastIndexNameList.get(0));
-                                            }
-
-                                            List<String> catNameList = (List<String>) highlightMap.get("catName");
-                                            if (catNameList != null && catNameList.size() > 0) {
-                                                bookList.get(i).setCatName(catNameList.get(0));
-                                            }
-
-
-                                        }
-                                    }
-
-
-                                }
-                            }
-                        }
-                    }
-
-                    PageInfo<EsBookVO> pageInfo = new PageInfo<>(bookList);
-                    pageInfo.setTotal(total.longValue());
-                    pageInfo.setPageNum(page);
-                    pageInfo.setPageSize(pageSize);
-                    return pageInfo;
-                }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
