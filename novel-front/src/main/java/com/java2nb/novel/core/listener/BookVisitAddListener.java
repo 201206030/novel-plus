@@ -45,7 +45,7 @@ public class BookVisitAddListener {
 
     /**
      * 更新数据库
-     * 流量削峰，每本小说1个小时更新一次
+     * 流量削峰，每本小说累积10个点击更新一次
      */
     @SneakyThrows
     @RabbitListener(queues = {"UPDATE-DB-QUEUE"})
