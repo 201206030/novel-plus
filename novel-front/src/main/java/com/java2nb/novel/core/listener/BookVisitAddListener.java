@@ -90,7 +90,6 @@ public class BookVisitAddListener {
                 Thread.sleep(1000 * 5);
                 Book book = bookService.queryBookDetail(bookId);
                 searchService.importToEs(book);
-                cacheService.set(CacheKey.ES_IS_UPDATE_VISIT + bookId, "1", 60 * 60);
             }catch (Exception e){
                 cacheService.del(CacheKey.ES_IS_UPDATE_VISIT + bookId);
                 log.error("更新搜索引擎失败"+bookId);
