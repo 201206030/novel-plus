@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import javax.imageio.ImageIO;
 import java.io.*;
 import java.util.Date;
 import java.util.Objects;
@@ -46,6 +47,11 @@ public class FileUtil {
             byte[] b = new byte[4096];
             for (int n; (n = input.read(b)) != -1; ) {
                 out.write(b, 0, n);
+            }
+
+            out.flush();
+            if( ImageIO.read(picFile) == null){
+                picSrc = "/images/default.gif";
             }
 
         }catch (Exception e){
