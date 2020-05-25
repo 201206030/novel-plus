@@ -67,6 +67,8 @@ public class BookToEsSchedule {
 
                     lastDate = book.getUpdateTime();
 
+                    Thread.sleep(1000);
+
                 }
 
 
