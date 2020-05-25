@@ -37,6 +37,8 @@ public class BookVisitAddListener {
 
     private final SearchService searchService;
 
+   // private final RedissonClient redissonClient;
+
 
 
 
@@ -51,11 +53,19 @@ public class BookVisitAddListener {
         log.debug("收到更新数据库消息：" + bookId);
         Thread.sleep(1000 * 2);
         //TODO 操作共享资源visitCount，集群环境下有线程安全问题，引入Redisson框架实现分布式锁
+        //RLock lock = redissonClient.getLock("visitCount");
+        //lock.lock();
+
+
         //目前visitCount不重要，数据可丢失，暂不实现分布式锁
         Integer visitCount = (Integer) cacheService.getObject(CacheKey.BOOK_ADD_VISIT_COUNT+bookId);
         if(visitCount == null){
             visitCount = 0 ;
         }
+
+        //TODO 操作共享资源visitCount，集群环境下有线程安全问题，引入Redisson框架实现分布式锁
+        //lock.unlock();
+
         cacheService.setObject(CacheKey.BOOK_ADD_VISIT_COUNT+bookId,++visitCount);
         if(cacheService.get(CacheKey.ES_IS_UPDATE_VISIT + bookId) == null) {
             bookService.addVisitCount(bookId);

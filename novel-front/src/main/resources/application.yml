@@ -25,7 +25,9 @@ spring:
     jest:
       uris: http://127.0.0.1:9200
 
-
+redisson:
+  singleServerConfig:
+    address: 127.0.0.1:6379
 
 jwt:
   secret: novel!#20191230

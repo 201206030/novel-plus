@@ -54,7 +54,8 @@ novel-plus -- 父工程
 | Ehcache              | Java进程内缓存框架(默认缓存)  
 | Redis                | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)                               
 | ElasticSearch        | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)                      
-| RabbitMq             | 消息队列(流量削峰，默认关闭，一行配置开启)                                
+| RabbitMq             | 消息队列(流量削峰，默认关闭，一行配置开启)                        
+| Redisson            | 实现分布式锁                                       
 | Lombok               | 简化对象封装工具                                                                               
 | Docker               | 应用容器引擎   
 | Mysql                | 数据库服务   
