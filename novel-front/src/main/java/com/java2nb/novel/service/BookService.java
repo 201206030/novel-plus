@@ -112,8 +112,8 @@ public interface BookService {
     /**
      * 增加点击次数
      * @param bookId 书籍ID
-     * */
-    void addVisitCount(Long bookId);
+     * @param visitCount*/
+    void addVisitCount(Long bookId, Integer visitCount);
 
     /**
      * 查询章节数

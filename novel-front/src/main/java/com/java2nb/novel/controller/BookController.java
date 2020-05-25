@@ -4,9 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookComment;
-import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.search.BookSP;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookVO;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -115,7 +112,7 @@ public class BookController extends BaseController{
         if(enableMq == 1) {
             rabbitTemplate.convertAndSend("ADD-BOOK-VISIT-EXCHANGE", null, bookId);
         }else {
-            bookService.addVisitCount(bookId);
+            bookService.addVisitCount(bookId, 1);
         }
         return ResultBean.ok();
     }

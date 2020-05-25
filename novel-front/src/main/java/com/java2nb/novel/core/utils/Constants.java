@@ -30,4 +30,9 @@ public class Constants {
      * 首页设置的小说数量
      * */
     public static final int INDEX_BOOK_SETTING_NUM = 32;
+
+    /**
+     * 累积的最大点击量
+     * */
+    public static final Integer ADD_MAX_VISIT_COUNT = 10;
 }

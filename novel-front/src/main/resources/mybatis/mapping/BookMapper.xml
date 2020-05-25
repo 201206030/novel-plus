@@ -35,7 +35,7 @@
     </select>
 
     <update id="addVisitCount" >
-        update book set visit_count = visit_count + 1
+        update book set visit_count = visit_count + ${visitCount}
         where id = #{bookId}
     </update>
 

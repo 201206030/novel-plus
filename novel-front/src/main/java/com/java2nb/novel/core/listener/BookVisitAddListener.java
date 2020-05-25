@@ -2,6 +2,7 @@ package com.java2nb.novel.core.listener;
 
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
+import com.java2nb.novel.core.utils.Constants;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.SearchService;
@@ -62,14 +63,16 @@ public class BookVisitAddListener {
         if(visitCount == null){
             visitCount = 0 ;
         }
+        cacheService.setObject(CacheKey.BOOK_ADD_VISIT_COUNT+bookId,++visitCount);
+        if(visitCount >= Constants.ADD_MAX_VISIT_COUNT) {
+            bookService.addVisitCount(bookId,visitCount);
+            cacheService.del(CacheKey.BOOK_ADD_VISIT_COUNT+bookId);
+        }
 
         //TODO 操作共享资源visitCount，集群环境下有线程安全问题，引入Redisson框架实现分布式锁
         //lock.unlock();
 
-        cacheService.setObject(CacheKey.BOOK_ADD_VISIT_COUNT+bookId,++visitCount);
-        if(cacheService.get(CacheKey.ES_IS_UPDATE_VISIT + bookId) == null) {
-            bookService.addVisitCount(bookId);
-        }
+
 
     }
 
