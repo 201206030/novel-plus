@@ -44,9 +44,9 @@ public class BookToEsSchedule {
 
 
     /**
-     * 10秒钟导入一次
+     * 1分钟导入一次
      */
-    @Scheduled(fixedRate = 1000 * 10)
+    @Scheduled(fixedRate = 1000 * 60)
     public void saveToEs() {
         if (cacheService.get(CacheKey.ES_TRANS_LOCK) == null) {
             cacheService.set(CacheKey.ES_TRANS_LOCK, "1", 60 * 5);
