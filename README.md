@@ -40,7 +40,27 @@ novel-plus -- 父工程
 ```
 
 #### 技术选型
-Springboot+Mybatis+Mysql+ElasticSearch+Ehcache+Thymeleaf+Layui
+
+| 技术                 | 说明                                                         
+| -------------------- | ---------------------------
+| SpringBoot           | Spring应用快速开发脚手架     
+| MyBatis              | 持久层ORM框架 
+| MyBatis Dynamic SQL  | Mybatis动态sql
+| PageHelper           | MyBatis分页插件
+| MyBatisGenerator     | 持久层代码生成插件
+| JJWT                 | JWT登录支持  
+| SpringSecurity       | 安全框架                           
+| Shiro                | 安全框架  
+| Ehcache              | Java进程内缓存框架(默认缓存)  
+| Redis                | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)                               
+| ElasticSearch        | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)                      
+| RabbitMq             | 消息队列(流量削峰，默认关闭，一行配置开启)                                
+| Lombok               | 简化对象封装工具                                                                               
+| Docker               | 应用容器引擎   
+| Mysql                | 数据库服务   
+| Thymeleaf            | 模板引擎     
+| Layui                | 前端UI                    
+                 
 
 #### PC站截图
 
