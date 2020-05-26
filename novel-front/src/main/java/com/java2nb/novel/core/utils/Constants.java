@@ -12,7 +12,7 @@ public class Constants {
     public static final String TEMPLATE_PATH_PREFIX_KEY = "templatePathPrefixKey";
 
     /**
-     * 本地图片保存前缀
+     * 保存图片到自己的存储介质路径前缀
      * */
     public static final String LOCAL_PIC_PREFIX = "/localPic/";
 

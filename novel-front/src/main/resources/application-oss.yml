@@ -1,0 +1,9 @@
+#OSS
+novel:
+  file:
+    endpoint: oss-cn-shenzhen.aliyuncs.com #不同的服务器，地址不同
+    key-id: dhjjrue6767778878 #去OSS控制台获取
+    key-secret: dssdkkrkelrkellk44554 #去OSS控制台获取
+    bucket-name: novel #这个自己创建bucket时的命名，控制台创建也行，代码创建也行
+    file-host: pic #文件路径
+    web-url: https://xxyimg.oss-cn-hangzhou.aliyuncs.com #OSS文件的web访问地址

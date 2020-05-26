@@ -180,15 +180,17 @@ public interface BookService {
 
     /**
      * 查询网络图片的小说
+     *
+     * @param localPicPrefix
      * @param limit 查询条数
      * @return 返回小说集合
      * */
-    List<Book> queryNetworkPicBooks(Integer limit);
+    List<Book> queryNetworkPicBooks(String localPicPrefix, Integer limit);
 
 
     /**
-     * 更新小说网络图片到本地
-     * @param picUrl 网络图片路径
+     * 更新爬取的小说网络图片到自己的存储介质（本地、OSS、fastDfs）
+     * @param picUrl 爬取的网络图片路径
      * @param bookId 小说ID
      */
     void updateBookPicToLocal(String picUrl, Long bookId);
@@ -198,6 +200,7 @@ public interface BookService {
      * @param userId 用户ID
      * @param page 页码
      * @param pageSize 分页大小
+     * @return 小说集合
      * */
     List<Book> listBookPageByUserId(Long userId, int page, int pageSize);
 

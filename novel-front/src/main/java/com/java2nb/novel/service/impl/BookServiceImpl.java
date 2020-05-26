@@ -14,6 +14,7 @@ import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.search.BookSP;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.service.FileService;
 import com.java2nb.novel.service.SearchService;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
@@ -81,6 +82,8 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
 
     private final SearchService searchService;
+
+    private final FileService fileService;
 
 
     @SneakyThrows
@@ -460,14 +463,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> queryNetworkPicBooks(Integer limit) {
-        return bookMapper.queryNetworkPicBooks(limit);
+    public List<Book> queryNetworkPicBooks(String localPicPrefix, Integer limit) {
+        return bookMapper.queryNetworkPicBooks(localPicPrefix,limit);
     }
 
     @Override
     public void updateBookPicToLocal(String picUrl, Long bookId) {
 
-        picUrl = FileUtil.network2Local(picUrl, picSavePath, Constants.LOCAL_PIC_PREFIX);
+        picUrl = fileService.transFile(picUrl, picSavePath);
 
         bookMapper.update(update(book)
                 .set(BookDynamicSqlSupport.picUrl)

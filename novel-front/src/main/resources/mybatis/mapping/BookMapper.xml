@@ -56,6 +56,7 @@
         select
         id,pic_url from book
         where pic_url like 'http%'
+        and pic_url not like concat('%',#{localPicPrefix},'%')
         limit #{limit}
     </select>
 
