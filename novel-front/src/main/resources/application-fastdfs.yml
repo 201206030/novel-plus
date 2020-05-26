@@ -1,0 +1,16 @@
+#FastDfs的配置	====================================
+#读取inputsream阻塞时间
+fdfs:
+  connect-timeout: 600
+  so-timeout: 1500
+  #tracker地址
+  trackerList: 127.0.0.1:22122
+  #缩略图配置
+  thumbImage:
+    height: 150
+    width: 150
+  #通过nginx 访问地址
+  webUrl: http://127.0.0.1/
+  #获取连接池最大数量
+  pool.max-total: 200
+
