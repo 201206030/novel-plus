@@ -48,6 +48,7 @@ novel-plus -- 父工程
 | MyBatis Dynamic SQL  | Mybatis动态sql
 | PageHelper           | MyBatis分页插件
 | MyBatisGenerator     | 持久层代码生成插件
+| Sharding-Jdbc        | 代码层分库分表中间件
 | JJWT                 | JWT登录支持  
 | SpringSecurity       | 安全框架                           
 | Shiro                | 安全框架  
