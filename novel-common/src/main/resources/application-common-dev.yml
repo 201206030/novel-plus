@@ -3,7 +3,25 @@ spring:
     include: [common]
   main:
     allow-bean-definition-overriding: true
-
+  #Redis服务器IP
+  redis:
+    host: 127.0.0.1
+    #Redis服务器连接端口
+    port: 6379
+    #Redis服务器连接密码
+    password: test
+    jedis:
+      pool:
+        #连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 1
+        #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8
+        #连接池中的最小空闲连接
+        min-idle: 0
+    #连接超时时间（毫秒）
+    timeout: 30000
 #  datasource:
 #    url: jdbc:mysql://127.0.0.1:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
 #    username: root
@@ -52,25 +70,7 @@ sharding:
                 algorithm-expression: book_content${index_id % 10}
 
 
-  #Redis服务器IP
-  redis:
-    host: 127.0.0.1
-    #Redis服务器连接端口
-    port: 6379
-    #Redis服务器连接密码
-    password: test
-    jedis:
-      pool:
-        #连接池最大连接数（使用负值表示没有限制）
-        max-active: 8
-        #连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-wait: 1
-        #连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-idle: 8
-        #连接池中的最小空闲连接
-        min-idle: 0
-    #连接超时时间（毫秒）
-    timeout: 30000
+
 
 
 
