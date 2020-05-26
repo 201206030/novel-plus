@@ -1691,4 +1691,122 @@ INSERT INTO `user_read_history` VALUES ('113', '1255060328322027520', '125467697
 INSERT INTO `user_read_history` VALUES ('117', '1255060328322027520', '1254946661743603712', '1254946914001629184', '2020-04-30 19:37:09', '2020-04-30 19:37:09');
 INSERT INTO `user_read_history` VALUES ('118', '1255060328322027520', '1254957312633352192', '3335449', '2020-04-30 19:37:36', '2020-04-30 19:37:36');
 
+
+
+DROP TABLE IF EXISTS `book_content0`;
+CREATE TABLE `book_content0` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1155 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content1
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content1`;
+CREATE TABLE `book_content1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=406 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content2
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content2`;
+CREATE TABLE `book_content2` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1222 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content3
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content3`;
+CREATE TABLE `book_content3` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=410 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content4
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content4`;
+CREATE TABLE `book_content4` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1188 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content5
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content5`;
+CREATE TABLE `book_content5` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=416 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content6
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content6`;
+CREATE TABLE `book_content6` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1180 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content7
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content7`;
+CREATE TABLE `book_content7` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=404 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content8
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content8`;
+CREATE TABLE `book_content8` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1134 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+-- ----------------------------
+-- Table structure for book_content9
+-- ----------------------------
+DROP TABLE IF EXISTS `book_content9`;
+CREATE TABLE `book_content9` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `index_id` bigint(20) DEFAULT NULL COMMENT '目录ID',
+  `content` mediumtext COMMENT '小说章节内容',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=415 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
 UPDATE `crawl_source` SET `source_name` = '书趣阁', `crawl_rule` = '{\n	\"bookListUrl\": \"http://m.shuquge.com/sort/{catId}/0_{page}.html\",\n	\"catIdRule\": {\n		\"catId1\": \"1\",\n		\"catId2\": \"2\",\n		\"catId3\": \"3\",\n		\"catId4\": \"4\",\n		\"catId5\": \"7\",\n		\"catId6\": \"6\",\n		\"catId7\": \"8\"\n	},\n	\"bookIdPatten\": \"href=\\\"/s/(\\\\d+)\\\\.html\\\"\",\n	\"pagePatten\": \"第(\\\\d+)/\\\\d+页\",\n	\"totalPagePatten\": \"第\\\\d+/(\\\\d+)页\",\n	\"bookDetailUrl\": \"http://m.shuquge.com/s/{bookId}.html\",\n	\"bookNamePatten\": \"<a\\\\s+href=\\\"/s/\\\\d+\\\\.html\\\"><h2>([^/]+)</h2></a>\",\n	\"authorNamePatten\": \"<p>作者：([^/]+)</p>\",\n	\"picUrlPatten\": \"src=\\\"(http://www.shuquge.com/files/article/image/\\\\d+/\\\\d+/\\\\d+s\\\\.jpg)\\\"\",\n	\"statusPatten\": \"<p>状态：([^/]+)</p>\",\n	\"bookStatusRule\": {\n		\"连载中\": 0,\n		\"完本\": 1\n	},\n	\"descStart\": \"<div class=\\\"intro_info\\\">\",\n	\"descEnd\": \"最新章节推荐地址\",\n	\"bookIndexUrl\": \"http://www.shuquge.com/txt/{bookId}/index.html\",\n	\"bookIndexStart\": \"<dt>《\",\n	\"indexIdPatten\": \"<dd><a\\\\s+href=\\\"(\\\\d+)\\\\.html\\\">[^/]+</a></dd>\",\n	\"indexNamePatten\": \"<dd><a\\\\s+href=\\\"\\\\d+\\\\.html\\\">([^/]+)</a></dd>\",\n	\"bookContentUrl\": \"http://www.shuquge.com/txt/{bookId}/{indexId}.html\",\n	\"contentStart\": \"<div id=\\\"content\\\" class=\\\"showtxt\\\">\",\n	\"contentEnd\": \"http://www.shuquge.com\"\n}', `source_status` = 1, `create_time` = '2020-05-18 12:02:34', `update_time` = '2020-05-18 12:02:34' WHERE `id` = 4;

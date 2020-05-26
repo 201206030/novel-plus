@@ -63,7 +63,7 @@ public interface BookContentMapper {
     @Results(id="BookContentResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="index_id", property="indexId", jdbcType=JdbcType.BIGINT),
-        @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="content", property="content", jdbcType=JdbcType.VARCHAR)
     })
     List<BookContent> selectMany(SelectStatementProvider selectStatement);
 

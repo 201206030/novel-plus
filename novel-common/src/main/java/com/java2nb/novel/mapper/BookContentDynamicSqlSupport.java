@@ -24,7 +24,7 @@ public final class BookContentDynamicSqlSupport {
 
         public final SqlColumn<Long> indexId = column("index_id", JDBCType.BIGINT);
 
-        public final SqlColumn<String> content = column("content", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> content = column("content", JDBCType.VARCHAR);
 
         public BookContent() {
             super("book_content");

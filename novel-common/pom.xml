@@ -57,6 +57,22 @@
             <version>${mybatis.version}</version>
         </dependency>
 
+        <!-- 分库分表-->
+        <!-- sharding jdbc依赖 -->
+
+        <dependency>
+            <groupId>io.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>${sharding.jdbc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-namespace</artifactId>
+            <version>${sharding.jdbc.version}</version>
+        </dependency>
+
+
         <!--分页助手启动器-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
