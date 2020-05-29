@@ -4,9 +4,11 @@
 
 #### 新项目：小说精品屋-微服务版
 
-Gitee仓库地址： https://gitee.com/xiongxyang/novel-plus
+基于小说精品屋-plus构建的Spring Cloud 微服务小说门户平台，可用于学习和商用。
 
-GitHub仓库地址： https://github.com/201206030/novel-plus
+Gitee仓库地址： https://gitee.com/xiongxyang/novel-cloud
+
+GitHub仓库地址： https://github.com/201206030/novel-cloud
 
 #### 演示地址
 
