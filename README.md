@@ -2,6 +2,12 @@
 
 # 小说精品屋-plus
 
+#### 新项目：小说精品屋-微服务版
+
+Gitee仓库地址： https://gitee.com/xiongxyang/novel-plus
+
+GitHub仓库地址： https://github.com/201206030/novel-plus
+
 #### 演示地址
 
 [点击前往](http://www.java2nb.com)（前台门户）
