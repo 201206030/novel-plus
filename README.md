@@ -1,4 +1,4 @@
-[![index](./assets/热门云产品1040.100.jpg)](https://cloud.tencent.com/act/cps/redirect?redirect=1052&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console)
+[![index]( https://i.loli.net/2020/06/01/qF1uBMtswTIPJKx.jpg )]( https://www.eve.bz/cart.php?gid=11 )
 
 # 小说精品屋-plus
 
