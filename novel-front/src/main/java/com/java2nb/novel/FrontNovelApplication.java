@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * @author Administrator
  */
-@SpringBootApplication(exclude = {SpringBootConfiguration.class})
+@SpringBootApplication
 @EnableTransactionManagement
 @EnableScheduling
 @EnableCaching
