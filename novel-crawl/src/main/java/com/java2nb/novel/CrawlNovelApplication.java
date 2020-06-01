@@ -1,5 +1,6 @@
 package com.java2nb.novel;
 
+import io.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * @author Administrator
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {SpringBootConfiguration.class})
 @EnableCaching
 @EnableScheduling
 @ServletComponentScan
