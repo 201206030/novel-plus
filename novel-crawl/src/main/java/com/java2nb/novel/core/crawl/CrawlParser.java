@@ -96,8 +96,12 @@ public class CrawlParser {
 
                     String desc = bookDetailHtml.substring(bookDetailHtml.indexOf(ruleBean.getDescStart()) + ruleBean.getDescStart().length());
                     desc = desc.substring(0, desc.indexOf(ruleBean.getDescEnd()));
-                    //过滤掉简介中的a标签
-                    desc = desc.replaceAll("<a[^<]+</a>","");
+                    //过滤掉简介中的特殊标签
+                    desc = desc.replaceAll("<a[^<]+</a>","")
+                            .replaceAll("<font[^<]+</font>","")
+                            .replaceAll("<p>\\s*</p>","")
+                            .replaceAll("<p>","")
+                            .replaceAll("</p>","<br/>");
                     //设置书籍简介
                     book.setBookDesc(desc);
                     if (StringUtils.isNotBlank(ruleBean.getStatusPatten())) {
