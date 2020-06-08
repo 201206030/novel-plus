@@ -35,19 +35,19 @@ spring:
 sharding:
   jdbc:
     datasource:
-      names: ds0 ,ds1
+      names: ds0 #,ds1
       ds0:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
         jdbc-url: jdbc:mysql://localhost:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
         username: root
         password: test123456
-      ds1:
-        type: com.zaxxer.hikari.HikariDataSource
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          jdbc-url: jdbc:mysql://localhost:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-          username: root
-          password: test123456
+    #      ds1:
+    #        type: com.alibaba.druid.pool.DruidDataSource
+    #        driver-class-name: com.mysql.jdbc.Driver
+    #        url: jdbc:mysql://localhost:3306/novel_plus2
+    #        username: root
+    #        password: test123456
     config:
       sharding:
         props:
@@ -55,16 +55,15 @@ sharding:
         tables:
           book_content:  #book_content表
             key-generator-column-name: id  #主键
-            actual-data-nodes: ds${0..1}.book_content${0..1}  #数据节点
-            database-strategy:  #分库策略
-              inline:
-                sharding-column: index_id
-                algorithm-expression: ds${index_id % 2}
+            actual-data-nodes: ds${0}.book_content${0..9}  #数据节点
+            #            database-strategy:  #分库策略
+            #              inline:
+            #                sharding-column: book_id
+            #                algorithm-expression: ds${book_id % 10}
             table-strategy:  #分表策略
               inline:
                 shardingColumn: index_id
-                algorithm-expression: book_content${index_id % 2}
-        default-data-source-name: db0
+                algorithm-expression: book_content${index_id % 10}
 
 
 
@@ -76,7 +75,3 @@ pic:
     type: 2 #图片保存方式, 1不保存，使用爬取的网络图片 ，2保存在自己的存储介质
     storage: local #存储介质，local：本地，OSS：阿里云对象存储，fastDfs：分布式文件系统
     path: /var/pic  #图片保存路径
-
-
-
-
