@@ -66,7 +66,7 @@ public enum ResponseStatus {
     /**
      * 搜索引擎相关错误
      * */
-    ES_SEARCH_FAIL(9001,"密码错误！"),
+    ES_SEARCH_FAIL(9001,"搜索引擎查询错误！"),
 
 
     /**

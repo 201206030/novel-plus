@@ -134,8 +134,8 @@ public class SearchServiceImpl implements SearchService {
         log.debug(search.toString());
         SearchResult result;
         result = jestClient.execute(search);
+        log.debug(result.getJsonString());
         if (result.isSucceeded()) {
-            log.debug(result.getJsonString());
 
             Map resultMap = new ObjectMapper().readValue(result.getJsonString(), Map.class);
             if (resultMap.get("hits") != null) {
@@ -196,4 +196,7 @@ public class SearchServiceImpl implements SearchService {
         }
        throw new BusinessException(ResponseStatus.ES_SEARCH_FAIL);
     }
+
+
+
 }

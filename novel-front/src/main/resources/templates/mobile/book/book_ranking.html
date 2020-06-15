@@ -159,7 +159,7 @@
 
         if(sortBy != false){
             searchData.sort = sortBy;
-        }else{
+        }else if(!keyword){
             sortBy = "last_index_update_time";
         }
 
