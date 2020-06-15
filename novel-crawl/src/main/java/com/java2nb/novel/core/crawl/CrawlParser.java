@@ -241,8 +241,6 @@ public class CrawlParser {
                         }
 
 
-                    } else {
-                        break;
                     }
 
 
