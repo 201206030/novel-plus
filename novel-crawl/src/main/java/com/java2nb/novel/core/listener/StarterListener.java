@@ -3,10 +3,7 @@ package com.java2nb.novel.core.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
-import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.entity.BookContent;
-import com.java2nb.novel.entity.BookIndex;
-import com.java2nb.novel.entity.CrawlSource;
+import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.utils.Constants;
@@ -40,15 +37,15 @@ public class StarterListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        log.info("程序启动,开始执行自动更新线程。。。");
-        for(int i = 0 ; i<updateThreadCount; i++) {
+        for (int i = 0; i < updateThreadCount; i++) {
             new Thread(() -> {
+                log.info("程序启动,开始执行自动更新线程。。。");
                 while (true) {
                     try {
                         //1.查询最新目录更新时间在一个月之内的前100条需要更新的数据
                         Date currentDate = new Date();
                         Date startDate = DateUtils.addDays(currentDate, -30);
-                        List<Book> bookList ;
+                        List<Book> bookList;
                         synchronized (this) {
                             bookList = bookService.queryNeedUpdateBook(startDate, 100);
                         }
@@ -61,7 +58,7 @@ public class StarterListener implements ServletContextListener {
                                 Book book = CrawlParser.parseBook(ruleBean, needUpdateBook.getCrawlBookId());
                                 //这里只做老书更新
                                 book.setId(needUpdateBook.getId());
-                                if(needUpdateBook.getPicUrl()!=null && needUpdateBook.getPicUrl().contains(Constants.LOCAL_PIC_PREFIX)) {
+                                if (needUpdateBook.getPicUrl() != null && needUpdateBook.getPicUrl().contains(Constants.LOCAL_PIC_PREFIX)) {
                                     //本地图片则不更新
                                     book.setPicUrl(null);
                                 }
@@ -83,6 +80,42 @@ public class StarterListener implements ServletContextListener {
 
                 }
             }).start();
+
+
         }
+
+
+        new Thread(() -> {
+            log.info("程序启动,开始执行单本采集任务线程。。。");
+            while (true) {
+                CrawlSingleTask task = null;
+                byte crawlStatus = 0;
+                try {
+                    //获取采集任务
+                    task = crawlService.getCrawlSingleTask();
+
+                    if (task != null) {
+                        //查询爬虫规则
+                        CrawlSource source = crawlService.queryCrawlSource(task.getSourceId());
+                        RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
+
+                        if (crawlService.parseBookAndSave(task.getCatId(), ruleBean, task.getSourceId(), task.getSourceBookId())) {
+                            //采集成功
+                            crawlStatus = 1;
+                        }
+
+                    }
+
+                    Thread.sleep(1000 * 60);
+
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+                if (task != null) {
+                    crawlService.updateCrawlSingleTask(task, crawlStatus);
+                }
+
+            }
+        }).start();
     }
 }

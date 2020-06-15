@@ -55,9 +55,14 @@ public enum ResponseStatus {
      * */
     INVITE_CODE_INVALID(4001, "邀请码无效！"),
     AUTHOR_STATUS_FORBIDDEN(4002, "作者状态异常，暂不能管理小说！")
-    , BOOKNAME_EXISTS(4003,"已发布过同名小说！")
+    , BOOKNAME_EXISTS(4003,"已发布过同名小说！"),
 
-    ,
+    /**
+     * 小说相关错误
+     */
+    BOOK_EXISTS(5001,"该小说已存在")
+
+            ,
     /**
      * 搜索引擎相关错误
      * */
@@ -68,6 +73,7 @@ public enum ResponseStatus {
      * 其他通用错误
      * */
     PASSWORD_ERROR(88001,"密码错误！");
+
     private int code;
     private String msg;
 

@@ -3,11 +3,12 @@ package com.java2nb.novel.controller;
 import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.utils.BeanUtil;
+import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.service.CrawlService;
+import com.java2nb.novel.vo.CrawlSingleTaskVO;
 import com.java2nb.novel.vo.CrawlSourceVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +53,38 @@ public class CrawlController {
     public ResultBean openOrCloseCrawl(Integer sourceId,Byte sourceStatus){
 
         crawlService.openOrCloseCrawl(sourceId,sourceStatus);
+
+        return ResultBean.ok();
+    }
+
+    /**
+     * 新增单本采集任务
+     * */
+    @PostMapping("addCrawlSingleTask")
+    public ResultBean addCrawlSingleTask(CrawlSingleTask singleTask){
+        crawlService.addCrawlSingleTask(singleTask);
+
+        return ResultBean.ok();
+
+    }
+
+    /**
+     * 单本采集任务分页列表查询
+     * */
+    @PostMapping("listCrawlSingleTaskByPage")
+    public ResultBean listCrawlSingleTaskByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize){
+
+        return ResultBean.ok(new PageInfo<>(BeanUtil.copyList(crawlService.listCrawlSingleTaskByPage(page,pageSize), CrawlSingleTaskVO.class)
+        ));
+    }
+
+    /**
+     * 删除采集任务
+     * */
+    @PostMapping("delCrawlSingleTask")
+    public ResultBean delCrawlSingleTask(Long id){
+
+        crawlService.delCrawlSingleTask(id);
 
         return ResultBean.ok();
     }

@@ -1,6 +1,7 @@
 package com.java2nb.novel.service;
 
 import com.java2nb.novel.core.crawl.RuleBean;
+import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
 
 import java.util.List;
@@ -40,6 +41,16 @@ public interface CrawlService {
     void updateCrawlSourceStatus(Integer sourceId, Byte sourceStatus);
 
     /**
+     * 采集并保存小说
+     * @param catId 分类ID
+     * @param bookId 小说ID
+     * @param sourceId 源ID
+     * @param ruleBean 采集规则\
+     * @return true:成功，false:失败
+     * */
+    boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId);
+
+    /**
      * 根据爬虫状态查询爬虫源集合
      * @param sourceStatus 状态，0关闭，1开启
      * @return 返回爬虫源集合
@@ -61,4 +72,37 @@ public interface CrawlService {
      * @return 源信息
      * */
     CrawlSource queryCrawlSource(Integer sourceId);
+
+    /**
+     * 新增单本采集任务
+     * @param singleTask 任务信息对象
+     * */
+    void addCrawlSingleTask(CrawlSingleTask singleTask);
+
+    /**
+     * 单本采集任务分页列表查询
+     * @param page 当前页码
+     * @param pageSize 分页大小
+     * @return 单本采集任务集合
+     * */
+    List<CrawlSingleTask> listCrawlSingleTaskByPage(int page, int pageSize);
+
+    /**
+     * 删除采集任务
+     * @param id 任务ID
+     * */
+    void delCrawlSingleTask(Long id);
+
+    /**
+     * 获取采集任务
+     * @return 采集任务
+     * */
+    CrawlSingleTask getCrawlSingleTask();
+
+    /**
+     * 更新单本采集任务
+     * @param task 采集任务
+     * @param status 采集状态
+     * */
+    void updateCrawlSingleTask(CrawlSingleTask task, Byte status);
 }

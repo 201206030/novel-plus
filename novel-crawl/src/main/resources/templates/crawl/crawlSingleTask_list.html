@@ -1,5 +1,5 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <head>
@@ -7,16 +7,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <title>爬虫管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
-        <link rel="stylesheet" href="/css/user.css" />
+        <link rel="stylesheet" href="/css/user.css"/>
     </head>
 </head>
 <body class="">
 
 <div class="header">
     <div class="mainNav" id="mainNav">
-        <div class="box_center cf" style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+        <div class="box_center cf"
+             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
 
-                小说精品屋爬虫管理
+            小说精品屋爬虫管理
 
         </div>
     </div>
@@ -27,18 +28,18 @@
         <div class="my_l">
 
             <ul class="log_list">
-                <li><a class="link_1 on" href="/">爬虫源管理</a></li>
-                <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
-               <!-- <li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
-                <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
+                <li><a class="link_1" href="/">爬虫源管理</a></li>
+                <li><a class="link_1 on" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
+                <!-- <li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
+                 <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
 
         </div>
         <div class="my_r">
             <div class="my_bookshelf">
                 <div class="title cf">
-                    <h2 class="fl">爬虫源列表</h2>
-                    <div class="fr"><a href="/crawl/crawlSource_add.html" class="btn_red">增加爬虫源</a></div>
+                    <h2 class="fl">单本采集任务列表</h2>
+                    <div class="fr"><a href="/crawl/crawlSingleTask_add.html" class="btn_red">增加单本采集任务</a></div>
                 </div>
 
                 <div id="divData" class="updateTable">
@@ -48,17 +49,20 @@
                             <th class="style">
                                 序号
                             </th>
-                            <th class="chapter">
-                                爬虫源
+                            <th class="name">
+                                采集小说名
                             </th>
                             <th class="name">
-                                创建时间
+                                采集小说作者名
                             </th>
-                            <th class="name">
-                                更新时间
+                            <th class="goread">
+                                采集次数
                             </th>
                             <th class="goread">
                                 状态
+                            </th>
+                            <th class="name">
+                                创建时间
                             </th>
                             <th class="goread">
                                 操作
@@ -66,7 +70,6 @@
                         </tr>
                         </thead>
                         <tbody id="crawlSourceList">
-
 
 
                         </tbody>
@@ -123,31 +126,36 @@
 
         $.ajax({
             type: "POST",
-            url: "/crawl/listCrawlByPage",
-            data: {'curr':curr,'limit':limit},
+            url: "/crawl/listCrawlSingleTaskByPage",
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     var crawlSourceList = data.data.list;
                     if (crawlSourceList.length > 0) {
                         var crawlSourceListHtml = "";
-                        for(var i=0;i<crawlSourceList.length;i++){
+                        for (var i = 0; i < crawlSourceList.length; i++) {
                             var crawlSource = crawlSourceList[i];
-                            crawlSourceListHtml+=(" <tr class=\"book_list\" vals=\"291\">\n" +
+                            crawlSourceListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
                                 "                            <td class=\"style bookclass\">\n" +
-                                "                                ["+(i+1)+"]\n" +
+                                "                                [" + (i + 1) + "]\n" +
                                 "                            </td>\n" +
-                                "                            <td class=\"chapter\">\n" +
-                                "                                "+crawlSource.sourceName+"</td>\n" +
-                                "                            <td class=\"name\" valsc=\"291|2037554|1\">"
-                                +crawlSource.createTime+"</td>\n" +
                                 "                            <td class=\"name\">\n" +
-                                "                                "+crawlSource.updateTime+"\n" +
+                                "                                " + crawlSource.bookName + "\n" +
                                 "                            </td>\n" +
-                                "                            <td class=\"goread\" id='sourceStatus"+crawlSource.id+"'>"+(crawlSource.sourceStatus==0?'停止运行':'正在运行')+
+                                "                            <td class=\"name\">\n" +
+                                "                                " + crawlSource.authorName + "\n" +
                                 "                            </td>\n" +
+                                "                            <td class=\"goread\">\n" +
+                                "                                " + crawlSource.excCount + "\n" +
+                                "                            </td>\n" +
+                                "                            <td class=\"goread\">\n" +
+                                "                                " + (crawlSource.taskStatus == 0 ? '采集失败' : (crawlSource.taskStatus == 1 ? '采集成功' : (crawlSource.excCount>0?'采集中':'排队中'))) + "\n" +
+                                "                            </td>\n" +
+                                "                            <td class=\"name\" valsc=\"291|2037554|1\">"
+                                + crawlSource.createTime + "</td>\n" +
 
-                                " <td class=\"goread\" id='opt"+crawlSource.id+"'><a href='javascript:openOrStopCrawl("+crawlSource.id+","+crawlSource.sourceStatus+")'>"+(crawlSource.sourceStatus==0?'开启':'关闭')+"  </a></td>                     </tr>");
+                                " <td class=\"goread\" id='opt" + crawlSource.id + "'><a href='javascript:del(" + crawlSource.id + ")'>删除  </a></td>                     </tr>");
                         }
                         $("#crawlSourceList").html(crawlSourceListHtml);
 
@@ -181,11 +189,7 @@
                     }
 
 
-                } else if (data.code == 1001) {
-                    //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
-
-                }else {
+                }  else {
                     layer.alert(data.msg);
                 }
 
@@ -198,32 +202,19 @@
     }
 
 
-    function openOrStopCrawl(sourceId,status) {
+    function del(id) {
 
         $.ajax({
             type: "POST",
-            url: "/crawl/openOrCloseCrawl",
-            data: {'sourceId':sourceId,'sourceStatus':status==0?1:0},
+            url: "/crawl/delCrawlSingleTask",
+            data: {'id': id},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-
-                    if(status == 0){
-                        //开启
-                        $("#sourceStatus"+sourceId).html("正在运行");
-                        $("#opt"+sourceId).html("<a href='javascript:openOrStopCrawl("+sourceId+","+1+")'>关闭</a>");
-                    }else{
-                        //关闭
-                        $("#sourceStatus"+sourceId).html("停止运行");
-                        $("#opt"+sourceId).html("<a href='javascript:openOrStopCrawl("+sourceId+","+0+")'>开启</a>");
-                    }
+                    location.reload();
 
 
-                } else if (data.code == 1001) {
-                    //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
-
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -232,9 +223,6 @@
                 layer.alert('网络异常');
             }
         })
-
-
-
 
 
     }

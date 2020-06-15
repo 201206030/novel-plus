@@ -10,7 +10,7 @@
 .user_l .log_list { width:350px }
 .user_l .s_input { margin-bottom:25px; font-size:14px }
 .s_input { width:348px; height:30px; line-height:38px\9; vertical-align:middle; border:1px solid #ddd; border-radius:2px }
-.icon_name, .icon_key, .icon_code { width:312px; padding-left:36px; background:url(../images/icon_user.png) no-repeat 13px 13px }
+.icon_name, .icon_key, .icon_code { width:312px; padding-left:36px}
 .icon_key { background-position: 13px -51px }
 .icon_code { background-position: 13px -117px; width:200px; float:left }
 .code_pic { height:38px; float:right }
@@ -37,7 +37,7 @@
 .fast_tit .title { background:#fff; font-size:16px; padding:3px 14px; position:relative; display:inline-block; z-index:999 }
 /*userinfo*/
 .my_l { width:198px; float:left; font-size: 13px; padding-top: 20px; }
-.my_l li a { display:block; height:42px; line-height:42px; padding-left:62px; border-left:4px solid #fff; background:url(../images/icon_user.png) no-repeat; margin-bottom:5px; color: #666 }
+.my_l li a { display:block; height:42px; line-height:42px; padding-left:62px; border-left:4px solid #fff;  margin-bottom:5px; color: #666 }
 .my_l li .on { background-color:#fafafa; border-left:2px solid #f80; color:#000; border-radius: 0 2px 2px 0 }
 .my_l .link_1 { background-position:32px -188px }
 .my_l .link_2 { background-position:32px -230px }

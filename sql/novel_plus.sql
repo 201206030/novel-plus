@@ -1809,4 +1809,26 @@ CREATE TABLE `book_content9` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `key_uq_indexId` (`index_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=415 DEFAULT CHARSET=utf8mb4 COMMENT='小说内容表';
+
+
+DROP TABLE IF EXISTS `crawl_single_task`;
+CREATE TABLE `crawl_single_task` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `source_id` int(11) DEFAULT NULL COMMENT '爬虫源ID',
+  `source_name` varchar(50) DEFAULT NULL COMMENT '爬虫源名',
+  `source_book_id` varchar(255) DEFAULT NULL COMMENT '源站小说ID',
+  `cat_id` int(11) DEFAULT NULL COMMENT '分类ID',
+  `book_name` varchar(50) DEFAULT NULL COMMENT '爬取的小说名',
+  `author_name` varchar(50) DEFAULT NULL COMMENT '爬取的小说作者名',
+  `task_status` tinyint(1) DEFAULT '2' COMMENT '任务状态，0：失败，1：成功，2；未执行',
+  `exc_count` tinyint(2) DEFAULT '0' COMMENT '已经执行次数，最多执行5次',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='抓取单本小说任务表';
+
+-- ----------------------------
+-- Records of crawl_single_task
+-- ----------------------------
+INSERT INTO `crawl_single_task` VALUES ('6', '2', '百书斋', '1', '1', '1', '1', '0', '5', '2020-06-15 14:36:07');
+INSERT INTO `crawl_single_task` VALUES ('7', '5', '笔趣阁', '108_108291', '1', '衍天志之不朽仙', '白衣少年丶', '1', '1', '2020-06-15 14:46:08');
 UPDATE `crawl_source` SET `source_name` = '书趣阁', `crawl_rule` = '{\n	\"bookListUrl\": \"http://m.shuquge.com/sort/{catId}/0_{page}.html\",\n	\"catIdRule\": {\n		\"catId1\": \"1\",\n		\"catId2\": \"2\",\n		\"catId3\": \"3\",\n		\"catId4\": \"4\",\n		\"catId5\": \"7\",\n		\"catId6\": \"6\",\n		\"catId7\": \"8\"\n	},\n	\"bookIdPatten\": \"href=\\\"/s/(\\\\d+)\\\\.html\\\"\",\n	\"pagePatten\": \"第(\\\\d+)/\\\\d+页\",\n	\"totalPagePatten\": \"第\\\\d+/(\\\\d+)页\",\n	\"bookDetailUrl\": \"http://m.shuquge.com/s/{bookId}.html\",\n	\"bookNamePatten\": \"<a\\\\s+href=\\\"/s/\\\\d+\\\\.html\\\"><h2>([^/]+)</h2></a>\",\n	\"authorNamePatten\": \"<p>作者：([^/]+)</p>\",\n	\"picUrlPatten\": \"src=\\\"(http://www.shuquge.com/files/article/image/\\\\d+/\\\\d+/\\\\d+s\\\\.jpg)\\\"\",\n	\"statusPatten\": \"<p>状态：([^/]+)</p>\",\n	\"bookStatusRule\": {\n		\"连载中\": 0,\n		\"完本\": 1\n	},\n	\"descStart\": \"<div class=\\\"intro_info\\\">\",\n	\"descEnd\": \"最新章节推荐地址\",\n	\"bookIndexUrl\": \"http://www.shuquge.com/txt/{bookId}/index.html\",\n	\"bookIndexStart\": \"<dt>《\",\n	\"indexIdPatten\": \"<dd><a\\\\s+href=\\\"(\\\\d+)\\\\.html\\\">[^/]+</a></dd>\",\n	\"indexNamePatten\": \"<dd><a\\\\s+href=\\\"\\\\d+\\\\.html\\\">([^/]+)</a></dd>\",\n	\"bookContentUrl\": \"http://www.shuquge.com/txt/{bookId}/{indexId}.html\",\n	\"contentStart\": \"<div id=\\\"content\\\" class=\\\"showtxt\\\">\",\n	\"contentEnd\": \"http://www.shuquge.com\"\n}', `source_status` = 1, `create_time` = '2020-05-18 12:02:34', `update_time` = '2020-05-18 12:02:34' WHERE `id` = 4;
