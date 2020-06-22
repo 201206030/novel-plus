@@ -93,7 +93,7 @@ public class SearchServiceImpl implements SearchService {
         boolQueryBuilder.filter(QueryBuilders.rangeQuery("wordCount").gte(params.getWordCountMin()).lte(params.getWordCountMax()));
 
         if (params.getUpdateTimeMin() != null) {
-            boolQueryBuilder.filter(QueryBuilders.rangeQuery("lastIndexUpdateTime").gte(params.getUpdateTimeMin()));
+            boolQueryBuilder.filter(QueryBuilders.rangeQuery("lastIndexUpdateTime").gte(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(params.getUpdateTimeMin())));
         }
 
 
