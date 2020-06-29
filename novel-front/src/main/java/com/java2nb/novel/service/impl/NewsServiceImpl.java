@@ -42,7 +42,7 @@ public class NewsServiceImpl implements NewsService {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             result = newsMapper.selectMany(selectStatement);
-            cacheService.setObject(CacheKey.INDEX_NEWS_KEY,result);
+            cacheService.setObject(CacheKey.INDEX_NEWS_KEY,result,60 * 60 * 12);
         }
         return result;
     }

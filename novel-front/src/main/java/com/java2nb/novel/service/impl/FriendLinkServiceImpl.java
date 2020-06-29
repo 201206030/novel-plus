@@ -40,7 +40,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             result =  friendLinkMapper.selectMany(selectStatement);
-            cacheService.setObject(CacheKey.INDEX_LINK_KEY,result);
+            cacheService.setObject(CacheKey.INDEX_LINK_KEY,result,60 * 60 * 24);
         }
         return result;
     }
