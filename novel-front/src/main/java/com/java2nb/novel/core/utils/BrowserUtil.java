@@ -18,19 +18,20 @@ public class BrowserUtil {
             "lg-d", "lg-g", "lge-", "maui", "maxo", "midp", "mits", "mmef", "mobi", "mot-", "moto", "mwbp", "nec-",
             "newt", "noki", "oper", "palm", "pana", "pant", "phil", "play", "port", "prox", "qwap", "sage", "sams",
             "sany", "sch-", "sec-", "send", "seri", "sgh-", "shar", "sie-", "siem", "smal", "smar", "sony", "sph-",
-            "symb", "t-mo", "teli", "tim-", "tosh", "tsm-", "upg1", "upsi", "vk-v", "voda", "wap-", "wapa", "wapi",
+            "symb", "t-mo", "teli", "tim-",  "tsm-", "upg1", "upsi", "vk-v", "voda", "wap-", "wapa", "wapi",
             "wapp", "wapr", "webc", "winw", "winw", "xda", "xda-", "Googlebot-Mobile" };
 
     /**
      *
-     * @Title: JudgelsMobile @Description: TODO(判断是否是手机浏览器) @param @param
-     *         request @param @return 设定文件 @return boolean 返回类型 @throws
+     * 判断是否是手机浏览器
      */
     public static boolean isMobile(HttpServletRequest request) {
         boolean isMobile = false;
-        if (request.getHeader("User-Agent") != null) {
+        String userAgent = request.getHeader("User-Agent");
+        if (userAgent != null) {
+            userAgent = userAgent.toLowerCase();
             for (String mobileAgent : mobileAgents) {
-                if (request.getHeader("User-Agent").toLowerCase().indexOf(mobileAgent) > 0) {
+                if (userAgent.indexOf(mobileAgent) > 0) {
                     isMobile = true;
                     break;
                 }
