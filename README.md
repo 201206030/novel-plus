@@ -1,4 +1,4 @@
-[![index]( https://i.loli.net/2020/06/01/qF1uBMtswTIPJKx.jpg )]( https://www.eve.bz/cart.php?gid=11 )
+[![index]( https://s1.ax1x.com/2020/07/03/NOSA5q.jpg )]( https://cloud.tencent.com/act/cps/redirect?redirect=1052&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console )
 
 # 小说精品屋-plus
 
@@ -203,4 +203,4 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 精品小说屋所有相关项目均已在开源中国公开，感兴趣的可进入[开源中国](https://www.oschina.net/p/fiction_house)按关键字`精品小说屋`搜索。
 
-[![index](./assets/120060.jpg)](https://www.aliyun.com/minisite/goods?userCode=uf4nasee )
+[![index](https://s1.ax1x.com/2020/07/03/NOSuMF.jpg)](https://www.aliyun.com/minisite/goods?userCode=uf4nasee )
