@@ -4,7 +4,7 @@
 
 #### 新项目：小说精品屋-微服务版
 
-基于小说精品屋-plus构建的Spring Cloud 微服务小说门户平台，可用于学习和商用。
+基于小说精品屋-plus构建的Spring Cloud 微服务小说门户平台。
 
 Gitee仓库地址： https://gitee.com/xiongxyang/novel-cloud
 
