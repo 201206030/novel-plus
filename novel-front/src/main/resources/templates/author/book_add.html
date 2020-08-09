@@ -8,6 +8,9 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <style type="text/css">
+            .opacity{-khtml-opacity:0.0;-moz-opacity:0.0;filter:alpha(opacity=0);filter:"alpha(opacity=0)";opacity:0.0; filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);/*兼容ie8及以下*/}
+        </style>
     </head>
 </head>
 <body class="">
@@ -74,8 +77,15 @@
                                 <input type="hidden" id="catName" name="catName" value="玄幻奇幻"/>
                                 <b>小说名：</b>
                                 <li><input type="text" id="bookName" name="bookName" class="s_input" ></li>
-                                <b>小说封面图片路径：</b>
-                                <li><input type="text" id="picUrl" name="picUrl" class="s_input" ></li>
+                                <b>小说封面：</b>
+                                <li style="position: relative">
+                                    <input class="opacity" onchange="picChange()"
+                                           type="file" id="file0" name="file"
+                                           title="点击更换图片"
+                                           style="z-index: 100;cursor: pointer;left: 0px; top: 0px; width: 100px; height: 130px; opacity: 0; position: absolute;  "
+                                    />
+                                    <img style="width:100px;height: 130px" id="picImage" src="/images/default.gif" alt="">
+                                    <input type="hidden" id="picUrl" name="picUrl" class="s_input" value="/images/default.gif"></li>
                                 <b>小说介绍：</b>
 
                                 <li><textarea name="bookDesc" rows="5" cols="53" id="bookDesc"
@@ -126,10 +136,41 @@
 
 </body>
 <script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/javascript/ajaxfileupload.js" type="text/javascript"></script>
+
 <script src="/layui/layui.all.js" type="text/javascript"></script>
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
+
+    function picChange() {
+        var file = $("#file0").val(); //文件名称
+        if (file != "") {
+
+            $.ajaxFileUpload({
+                url : "/file/upload", //用于文件上传的服务器端请求地址
+                secureuri : false, //是否需要安全协议，一般设置为false
+                fileElementId : "file0", //文件上传域的ID
+                dataType : "json", //返回值类型 一般设置为json
+                type : "post",
+                success : function(data) { //服务器成功响应处理函数
+                    if (data.code == 200) {
+                        $("#picImage").attr("src", data.data);
+                        $("#picUrl").val(data.data);
+                    }else {
+                        layer.alert('图片上传失败');
+                    }
+
+                }
+
+            });
+        } else {
+            alert("请选择上传文件！");
+        }
+
+
+
+    }
 
     var lock = false;
     function addBook() {
