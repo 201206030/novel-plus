@@ -1,7 +1,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link})">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
     <title th:utext="${book.bookName}+'_'+${bookIndex.indexName}+'_'+#{website.name}"></title>
     <meta name="keywords" th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节,'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'" />
     <meta name="description" th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+#{website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+#{website.name}+'。'" />

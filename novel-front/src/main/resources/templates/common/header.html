@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="common_head(title,meta,links)">
+<head th:fragment="common_head(title,meta,links,script)">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <title th:replace="${title}">小说精品屋</title>
     <link rel="stylesheet" href="/css/base.css?v=1"/>
     <th:block th:replace="${meta}"/>
     <th:block th:replace="${links}"/>
+    <th:block th:replace="${script}"/>
     <script>
         var _hmt = _hmt || [];
         (function() {
