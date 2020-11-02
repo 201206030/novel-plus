@@ -10,9 +10,14 @@ Gitee仓库地址： https://gitee.com/xiongxyang/novel-cloud
 
 GitHub仓库地址： https://github.com/201206030/novel-cloud
 
-#### 演示地址
+#### 示例网站
 
-[点击前往](http://www.java2nb.com)（前台门户）
+[网站1，点击前往](http://www.bqmfxs.cn)
+[网站2，点击前往](http://iyuedu.space/)
+[网站3，点击前往](http://suxiange.com)
+[网站4，点击前往](http://ruoshu.com)
+[网站5，点击前往](https://www.jingjiao.net)
+[网站6，点击前往](http://www.shucheng.in/)
 
 #### 前言
 
@@ -191,13 +196,13 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 #### QQ交流群
 
-![mini-code](./assets/小说精品屋开源项目交流群群聊二维码.png)
+![mini-code](https://s1.ax1x.com/2020/10/31/BUQVeI.png)
 
 #### 捐赠支持
 
 开源项目不易，若此项目能得到你的青睐，可以捐赠支持作者持续开发与维护。 
 
-![mini-code](./assets/jk.png)
+![mini-code](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
 #### 备注
 
