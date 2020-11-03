@@ -9,6 +9,7 @@ import com.java2nb.novel.vo.BookShelfVO;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.vo.UserFeedbackVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -138,4 +139,40 @@ public interface UserService {
      * @param buyRecord 购买信息
      * */
     void buyBookIndex(Long userId, UserBuyRecord buyRecord);
+
+    /**
+     * 查询作品时间段内的订阅人数
+     * @param bookId 作品ID
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 订阅人数
+     */
+    int queryBuyMember(Long bookId, Date startTime, Date endTime);
+
+    /**
+     * 查询作品时间段内的订阅次数
+     * @param bookId 作品ID
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 订阅次数
+     */
+    int queryBuyCount(Long bookId, Date startTime, Date endTime);
+
+    /**
+     * 查询作品时间段内的订阅总额（屋币）
+     * @param bookId 作品ID
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 订阅总额（屋币）
+     */
+    int queryBuyAccount(Long bookId, Date startTime, Date endTime);
+
+    /**
+     * 查询作者时间段内的订阅人数
+     * @param bookIds z作者的所有作品ID
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 订阅人数
+     */
+    int queryBuyTotalMember(List<Long> bookIds, Date startTime, Date endTime);
 }

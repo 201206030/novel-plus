@@ -27,8 +27,8 @@
         <div class="my_l">
 
             <ul class="log_list">
-                <li><a class="link_1 on" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_1 " href="/author/author_income_detail.html">稿费收入</a></li>
+                <li><a class="link_1" href="/author/index.html">小说管理</a></li>
+                <li><a class="link_1 on" href="/author/author_income_detail.html">稿费收入</a></li>
                 <!-- <li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
                  <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
@@ -37,31 +37,24 @@
         <div class="my_r">
             <div class="my_bookshelf">
                 <div class="title cf">
-                    <h2 class="fl">小说列表</h2>
-                    <div class="fr"><a href="/author/book_add.html" class="btn_red">发布小说</a></div>
+                    <h2 class="fl ml10"><a href="/author/author_income_detail.html" class="red">订阅明细</a></h2><i class="fl ml20 mr20 font16">|</i><h2 class="fl"><a href="/author/author_income.html">稿费汇总</a></h2>
                 </div>
 
                 <div id="divData" class="updateTable">
                     <table cellpadding="0" cellspacing="0">
                         <thead>
                         <tr>
-                            <th class="style">
-                                序号
-                            </th>
-                            <th class="name">
-                                小说名
+                            <th class="goread">
+                                日期
                             </th>
                             <th class="goread">
-                                点击量
-                            </th>
-                            <th class="name">
-                                最新章节
+                                订阅总额
                             </th>
                             <th class="goread">
-                                状态
+                                订阅次数
                             </th>
                             <th class="goread">
-                                操作
+                                订阅人数
                             </th>
                         </tr>
                         </thead>
@@ -124,7 +117,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/author/listBookByPage",
+            url: "/author/listIncomeDailyByPage",
             data: {'curr':curr,'limit':limit},
             dataType: "json",
             success: function (data) {
@@ -134,24 +127,18 @@
                         var bookListHtml = "";
                         for(var i=0;i<bookList.length;i++){
                             var book = bookList[i];
-                            bookListHtml+=(" <tr class=\"book_list\" vals=\"291\">\n" +
-                                "                            <td class=\"style bookclass\">\n" +
-                                "                                ["+(i+1)+"]\n" +
+                            bookListHtml+=(" <tr class=\"book_list\" >\n" +
+                                "                            <td class=\"goread\">\n" +
+                                "                                "+book.incomeDate+"</td>\n" +
+                                "                            <td class=\"goread\" >"
+                                +book.incomeAccount+"</td>\n" +
+                                "                            <td class=\"goread\">\n" +
+                                "                                "+book.incomeCount+"\n" +
                                 "                            </td>\n" +
-                                "                            <td class=\"name\">\n" +
-                                "                                "+book.bookName+"</td>\n" +
-                                "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                +book.visitCount+"</td>\n" +
-                                "                            <td class=\"name\">\n" +
-                                "                                "+book.lastIndexName+"\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"goread\" id='bookStatus"+book.id+"'>"+(book.status==0?'免费':'上架')+
+                                "                            <td class=\"goread\">"+book.incomeNumber+
                                 "                            </td>\n" +
 
-                                " <td class=\"goread\" id='opt"+book.id+"'>" +
-                                "<a href='javascript:updateBookStatus(\""+book.id+"\","+book.status+")'>"+(book.status==0?'上架':'下架')+"  </a>" +
-                                "<a href='/author/content_add.html?bookStatus="+book.status+"&bookId="+book.id+"'>发布章节  </a>" +
-                                "</td>                     </tr>");
+                                " </tr>");
                         }
                         $("#bookList").html(bookListHtml);
 

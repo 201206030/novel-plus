@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 /**
  * @author 11797
@@ -103,7 +104,7 @@ public class AuthorController extends BaseController{
      * 发布章节内容
      * */
     @PostMapping("addBookContent")
-    public ResultBean addBookContent(Long bookId,String indexName,String content,HttpServletRequest request){
+    public ResultBean addBookContent(Long bookId,String indexName,String content,Byte isVip,HttpServletRequest request){
         //查询作家信息
         Author author = authorService.queryAuthor(getUserDetails(request).getId());
 
@@ -116,9 +117,38 @@ public class AuthorController extends BaseController{
         content = content.replaceAll("\\n","<br>")
                 .replaceAll("\\s","&nbsp;");
         //发布章节内容
-        bookService.addBookContent(bookId,indexName,content,author.getId());
+        bookService.addBookContent(bookId,indexName,content,isVip,author.getId());
 
         return ResultBean.ok();
+    }
+
+    /**
+     * 作家日收入统计数据分页列表查询
+     * */
+    @PostMapping("listIncomeDailyByPage")
+    public ResultBean listIncomeDailyByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
+                                            @RequestParam(value = "limit", defaultValue = "10") int pageSize ,
+                                            @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
+                                            @RequestParam(value = "startTime",defaultValue = "2020-05-01") Date startTime,
+                                            @RequestParam(value = "endTime",defaultValue = "2030-01-01") Date endTime,
+                                            HttpServletRequest request){
+
+        return ResultBean.ok(new PageInfo<>(authorService.listIncomeDailyByPage(page,pageSize,getUserDetails(request).getId(),bookId,startTime,endTime)
+        ));
+    }
+
+
+    /**
+     * 作家月收入统计数据分页列表查询
+     * */
+    @PostMapping("listIncomeMonthByPage")
+    public ResultBean listIncomeMonthByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
+                                            @RequestParam(value = "limit", defaultValue = "10") int pageSize ,
+                                            @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
+                                            HttpServletRequest request){
+
+        return ResultBean.ok(new PageInfo<>(authorService.listIncomeMonthByPage(page,pageSize,getUserDetails(request).getId(),bookId)
+        ));
     }
 
 

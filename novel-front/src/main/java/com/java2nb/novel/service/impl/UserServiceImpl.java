@@ -303,6 +303,51 @@ public class UserServiceImpl implements UserService {
                 .render(RenderingStrategies.MYBATIS3));
     }
 
+    @Override
+    public int queryBuyMember(Long bookId, Date startTime, Date endTime) {
+        return userMapper.selectStatistic(select(countDistinct(UserBuyRecordDynamicSqlSupport.userId))
+                .from(UserBuyRecordDynamicSqlSupport.userBuyRecord)
+                .where(UserBuyRecordDynamicSqlSupport.bookId,isEqualTo(bookId))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isGreaterThanOrEqualTo(startTime))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isLessThanOrEqualTo(endTime))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public int queryBuyCount(Long bookId, Date startTime, Date endTime) {
+        return userMapper.selectStatistic(select(count(UserBuyRecordDynamicSqlSupport.id))
+                .from(UserBuyRecordDynamicSqlSupport.userBuyRecord)
+                .where(UserBuyRecordDynamicSqlSupport.bookId,isEqualTo(bookId))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isGreaterThanOrEqualTo(startTime))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isLessThanOrEqualTo(endTime))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public int queryBuyAccount(Long bookId, Date startTime, Date endTime) {
+        return userMapper.selectStatistic(select(sum(UserBuyRecordDynamicSqlSupport.buyAmount))
+                .from(UserBuyRecordDynamicSqlSupport.userBuyRecord)
+                .where(UserBuyRecordDynamicSqlSupport.bookId,isEqualTo(bookId))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isGreaterThanOrEqualTo(startTime))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isLessThanOrEqualTo(endTime))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public int queryBuyTotalMember(List<Long> bookIds, Date startTime, Date endTime) {
+        return userMapper.selectStatistic(select(countDistinct(UserBuyRecordDynamicSqlSupport.userId))
+                .from(UserBuyRecordDynamicSqlSupport.userBuyRecord)
+                .where(UserBuyRecordDynamicSqlSupport.bookId,isIn(bookIds))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isGreaterThanOrEqualTo(startTime))
+                .and(UserBuyRecordDynamicSqlSupport.createTime,isLessThanOrEqualTo(endTime))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+
 
 
 

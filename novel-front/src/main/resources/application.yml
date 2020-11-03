@@ -49,4 +49,11 @@ xss:
   urlPatterns: /book/addBookComment,/user/addFeedBack,/author/addBook,/author/addBookContent,/author/register.html
 
 
-
+author:
+  income:
+    #税率(扣税后所得比率)
+    tax-rate: 0.9
+    #分佣比例
+    share-proportion: 0.7
+    #兑换比率(人民币)
+    exchange-proportion: 0.01

@@ -531,12 +531,16 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void addBookContent(Long bookId, String indexName, String content, Long authorId) {
+    public void addBookContent(Long bookId, String indexName, String content, Byte isVip, Long authorId) {
 
         Book book = queryBookDetail(bookId);
         if (!authorId.equals(book.getAuthorId())) {
             //并不是更新自己的小说
             return;
+        }
+        if(book.getStatus() != 1){
+            //小说未上架，不能设置VIP
+            isVip = 0;
         }
         Long lastIndexId = new IdWorker().nextId();
         Date currentDate = new Date();
@@ -567,7 +571,7 @@ public class BookServiceImpl implements BookService {
         lastBookIndex.setIndexName(indexName);
         lastBookIndex.setIndexNum(indexNum);
         lastBookIndex.setBookId(bookId);
-        lastBookIndex.setIsVip(book.getStatus());
+        lastBookIndex.setIsVip(isVip);
         lastBookIndex.setCreateTime(currentDate);
         lastBookIndex.setUpdateTime(currentDate);
         bookIndexMapper.insertSelective(lastBookIndex);
@@ -590,6 +594,16 @@ public class BookServiceImpl implements BookService {
                 .where(updateTime, isGreaterThan(startDate))
                 .orderBy(updateTime)
                 .limit(limit)
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public List<Book> queryBookList(Long authorId) {
+
+        return bookMapper.selectMany(select(id, bookName)
+                .from(book)
+                .where(BookDynamicSqlSupport.authorId,isEqualTo(authorId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
     }

@@ -225,9 +225,9 @@ public interface BookService {
      * @param bookId 小说ID
      * @param indexName 章节名
      * @param content 章节内容
-     * @param authorId 作者ID
-     * */
-    void addBookContent(Long bookId, String indexName, String content, Long authorId);
+     * @param isVip 是否收费
+     * @param authorId 作者ID   */
+    void addBookContent(Long bookId, String indexName, String content, Byte isVip, Long authorId);
 
 
     /**
@@ -237,4 +237,11 @@ public interface BookService {
      * @return 书籍列表
      * */
     List<Book> queryBookByUpdateTimeByPage(Date startDate, int limit);
+
+    /**
+     * 查询作品列表
+     * @param authorId 作家ID
+     * @return 作品列表
+     */
+    List<Book> queryBookList(Long authorId);
 }
