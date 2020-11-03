@@ -6,7 +6,7 @@
     <select id="queryNeedUpdateBook" resultType="com.java2nb.novel.entity.Book">
 
         select id,crawl_source_id,crawl_book_id,crawl_last_time,pic_url
-        from book where last_index_update_time > #{startDate} and crawl_source_id != null
+        from book where last_index_update_time > #{startDate} and crawl_source_id is not null
         order by crawl_last_time
         limit ${limit}
 
