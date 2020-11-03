@@ -128,6 +128,12 @@ novel-plus -- 父工程
 
 ![img](https://oscimg.oschina.net/oscnet/up-9737995e465b86f3bee3211221f6c3b8a56.png)
 
+![img](https://s1.ax1x.com/2020/11/03/BsjkOf.png)
+
+![img](https://s1.ax1x.com/2020/11/03/Bsjf1I.png)
+
+![img](https://s1.ax1x.com/2020/11/03/BsjHAg.png)
+
 10. 购买
 
 ![img](https://oscimg.oschina.net/oscnet/up-ce0f585efd82a9670335f118cf5897c85e9.png)
@@ -154,7 +160,9 @@ novel-plus -- 父工程
 
 #### 爬虫管理系统截图
 
-![img](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.2/assets/crawl_index.png)
+![img](https://s1.ax1x.com/2020/11/03/BsOgbD.png)
+
+![img](https://s1.ax1x.com/2020/11/03/BsOHr8.png)
 
 #### 后台管理系统截图
 
