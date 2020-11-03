@@ -126,8 +126,6 @@ novel-plus -- 父工程
 
 ![img](https://oscimg.oschina.net/oscnet/up-30766372cc7f56480ff1d7d55198204f6ea.png)
 
-![img](https://oscimg.oschina.net/oscnet/up-9737995e465b86f3bee3211221f6c3b8a56.png)
-
 ![img](https://s1.ax1x.com/2020/11/03/BsjkOf.png)
 
 ![img](https://s1.ax1x.com/2020/11/03/Bsjf1I.png)
