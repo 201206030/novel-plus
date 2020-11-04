@@ -140,6 +140,8 @@ public class PageController extends BaseController{
         //查询内容
         BookContent bookContent = bookService.queryBookContent(bookIndex.getId());
         model.addAttribute("bookContent",bookContent);
+
+        boolean needBuy = false;
         //判断该目录是否收费
         if(bookIndex.getIsVip()!=null && bookIndex.getIsVip() == 1 ){
             UserDetails user = getUserDetails(request);
@@ -152,11 +154,10 @@ public class PageController extends BaseController{
             if(!isBuy){
                 //没有购买过，需要购买
                 bookContent.setContent(null);
-                model.addAttribute("needBuy",true);
-                return "book/book_content";
+                needBuy = true;
             }
         }
-        model.addAttribute("needBuy",false);
+        model.addAttribute("needBuy",needBuy);
         return ThreadLocalUtil.getTemplateDir()+"book/book_content";
     }
 

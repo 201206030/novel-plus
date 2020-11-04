@@ -169,7 +169,11 @@
 
 <input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
 
+<input type="hidden" id="bookNameHidden" th:value="${book.bookName}"/>
+
 <input type="hidden" id="contentIdHidden" th:value="${bookIndex.id}"/>
+
+<input type="hidden" id="indexNameHidden" th:value="${bookIndex.indexName}"/>
 
 <input type="hidden" id="indexNumHidden" th:value="${bookIndex.indexNum}"/>
 
@@ -226,10 +230,17 @@
 <div th:replace="mobile/common/js :: js">
 </div>
 <div id="chaptercontent" class="Readarea ReadAjax_content screen_container"
-     style="color: rgb(0, 0, 0); font-size: 25px;">
+     style="color: rgb(0, 0, 0); font-size: 25px;" th:if="${!needBuy}">
     <p style="width:100%;text-alight:center; overflow: auto;-webkit-overflow-scrolling:touch;" >&nbsp;&nbsp;&nbsp;&nbsp;
         <span
                  th:utext="${bookContent.content}"></span></p>
+</div>
+<div  class="Readarea ReadAjax_content screen_container"
+     style="color: rgb(0, 0, 0); font-size: 10px;background-color: #fff" th:if="${needBuy}">
+    <h5>此章为VIP章节，需要订阅后才能继续阅读</h5>
+    价格：<span style="color: red">10屋币(1元=100屋币)</span><br/>
+    <a href="javascript:buyBookIndex()"  type="button" class="layui-btn layui-btn-sm layui-btn-radius">购买</a>
+
 </div>
 <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
@@ -316,9 +327,38 @@
         }
     }
 
+    function buyBookIndex(){
+        $.ajax({
+            type: "POST",
+            url: "/user/buyBookIndex",
+            data: {'bookId':$("#bookIdHidden").val(),"bookName":$("#bookNameHidden").val(),
+                "bookIndexId":$("#contentIdHidden").val(),"bookIndexName":$("#indexNameHidden").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    location.reload();
+
+
+                } else if(data.code == 1001){
+                    //未登录
+
+                }else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
     $.post("/book/addVisitCount", {"bookId": $("#bookIdHidden").val()}, function () {
     });
 
 </script>
+
+
 
 </html>
