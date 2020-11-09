@@ -53,6 +53,9 @@ public final class BookDynamicSqlSupport {
     public static final SqlColumn<Integer> commentCount = book.commentCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> yesterdayBuy = book.yesterdayBuy;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> lastIndexId = book.lastIndexId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -114,6 +117,8 @@ public final class BookDynamicSqlSupport {
         public final SqlColumn<Integer> wordCount = column("word_count", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> commentCount = column("comment_count", JDBCType.INTEGER);
+
+        public final SqlColumn<Integer> yesterdayBuy = column("yesterday_buy", JDBCType.INTEGER);
 
         public final SqlColumn<Long> lastIndexId = column("last_index_id", JDBCType.BIGINT);
 

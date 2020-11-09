@@ -488,7 +488,7 @@ public class BookServiceImpl implements BookService {
 
         PageHelper.startPage(page, pageSize);
 
-        SelectStatementProvider selectStatement = select(id, bookName, visitCount, lastIndexName, status)
+        SelectStatementProvider selectStatement = select(id, bookName, visitCount, yesterdayBuy,lastIndexName, status)
                 .from(book)
                 .where(authorId, isEqualTo(authorService.queryAuthor(userId).getId()))
                 .orderBy(BookDynamicSqlSupport.createTime.descending())

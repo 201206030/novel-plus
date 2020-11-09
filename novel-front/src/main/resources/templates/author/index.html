@@ -54,6 +54,9 @@
                             <th class="goread">
                                 点击量
                             </th>
+                            <th class="goread">
+                                昨日订阅量
+                            </th>
                             <th class="name">
                                 最新章节
                             </th>
@@ -118,7 +121,7 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
-    search(1, 10);
+    search(1, 5);
 
     function search(curr, limit) {
 
@@ -142,6 +145,8 @@
                                 "                                "+book.bookName+"</td>\n" +
                                 "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
                                 +book.visitCount+"</td>\n" +
+                                "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
+                                +book.yesterdayBuy+"</td>\n" +
                                 "                            <td class=\"name\">\n" +
                                 "                                "+book.lastIndexName+"\n" +
                                 "                            </td>\n" +
@@ -149,7 +154,7 @@
                                 "                            </td>\n" +
 
                                 " <td class=\"goread\" id='opt"+book.id+"'>" +
-                                "<a href='javascript:updateBookStatus(\""+book.id+"\","+book.status+")'>"+(book.status==0?'上架':'下架')+"  </a>" +
+                                "<a href='javascript:updateBookStatus(\""+book.id+"\","+book.status+")'>"+(book.status==0?'上架':'下架')+"  </a><br/>" +
                                 "<a href='/author/content_add.html?bookStatus="+book.status+"&bookId="+book.id+"'>发布章节  </a>" +
                                 "</td>                     </tr>");
                         }

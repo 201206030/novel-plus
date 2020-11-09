@@ -1865,3 +1865,6 @@ CREATE TABLE `author_income` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4  COMMENT='稿费收入统计表';
+
+
+alter table book add column `yesterday_buy` int(11) DEFAULT '0' COMMENT '昨日订阅数' after comment_count;

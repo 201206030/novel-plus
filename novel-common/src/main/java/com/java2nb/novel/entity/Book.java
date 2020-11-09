@@ -48,6 +48,9 @@ public class Book implements Serializable{
     private Integer commentCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer yesterdayBuy;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long lastIndexId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -218,6 +221,16 @@ public class Book implements Serializable{
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCommentCount(Integer commentCount) {
         this.commentCount = commentCount;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getYesterdayBuy() {
+        return yesterdayBuy;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setYesterdayBuy(Integer yesterdayBuy) {
+        this.yesterdayBuy = yesterdayBuy;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
