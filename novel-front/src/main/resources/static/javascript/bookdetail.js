@@ -238,17 +238,17 @@
                     if (preId > 0) {
                         location.href = '/book/' + bid + '/' + preId + '.html';
                     } else {
-                        location.href = '/book/chapterlist-' + bid + '.html';
+                        location.href = '/book/indexList-' + bid + '.html';
                     }
                 } else if (e.keyCode == 39) {
                     if (nextId > 0) {
                         location.href = '/book/' + bid + '/' + nextId + '.html';
                     } else {
-                        location.href = '/book/chapterlist-' + bid + '.html';
+                        location.href = '/book/indexList-' + bid + '.html';
                     }
                 }
             });
-        BookDetail.SetReadHistory(bid, cid, crank);
+        //BookDetail.SetReadHistory(bid, cid, crank);
     },
     SetReadHistory: function (bid, cid, crank) {
         var strHistory = jQuery.cookie("wapviewhistory");

@@ -40,6 +40,8 @@
 <input type="hidden" id="preIndexName" th:value="${bookIndex.indexName}"/>
 
 <input type="hidden" id="preContentId" th:value="${bookIndex.id}"/>
+<input type="hidden" id="preIndexId" th:value="${preBookIndexId}"/>
+<input type="hidden" id="nextIndexId" th:value="${nextBookIndexId}"/>
 
 <div th:replace="common/top :: top('10')">
 </div>
@@ -269,11 +271,12 @@
     })
 
 
-    var currentBId =37, usfltotal = 0, spmymoney = 0;
+    var bookId = $("#bookId").val();
+    var indexId = $("#preContentId").val();
+    var preIndexId = $("#preIndexId").val();
+    var nextIndexId = $("#nextIndexId").val();
     $(function () {
-        BookDetail.GetReadSet(37,1959973,0,1959974,1);
-        BookDetail.ClickChapter(37,1959973,0);
-        BookDetail.GetFavorites(37);
+        BookDetail.GetReadSet(bookId,indexId,preIndexId,nextIndexId,1);
         $(".ico_setup").click(function () {
 
             $(".maskBox,.setupBox").show();
@@ -318,7 +321,7 @@
         if(bookIndexId != 0){
             window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
         }else{
-            layer.alert("已经是第一章了！");
+            window.location.href = '/book/indexList-' + bookId + '.html';
         }
 
     }
@@ -326,7 +329,7 @@
         if(bookIndexId != 0){
             window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
         }else{
-            layer.alert("已经是最新章节了！");
+            window.location.href = '/book/indexList-' + bookId + '.html';
         }
 
     }
