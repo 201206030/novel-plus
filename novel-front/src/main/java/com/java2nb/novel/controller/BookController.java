@@ -167,7 +167,15 @@ public class BookController extends BaseController{
      * */
     @PostMapping("queryNewIndexList")
     public ResultBean queryNewIndexList(Long bookId){
-       return ResultBean.ok(bookService.queryIndexList(bookId,"index_num desc",10));
+        return ResultBean.ok(bookService.queryIndexList(bookId,"index_num desc",1,10));
+    }
+
+    /**
+     * 目录页
+     * */
+    @PostMapping("/queryIndexList")
+    public ResultBean indexList(Long bookId,@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize,@RequestParam(value = "orderBy") String orderBy) {
+        return ResultBean.ok(new PageInfo<>(bookService.queryIndexList(bookId,orderBy,page,pageSize)));
     }
 
 

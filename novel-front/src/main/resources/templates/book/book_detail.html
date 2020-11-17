@@ -45,7 +45,7 @@
                     <a class="icon_hide" href="javascript:void(0)" onclick=""><i></i>收起</a>
                     <a class="icon_show" href="javascript:void(0)" onclick=""><i></i>展开</a>
                 </div>
-                <div class="btns">
+                <div class="btns" id="optBtn">
                     <a th:href="'/book/'+${book.id}+'/'+${firstBookIndexId}+'.html'" class="btn_ora">点击阅读</a>
                     <span id="cFavs"><a href="javascript:void(0);" class="btn_ora_white btn_addsj"
                                         onclick="javascript:BookDetail.AddFavorites(37,0,0);">加入书架</a>
@@ -196,27 +196,32 @@
     var pathname = window.location.pathname;
     var bookId = pathname.substring(pathname.lastIndexOf("/") + 1, pathname.lastIndexOf("."))
     //查询章节信息
-    $.ajax({
-        type: "POST",
-        url: "/book/queryBookIndexAbout",
-        data: {'bookId': bookId, 'lastBookIndexId': $("#lastBookIndexId").val()},
-        dataType: "json",
-        success: function (data) {
-            if (data.code == 200) {
-                var bookIndexData = data.data;
-                $("#bookIndexCount").html("(" + bookIndexData.bookIndexCount + "章)");
-                $("#lastBookContent").html(bookIndexData.lastBookContent + "...");
+    var lastBookIndexId = $("#lastBookIndexId").val();
+    if(lastBookIndexId){
+        $.ajax({
+            type: "POST",
+            url: "/book/queryBookIndexAbout",
+            data: {'bookId': bookId, 'lastBookIndexId': lastBookIndexId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookIndexData = data.data;
+                    $("#bookIndexCount").html("(" + bookIndexData.bookIndexCount + "章)");
+                    $("#lastBookContent").html(bookIndexData.lastBookContent + "...");
 
 
-            } else {
-                layer.alert(data.msg);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
             }
-
-        },
-        error: function () {
-            layer.alert('网络异常');
-        }
-    })
+        })
+    }else{
+        $("#optBtn").remove();
+    }
 </script>
 <script language="javascript" type="text/javascript">
     //查询是否在书架

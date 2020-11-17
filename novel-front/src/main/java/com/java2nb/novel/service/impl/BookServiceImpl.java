@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.orderbyhelper.OrderByHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 import static com.java2nb.novel.mapper.BookCategoryDynamicSqlSupport.bookCategory;
 import static com.java2nb.novel.mapper.BookCommentDynamicSqlSupport.bookComment;
 import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.bookContent;
+import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.content;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.*;
 import static com.java2nb.novel.mapper.BookIndexDynamicSqlSupport.bookIndex;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -233,12 +236,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer limit) {
+    public List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer page, Integer pageSize) {
         if (StringUtils.isNotBlank(orderBy)) {
             OrderByHelper.orderBy(orderBy);
         }
-        if (limit != null) {
-            PageHelper.startPage(1, limit);
+        if (page != null && pageSize != null) {
+            PageHelper.startPage(page, pageSize);
         }
 
         SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime, BookIndexDynamicSqlSupport.isVip)
@@ -249,6 +252,7 @@ public class BookServiceImpl implements BookService {
 
         return bookIndexMapper.selectMany(selectStatement);
     }
+
 
     @Override
     public BookIndex queryBookIndex(Long bookIndexId) {
@@ -488,7 +492,7 @@ public class BookServiceImpl implements BookService {
 
         PageHelper.startPage(page, pageSize);
 
-        SelectStatementProvider selectStatement = select(id, bookName, visitCount, yesterdayBuy,lastIndexName, status)
+        SelectStatementProvider selectStatement = select(id, bookName, picUrl, catName, visitCount, yesterdayBuy, lastIndexUpdateTime, updateTime, wordCount, lastIndexName, status)
                 .from(book)
                 .where(authorId, isEqualTo(authorService.queryAuthor(userId).getId()))
                 .orderBy(BookDynamicSqlSupport.createTime.descending())
@@ -537,10 +541,6 @@ public class BookServiceImpl implements BookService {
         if (!authorId.equals(book.getAuthorId())) {
             //并不是更新自己的小说
             return;
-        }
-        if(book.getStatus() != 1){
-            //小说未上架，不能设置VIP
-            isVip = 0;
         }
         Long lastIndexId = new IdWorker().nextId();
         Date currentDate = new Date();
@@ -606,6 +606,212 @@ public class BookServiceImpl implements BookService {
                 .where(BookDynamicSqlSupport.authorId,isEqualTo(authorId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteIndex(Long indexId, Long authorId) {
+
+        //查询小说章节表信息
+        List<BookIndex> bookIndices = bookIndexMapper.selectMany(
+                select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
+                        .from(bookIndex)
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+        if (bookIndices.size() > 0) {
+            BookIndex bookIndex = bookIndices.get(0);
+            //获取小说ID
+            Long bookId = bookIndex.getBookId();
+            //查询小说表信息
+            List<Book> books = bookMapper.selectMany(
+                    select(wordCount, BookDynamicSqlSupport.authorId)
+                            .from(book)
+                            .where(id, isEqualTo(bookId))
+                            .build()
+                            .render(RenderingStrategy.MYBATIS3));
+            if (books.size() > 0) {
+                Book book = books.get(0);
+                int wordCount = book.getWordCount();
+                //作者ID相同，表明该小说是登录用户发布，可以删除
+                if (book.getAuthorId().equals(authorId)) {
+                    //删除目录表和内容表记录
+                    bookIndexMapper.deleteByPrimaryKey(indexId);
+                    bookContentMapper.delete(deleteFrom(bookContent).where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId)).build()
+                            .render(RenderingStrategies.MYBATIS3));
+                    //更新总字数
+                    wordCount = wordCount - bookIndex.getWordCount();
+                    //更新最新章节
+                    Long lastIndexId = null;
+                    String lastIndexName = null;
+                    Date lastIndexUpdateTime = null;
+                    List<BookIndex> lastBookIndices = bookIndexMapper.selectMany(
+                            select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.createTime)
+                                    .from(BookIndexDynamicSqlSupport.bookIndex)
+                                    .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                                    .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
+                                    .limit(1)
+                                    .build()
+                                    .render(RenderingStrategy.MYBATIS3));
+                    if (lastBookIndices.size() > 0) {
+                        BookIndex lastBookIndex = lastBookIndices.get(0);
+                        lastIndexId = lastBookIndex.getId();
+                        lastIndexName = lastBookIndex.getIndexName();
+                        lastIndexUpdateTime = lastBookIndex.getCreateTime();
+
+                    }
+                    //更新小说主表信息
+                    bookMapper.update(update(BookDynamicSqlSupport.book)
+                            .set(BookDynamicSqlSupport.wordCount)
+                            .equalTo(wordCount)
+                            .set(updateTime)
+                            .equalTo(new Date())
+                            .set(BookDynamicSqlSupport.lastIndexId)
+                            .equalTo(lastIndexId)
+                            .set(BookDynamicSqlSupport.lastIndexName)
+                            .equalTo(lastIndexName)
+                            .set(BookDynamicSqlSupport.lastIndexUpdateTime)
+                            .equalTo(lastIndexUpdateTime)
+                            .where(id, isEqualTo(bookId))
+                            .build()
+                            .render(RenderingStrategies.MYBATIS3));
+
+
+                }
+            }
+
+
+        }
+
+
+    }
+
+    @Override
+    public void updateIndexName(Long indexId, String indexName, Long authorId) {
+        //查询小说章节表信息
+        List<BookIndex> bookIndices = bookIndexMapper.selectMany(
+                select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
+                        .from(bookIndex)
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+        if (bookIndices.size() > 0) {
+            BookIndex bookIndex = bookIndices.get(0);
+            //获取小说ID
+            Long bookId = bookIndex.getBookId();
+            //查询小说表信息
+            List<Book> books = bookMapper.selectMany(
+                    select(wordCount, BookDynamicSqlSupport.authorId)
+                            .from(book)
+                            .where(id, isEqualTo(bookId))
+                            .build()
+                            .render(RenderingStrategy.MYBATIS3));
+            if (books.size() > 0) {
+                Book book = books.get(0);
+                //作者ID相同，表明该小说是登录用户发布，可以修改
+                if (book.getAuthorId().equals(authorId)) {
+
+                    bookIndexMapper.update(
+                            update(BookIndexDynamicSqlSupport.bookIndex)
+                                    .set(BookIndexDynamicSqlSupport.indexName)
+                                    .equalTo(indexName)
+                                    .set(BookIndexDynamicSqlSupport.updateTime)
+                                    .equalTo(new Date())
+                                    .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
+                                    .build()
+                                    .render(RenderingStrategy.MYBATIS3));
+
+
+                }
+            }
+
+
+        }
+    }
+
+    @Override
+    public String queryIndexContent(Long indexId, Long authorId) {
+        //查询小说章节表信息
+        List<BookIndex> bookIndices = bookIndexMapper.selectMany(
+                select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
+                        .from(bookIndex)
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+        if (bookIndices.size() > 0) {
+            BookIndex bookIndex = bookIndices.get(0);
+            //获取小说ID
+            Long bookId = bookIndex.getBookId();
+            //查询小说表信息
+            List<Book> books = bookMapper.selectMany(
+                    select(wordCount, BookDynamicSqlSupport.authorId)
+                            .from(book)
+                            .where(id, isEqualTo(bookId))
+                            .build()
+                            .render(RenderingStrategy.MYBATIS3));
+            if (books.size() > 0) {
+                Book book = books.get(0);
+                //作者ID相同，表明该小说是登录用户发布
+                if (book.getAuthorId().equals(authorId)) {
+                    return bookContentMapper.selectMany(
+                            select(content)
+                                    .from(bookContent)
+                                    .where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId))
+                                    .limit(1)
+                                    .build().render(RenderingStrategy.MYBATIS3))
+                            .get(0).getContent();
+                }
+
+            }
+        }
+        return "";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateBookContent(Long indexId, String indexName, String content, Long authorId) {
+
+        //查询小说章节表信息
+        List<BookIndex> bookIndices = bookIndexMapper.selectMany(
+                select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
+                        .from(bookIndex)
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+        if (bookIndices.size() > 0) {
+            BookIndex bookIndex = bookIndices.get(0);
+            //获取小说ID
+            Long bookId = bookIndex.getBookId();
+            //查询小说表信息
+            List<Book> books = bookMapper.selectMany(
+                    select(wordCount, BookDynamicSqlSupport.authorId)
+                            .from(book)
+                            .where(id, isEqualTo(bookId))
+                            .build()
+                            .render(RenderingStrategy.MYBATIS3));
+            if (books.size() > 0) {
+                Book book = books.get(0);
+                //作者ID相同，表明该小说是登录用户发布，可以修改
+                if (book.getAuthorId().equals(authorId)) {
+                    Date currentDate = new Date();
+                    int wordCount = content.length();
+
+                    //更新小说目录表
+                    int update = bookIndexMapper.update(
+                            update(BookIndexDynamicSqlSupport.bookIndex)
+                                    .set(BookIndexDynamicSqlSupport.indexName)
+                                    .equalTo(indexName)
+                                    .set(BookIndexDynamicSqlSupport.wordCount)
+                                    .equalTo(wordCount)
+                                    .set(BookIndexDynamicSqlSupport.updateTime)
+                                    .equalTo(currentDate)
+                                    .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
+                                    .build().render(RenderingStrategy.MYBATIS3));
+
+                    //更新小说内容表
+                    bookContentMapper.update(
+                            update(BookContentDynamicSqlSupport.bookContent)
+                                    .set(BookContentDynamicSqlSupport.content)
+                                    .equalTo(content)
+                                    .where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId))
+                                    .build().render(RenderingStrategy.MYBATIS3));
+
+                }
+            }
+
+        }
     }
 
 

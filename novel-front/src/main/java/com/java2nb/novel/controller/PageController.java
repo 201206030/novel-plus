@@ -101,9 +101,11 @@ public class PageController extends BaseController{
     public String bookDetail(@PathVariable("bookId") Long bookId, Model model) {
         Book book = bookService.queryBookDetail(bookId);
         model.addAttribute("book",book);
-        //查询首章目录ID
-        Long firstBookIndexId = bookService.queryFirstBookIndexId(bookId);
-        model.addAttribute("firstBookIndexId",firstBookIndexId);
+        if(book.getLastIndexId() != null) {
+            //查询首章目录ID
+            Long firstBookIndexId = bookService.queryFirstBookIndexId(bookId);
+            model.addAttribute("firstBookIndexId", firstBookIndexId);
+        }
         return ThreadLocalUtil.getTemplateDir()+"book/book_detail";
     }
 
@@ -114,7 +116,7 @@ public class PageController extends BaseController{
     public String indexList(@PathVariable("bookId") Long bookId, Model model) {
         Book book = bookService.queryBookDetail(bookId);
         model.addAttribute("book",book);
-        List<BookIndex> bookIndexList = bookService.queryIndexList(bookId,null,null);
+        List<BookIndex> bookIndexList = bookService.queryIndexList(bookId,null,1,null);
         model.addAttribute("bookIndexList",bookIndexList);
         model.addAttribute("bookIndexCount",bookIndexList.size());
         return ThreadLocalUtil.getTemplateDir()+"book/book_index";

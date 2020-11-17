@@ -66,10 +66,12 @@ public interface BookService {
      * 查询目录列表
      * @param bookId 书籍ID
      * @param orderBy 排序
-     *@param limit 查询条数
+     * @param page 查询页码
+     *@param pageSize 分页大小
      *@return 目录集合
      * */
-    List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer limit);
+    List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer page, Integer pageSize);
+
 
     /**
      * 查询目录
@@ -244,4 +246,36 @@ public interface BookService {
      * @return 作品列表
      */
     List<Book> queryBookList(Long authorId);
+
+    /**
+     * 删除章节
+     * @param indexId
+     * @param authorId 作家ID
+     */
+    void deleteIndex(Long indexId, Long authorId);
+
+    /**
+     * 更新章节名
+     * @param indexId
+     * @param indexName
+     * @param authorId
+     */
+    void updateIndexName(Long indexId, String indexName, Long authorId);
+
+    /**
+     * 查询章节内容
+     * @param indexId
+     * @param authorId
+     * @return
+     */
+    String queryIndexContent(Long indexId, Long authorId);
+
+    /**
+     *  更新章节内容
+     * @param indexId
+     * @param indexName
+     * @param content
+     * @param authorId
+     */
+    void updateBookContent( Long indexId, String indexName, String content, Long authorId);
 }

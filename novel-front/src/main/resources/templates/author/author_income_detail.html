@@ -109,16 +109,24 @@
 <script src="/layui/layui.all.js" type="text/javascript"></script>
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
+<script src="/javascript/common.js" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
+    var bookId = getSearchString("bookId");
     search(1, 10);
 
     function search(curr, limit) {
 
+        var data = {'curr':curr,'limit':limit};
+
+        if(bookId){
+            data.bookId = bookId;
+        }
+
         $.ajax({
             type: "POST",
             url: "/author/listIncomeDailyByPage",
-            data: {'curr':curr,'limit':limit},
+            data: data,
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {

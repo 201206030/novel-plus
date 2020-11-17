@@ -2,7 +2,9 @@ package com.java2nb.novel.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.ResultBean;
+import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.Book;
@@ -58,15 +60,7 @@ public class AuthorController extends BaseController{
     @PostMapping("addBook")
     public ResultBean addBook(@RequestParam("bookDesc") String bookDesc,Book book,HttpServletRequest request){
 
-        //查询作家信息
-        Author author = authorService.queryAuthor(getUserDetails(request).getId());
-
-        //判断作者状态是否正常
-        if(author.getStatus()==1){
-            //封禁状态，不能发布小说
-            return ResultBean.fail(ResponseStatus.AUTHOR_STATUS_FORBIDDEN);
-
-        }
+        Author author = checkAuthor(request);
 
         //bookDesc不能使用book对象来接收，否则会自动去掉前面的空格
         book.setBookDesc(bookDesc
@@ -83,14 +77,7 @@ public class AuthorController extends BaseController{
      * */
     @PostMapping("updateBookStatus")
     public ResultBean updateBookStatus(Long bookId,Byte status,HttpServletRequest request){
-        //查询作家信息
-        Author author = authorService.queryAuthor(getUserDetails(request).getId());
-
-        //判断作者状态是否正常
-        if(author.getStatus()==1){
-            //封禁状态，不能发布小说
-            return ResultBean.fail(ResponseStatus.AUTHOR_STATUS_FORBIDDEN);
-        }
+        Author author = checkAuthor(request);
 
         //更新小说状态,上架或下架
         bookService.updateBookStatus(bookId,status,author.getId());
@@ -101,23 +88,78 @@ public class AuthorController extends BaseController{
 
 
     /**
+     * 删除章节
+     */
+    @PostMapping("deleteIndex")
+    public ResultBean deleteIndex(Long indexId,  HttpServletRequest request) {
+
+        Author author = checkAuthor(request);
+
+        //删除章节
+        bookService.deleteIndex(indexId, author.getId());
+
+        return ResultBean.ok();
+    }
+
+    /**
+     * 更新章节名
+     */
+    @PostMapping("updateIndexName")
+    public ResultBean updateIndexName(Long indexId,  String indexName, HttpServletRequest request) {
+
+        Author author = checkAuthor(request);
+
+        //更新章节名
+        bookService.updateIndexName(indexId, indexName, author.getId());
+
+        return ResultBean.ok();
+    }
+
+
+
+
+    /**
      * 发布章节内容
-     * */
+     */
     @PostMapping("addBookContent")
-    public ResultBean addBookContent(Long bookId,String indexName,String content,Byte isVip,HttpServletRequest request){
-        //查询作家信息
-        Author author = authorService.queryAuthor(getUserDetails(request).getId());
+    public ResultBean addBookContent(Long bookId, String indexName, String content,Byte isVip, HttpServletRequest request) {
+        Author author = checkAuthor(request);
 
-        //判断作者状态是否正常
-        if(author.getStatus()==1){
-            //封禁状态，不能发布小说
-            return ResultBean.fail(ResponseStatus.AUTHOR_STATUS_FORBIDDEN);
-        }
-
-        content = content.replaceAll("\\n","<br>")
-                .replaceAll("\\s","&nbsp;");
+        content = content.replaceAll("\\n", "<br>")
+                .replaceAll("\\s", "&nbsp;");
         //发布章节内容
-        bookService.addBookContent(bookId,indexName,content,isVip,author.getId());
+        bookService.addBookContent(bookId, indexName, content,isVip, author.getId());
+
+        return ResultBean.ok();
+    }
+
+    /**
+     * 查询章节内容
+     */
+    @PostMapping("queryIndexContent")
+    public ResultBean queryIndexContent(Long indexId,  HttpServletRequest request) {
+
+        Author author = checkAuthor(request);
+
+        String content = bookService.queryIndexContent(indexId, author.getId());
+
+        content = content.replaceAll("<br>", "\n")
+                .replaceAll("&nbsp;", " ");
+
+        return ResultBean.ok(content);
+    }
+
+    /**
+     * 更新章节内容
+     */
+    @PostMapping("updateBookContent")
+    public ResultBean updateBookContent(Long indexId, String indexName, String content, HttpServletRequest request) {
+        Author author = checkAuthor(request);
+
+        content = content.replaceAll("\\n", "<br>")
+                .replaceAll("\\s", "&nbsp;");
+        //更新章节内容
+        bookService.updateBookContent(indexId, indexName, content, author.getId());
 
         return ResultBean.ok();
     }
@@ -149,6 +191,28 @@ public class AuthorController extends BaseController{
 
         return ResultBean.ok(new PageInfo<>(authorService.listIncomeMonthByPage(page,pageSize,getUserDetails(request).getId(),bookId)
         ));
+    }
+
+    private Author checkAuthor(HttpServletRequest request) {
+
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            throw new BusinessException(ResponseStatus.NO_LOGIN);
+        }
+
+        //查询作家信息
+        Author author = authorService.queryAuthor(userDetails.getId());
+
+        //判断作者状态是否正常
+        if (author.getStatus() == 1) {
+            //封禁状态，不能发布小说
+            throw new BusinessException(ResponseStatus.AUTHOR_STATUS_FORBIDDEN);
+        }
+
+
+        return author;
+
+
     }
 
 

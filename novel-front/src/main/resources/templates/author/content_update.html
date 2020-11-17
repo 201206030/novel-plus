@@ -28,10 +28,8 @@
         <div class="my_l">
 
             <ul class="log_list">
-                <li><a class="link_4 on" href="/author/index.html">小说管理</a></li>
+                <li><a class="link_4 on" href="/author/index.html">作品管理</a></li>
                 <li><a class="link_2 " href="/author/author_income_detail.html">稿费收入</a></li>
-                <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
-<li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
 
         </div>
@@ -58,15 +56,11 @@
                                 <li><span id="LabErr"></span></li>
                                 <b>章节名：</b>
                                 <li><input type="text" id="bookIndex" name="bookIndex" class="s_input" ></li>
-                                <b>章节内容：</b><li id="contentLi">
-                                <textarea name="bookContent" rows="30" cols="80" id="bookContent"
-                                          class="textarea"></textarea></li><br/>
-
-                                <b>是否收费：</b>
-                                <li><input type="radio" name="isVip" value="0" checked  >免费
-                                 <input type="radio" name="isVip" value="1"   >收费</li>
-
-
+                                <b>章节内容：</b>
+                                <li id="contentLi">
+                                <textarea  name="bookContent" rows="30" cols="80" id="bookContent"
+                                          class="textarea"></textarea>
+                                </li>
                                 <li style="margin-top: 10px"><input type="button" onclick="addBookContent()" name="btnRegister" value="提交"
                                            id="btnRegister" class="btn_red">
 
@@ -122,6 +116,50 @@
 
 <script language="javascript" type="text/javascript">
 
+    var bookId = getSearchString("bookId");
+    var indexId = getSearchString("indexId");
+    var indexName = decodeURI(decodeURI(getSearchString("indexName")));
+    var isVip = getSearchString("isVip");
+
+    $("#bookIndex").val(indexName);
+    if(isVip == 1){
+        $("#contentLi").after("<b>是否收费：</b>\n" +
+            "                                <li><input type=\"radio\" disabled name=\"isVip\" value=\"0\"   >免费\n" +
+            "                                    <input type=\"radio\" disabled name=\"isVip\" value=\"1\"  checked >收费</li><br/>");
+    }else{
+        $("#contentLi").after("<b>是否收费：</b>\n" +
+            "                                <li><input type=\"radio\" disabled name=\"isVip\" value=\"0\"  checked >免费\n" +
+            "                                    <input type=\"radio\" disabled name=\"isVip\" value=\"1\"   >收费</li><br/>");
+
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/author/queryIndexContent",
+        data: {'indexId':indexId},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+
+                $("#bookContent").html(data.data);
+
+
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            lock = false;
+            layer.alert('网络异常');
+        }
+    })
+
+
+
+
+
 
     var lock = false;
     function addBookContent() {
@@ -132,7 +170,7 @@
         lock = true;
 
 
-        var bookId = getSearchString("bookId");
+
 
 
         var indexName = $("#bookIndex").val();
@@ -150,15 +188,13 @@
         }
 
 
-        var isVip = $("input:checked[name=isVip]").val();
-
 
 
 
         $.ajax({
             type: "POST",
-            url: "/author/addBookContent",
-            data: {'bookId':bookId,'indexName':indexName,'content':content,'isVip':isVip},
+            url: "/author/updateBookContent",
+            data: {'indexId':indexId,'indexName':indexName,'content':content},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
