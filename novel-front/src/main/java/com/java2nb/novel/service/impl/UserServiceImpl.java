@@ -284,20 +284,19 @@ public class UserServiceImpl implements UserService {
     public void buyBookIndex(Long userId, UserBuyRecord buyRecord) {
         //查询用户余额
         long balance = userInfo(userId).getAccountBalance();
-        if(balance<10){
+        if(balance<buyRecord.getBuyAmount()){
             //余额不足
             throw new BusinessException(ResponseStatus.USER_NO_BALANCE);
         }
         buyRecord.setUserId(userId);
         buyRecord.setCreateTime(new Date());
-        buyRecord.setBuyAmount(10);
         //生成购买记录
         userBuyRecordMapper.insertSelective(buyRecord);
 
         //减少用户余额
         userMapper.update(update(user)
                 .set(UserDynamicSqlSupport.accountBalance)
-                .equalTo(balance-10)
+                .equalTo(balance-buyRecord.getBuyAmount())
                 .where(id,isEqualTo(userId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));

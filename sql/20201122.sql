@@ -1,0 +1,1 @@
+alter table book_index add column `book_price` int(3) DEFAULT 0 COMMENT '章节费用（屋币）' after `is_vip`;

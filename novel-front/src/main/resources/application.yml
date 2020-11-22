@@ -57,3 +57,11 @@ author:
     share-proportion: 0.7
     #兑换比率(人民币)
     exchange-proportion: 0.01
+
+#小说章节定价规则
+book:
+  price:
+    #字数
+    word-count: 1000
+    #价值(屋币)
+    value: 5

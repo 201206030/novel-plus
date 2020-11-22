@@ -23,6 +23,9 @@ public class BookIndex {
     private Byte isVip;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer bookPrice;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date createTime;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -86,6 +89,16 @@ public class BookIndex {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setIsVip(Byte isVip) {
         this.isVip = isVip;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getBookPrice() {
+        return bookPrice;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setBookPrice(Integer bookPrice) {
+        this.bookPrice = bookPrice;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

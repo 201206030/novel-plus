@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
+import com.java2nb.novel.core.config.BookPriceConfig;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.*;
@@ -87,6 +88,8 @@ public class BookServiceImpl implements BookService {
     private final SearchService searchService;
 
     private final FileService fileService;
+
+    private final BookPriceConfig bookPriceConfig;
 
 
     @SneakyThrows
@@ -256,7 +259,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookIndex queryBookIndex(Long bookIndexId) {
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.updateTime, BookIndexDynamicSqlSupport.isVip)
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount,BookIndexDynamicSqlSupport.bookPrice, BookIndexDynamicSqlSupport.updateTime, BookIndexDynamicSqlSupport.isVip)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.id, isEqualTo(bookIndexId))
                 .build()
@@ -560,6 +563,10 @@ public class BookServiceImpl implements BookService {
                 .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
+
+        //计算价格
+        int bookPrice = new BigDecimal(wordCount).divide(bookPriceConfig.getWordCount()).multiply(bookPriceConfig.getValue()).intValue();
+
         //更新小说目录表
         int indexNum = 0;
         if (book.getLastIndexId() != null) {
@@ -572,6 +579,7 @@ public class BookServiceImpl implements BookService {
         lastBookIndex.setIndexNum(indexNum);
         lastBookIndex.setBookId(bookId);
         lastBookIndex.setIsVip(isVip);
+        lastBookIndex.setBookPrice(bookPrice);
         lastBookIndex.setCreateTime(currentDate);
         lastBookIndex.setUpdateTime(currentDate);
         bookIndexMapper.insertSelective(lastBookIndex);
@@ -788,6 +796,10 @@ public class BookServiceImpl implements BookService {
                     Date currentDate = new Date();
                     int wordCount = content.length();
 
+                    //计算价格
+                    int bookPrice = new BigDecimal(wordCount).divide(bookPriceConfig.getWordCount()).multiply(bookPriceConfig.getValue()).intValue();
+
+
                     //更新小说目录表
                     int update = bookIndexMapper.update(
                             update(BookIndexDynamicSqlSupport.bookIndex)
@@ -795,6 +807,8 @@ public class BookServiceImpl implements BookService {
                                     .equalTo(indexName)
                                     .set(BookIndexDynamicSqlSupport.wordCount)
                                     .equalTo(wordCount)
+                                    .set(BookIndexDynamicSqlSupport.bookPrice)
+                                    .equalTo(bookPrice)
                                     .set(BookIndexDynamicSqlSupport.updateTime)
                                     .equalTo(currentDate)
                                     .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))

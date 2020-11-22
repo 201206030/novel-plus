@@ -282,6 +282,7 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
         }
+        buyRecord.setBuyAmount(bookService.queryBookIndex(buyRecord.getBookIndexId()).getBookPrice());
         userService.buyBookIndex(userDetails.getId(),buyRecord);
         return ResultBean.ok();
     }

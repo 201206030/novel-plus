@@ -116,7 +116,7 @@
                                         <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAX4WEeZOhVYVmRzc9paH9JSy/08L4LdXX0bnEtd0tA2crFh4MPja1O/9L0Y0B5Q7Mkw2OnJlkYmOh3/iyqfPkkn99UiP/cCDJ38/2cPKg8P57VHEmkKJr8/tJbwExBtkfhGxxoA1kMIQUaw59BH5iPe">
                                     </div>
                                     <ul class="order_list">
-                                        <li>价格：<span class="red">10屋币(1元=100屋币)</span></li>
+                                        <li>价格：<span class="red" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span></li>
                                         <li id="panelPay" class="btns"><a class="btn_red" href="javascript:buyBookIndex()" >购买</a></li>
 
                                     </ul>
