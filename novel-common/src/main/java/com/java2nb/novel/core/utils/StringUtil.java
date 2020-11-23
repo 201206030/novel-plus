@@ -3,6 +3,10 @@ package com.java2nb.novel.core.utils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.*;
 
 /**
  * @author xiongxiaoyang
@@ -69,5 +73,84 @@ public class StringUtil {
         }
         return result.toString();
     }
+
+    /**
+     * 获取字符串有效汉字
+     * */
+    public static String getChineseValidWord(String origStr){
+
+        //可以替换大部分空白字符， 不限于空格 . 说明:\s 可以匹配空格、制表符、换页符等空白字符的其中任意一个
+        origStr = origStr.replaceAll("\\s*","");
+
+       /* //完全清除标点
+        origStr = origStr.replaceAll("\\pP","");*/
+
+        //清除所有符号,只留下字母 数字  汉字  共3类.
+        origStr = origStr.replaceAll("[\\pP\\p{Punct}]","");
+
+        //去除字母和数字
+        origStr = origStr.replaceAll("[A-Za-z0-9]*","");
+
+        return origStr;
+
+    }
+
+    /**
+     * 获取字符串英文单词数量
+     * */
+    public static int getEnglishWordCount(String origStr){
+        Pattern pattern = compile("\\b\\w+\\b");
+        Matcher matcher = pattern.matcher(origStr);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+
+    }
+
+    /**
+     * 获取字符串中文汉字数量
+     * */
+    public static int getChineseWordCount(String origStr){
+        Pattern pattern = compile("[\u4e00-\u9fa5]");
+        Matcher matcher = pattern.matcher(origStr);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+
+    }
+
+    /**
+     * 获取字符串有效数字数量
+     * */
+    public static int getNumberWordCount(String origStr){
+        Pattern pattern = compile("\\d+");
+        Matcher matcher = pattern.matcher(origStr);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+
+    }
+
+    /**
+     * 获取字符串有效字数
+     * */
+    public static int getStrValidWordCount(String origStr){
+        return getChineseWordCount(origStr) + getEnglishWordCount(origStr) + getNumberWordCount(origStr);
+
+    }
+
+    public static void main(String[] args) {
+        String str = "Welcome to China. 你好呀！中国人，我是1123号程序员，     来给你服务23天. Hello Word";
+        System.out.println(getChineseWordCount(str));
+        System.out.println(getEnglishWordCount(str));
+        System.out.println(getNumberWordCount(str));
+    }
+
 
 }

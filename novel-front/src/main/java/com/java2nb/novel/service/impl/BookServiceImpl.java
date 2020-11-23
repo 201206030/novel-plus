@@ -547,7 +547,7 @@ public class BookServiceImpl implements BookService {
         }
         Long lastIndexId = new IdWorker().nextId();
         Date currentDate = new Date();
-        int wordCount = content.length();
+        int wordCount = StringUtil.getStrValidWordCount(content);
 
         //更新小说主表信息
         bookMapper.update(update(BookDynamicSqlSupport.book)
@@ -794,7 +794,7 @@ public class BookServiceImpl implements BookService {
                 //作者ID相同，表明该小说是登录用户发布，可以修改
                 if (book.getAuthorId().equals(authorId)) {
                     Date currentDate = new Date();
-                    int wordCount = content.length();
+                    int wordCount = StringUtil.getStrValidWordCount(content);
 
                     //计算价格
                     int bookPrice = new BigDecimal(wordCount).divide(bookPriceConfig.getWordCount()).multiply(bookPriceConfig.getValue()).intValue();
