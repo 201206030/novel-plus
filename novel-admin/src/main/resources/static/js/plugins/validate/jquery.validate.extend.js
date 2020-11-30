@@ -125,17 +125,17 @@ $(document).ready(function(){
 		rules:{
 			pwdOld:{
 				required:true,
-				minlength:6
+				minlength:5
 			},
             pwdNew:{
 			   required:true,
-			   minlength:6,
+			   minlength:5,
 			   isdiff:true,
 			   //issame:true,
 		   },
 			confirm_password:{
 			  required:true,
-			  minlength:6,
+			  minlength:5,
 			  issame:true,
 			}
 		  
@@ -143,17 +143,17 @@ $(document).ready(function(){
 		messages:{
 			 	pwdOld : {
 					 required:'必填',
-					 minlength:$.validator.format('密码长度要大于6')
+					 minlength:$.validator.format('密码长度要大于5')
 				},
             	pwdNew:{
 				   required:'必填',
-				   minlength:$.validator.format('密码长度要大于6'),
+				   minlength:$.validator.format('密码长度要大于5'),
 				   isdiff:'原密码与新密码不能重复',
 				  
 			   },
 				confirm_password:{
 				   required:'必填',
-				   minlength:$.validator.format('密码长度要大于6'),
+				   minlength:$.validator.format('密码长度要大于5'),
 				   issame:'新密码要与确认新密码一致',
 				}
 		
