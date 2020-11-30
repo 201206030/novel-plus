@@ -1,10 +1,14 @@
 package com.java2nb.common.utils;
 
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 日期处理
@@ -90,5 +94,38 @@ public class DateUtils {
         }
         r += "前";
         return r;
+    }
+
+    /**
+     * 获取过去第几天的日期
+     *
+     * @param past
+     * @return
+     */
+    @SneakyThrows
+    public static String getPastDate(int past,Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - past);
+        Date today = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(today);
+    }
+
+    /**
+     * 获取过去几天的日期集合
+     *
+     * @param past
+     * @return
+     */
+    public static List<String> getDateList(int past,Date date) {
+        List<String> result = new ArrayList<>(past);
+        for(int i = past - 1 ; i > 0 ; i--){
+            result.add(getPastDate(i,date));
+        }
+        //今天的日期
+        result.add(new SimpleDateFormat("yyyy-MM-dd").format(date));
+        return result;
+
     }
 }

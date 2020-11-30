@@ -6,7 +6,6 @@ import com.java2nb.common.config.ApplicationContextRegister;
 import com.java2nb.system.dao.DataPermDao;
 import com.java2nb.system.dao.DeptDao;
 import com.java2nb.system.domain.DataPermDO;
-import com.java2nb.system.domain.UserToken;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,10 +17,9 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.java2nb.common.utils.ShiroUtils;
-import com.java2nb.system.dao.UserDao;
+import com.java2nb.system.dao.SysUserDao;
 import com.java2nb.system.domain.UserDO;
 import com.java2nb.system.service.MenuService;
 
@@ -48,7 +46,7 @@ public class UserRealm extends AuthorizingRealm {
         map.put("username", username);
         String password = new String((char[]) token.getCredentials());
 
-        UserDao userMapper = ApplicationContextRegister.getBean(UserDao.class);
+        SysUserDao userMapper = ApplicationContextRegister.getBean(SysUserDao.class);
         // 查询用户信息
         UserDO user = userMapper.list(map).get(0);
 

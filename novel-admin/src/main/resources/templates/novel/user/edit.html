@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="id" name="id" th:value="${user.id}"
+                               type="hidden">
+                                                                                                                                        <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">登录名：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="username" name="username"
+                                                   th:value="${user.username}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">登录密码：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="password" name="password"
+                                                   th:value="${user.password}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">昵称：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="nickName" name="nickName"
+                                                   th:value="${user.nickName}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">用户头像：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="userPhoto" name="userPhoto"
+                                                   th:value="${user.userPhoto}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">用户性别，0：男，1：女：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="userSex" name="userSex"
+                                                   th:value="${user.userSex}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">账户余额：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="accountBalance" name="accountBalance"
+                                                   th:value="${user.accountBalance}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">用户状态，0：正常：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input id="status" name="status"
+                                                   th:value="${user.status}"
+                                                   class="form-control"
+                                                   type="text">
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">创建时间：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="createTime"
+                                                   name="createTime"
+                                                   th:value="${user.createTime}==null?null:${#dates.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                                                            </div>
+                                </div>
+                                                                                                                <div class="form-group">
+                                                                            <label class="col-sm-3 control-label">更新时间：</label>
+                                                                        <div class="col-sm-8">
+                                                                                    <input type="text" class="laydate-icon layer-date form-control"
+                                                   id="updateTime"
+                                                   name="updateTime"
+                                                   th:value="${user.updateTime}==null?null:${#dates.format(user.updateTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                                                   style="background-color: #fff;" readonly="readonly"/>
+                                                                            </div>
+                                </div>
+                                                                            <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/wangEditor/release/wangEditor.js"></script>
+<script type="text/javascript" src="/js/appjs/novel/user/edit.js">
+</script>
+</body>
+</html>

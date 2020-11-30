@@ -8,8 +8,6 @@ import java.util.Objects;
 import com.java2nb.system.dao.*;
 import com.java2nb.system.domain.RoleDataPermDO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +28,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     RoleMenuDao roleMenuMapper;
     @Autowired
-    UserDao userMapper;
+    SysUserDao userMapper;
     @Autowired
     UserRoleDao userRoleMapper;
     @Autowired

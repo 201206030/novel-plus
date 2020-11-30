@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${book.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">作品方向，0：男频，1：女频：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.workDirection}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">分类ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.catId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">分类名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.catName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">子分类ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.catChildId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">子分类名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.catChildName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">小说封面：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.picUrl}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">小说名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.bookName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">男主角姓名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.heroName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">女主角姓名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.ladyName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">作品风格，0：甜宠，1：虐恋，2：其他：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.bookStyle}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">作品标签：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.bookLabel}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">作者id：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.authorId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">作者名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.authorName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">书籍描述：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.bookDesc}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">评分，预留字段：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.score}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">书籍状态，0：连载中，1：已完结：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.bookStatus}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">点击量：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.visitCount}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">总字数：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.wordCount}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">评论数：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.commentCount}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">昨日订阅数：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.yesterdayBuy}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">最新目录ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.lastIndexId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">最新目录名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.lastIndexName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">最新目录更新时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.lastIndexUpdateTime}==null?null:${#dates.format(book.lastIndexUpdateTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">是否收费，1：收费，0：免费：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.isVip}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">状态，0：入库，1：上架：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.status}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">更新时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.updateTime}==null?null:${#dates.format(book.updateTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.createTime}==null?null:${#dates.format(book.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">爬虫源站ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.crawlSourceId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">抓取的源站小说ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.crawlBookId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">最后一次的抓取时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.crawlLastTime}==null?null:${#dates.format(book.crawlLastTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">是否已停止更新，0：未停止，1：已停止：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${book.crawlIsStop}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

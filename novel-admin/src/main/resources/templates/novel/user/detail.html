@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${user.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">登录名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.username}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">登录密码：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.password}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">昵称：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.nickName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">用户头像：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.userPhoto}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">用户性别，0：男，1：女：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.userSex}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">账户余额：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.accountBalance}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">用户状态，0：正常：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.status}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.createTime}==null?null:${#dates.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">更新时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${user.updateTime}==null?null:${#dates.format(user.updateTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

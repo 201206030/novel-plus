@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.PayDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.PayDO">
+		select `id`,`out_trade_no`,`trade_no`,`pay_channel`,`total_amount`,`user_id`,`pay_status`,`create_time`,`update_time` from order_pay where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.PayDO">
+		select `id`,`out_trade_no`,`trade_no`,`pay_channel`,`total_amount`,`user_id`,`pay_status`,`create_time`,`update_time` from order_pay
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="outTradeNo != null and outTradeNo != ''"> and out_trade_no = #{outTradeNo} </if>
+		  		  <if test="tradeNo != null and tradeNo != ''"> and trade_no = #{tradeNo} </if>
+		  		  <if test="payChannel != null and payChannel != ''"> and pay_channel = #{payChannel} </if>
+		  		  <if test="totalAmount != null and totalAmount != ''"> and total_amount = #{totalAmount} </if>
+		  		  <if test="userId != null and userId != ''"> and user_id = #{userId} </if>
+		  		  <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from order_pay
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="outTradeNo != null and outTradeNo != ''"> and out_trade_no = #{outTradeNo} </if>
+		  		  <if test="tradeNo != null and tradeNo != ''"> and trade_no = #{tradeNo} </if>
+		  		  <if test="payChannel != null and payChannel != ''"> and pay_channel = #{payChannel} </if>
+		  		  <if test="totalAmount != null and totalAmount != ''"> and total_amount = #{totalAmount} </if>
+		  		  <if test="userId != null and userId != ''"> and user_id = #{userId} </if>
+		  		  <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.PayDO">
+		insert into order_pay
+		(
+			`id`, 
+			`out_trade_no`, 
+			`trade_no`, 
+			`pay_channel`, 
+			`total_amount`, 
+			`user_id`, 
+			`pay_status`, 
+			`create_time`, 
+			`update_time`
+		)
+		values
+		(
+			#{id}, 
+			#{outTradeNo}, 
+			#{tradeNo}, 
+			#{payChannel}, 
+			#{totalAmount}, 
+			#{userId}, 
+			#{payStatus}, 
+			#{createTime}, 
+			#{updateTime}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.PayDO">
+		insert into order_pay
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="outTradeNo != null"> `out_trade_no`,  </if>
+					<if test="tradeNo != null"> `trade_no`,  </if>
+					<if test="payChannel != null"> `pay_channel`,  </if>
+					<if test="totalAmount != null"> `total_amount`,  </if>
+					<if test="userId != null"> `user_id`,  </if>
+					<if test="payStatus != null"> `pay_status`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="updateTime != null"> `update_time` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="outTradeNo != null"> #{outTradeNo},  </if>
+					<if test="tradeNo != null"> #{tradeNo},  </if>
+					<if test="payChannel != null"> #{payChannel},  </if>
+					<if test="totalAmount != null"> #{totalAmount},  </if>
+					<if test="userId != null"> #{userId},  </if>
+					<if test="payStatus != null"> #{payStatus},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="updateTime != null"> #{updateTime} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.PayDO">
+		update order_pay 
+		<set>
+			<if test="outTradeNo != null">`out_trade_no` = #{outTradeNo}, </if>
+			<if test="tradeNo != null">`trade_no` = #{tradeNo}, </if>
+			<if test="payChannel != null">`pay_channel` = #{payChannel}, </if>
+			<if test="totalAmount != null">`total_amount` = #{totalAmount}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="payStatus != null">`pay_status` = #{payStatus}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from order_pay where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from order_pay where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="tableSta" resultType="map">
+	SELECT
+	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
+	COUNT( 1 ) orderCount
+	FROM
+	order_pay
+	WHERE
+	create_time >= #{minDate}
+	GROUP BY
+	DATE_FORMAT( create_time, "%Y-%m-%d" )
+	ORDER BY
+	staDate
+	</select>
+
+</mapper>

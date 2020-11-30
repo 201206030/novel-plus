@@ -13,7 +13,7 @@ import com.java2nb.system.domain.UserDO;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public interface UserService {
+public interface SysUserService {
 	UserDO get(Long id);
 
 	List<UserDO> list(Map<String, Object> map);

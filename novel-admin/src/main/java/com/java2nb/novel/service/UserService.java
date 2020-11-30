@@ -1,29 +1,29 @@
 package com.java2nb.novel.service;
 
-import com.java2nb.novel.domain.AuthorDO;
+import com.java2nb.novel.domain.UserDO;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 作者表
+ * 
  * 
  * @author xiongxy
  * @email 1179705413@qq.com
- * @date 2020-05-13 11:16:51
+ * @date 2020-12-01 03:49:08
  */
-public interface AuthorService {
+public interface UserService {
 	
-	AuthorDO get(Long id);
+	UserDO get(Long id);
 	
-	List<AuthorDO> list(Map<String, Object> map);
+	List<UserDO> list(Map<String, Object> map);
 	
 	int count(Map<String, Object> map);
 	
-	int save(AuthorDO author);
+	int save(UserDO user);
 	
-	int update(AuthorDO author);
+	int update(UserDO user);
 	
 	int remove(Long id);
 	

@@ -19,21 +19,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.java2nb.common.domain.Tree;
 import com.java2nb.system.dao.DeptDao;
-import com.java2nb.system.dao.UserDao;
+import com.java2nb.system.dao.SysUserDao;
 import com.java2nb.system.dao.UserRoleDao;
 import com.java2nb.system.domain.DeptDO;
 import com.java2nb.system.domain.UserDO;
 import com.java2nb.system.domain.UserRoleDO;
-import com.java2nb.system.service.UserService;
+import com.java2nb.system.service.SysUserService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 
 @Transactional
 @Service
-public class UserServiceImpl implements UserService {
+public class SysUserServiceImpl implements SysUserService {
     @Autowired
-    UserDao userMapper;
+    SysUserDao userMapper;
     @Autowired
     UserRoleDao userRoleMapper;
     @Autowired
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private JnConfig jnConfig;
     @Autowired
     DeptService deptService;
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SysUserService.class);
 
     @Override
 //    @Cacheable(value = "user",key = "#id")

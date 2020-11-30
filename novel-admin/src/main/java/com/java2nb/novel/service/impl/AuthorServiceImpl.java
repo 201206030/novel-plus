@@ -3,8 +3,10 @@ package com.java2nb.novel.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.java2nb.novel.dao.AuthorDao;
 import com.java2nb.novel.domain.AuthorDO;
@@ -51,5 +53,14 @@ public class AuthorServiceImpl implements AuthorService {
 	public int batchRemove(Long[] ids){
 		return authorDao.batchRemove(ids);
 	}
-	
+
+	@Override
+	public Map<Object, Object> tableSta(Date minDate) {
+		List<Map<Object, Object>> maps = authorDao.tableSta(minDate);
+
+		return maps.stream().collect(Collectors.toMap(x -> x.get("staDate"), x -> x.get("authorCount")));
+
+
+	}
+
 }

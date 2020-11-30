@@ -15,7 +15,7 @@ import org.apache.ibatis.annotations.Param;
  * @date 2019-10-03 09:45:11
  */
 @Mapper
-public interface UserDao {
+public interface SysUserDao {
 
 	UserDO get(Long userId);
 	

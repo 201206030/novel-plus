@@ -133,4 +133,18 @@
 		</foreach>
 	</delete>
 
+	<select id="tableSta" resultType="map">
+	SELECT
+	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
+	COUNT( 1 ) authorCount
+	FROM
+	AUTHOR
+	WHERE
+	create_time >= #{minDate}
+	GROUP BY
+	DATE_FORMAT( create_time, "%Y-%m-%d" )
+	ORDER BY
+	staDate
+	</select>
+
 </mapper>

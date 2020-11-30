@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.UserDao">
+
+    <select id="get" resultType="com.java2nb.novel.domain.UserDO">
+		select `id`,`username`,`password`,`nick_name`,`user_photo`,`user_sex`,`account_balance`,`status`,`create_time`,`update_time` from user where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.java2nb.novel.domain.UserDO">
+        select
+        `id`,`username`,`password`,`nick_name`,`user_photo`,`user_sex`,`account_balance`,`status`,`create_time`,`update_time`
+        from user
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="username != null and username != ''">and username = #{username}</if>
+            <if test="password != null and password != ''">and password = #{password}</if>
+            <if test="nickName != null and nickName != ''">and nick_name = #{nickName}</if>
+            <if test="userPhoto != null and userPhoto != ''">and user_photo = #{userPhoto}</if>
+            <if test="userSex != null and userSex != ''">and user_sex = #{userSex}</if>
+            <if test="accountBalance != null and accountBalance != ''">and account_balance = #{accountBalance}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+            <if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from user
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="username != null and username != ''">and username = #{username}</if>
+            <if test="password != null and password != ''">and password = #{password}</if>
+            <if test="nickName != null and nickName != ''">and nick_name = #{nickName}</if>
+            <if test="userPhoto != null and userPhoto != ''">and user_photo = #{userPhoto}</if>
+            <if test="userSex != null and userSex != ''">and user_sex = #{userSex}</if>
+            <if test="accountBalance != null and accountBalance != ''">and account_balance = #{accountBalance}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+            <if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.java2nb.novel.domain.UserDO">
+		insert into user
+		(
+			`id`, 
+			`username`, 
+			`password`, 
+			`nick_name`, 
+			`user_photo`, 
+			`user_sex`, 
+			`account_balance`, 
+			`status`, 
+			`create_time`, 
+			`update_time`
+		)
+		values
+		(
+			#{id}, 
+			#{username}, 
+			#{password}, 
+			#{nickName}, 
+			#{userPhoto}, 
+			#{userSex}, 
+			#{accountBalance}, 
+			#{status}, 
+			#{createTime}, 
+			#{updateTime}
+		)
+	</insert>
+
+    <insert id="saveSelective" parameterType="com.java2nb.novel.domain.UserDO">
+        insert into user
+        (
+        <if test="id != null">`id`,</if>
+        <if test="username != null">`username`,</if>
+        <if test="password != null">`password`,</if>
+        <if test="nickName != null">`nick_name`,</if>
+        <if test="userPhoto != null">`user_photo`,</if>
+        <if test="userSex != null">`user_sex`,</if>
+        <if test="accountBalance != null">`account_balance`,</if>
+        <if test="status != null">`status`,</if>
+        <if test="createTime != null">`create_time`,</if>
+        <if test="updateTime != null">`update_time`</if>
+        )
+        values
+        (
+        <if test="id != null">#{id},</if>
+        <if test="username != null">#{username},</if>
+        <if test="password != null">#{password},</if>
+        <if test="nickName != null">#{nickName},</if>
+        <if test="userPhoto != null">#{userPhoto},</if>
+        <if test="userSex != null">#{userSex},</if>
+        <if test="accountBalance != null">#{accountBalance},</if>
+        <if test="status != null">#{status},</if>
+        <if test="createTime != null">#{createTime},</if>
+        <if test="updateTime != null">#{updateTime}</if>
+        )
+    </insert>
+
+    <update id="update" parameterType="com.java2nb.novel.domain.UserDO">
+        update user
+        <set>
+            <if test="username != null">`username` = #{username},</if>
+            <if test="password != null">`password` = #{password},</if>
+            <if test="nickName != null">`nick_name` = #{nickName},</if>
+            <if test="userPhoto != null">`user_photo` = #{userPhoto},</if>
+            <if test="userSex != null">`user_sex` = #{userSex},</if>
+            <if test="accountBalance != null">`account_balance` = #{accountBalance},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from user where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="tableSta" resultType="map">
+    SELECT
+	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
+	COUNT( 1 ) userCount
+    FROM
+    USER
+    WHERE
+        create_time >= #{minDate}
+    GROUP BY
+        DATE_FORMAT( create_time, "%Y-%m-%d" )
+    ORDER BY
+        staDate
+	</select>
+
+</mapper>

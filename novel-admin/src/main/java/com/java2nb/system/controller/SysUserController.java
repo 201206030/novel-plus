@@ -10,7 +10,7 @@ import com.java2nb.system.domain.DeptDO;
 import com.java2nb.system.domain.RoleDO;
 import com.java2nb.system.domain.UserDO;
 import com.java2nb.system.service.RoleService;
-import com.java2nb.system.service.UserService;
+import com.java2nb.system.service.SysUserService;
 import com.java2nb.system.vo.UserVO;
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,10 +27,10 @@ import java.util.Map;
 
 @RequestMapping("/sys/user")
 @Controller
-public class UserController extends BaseController {
+public class SysUserController extends BaseController {
 	private String prefix="system/user"  ;
 	@Autowired
-	UserService userService;
+	SysUserService userService;
 	@Autowired
 	RoleService roleService;
 	@Autowired
