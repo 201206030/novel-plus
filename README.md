@@ -169,6 +169,8 @@ novel-plus -- 父工程
 
 ![img](https://s3.ax1x.com/2020/12/01/DWgLNT.png)
 
+![img](https://s3.ax1x.com/2020/12/01/DfmRCd.png)
+
 ![img](https://oscimg.oschina.net/oscnet/up-faf5dda7320674c29a1772bc0c81d74762e.png)
 
 #### 安装步骤
