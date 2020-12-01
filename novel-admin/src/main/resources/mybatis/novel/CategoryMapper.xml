@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.CategoryDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.CategoryDO">
+		select `id`,`name`,`sort`,`create_user_id`,`create_time`,`update_user_id`,`update_time` from news_category where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.CategoryDO">
+		select `id`,`name`,`sort`,`create_user_id`,`create_time`,`update_user_id`,`update_time` from news_category
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="sort != null and sort != ''"> and sort = #{sort} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateUserId != null and updateUserId != ''"> and update_user_id = #{updateUserId} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from news_category
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="sort != null and sort != ''"> and sort = #{sort} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateUserId != null and updateUserId != ''"> and update_user_id = #{updateUserId} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.CategoryDO">
+		insert into news_category
+		(
+			`id`, 
+			`name`, 
+			`sort`, 
+			`create_user_id`, 
+			`create_time`, 
+			`update_user_id`, 
+			`update_time`
+		)
+		values
+		(
+			#{id}, 
+			#{name}, 
+			#{sort}, 
+			#{createUserId}, 
+			#{createTime}, 
+			#{updateUserId}, 
+			#{updateTime}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.CategoryDO">
+		insert into news_category
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="name != null"> `name`,  </if>
+					<if test="sort != null"> `sort`,  </if>
+					<if test="createUserId != null"> `create_user_id`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="updateUserId != null"> `update_user_id`,  </if>
+					<if test="updateTime != null"> `update_time` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="name != null"> #{name},  </if>
+					<if test="sort != null"> #{sort},  </if>
+					<if test="createUserId != null"> #{createUserId},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="updateUserId != null"> #{updateUserId},  </if>
+					<if test="updateTime != null"> #{updateTime} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.CategoryDO">
+		update news_category 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="sort != null">`sort` = #{sort}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from news_category where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from news_category where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

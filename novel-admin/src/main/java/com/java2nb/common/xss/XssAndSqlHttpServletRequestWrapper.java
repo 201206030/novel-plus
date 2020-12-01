@@ -14,7 +14,7 @@ public class XssAndSqlHttpServletRequestWrapper extends HttpServletRequestWrappe
     /**
      * 假如有有html 代码是自己传来的  需要设定对应的name 不过滤
      */
-    private static final List<String> noFilterNames = Arrays.asList("attach","push_ip");
+    private static final List<String> noFilterNames = Arrays.asList("attach","push_ip","content");
 
     public XssAndSqlHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);
