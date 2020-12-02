@@ -5,7 +5,7 @@
 
     <groupId>com.java2nb</groupId>
     <artifactId>novel</artifactId>
-    <version>2.10.0</version>
+    <version>3.0.1</version>
     <modules>
         <module>novel-common</module>
         <module>novel-front</module>

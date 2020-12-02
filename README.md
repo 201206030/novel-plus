@@ -10,19 +10,10 @@ Gitee仓库地址： https://gitee.com/xiongxyang/novel-cloud
 
 GitHub仓库地址： https://github.com/201206030/novel-cloud
 
-#### 示例网站
+#### 演示地址
 
-[网站1，点击前往](http://www.bqmfxs.cn)
+[点击前往](http://47.106.243.172:8888/)
 
-[网站2，点击前往](http://iyuedu.space)
-
-[网站3，点击前往](http://suxiange.com)
-
-[网站4，点击前往](http://ruoshu.com)
-
-[网站5，点击前往](https://www.jingjiao.net)
-
-[网站6，点击前往](http://www.shucheng.in)
 
 #### 前言
 
@@ -143,19 +134,19 @@ novel-plus -- 父工程
 
 1. 首页
 
-   ![index](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ%E5%9B%BE%E7%89%8720191018162208.jpg)
+   ![index](https://s3.ax1x.com/2020/12/03/DoywuQ.jpg)
 
-2. 小说详情页
+2. 小说列表页
 
-   ![微信图片_20190904181558](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190904181558.png)
+   ![微信图片_20190904181558](https://s3.ax1x.com/2020/12/03/DoyBHs.jpg)
 
-3. 目录页
+3. 小说详情页
 
-   ![QQ图片20191018161901](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ%E5%9B%BE%E7%89%8720191108022250.png)
+   ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/03/DoysNq.jpg)
 
 4. 小说阅读页
 
-   ![QQ图片20191018161901](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ%E5%9B%BE%E7%89%8720191018161901.png)
+   ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/03/Doyg3T.jpg)
 
 #### 爬虫管理系统截图
 
