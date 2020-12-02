@@ -119,26 +119,26 @@
 
     <div style="float: left;margin-left: 10px">
         <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
     </div>
     <b class="layui-icon" th:utext="${book.bookName}"></b>
     <div style="float: right;margin-right: 10px">
-        <a href="/"><i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i></a>
+        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
     </div>
 </div>
 
 <div class="layui-row" style="background: #f2f2f2">
-    <div style="padding: 10px" class="layui-col-xs4 layui-col-sm2 layui-col-md2 layui-col-lg2">
-        <img style=" width:auto; height:auto; max-width:100%; max-height:100%;" th:src="${book.picUrl}"/>
+    <div style="padding: 3px" class="layui-col-xs4 layui-col-sm2 layui-col-md2 layui-col-lg2">
+        <img style=" width:130px; height:auto; max-width:100%; max-height:100%;" th:src="${book.picUrl}"/>
 
     </div>
-        <div style="position:relative;padding: 10px 20px" class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
-            <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'"><div style=";color: #4c6978;" th:utext="'作者：'+ ${book.authorName}"></div></a>
-            <a th:href="'/book/book_ranking.html?catId='+${book.catId}"><div style="margin-top: 5px;color: #4c6978;" th:text="'类别：'+ ${book.catName}"></div></a>
-            <div style="margin-top: 5px;color: #4c6978;" th:text="'状态：'+ ${book.bookStatus==0?'连载':'完结'}"></div>
-            <div style="margin-top: 5px;color: #4c6978;">更新：<i th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd')}"></i></div>
-            <div style="margin-top: 5px;color: #4c6978;">评分：<i style="font-weight:bold;color: red" th:text="${book.score} + '分'"></i></div>
-            <div style="margin-top: 5px;color: #4c6978;">点击：<i style="font-weight:bold;color: red" th:text="${book.visitCount}"></i></div>
+        <div style="position:relative;padding: 3px 10px 0px" class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
+            <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'"><div style=";color: #444;" th:utext="'作者：'+ ${book.authorName}"></div></a>
+            <a th:href="'/book/book_ranking.html?catId='+${book.catId}"><div style="margin-top: 5px;color: #444;" th:text="'类别：'+ ${book.catName}"></div></a>
+            <div style="margin-top: 5px;color: #444;" th:text="'状态：'+ ${book.bookStatus==0?'连载':'完结'}"></div>
+            <div style="margin-top: 5px;color: #444;">更新：<i  th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd')}"></i></div>
+            <div style="margin-top: 5px;color: #444;">评分：<i style="font-weight:bold;color: red" th:text="${book.score} + '分'"></i></div>
+            <div style="margin-top: 5px;color: #444;">点击：<i style="font-weight:bold;color: red" th:text="${book.visitCount}"></i></div>
 
 
         </div>
@@ -155,7 +155,7 @@
     <button type="button" onclick="downloadFile()" class="layui-btn layui-btn-sm layui-btn-radius layui-bg-normal">下载TXT</button>
 -->
 </div>
-<p style="line-height: 23px;padding: 10px;font-size: 14px;color: #4c6978;" th:utext="${book.bookDesc}">
+<p style="line-height: 23px;padding: 10px;font-size: 14px;color: #333;" th:utext="${book.bookDesc}">
 
 </p>
 
@@ -230,7 +230,7 @@
                 var indexListHtml = "";
                 for(var i = 0 ; i < data.data.length ; i++){
                     var bookIndex = data.data[i];
-                    indexListHtml+=("<p class=\"line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2\" style=\"padding-left:10px;height: 50px;line-height: 50px;\"><a href=\"/book/"+$("#bookIdHidden").val()+"/"+bookIndex.id+".html\">"+bookIndex.indexName+"</a></p>");
+                    indexListHtml+=("<p class=\"line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2\" style=\"padding-left:10px;height: 50px;line-height: 50px;\"><a href=\"/book/"+$("#bookIdHidden").val()+"/"+bookIndex.id+".html\" style='color: #333'>"+bookIndex.indexName+"</a></p>");
                 }
 
                 $("#indexList").html(indexListHtml);

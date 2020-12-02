@@ -81,11 +81,11 @@
 
     <div style="float: left;margin-left: 10px">
         <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
     </div>
     <b class="layui-icon">小说列表</b>
     <div style="float: right;margin-right: 10px">
-        <a href="/"><i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i></a>
+        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
     </div>
 </div>
 
@@ -191,24 +191,24 @@
                         bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
                             "        <a href=\"/book/"+book.id+".html\">\n" +
                             "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
-                            "                <img width='150' height='180' align=\"center\"\n" +
+                            "                <img style='width: 130px;height: 180px' align=\"center\"\n" +
                             "                     src=\""+book.picUrl+"\"/>\n" +
                             "\n" +
                             "            </div>\n" +
                             "        </a>\n" +
                             "        <div style=\"padding: 10px\" class=\"layui-col-xs6 layui-col-sm8 layui-col-md8 layui-col-lg8\">\n" +
                             "            <a href=\"/book/"+book.id+".html\">\n" +
-                            "                <div class=\"line-limit-length\" style=\";color: #4c6978;font-weight: bold;font-size: 15px\">"+book.bookName+"</div>\n" +
+                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">"+book.bookName+"</div>\n" +
                             "            </a>\n" +
                             "            <div style=\";color: #4c6978;float: right;\"><i style=\"color: red\"></i></div>\n" +
                             "            <a href=\"/book/book_ranking.html?keyword="+encodeURI(book.authorName)+"\">\n" +
-                            "                <div style=\";color: #4c6978;\" class=\"line-limit-length\">作者："+book.authorName+"</div>\n" +
+                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者："+book.authorName+"</div>\n" +
                             "            </a>\n" +
-                            "            <div style=\"margin-top: 5px;color: #4c6978;\">类别："+book.catName+"</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #4c6978;\">状态："+(book.bookStatus==0?'连载':'完结')+"</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #4c6978;\">更新：<i>"+book.lastIndexUpdateTime.substr(0,11)+"</i>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别："+book.catName+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态："+(book.bookStatus==0?'连载':'完结')+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>"+book.lastIndexUpdateTime.substr(0,11)+"</i>\n" +
                             "            </div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #4c6978;\">简介："+(book.bookDesc?(book.bookDesc.length>20?(book.bookDesc.substr(0,20)+"..."):book.bookDesc):book.bookDesc)+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">简介："+(book.bookDesc?(book.bookDesc.length>15?(book.bookDesc.substr(0,15)+"..."):book.bookDesc):book.bookDesc)+"</div>\n" +
                             "\n" +
                             "\n" +
                             "        </div>\n" +

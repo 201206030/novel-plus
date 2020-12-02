@@ -46,11 +46,11 @@
 
     <div style="float: left;margin-left: 10px">
         <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
     </div>
     <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b class="layui-icon" th:utext="${book.bookName}"></b></a>
     <div style="float: right;margin-right: 10px">
-        <a href="/"><i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i></a>
+        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
     </div>
 </div>
 
@@ -63,7 +63,7 @@
 
 <div class="layui-colla-content layui-show indexP layui-row">
     <p class="line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2" style="padding-left:10px;height: 50px;line-height: 50px;" th:each="index : ${bookIndexList}">
-        <a th:href="'/book/'+${index.bookId}+'/'+${index.id}+'.html'" th:utext="${index.indexName}">
+        <a style="color:#333;" th:href="'/book/'+${index.bookId}+'/'+${index.id}+'.html'" th:utext="${index.indexName}">
 
         </a>
     </p>

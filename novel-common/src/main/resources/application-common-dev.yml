@@ -23,10 +23,13 @@ spring:
     #连接超时时间（毫秒）
     timeout: 30000
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: root
-    password: test123456
+    url: jdbc:mysql://47.106.243.172:3306/novel_biz?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: novel_biz
+    password: novel_biz!8888
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  autoconfigure:
+    exclude: io.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration
 
 ####使用shardingJdbc时，
 ####所有的jdbcType都不能是LONGVARCHAR,否则会导致java.io.NotSerializableException: java.io.StringReader错误

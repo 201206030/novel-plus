@@ -185,11 +185,11 @@
 
     <div style="width:10%;float: left;margin-left: 10px">
         <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
     </div>
     <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b style="padding-left: 5%;float: left;width: 69%" class="line-limit-length" th:utext="${bookIndex.indexName}+' '+${book.bookName}"></b></a>
     <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-        <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i>
+        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
     </a>
     </div>
 </div>
@@ -204,9 +204,9 @@
 </p>
 <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
-    <a th:href="${preBookIndexId!=0?'/book/'+book.id+'/'+preBookIndexId+'.html':'#'}">上一章</a>
-    <a th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-    <a th:href="${nextBookIndexId!=0?'/book/'+book.id+'/'+nextBookIndexId+'.html':'#'}">下一章</a>
+    <a style="color: #333" th:href="${preBookIndexId!=0?'/book/'+book.id+'/'+preBookIndexId+'.html':'#'}">上一章</a>
+    <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
+    <a style="color: #333" th:href="${nextBookIndexId!=0?'/book/'+book.id+'/'+nextBookIndexId+'.html':'#'}">下一章</a>
 </div>
 <!--<div id="screenInput" class="screen_toolbar" style="display: none">
     <div style="height: 5px" class="layui-col-xs2 layui-col-sm3 layui-col-md3 layui-col-lg3"></div>
@@ -244,9 +244,9 @@
 </div>
 <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
-    <a th:href="${preBookIndexId!=0?'/book/'+book.id+'/'+preBookIndexId+'.html':'#'}">上一章</a>
-    <a th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-    <a th:href="${nextBookIndexId!=0?'/book/'+book.id+'/'+nextBookIndexId+'.html':'#'}">下一章</a>
+    <a style="color: #333" th:href="${preBookIndexId!=0?'/book/'+book.id+'/'+preBookIndexId+'.html':'#'}">上一章</a>
+    <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
+    <a style="color: #333" th:href="${nextBookIndexId!=0?'/book/'+book.id+'/'+nextBookIndexId+'.html':'#'}">下一章</a>
 
 </div>
 
