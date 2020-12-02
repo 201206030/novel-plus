@@ -134,7 +134,7 @@ novel-plus -- 父工程
 
 1. 首页
 
-   ![index](https://s3.ax1x.com/2020/12/03/DoywuQ.jpg)
+   ![index](https://s3.ax1x.com/2020/12/03/Doyb8K.jpg)
 
 2. 小说列表页
 
