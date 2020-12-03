@@ -205,6 +205,10 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 ![mini-code](https://s1.ax1x.com/2020/10/31/BUQVeI.png)
 
+#### 微信公众号（发布最新更新资讯）
+
+![mini-code](https://s3.ax1x.com/2020/12/03/DoImOx.png)
+
 #### 赞赏支持
 
 开源项目不易，若此项目能得到你的青睐，那么你可以赞赏支持作者持续开发与维护。
