@@ -134,19 +134,19 @@ novel-plus -- 父工程
 
 1. 首页
 
-   ![index](https://s3.ax1x.com/2020/12/03/Doyb8K.jpg)
+   <img src="https://s3.ax1x.com/2020/12/04/DbsSoj.jpg" alt="index" style="zoom:33%;" />
 
 2. 小说列表页
 
-   ![微信图片_20190904181558](https://s3.ax1x.com/2020/12/03/DoyBHs.jpg)
+   <img src="https://s3.ax1x.com/2020/12/04/DbrfsO.jpg" alt="微信图片_20190904181558" style="zoom: 33%;" />
 
 3. 小说详情页
 
-   ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/03/DoysNq.jpg)
+   <img src="https://s3.ax1x.com/2020/12/04/DbsklV.jpg" alt="QQ图片20191018161901" style="zoom:33%;" />
 
 4. 小说阅读页
 
-   ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/03/Doyg3T.jpg)
+   <img src="https://s3.ax1x.com/2020/12/04/Dbsew4.jpg" alt="QQ图片20191018161901" style="zoom:33%;" />
 
 #### 爬虫管理系统截图
 
