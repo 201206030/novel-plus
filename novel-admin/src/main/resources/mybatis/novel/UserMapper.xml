@@ -142,7 +142,7 @@
 	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
 	COUNT( 1 ) userCount
     FROM
-    USER
+    user
     WHERE
         create_time >= #{minDate}
     GROUP BY

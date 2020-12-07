@@ -294,7 +294,7 @@
 	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
 	COUNT( 1 ) bookCount
     FROM
-    BOOK
+    book
     WHERE
         create_time >= #{minDate}
     GROUP BY

@@ -138,7 +138,7 @@
 	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
 	COUNT( 1 ) authorCount
 	FROM
-	AUTHOR
+	author
 	WHERE
 	create_time >= #{minDate}
 	GROUP BY
