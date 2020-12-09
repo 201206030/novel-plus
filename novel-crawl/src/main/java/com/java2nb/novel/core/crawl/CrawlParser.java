@@ -11,8 +11,7 @@ import com.java2nb.novel.utils.Constants;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +43,7 @@ public class CrawlParser {
     public static Book parseBook(RuleBean ruleBean, String bookId) {
         Book book = new Book();
         String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
-        String bookDetailHtml = getByHttpClient(bookDetailUrl);
+        String bookDetailHtml = getByHttpClientWithChrome(bookDetailUrl);
         if (bookDetailHtml != null) {
             Pattern bookNamePatten = compile(ruleBean.getBookNamePatten());
             Matcher bookNameMatch = bookNamePatten.matcher(bookDetailHtml);
@@ -157,7 +156,7 @@ public class CrawlParser {
         List<BookContent> contentList = new ArrayList<>();
         //读取目录
         String indexListUrl = ruleBean.getBookIndexUrl().replace("{bookId}", sourceBookId);
-        String indexListHtml = getByHttpClient(indexListUrl);
+        String indexListHtml = getByHttpClientWithChrome(indexListUrl);
 
         if (indexListHtml != null) {
             if(StringUtils.isNotBlank(ruleBean.getBookIndexStart())){
@@ -189,7 +188,7 @@ public class CrawlParser {
                     String contentUrl = ruleBean.getBookContentUrl().replace("{bookId}", sourceBookId).replace("{indexId}", indexIdMatch.group(1));
 
                     //查询章节内容
-                    String contentHtml = getByHttpClient(contentUrl);
+                    String contentHtml = getByHttpClientWithChrome(contentUrl);
                     if (contentHtml != null && !contentHtml.contains("正在手打中")) {
                         String content = contentHtml.substring(contentHtml.indexOf(ruleBean.getContentStart()) + ruleBean.getContentStart().length());
                         content = content.substring(0, content.indexOf(ruleBean.getContentEnd()));
@@ -273,6 +272,22 @@ public class CrawlParser {
                 //成功获得html内容
                 return body;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return processErrorHttpResult(url);
+
+    }
+
+    private static String getByHttpClientWithChrome(String url) {
+        try {
+
+            String body = HttpUtil.getByHttpClientWithChrome(url);
+                if(body != null && body.length() < Constants.INVALID_HTML_LENGTH){
+                    return processErrorHttpResult(url);
+                }
+                //成功获得html内容
+                return body;
         } catch (Exception e) {
             e.printStackTrace();
         }

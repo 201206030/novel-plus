@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.java2nb.novel.core.utils.HttpUtil.getByHttpClient;
+import static com.java2nb.novel.core.utils.HttpUtil.getByHttpClientWithChrome;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlBookId;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlSourceId;
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.*;
@@ -217,7 +218,7 @@ public class CrawlServiceImpl implements CrawlService {
                             .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
                             .replace("{page}", page + "");
 
-                    String bookListHtml = getByHttpClient(catBookListUrl);
+                    String bookListHtml = getByHttpClientWithChrome(catBookListUrl);
                     if (bookListHtml != null) {
                         Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
                         Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
