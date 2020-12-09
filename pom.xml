@@ -10,6 +10,7 @@
         <module>novel-common</module>
         <module>novel-front</module>
         <module>novel-crawl</module>
+        <module>novel-admin</module>
     </modules>
     <packaging>pom</packaging>
 
