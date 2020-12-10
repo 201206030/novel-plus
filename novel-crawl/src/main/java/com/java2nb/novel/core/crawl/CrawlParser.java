@@ -185,7 +185,38 @@ public class CrawlParser {
                 String indexName = indexNameMatch.group(1);
 
                 if (hasIndex == null || !StringUtils.deleteWhitespace(hasIndex.getIndexName()).equals(StringUtils.deleteWhitespace(indexName))) {
-                    String contentUrl = ruleBean.getBookContentUrl().replace("{bookId}", sourceBookId).replace("{indexId}", indexIdMatch.group(1));
+
+                    String sourceIndexId = indexIdMatch.group(1);
+                    String bookContentUrl = ruleBean.getBookContentUrl();
+                    int calStart = bookContentUrl.indexOf("{cal_");
+                    if(calStart != -1){
+                        //内容页URL需要进行计算才能得到
+                        String calStr = bookContentUrl.substring(calStart,calStart+bookContentUrl.substring(calStart).indexOf("}"));
+                        String[] calArr = calStr.split("_");
+                        int calType = Integer.parseInt(calArr[1]);
+                        if(calType == 1) {
+                            ///{cal_1_1_3}_{bookId}/{indexId}.html
+                            //第一种计算规则，去除第x个参数的最后y个字母
+                            int x = Integer.parseInt(calArr[2]);
+                            int y = Integer.parseInt(calArr[3]);
+                            String calResult;
+                            if (x == 1) {
+                                calResult = sourceBookId.substring(0, sourceBookId.length() - y);
+                            } else {
+                                calResult = sourceIndexId.substring(0, sourceBookId.length() - y);
+                            }
+
+                            if(calResult.length() == 0){
+                                calResult = "0";
+
+                            }
+
+                            bookContentUrl = bookContentUrl.replace(calStr+"}", calResult);
+                        }
+
+                    }
+
+                    String contentUrl = bookContentUrl.replace("{bookId}", sourceBookId).replace("{indexId}", sourceIndexId);
 
                     //查询章节内容
                     String contentHtml = getByHttpClientWithChrome(contentUrl);
