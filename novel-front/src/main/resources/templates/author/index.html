@@ -144,7 +144,7 @@
     function search(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/author/listBookByPage",
             data: {'curr':curr,'limit':limit},
             dataType: "json",

@@ -234,7 +234,7 @@
     }
     //查询是否在书架
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/user/queryIsInShelf",
         data: {'bookId':$("#bookId").val()},
         dataType: "json",

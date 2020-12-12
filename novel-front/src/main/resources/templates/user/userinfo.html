@@ -81,7 +81,7 @@
 <script type="text/javascript">
     //查询用户信息
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/user/userInfo",
         data: {},
         dataType: "json",
@@ -113,7 +113,7 @@
     })
     //查询书架列表
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/user/listBookShelfByPage",
         data: {'limit':2},
         dataType: "json",

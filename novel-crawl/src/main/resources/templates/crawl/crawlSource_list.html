@@ -122,7 +122,7 @@
     function search(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/crawl/listCrawlByPage",
             data: {'curr':curr,'limit':limit},
             dataType: "json",

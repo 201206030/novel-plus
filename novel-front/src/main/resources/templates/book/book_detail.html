@@ -199,7 +199,7 @@
     var lastBookIndexId = $("#lastBookIndexId").val();
     if(lastBookIndexId){
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/queryBookIndexAbout",
             data: {'bookId': bookId, 'lastBookIndexId': lastBookIndexId},
             dataType: "json",
@@ -226,7 +226,7 @@
 <script language="javascript" type="text/javascript">
     //查询是否在书架
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/user/queryIsInShelf",
         data: {'bookId': $("#bookId").val()},
         dataType: "json",
@@ -255,7 +255,7 @@
 
     function loadCommentList(){
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listCommentByPage",
             data: {'bookId': $("#bookId").val()},
             dataType: "json",
@@ -335,7 +335,7 @@
     var bookCatId = $("#bookCatId").val();
     //查询同类推荐
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/book/listRecBookByCatId",
         data: {'catId': bookCatId},
         dataType: "json",

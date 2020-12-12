@@ -163,7 +163,7 @@
 
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/searchByPage",
             data: searchData,
             dataType: "json",
@@ -227,7 +227,7 @@
 
     function listBookCategory(c) {
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listBookCategory",
             data: {},
             dataType: "json",

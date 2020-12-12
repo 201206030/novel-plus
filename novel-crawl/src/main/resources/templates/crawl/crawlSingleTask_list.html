@@ -125,7 +125,7 @@
     function search(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/crawl/listCrawlSingleTaskByPage",
             data: {'curr': curr, 'limit': limit},
             dataType: "json",
@@ -205,9 +205,9 @@
     function del(id) {
 
         $.ajax({
-            type: "POST",
-            url: "/crawl/delCrawlSingleTask",
-            data: {'id': id},
+            type: "delete",
+            url: "/crawl/delCrawlSingleTask/"+id,
+            data: {},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {

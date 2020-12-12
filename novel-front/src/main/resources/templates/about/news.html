@@ -56,7 +56,7 @@
     function search(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/news/listByPage",
             data: {'curr':curr,'limit':limit},
             dataType: "json",

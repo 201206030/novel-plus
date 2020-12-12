@@ -134,9 +134,9 @@
     }
 
     $.ajax({
-        type: "POST",
-        url: "/author/queryIndexContent",
-        data: {'indexId':indexId},
+        type: "get",
+        url: "/author/queryIndexContent/"+indexId,
+        data: {},
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {

@@ -9,10 +9,7 @@ import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.vo.CrawlSingleTaskVO;
 import com.java2nb.novel.vo.CrawlSourceVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Administrator
@@ -39,7 +36,7 @@ public class CrawlController {
     /**
      * 爬虫源分页列表查询
      * */
-    @PostMapping("listCrawlByPage")
+    @GetMapping("listCrawlByPage")
     public ResultBean listCrawlByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize){
 
         return ResultBean.ok(new PageInfo<>(BeanUtil.copyList(crawlService.listCrawlByPage(page,pageSize), CrawlSourceVO.class)
@@ -71,7 +68,7 @@ public class CrawlController {
     /**
      * 单本采集任务分页列表查询
      * */
-    @PostMapping("listCrawlSingleTaskByPage")
+    @GetMapping("listCrawlSingleTaskByPage")
     public ResultBean listCrawlSingleTaskByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize){
 
         return ResultBean.ok(new PageInfo<>(BeanUtil.copyList(crawlService.listCrawlSingleTaskByPage(page,pageSize), CrawlSingleTaskVO.class)
@@ -81,8 +78,8 @@ public class CrawlController {
     /**
      * 删除采集任务
      * */
-    @PostMapping("delCrawlSingleTask")
-    public ResultBean delCrawlSingleTask(Long id){
+    @DeleteMapping("delCrawlSingleTask/{id}")
+    public ResultBean delCrawlSingleTask(@PathVariable("id") Long id){
 
         crawlService.delCrawlSingleTask(id);
 

@@ -235,7 +235,7 @@
 <script>
     //加载首页书籍设置数据
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/book/listBookSetting",
         data: {},
         dataType: "json",
@@ -318,7 +318,7 @@
 
     //更新榜单查询
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/book/listUpdateRank",
         data: {},
         dataType: "json",

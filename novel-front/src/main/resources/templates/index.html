@@ -157,7 +157,7 @@
     $(function () {
         //加载首页书籍设置数据
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listBookSetting",
             data: {},
             dataType: "json",
@@ -331,7 +331,7 @@
         })
         //首页新闻查询
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/news/listIndexNews",
             data: {},
             dataType: "json",
@@ -359,7 +359,7 @@
 
         //点击榜单数据查询
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listClickRank",
             data: {},
             dataType: "json",
@@ -402,7 +402,7 @@
         })
         //新书榜单查询
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listNewRank",
             data: {},
             dataType: "json",
@@ -446,7 +446,7 @@
         })
         //更新榜单查询
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listUpdateRank",
             data: {},
             dataType: "json",
@@ -504,7 +504,7 @@
         })
         //友情链接查询
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/friendLink/listIndexLink",
             data: {},
             dataType: "json",

@@ -144,7 +144,7 @@
     function search(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/queryIndexList",
             data: {'bookId': bookId, 'curr': curr, 'limit': limit, 'orderBy': 'index_num desc'},
             dataType: "json",
@@ -299,9 +299,9 @@
 
             layer.close(index);
             $.ajax({
-                type: "POST",
-                url: "/author/deleteIndex",
-                data: {'indexId': indexId},
+                type: "delete",
+                url: "/author/deleteIndex/"+indexId,
+                data: {},
                 dataType: "json",
                 success: function (data) {
                     if (data.code == 200) {

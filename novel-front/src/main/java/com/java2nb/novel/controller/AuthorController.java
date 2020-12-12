@@ -13,10 +13,7 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FriendLinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +35,7 @@ public class AuthorController extends BaseController{
     /**
      * 校验笔名是否存在
      * */
-    @PostMapping("checkPenName")
+    @GetMapping("checkPenName")
     public ResultBean checkPenName(String penName){
 
         return ResultBean.ok(authorService.checkPenName(penName));
@@ -47,7 +44,7 @@ public class AuthorController extends BaseController{
     /**
      * 作家发布小说分页列表查询
      * */
-    @PostMapping("listBookByPage")
+    @GetMapping("listBookByPage")
     public ResultBean listBookByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize ,HttpServletRequest request){
 
         return ResultBean.ok(new PageInfo<>(bookService.listBookPageByUserId(getUserDetails(request).getId(),page,pageSize)
@@ -90,8 +87,8 @@ public class AuthorController extends BaseController{
     /**
      * 删除章节
      */
-    @PostMapping("deleteIndex")
-    public ResultBean deleteIndex(Long indexId,  HttpServletRequest request) {
+    @DeleteMapping("deleteIndex/{indexId}")
+    public ResultBean deleteIndex(@PathVariable("indexId") Long indexId,  HttpServletRequest request) {
 
         Author author = checkAuthor(request);
 
@@ -136,8 +133,8 @@ public class AuthorController extends BaseController{
     /**
      * 查询章节内容
      */
-    @PostMapping("queryIndexContent")
-    public ResultBean queryIndexContent(Long indexId,  HttpServletRequest request) {
+    @GetMapping("queryIndexContent/{indexId}")
+    public ResultBean queryIndexContent(@PathVariable("indexId") Long indexId,  HttpServletRequest request) {
 
         Author author = checkAuthor(request);
 
@@ -167,7 +164,7 @@ public class AuthorController extends BaseController{
     /**
      * 作家日收入统计数据分页列表查询
      * */
-    @PostMapping("listIncomeDailyByPage")
+    @GetMapping("listIncomeDailyByPage")
     public ResultBean listIncomeDailyByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
                                             @RequestParam(value = "limit", defaultValue = "10") int pageSize ,
                                             @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
@@ -183,7 +180,7 @@ public class AuthorController extends BaseController{
     /**
      * 作家月收入统计数据分页列表查询
      * */
-    @PostMapping("listIncomeMonthByPage")
+    @GetMapping("listIncomeMonthByPage")
     public ResultBean listIncomeMonthByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
                                             @RequestParam(value = "limit", defaultValue = "10") int pageSize ,
                                             @RequestParam(value = "bookId", defaultValue = "0") Long bookId,

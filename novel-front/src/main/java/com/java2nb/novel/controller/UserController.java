@@ -15,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -115,7 +112,7 @@ public class UserController extends BaseController {
     /**
      * 查询小说是否已加入书架
      */
-    @PostMapping("queryIsInShelf")
+    @GetMapping("queryIsInShelf")
     public ResultBean queryIsInShelf(Long bookId, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
@@ -140,8 +137,8 @@ public class UserController extends BaseController {
     /**
      * 移出书架
      * */
-    @PostMapping("removeFromBookShelf")
-    public ResultBean removeFromBookShelf(Long bookId, HttpServletRequest request) {
+    @DeleteMapping("removeFromBookShelf/{bookId}")
+    public ResultBean removeFromBookShelf(@PathVariable("bookId") Long bookId, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
@@ -153,7 +150,7 @@ public class UserController extends BaseController {
     /**
      * 分页查询书架
      * */
-    @PostMapping("listBookShelfByPage")
+    @GetMapping("listBookShelfByPage")
     public ResultBean listBookShelfByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize,HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
@@ -165,7 +162,7 @@ public class UserController extends BaseController {
     /**
      * 分页查询阅读记录
      * */
-    @PostMapping("listReadHistoryByPage")
+    @GetMapping("listReadHistoryByPage")
     public ResultBean listReadHistoryByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize,HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
@@ -203,7 +200,7 @@ public class UserController extends BaseController {
     /**
      * 分页查询我的反馈列表
      * */
-    @PostMapping("listUserFeedBackByPage")
+    @GetMapping("listUserFeedBackByPage")
     public ResultBean listUserFeedBackByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize, HttpServletRequest request){
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
@@ -215,7 +212,7 @@ public class UserController extends BaseController {
     /**
      * 查询个人信息
      * */
-    @PostMapping("userInfo")
+    @GetMapping("userInfo")
     public ResultBean userInfo(HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
@@ -263,7 +260,7 @@ public class UserController extends BaseController {
     /**
      * 分页查询用户书评
      * */
-    @PostMapping("listCommentByPage")
+    @GetMapping("listCommentByPage")
     public ResultBean listCommentByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize,HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {

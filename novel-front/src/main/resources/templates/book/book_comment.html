@@ -119,7 +119,7 @@
     function searchComments(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listCommentByPage",
             data: {'bookId': $("#bookId").val(),'curr':curr,'limit':limit},
             dataType: "json",

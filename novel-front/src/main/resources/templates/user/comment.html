@@ -52,7 +52,7 @@
     function search(curr, limit) {
 
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/user/listCommentByPage",
             data: {'curr':curr,'limit':limit},
             dataType: "json",

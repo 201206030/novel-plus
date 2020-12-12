@@ -88,7 +88,7 @@
 
     function listRank(rankType){
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "/book/listRank",
             data: {'type':rankType,'limit':30},
             dataType: "json",

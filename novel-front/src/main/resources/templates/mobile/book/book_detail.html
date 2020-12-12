@@ -195,7 +195,7 @@
 <script>
     //查询是否在书架
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/user/queryIsInShelf",
         data: {'bookId': $("#bookIdHidden").val()},
         dataType: "json",
@@ -221,7 +221,7 @@
 
     //查询最新目录集合
     $.ajax({
-        type: "POST",
+        type: "get",
         url: "/book/queryNewIndexList",
         data: {'bookId': $("#bookIdHidden").val()},
         dataType: "json",
