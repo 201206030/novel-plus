@@ -171,7 +171,7 @@ public class BookController extends BaseController{
      * 目录页
      * */
     @GetMapping("/queryIndexList")
-    public ResultBean indexList(Long bookId,@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize,@RequestParam(value = "orderBy") String orderBy) {
+    public ResultBean indexList(Long bookId,@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize,@RequestParam(value = "orderBy",defaultValue = "index_num desc") String orderBy) {
         return ResultBean.ok(new PageInfo<>(bookService.queryIndexList(bookId,orderBy,page,pageSize)));
     }
 
