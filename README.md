@@ -2,6 +2,10 @@
 
 # 小说精品屋-plus
 
+#### 官网
+
+https://xiongxyang.gitee.io/home/
+
 #### 新项目：小说精品屋-微服务版
 
 基于小说精品屋-plus构建的Spring Cloud 微服务小说门户平台。
@@ -202,7 +206,7 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 #### 代码仓库
 
  GitHub仓库地址： https://github.com/201206030/novel-plus 
- 
+
  Gitee仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 #### QQ交流群
