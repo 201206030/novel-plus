@@ -211,7 +211,7 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 #### QQ交流群
 
-![mini-code](https://s1.ax1x.com/2020/10/31/BUQVeI.png)
+[点击前往官网查看](https://xiongxyang.gitee.io/home/service.htm)
 
 #### 微信公众号（发布最新更新资讯）
 
