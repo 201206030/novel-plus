@@ -58,6 +58,7 @@ public class StarterListener implements ServletContextListener {
                                 Book book = CrawlParser.parseBook(ruleBean, needUpdateBook.getCrawlBookId());
                                 //这里只做老书更新
                                 book.setId(needUpdateBook.getId());
+                                book.setWordCount(needUpdateBook.getWordCount());
                                 if (needUpdateBook.getPicUrl() != null && needUpdateBook.getPicUrl().contains(Constants.LOCAL_PIC_PREFIX)) {
                                     //本地图片则不更新
                                     book.setPicUrl(null);
