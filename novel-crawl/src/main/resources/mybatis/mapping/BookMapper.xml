@@ -15,8 +15,7 @@
 
     <select id="queryTotalWordCount" parameterType="long" resultType="int">
 
-        select sum(t2.word_count) from book t1 inner join book_index t2
-        on t1.id = t2.book_id and t1.id = #{bookId}
+        select sum(word_count) from book_index where book_id = #{bookId}
     </select>
 
     <update id="updateCrawlLastTime">

@@ -1,6 +1,5 @@
 package com.java2nb.novel.service.impl;
 
-import com.java2nb.novel.core.utils.IdWorker;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
@@ -79,10 +78,6 @@ public class BookServiceImpl implements BookService {
 
             if(bookIndexList.size()>0) {
 
-                if (book.getId() == null) {
-                    book.setId(new IdWorker().nextId());
-                }
-
                 //保存小说主表
 
                 bookMapper.insertSelective(book);
@@ -122,36 +117,20 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateBookAndIndexAndContent(Book book, List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap) {
+    public void updateBookAndIndexAndContent(Book book,  List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap) {
         Date currentDate = new Date();
         for (int i = 0; i < bookIndexList.size(); i++) {
             BookIndex bookIndex = bookIndexList.get(i);
             BookContent bookContent = bookContentList.get(i);
 
-            //插入或更新目录
-            Integer wordCount = bookContent.getContent().length();
-            bookIndex.setWordCount(wordCount);
-            bookIndex.setUpdateTime(currentDate);
 
-            if(bookIndex.getId() == null) {
+            if(!existBookIndexMap.containsKey(bookIndex.getIndexNum())) {
                 //插入
-                bookIndex.setBookId(book.getId());
-                Long indexId = new IdWorker().nextId();
-                bookIndex.setId(indexId);
-                bookIndex.setCreateTime(currentDate);
                 bookIndexMapper.insertSelective(bookIndex);
-            }else{
-                //更新
-                bookIndexMapper.updateByPrimaryKeySelective(bookIndex);
-            }
-
-            if(bookContent.getIndexId() == null) {
-                //插入
-                bookContent.setIndexId(bookIndex.getId());
                 bookContentMapper.insertSelective(bookContent);
             }else{
                 //更新
-
+                bookIndexMapper.updateByPrimaryKeySelective(bookIndex);
                 bookContentMapper.update(update(BookContentDynamicSqlSupport.bookContent)
                         .set(BookContentDynamicSqlSupport.content)
                         .equalTo(bookContent.getContent())
@@ -159,6 +138,7 @@ public class BookServiceImpl implements BookService {
                         .build()
                         .render(RenderingStrategies.MYBATIS3));
             }
+
 
         }
 
@@ -174,7 +154,6 @@ public class BookServiceImpl implements BookService {
                 book.setLastIndexUpdateTime(currentDate);
             }
         }
-        book.setUpdateTime(currentDate);
         book.setBookName(null);
         book.setAuthorName(null);
         if(Constants.VISIT_COUNT_DEFAULT.equals(book.getVisitCount())) {

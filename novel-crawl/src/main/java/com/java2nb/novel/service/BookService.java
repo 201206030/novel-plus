@@ -65,9 +65,8 @@ public interface BookService {
      * @param book 小说数据
      * @param bookIndexList 目录集合
      * @param bookContentList 内容集合
-     * @param existBookIndexMap  已存在的章节Map
-     * */
-    void updateBookAndIndexAndContent(Book book, List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap);
+     * @param existBookIndexMap  已存在的章节Map   */
+    void updateBookAndIndexAndContent(Book book,  List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap);
 
     /**
      * 更新一下最后一次的抓取时间
