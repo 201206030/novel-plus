@@ -232,7 +232,6 @@ public class CrawlParser {
                         bookContent.setContent(content);
                         contentList.add(bookContent);
 
-
                         if (hasIndex != null) {
                             //章节更新
                             bookIndex.setId(hasIndex.getId());
@@ -241,8 +240,6 @@ public class CrawlParser {
                             //章节插入
                             //设置目录和章节内容
                             Long indexId = idWorker.nextId();
-                            lastIndexId = indexId;
-                            lastIndexName = indexName;
                             bookIndex.setId(indexId);
                             bookIndex.setBookId(book.getId());
 
@@ -252,8 +249,14 @@ public class CrawlParser {
                         }
                         bookIndex.setUpdateTime(currentDate);
 
-                        //计算总字数
-                        totalWordCount += wordCount;
+                        //判断是新书入库还是老书更新
+                        if (hasIndexs.size() == 0) {
+                            //新书入库
+                            lastIndexId = bookIndex.getId();
+                            lastIndexName = indexName;
+                            //计算总字数
+                            totalWordCount += wordCount;
+                        }
 
 
                     }
