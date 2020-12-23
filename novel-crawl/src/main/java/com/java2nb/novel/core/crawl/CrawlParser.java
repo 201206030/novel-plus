@@ -171,7 +171,7 @@ public class CrawlParser {
             int indexNum = 0;
 
             //总字数
-            Integer totalWordCount = 0;
+            Integer totalWordCount = book.getWordCount() == null ? 0 : book.getWordCount();
 
             while (isFindIndex) {
 
