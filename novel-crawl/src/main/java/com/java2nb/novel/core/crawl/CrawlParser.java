@@ -172,9 +172,6 @@ public class CrawlParser {
 
             //总字数
             Integer totalWordCount = 0;
-            //最新目录
-            Long lastIndexId = null;
-            String lastIndexName = null;
 
             while (isFindIndex) {
 
@@ -236,6 +233,9 @@ public class CrawlParser {
                             //章节更新
                             bookIndex.setId(hasIndex.getId());
                             bookContent.setIndexId(hasIndex.getId());
+
+                            //计算总字数
+                            totalWordCount = (totalWordCount+wordCount-hasIndex.getWordCount());
                         } else {
                             //章节插入
                             //设置目录和章节内容
@@ -246,17 +246,12 @@ public class CrawlParser {
                             bookIndex.setCreateTime(currentDate);
 
                             bookContent.setIndexId(indexId);
-                        }
-                        bookIndex.setUpdateTime(currentDate);
 
-                        //判断是新书入库还是老书更新
-                        if (hasIndexs.size() == 0) {
-                            //新书入库
-                            lastIndexId = bookIndex.getId();
-                            lastIndexName = indexName;
                             //计算总字数
                             totalWordCount += wordCount;
                         }
+                        bookIndex.setUpdateTime(currentDate);
+
 
 
                     }
@@ -267,18 +262,17 @@ public class CrawlParser {
                 isFindIndex = indexIdMatch.find() & indexNameMatch.find();
             }
 
-            //判断是新书入库还是老书更新
-            if (hasIndexs.size() == 0) {
-                //新书入库
 
-                //设置小说基础信息
-                book.setWordCount(totalWordCount);
-                book.setLastIndexId(lastIndexId);
-                book.setLastIndexName(lastIndexName);
+            if (indexList.size() > 0) {
+                //如果有爬到最新章节，则设置小说主表的最新章节信息
+                //获取爬取到的最新章节
+                BookIndex lastIndex = indexList.get(indexList.size()-1);
+                book.setLastIndexId(lastIndex.getId());
+                book.setLastIndexName(lastIndex.getIndexName());
                 book.setLastIndexUpdateTime(currentDate);
-                book.setCreateTime(currentDate);
 
             }
+            book.setWordCount(totalWordCount);
             book.setUpdateTime(currentDate);
 
             if (indexList.size() == contentList.size() && indexList.size() > 0) {
