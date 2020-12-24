@@ -235,8 +235,7 @@ public class BookServiceImpl implements BookService {
                 .where(id, isEqualTo(bookId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<Book> books = bookMapper.selectMany(selectStatement);
-        return books.size() > 0 ? books.get(0) : null;
+        return bookMapper.selectMany(selectStatement).get(0);
     }
 
     @Override
@@ -265,8 +264,7 @@ public class BookServiceImpl implements BookService {
                 .where(BookIndexDynamicSqlSupport.id, isEqualTo(bookIndexId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<BookIndex> bookIndices = bookIndexMapper.selectMany(selectStatement);
-        return bookIndices.size() > 0 ? bookIndices.get(0) : null;
+        return bookIndexMapper.selectMany(selectStatement).get(0);
     }
 
     @Override
