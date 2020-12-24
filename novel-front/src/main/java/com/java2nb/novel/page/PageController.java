@@ -1,6 +1,6 @@
-package com.java2nb.novel.controller;
+package com.java2nb.novel.page;
 
-import com.java2nb.novel.core.bean.ResultBean;
+import com.java2nb.novel.controller.BaseController;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;
@@ -15,12 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -29,7 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class PageController extends BaseController{
+public class PageController extends BaseController {
 
     private final BookService bookService;
 
@@ -101,12 +99,8 @@ public class PageController extends BaseController{
      * */
     @SneakyThrows
     @RequestMapping("/book/{bookId}.html")
-    public String bookDetail(@PathVariable("bookId") Long bookId, HttpServletResponse resp, Model model) {
+    public String bookDetail(@PathVariable("bookId") Long bookId, Model model) {
         Book book = bookService.queryBookDetail(bookId);
-        if(book == null){
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
         model.addAttribute("book",book);
         if(book.getLastIndexId() != null) {
             //查询首章目录ID
@@ -121,12 +115,8 @@ public class PageController extends BaseController{
      * */
     @SneakyThrows
     @RequestMapping("/book/indexList-{bookId}.html")
-    public String indexList(@PathVariable("bookId") Long bookId, HttpServletResponse resp, Model model) {
+    public String indexList(@PathVariable("bookId") Long bookId, Model model) {
         Book book = bookService.queryBookDetail(bookId);
-        if(book == null){
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
         model.addAttribute("book",book);
         List<BookIndex> bookIndexList = bookService.queryIndexList(bookId,null,1,null);
         model.addAttribute("bookIndexList",bookIndexList);
@@ -139,15 +129,11 @@ public class PageController extends BaseController{
      * */
     @SneakyThrows
     @RequestMapping("/book/{bookId}/{bookIndexId}.html")
-    public String indexList(@PathVariable("bookId") Long bookId,@PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request, HttpServletResponse resp,Model model) {
+    public String indexList(@PathVariable("bookId") Long bookId,@PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request, Model model) {
         //查询书籍
         Book book = bookService.queryBookDetail(bookId);
         //查询目录
         BookIndex bookIndex = bookService.queryBookIndex(bookIndexId);
-        if(book == null || bookIndex == null){
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
         model.addAttribute("book",book);
         model.addAttribute("bookIndex",bookIndex);
         //查询上一章节目录ID

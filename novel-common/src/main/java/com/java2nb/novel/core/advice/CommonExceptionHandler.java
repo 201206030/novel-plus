@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  *
  * @author 11797*/
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.java2nb.novel.controller")
 public class CommonExceptionHandler {
 
     /**
