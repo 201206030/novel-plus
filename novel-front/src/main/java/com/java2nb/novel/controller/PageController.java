@@ -9,6 +9,7 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.NewsService;
 import com.java2nb.novel.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -97,9 +99,14 @@ public class PageController extends BaseController{
     /**
      * 详情页
      * */
+    @SneakyThrows
     @RequestMapping("/book/{bookId}.html")
-    public String bookDetail(@PathVariable("bookId") Long bookId, Model model) {
+    public String bookDetail(@PathVariable("bookId") Long bookId, HttpServletResponse resp, Model model) {
         Book book = bookService.queryBookDetail(bookId);
+        if(book == null){
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
         model.addAttribute("book",book);
         if(book.getLastIndexId() != null) {
             //查询首章目录ID
@@ -112,9 +119,14 @@ public class PageController extends BaseController{
     /**
      * 目录页
      * */
+    @SneakyThrows
     @RequestMapping("/book/indexList-{bookId}.html")
-    public String indexList(@PathVariable("bookId") Long bookId, Model model) {
+    public String indexList(@PathVariable("bookId") Long bookId, HttpServletResponse resp, Model model) {
         Book book = bookService.queryBookDetail(bookId);
+        if(book == null){
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
         model.addAttribute("book",book);
         List<BookIndex> bookIndexList = bookService.queryIndexList(bookId,null,1,null);
         model.addAttribute("bookIndexList",bookIndexList);
@@ -125,13 +137,18 @@ public class PageController extends BaseController{
     /**
      * 内容页
      * */
+    @SneakyThrows
     @RequestMapping("/book/{bookId}/{bookIndexId}.html")
-    public String indexList(@PathVariable("bookId") Long bookId,@PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request,Model model) {
+    public String indexList(@PathVariable("bookId") Long bookId,@PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request, HttpServletResponse resp,Model model) {
         //查询书籍
         Book book = bookService.queryBookDetail(bookId);
-        model.addAttribute("book",book);
         //查询目录
         BookIndex bookIndex = bookService.queryBookIndex(bookIndexId);
+        if(book == null || bookIndex == null){
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+        model.addAttribute("book",book);
         model.addAttribute("bookIndex",bookIndex);
         //查询上一章节目录ID
         Long preBookIndexId = bookService.queryPreBookIndexId(bookId,bookIndex.getIndexNum());
