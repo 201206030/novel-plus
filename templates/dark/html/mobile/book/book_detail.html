@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title th:utext="${book.bookName}+'小说最新章节免费阅读和下载'"></title>
+
+    <meta name="keywords" th:content="${book.bookName}+','+${book.bookName}+'最新章节,'+${book.bookName}+'免费阅读,'+${book.bookName}+'TXT下载'">
+
+    <meta name="description"
+          th:content="${book.bookName}+'最新章节列表,'+${book.bookName}+'最新更新章节免费无广告无弹窗在线阅读,'+${book.bookName}+'小说TXT免费下载。'">
+
+
+
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style type="text/css">
+
+        .indexP p a{
+            color:#4c6978;
+        }
+
+        .tag-list {
+            padding-top: 0px;
+            padding-bottom: 20px;
+            position: fixed;
+            top:50px;
+            right: 0px;
+            width: 120px;
+            z-index:100000;
+        }
+
+        .tag-list .tag {
+            float: right;
+            width: 100%;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .tag-list .tag a {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+        .tag-list .highlight {
+            padding: 5px 9px;
+            border: 1px solid #f90;
+            color: #f90;
+            border-radius: 50px;
+        }
+
+        .tag-list .highlight .text {
+            color: #f90;
+        }
+        .tag-list .tag .text {
+            display: inline-block;
+            vertical-align: middle;
+            color: #f90;
+        }
+
+        ul, li {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .tag-list .tag a {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .tag-list .highlight .icn {
+            color: #f90;
+        }
+        .tag-list .tag .icn {
+            margin-right: 5px;
+            color: #ccc;
+        }
+
+        .tag-list .highlight .text {
+            padding-left: 3px;
+            color: #f90;
+        }
+        .tag-list .tag .text {
+            display: inline-block;
+            vertical-align: middle;
+            color: #f90;
+        }
+
+        .line-limit-length {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+        }
+
+    </style>
+
+
+</head>
+<body>
+<div id="content">
+
+<ul class="tag-list clearfix" id="tagLi">
+
+</ul>
+
+
+<input type="hidden" id="bookIdHidden" th:value="${bookId}"/>
+<input type="hidden" id="bookNamedHidden" th:value="${book.bookName}"/>
+    <input type="hidden" id="preContentId" th:value="${firstBookIndexId}"/>
+
+<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+
+    <div style="float: left;margin-left: 10px">
+        <a href="javascript:history.go(-1)">
+            <i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe65c;</i></a>
+    </div>
+    <b class="layui-icon" th:utext="${book.bookName}"></b>
+    <div style="float: right;margin-right: 10px">
+        <a href="/"><i style="font-size: 20px;color: #92B8B1;" class="layui-icon">&#xe68e;</i></a>
+    </div>
+</div>
+
+<div class="layui-row" style="background: #f2f2f2">
+    <div style="padding: 10px" class="layui-col-xs4 layui-col-sm2 layui-col-md2 layui-col-lg2">
+        <img style=" width:auto; height:auto; max-width:100%; max-height:100%;" th:src="${book.picUrl}"/>
+
+    </div>
+        <div style="position:relative;padding: 10px 20px" class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
+            <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'"><div style=";color: #4c6978;" th:utext="'作者：'+ ${book.authorName}"></div></a>
+            <a th:href="'/book/book_ranking.html?catId='+${book.catId}"><div style="margin-top: 5px;color: #4c6978;" th:text="'类别：'+ ${book.catName}"></div></a>
+            <div style="margin-top: 5px;color: #4c6978;" th:text="'状态：'+ ${book.bookStatus==0?'连载':'完结'}"></div>
+            <div style="margin-top: 5px;color: #4c6978;">更新：<i th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd')}"></i></div>
+            <div style="margin-top: 5px;color: #4c6978;">评分：<i style="font-weight:bold;color: red" th:text="${book.score} + '分'"></i></div>
+            <div style="margin-top: 5px;color: #4c6978;">点击：<i style="font-weight:bold;color: red" th:text="${book.visitCount}"></i></div>
+
+
+        </div>
+    </div>
+
+
+
+<div style="text-align: center;height: 45px;line-height: 45px">
+    <a th:href="'/book/'+${book.id}+'/'+${firstBookIndexId}+'.html'"  type="button" class="layui-btn layui-btn-sm layui-btn-radius">开始阅读</a>
+<!--
+    <button type="button" onclick="downloadFile()" class="layui-btn layui-btn-sm layui-btn-radius layui-bg-normal">下载TXT</button>
+-->
+</div>
+<p style="line-height: 23px;padding: 10px;font-size: 14px;color: #4c6978;" th:utext="${book.bookDesc}">
+
+</p>
+
+<div class="layui-collapse">
+    <div class="layui-colla-item" >
+        <h2 class="layui-colla-title">
+            <span>最新章节</span>
+            <span style="margin-left: 30px">
+                更新： <i th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd HH:mm:ss')}"></i>
+            </span>
+        </h2>
+        <div class="layui-colla-content layui-show indexP layui-row" id="indexList">
+
+
+
+        </div>
+    </div>
+</div>
+<div style="height: 42px;color:#4c6978;line-height: 42px;padding-left: 30px;background: #f2f2f2" >
+
+    <a th:href="'/book/indexList-'+${book.id}+'.html'">查看完整目录</a>
+</div>
+
+<!--
+<div style="position: fixed;top:0px;left:0px;z-index:-100;opacity: 0" th:utext="${attacDivForSearch}"></div>
+-->
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+
+
+
+</body>
+<div th:replace="mobile/common/js :: js">
+</div>
+<script>
+    //查询是否在书架
+    $.ajax({
+        type: "GET",
+        url: "/user/queryIsInShelf",
+        data: {'bookId': $("#bookIdHidden").val()},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if (data.data) {
+                    $("#cFavs").html("<button type=\"button\" id=\"cFavs\"  class=\"layui-btn layui-btn-sm layui-btn-radius layui-btn-warm\">已在书架</button>");
+                }
+
+
+            } else if (data.code == 1001) {
+                //未登录
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+    //查询最新目录集合
+    $.ajax({
+        type: "GET",
+        url: "/book/queryNewIndexList",
+        data: {'bookId': $("#bookIdHidden").val()},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                var indexListHtml = "";
+                for(var i = 0 ; i < data.data.length ; i++){
+                    var bookIndex = data.data[i];
+                    indexListHtml+=("<p class=\"line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2\" style=\"padding-left:10px;height: 50px;line-height: 50px;\"><a href=\"/book/"+$("#bookIdHidden").val()+"/"+bookIndex.id+".html\">"+bookIndex.indexName+"</a></p>");
+                }
+
+                $("#indexList").html(indexListHtml);
+
+
+
+            } else if (data.code == 1001) {
+                //未登录
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+    function addInShell() {
+        $.ajax({
+            type: "POST",
+            url: "/user/addToBookShelf",
+            data: {'bookId': $("#bookIdHidden").val(), 'preContentId': $("#preContentId").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                        $("#cFavs").html("<button type=\"button\" id=\"cFavs\"  class=\"layui-btn layui-btn-sm layui-btn-radius layui-btn-warm\">已在书架</button>");
+
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+
+
+
+    $("#content").css("min-height",($(window).height()-60)+"px");
+
+    function downloadFile() {
+        var fileUrl = '/book/download?bookId='+$("#bookIdHidden").val()+'&bookName='+$("#bookNamedHidden").val();
+        window.location.href=fileUrl;
+
+
+    }
+
+
+
+
+    function toMyCollect(){
+        var token = localStorage.getItem("token");
+        if(token) {
+            window.location.href = "/book/search?token=" + token;
+        }else{
+            window.location.href = "/user/login.html";
+        }
+    }
+
+    function addToCollect(){
+        var token = localStorage.getItem("token");
+
+        if(token) {
+            $.get("/user/addToCollect",{"bookId":$("#bookIdHidden").val(),"token":token},function(data){
+                    layer.alert(data.desc);
+                    if(data.code == 1) {
+                        $('#collectButton').unbind("click");
+                        $("#collectButton").text("撤下书架");
+                        $("#collectButton").click(function () {
+                            cancelToCollect();
+                        });
+                    }
+            });
+        }else{
+            window.location.href = "/user/login.html?bookId="+$("#bookIdHidden").val();
+        }
+
+
+
+    }
+
+
+    function cancelToCollect(){
+        var token = localStorage.getItem("token");
+
+        if(token) {
+            $.get("/user/cancelToCollect",{"bookId":$("#bookIdHidden").val(),"token":token},function(data){
+                    layer.alert(data.desc);
+                if(data.code == 1) {
+                    $('#collectButton').unbind("click");
+                    $("#collectButton").text("加入书架");
+                    $("#collectButton").click(function () {
+                        addToCollect();
+                    });
+                }
+
+            });
+        }else{
+            window.location.href = "/user/login.html?bookId="+$("#bookIdHidden").val();
+        }
+
+    }
+
+    function searchBooks(keyword) {
+        window.location.href = "/book/book_ranking.html?keyword=" + encodeURI(keyword);
+    }
+
+    $.post("/book/addVisitCount", {"bookId": $("#bookIdHidden").val()}, function () {
+    });
+</script>
+
+
+</html>
