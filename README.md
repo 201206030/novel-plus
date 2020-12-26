@@ -189,7 +189,7 @@ novel-plus -- 父工程
 ##### 前台小说门户安装（jar包形式部署时，需要复制templates文件夹到jar文件的相同目录下）：
 
 1. 修改novel-common模块下application-common-dev.yml配置文件中的数据库配置。
-2. 修改novel-front模块下application.yml配置文件中的模版名为你需要使用的模版名（templates文件下的模版文件夹名）（内置orange和blue两套模版）。
+2. 修改novel-front模块下application.yml配置文件中的模版名为你需要使用的模版名（templates文件夹下的模版文件夹名）（内置orange和blue两套模版）。
 ![mini-code](https://s3.ax1x.com/2020/12/26/r4uGM6.png)   
 3. 启动程序，打开浏览器，默认8080端口访问。
 
