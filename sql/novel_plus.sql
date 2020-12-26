@@ -491,13 +491,6 @@ CREATE TABLE `sys_dept` (
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
-INSERT INTO `sys_dept` VALUES ('6', '0', '研发部', '1', '1');
-INSERT INTO `sys_dept` VALUES ('7', '6', '研發一部', '1', '1');
-INSERT INTO `sys_dept` VALUES ('8', '6', '研发二部', '2', '1');
-INSERT INTO `sys_dept` VALUES ('9', '0', '销售部', '2', '1');
-INSERT INTO `sys_dept` VALUES ('10', '9', '销售一部', '1', '1');
-INSERT INTO `sys_dept` VALUES ('11', '0', '产品部', '3', '1');
-INSERT INTO `sys_dept` VALUES ('12', '11', '产品一部', '1', '1');
 INSERT INTO `sys_dept` VALUES ('13', '0', '测试部', '5', '1');
 INSERT INTO `sys_dept` VALUES ('14', '13', '测试一部', '1', '1');
 INSERT INTO `sys_dept` VALUES ('15', '13', '测试二部', '2', '1');
@@ -894,52 +887,6 @@ CREATE TABLE `sys_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1412 DEFAULT CHARSET=utf8 COMMENT='系统日志';
 
--- ----------------------------
--- Records of sys_log
--- ----------------------------
-INSERT INTO `sys_log` VALUES ('1369', '-1', '获取用户信息为空', '登录', '462', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:09:21');
-INSERT INTO `sys_log` VALUES ('1370', '-1', '获取用户信息为空', '登录', '19', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:09:26');
-INSERT INTO `sys_log` VALUES ('1371', '1', 'admin', '登录', '98', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:09:33');
-INSERT INTO `sys_log` VALUES ('1372', '1', 'admin', '请求访问主页', '372', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:09:33');
-INSERT INTO `sys_log` VALUES ('1373', '1', 'admin', '请求访问主页', '28', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:12:41');
-INSERT INTO `sys_log` VALUES ('1374', '1', 'admin', '编辑角色', '11', 'com.java2nb.system.controller.RoleController.edit()', null, '127.0.0.1', '2020-05-13 11:18:42');
-INSERT INTO `sys_log` VALUES ('1375', '1', 'admin', '添加菜单', '2', 'com.java2nb.system.controller.MenuController.add()', null, '127.0.0.1', '2020-05-13 11:19:55');
-INSERT INTO `sys_log` VALUES ('1376', '1', 'admin', '保存菜单', '225', 'com.java2nb.system.controller.MenuController.save()', null, '127.0.0.1', '2020-05-13 11:24:42');
-INSERT INTO `sys_log` VALUES ('1377', '1', 'admin', '编辑菜单', '15', 'com.java2nb.system.controller.MenuController.edit()', null, '127.0.0.1', '2020-05-13 11:24:54');
-INSERT INTO `sys_log` VALUES ('1378', '1', 'admin', '编辑菜单', '11', 'com.java2nb.system.controller.MenuController.edit()', null, '127.0.0.1', '2020-05-13 11:24:58');
-INSERT INTO `sys_log` VALUES ('1379', '1', 'admin', '更新菜单', '241', 'com.java2nb.system.controller.MenuController.update()', null, '127.0.0.1', '2020-05-13 11:25:12');
-INSERT INTO `sys_log` VALUES ('1380', '1', 'admin', '编辑菜单', '8', 'com.java2nb.system.controller.MenuController.edit()', null, '127.0.0.1', '2020-05-13 11:25:16');
-INSERT INTO `sys_log` VALUES ('1381', '1', 'admin', '更新菜单', '199', 'com.java2nb.system.controller.MenuController.update()', null, '127.0.0.1', '2020-05-13 11:25:26');
-INSERT INTO `sys_log` VALUES ('1382', '1', 'admin', '编辑角色', '13', 'com.java2nb.system.controller.RoleController.edit()', null, '127.0.0.1', '2020-05-13 11:26:11');
-INSERT INTO `sys_log` VALUES ('1383', '1', 'admin', '更新角色', '931', 'com.java2nb.system.controller.RoleController.update()', null, '127.0.0.1', '2020-05-13 11:26:36');
-INSERT INTO `sys_log` VALUES ('1384', '-1', '获取用户信息为空', '登录', '11', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:27:02');
-INSERT INTO `sys_log` VALUES ('1385', '1', 'admin', '登录', '19', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:27:08');
-INSERT INTO `sys_log` VALUES ('1386', '1', 'admin', '请求访问主页', '27', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:27:08');
-INSERT INTO `sys_log` VALUES ('1387', '1', 'admin', '登录', '272', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:27:56');
-INSERT INTO `sys_log` VALUES ('1388', '1', 'admin', '请求访问主页', '109', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:27:56');
-INSERT INTO `sys_log` VALUES ('1389', '1', 'admin', '编辑角色', '8', 'com.java2nb.system.controller.RoleController.edit()', null, '127.0.0.1', '2020-05-13 11:30:36');
-INSERT INTO `sys_log` VALUES ('1390', '1', 'admin', '更新角色', '567', 'com.java2nb.system.controller.RoleController.update()', null, '127.0.0.1', '2020-05-13 11:30:42');
-INSERT INTO `sys_log` VALUES ('1391', '-1', '获取用户信息为空', '登录', '246', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:31:38');
-INSERT INTO `sys_log` VALUES ('1392', '1', 'admin', '登录', '38', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:31:42');
-INSERT INTO `sys_log` VALUES ('1393', '1', 'admin', '请求访问主页', '110', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:31:43');
-INSERT INTO `sys_log` VALUES ('1394', '1', 'admin', 'error', null, 'http://127.0.0.1/test/order/list', 'org.springframework.jdbc.BadSqlGrammarException: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table \'novel_plus.fb_order\' doesn\'t exist\r\n### The error may exist in file [E:\\baseprojectparent\\novel-plus\\novel-admin\\target\\classes\\mybatis\\test\\OrderMapper.xml]\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: select `id`,`fb_merchant_code`,`merchant_order_sn`,`order_sn`,`platform_order_no`,`trade_no`,`order_state`,`fn_coupon`,`red_packet`,`total_fee`,`order_price`,`fee`,`body`,`attach`,`store_id`,`cashier_id`,`device_no`,`user_id`,`user_logon_id`,`pay_time`,`pay_channel`,`no_cash_coupon_fee`,`cash_coupon_fee`,`cash_fee`,`sign`,`options`,`create_time`,`push_time`,`push_ip`,`mcht_id`,`sn` from fb_order                                      order by id desc             limit ?, ?\r\n### Cause: java.sql.SQLSyntaxErrorException: Table \'novel_plus.fb_order\' doesn\'t exist\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Table \'novel_plus.fb_order\' doesn\'t exist', null, '2020-05-13 11:33:27');
-INSERT INTO `sys_log` VALUES ('1395', '1', 'admin', '登录', '276', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:39:20');
-INSERT INTO `sys_log` VALUES ('1396', '1', 'admin', '请求访问主页', '95', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:39:20');
-INSERT INTO `sys_log` VALUES ('1397', '1', 'admin', '登录', '285', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:47:00');
-INSERT INTO `sys_log` VALUES ('1398', '1', 'admin', '请求访问主页', '90', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:47:00');
-INSERT INTO `sys_log` VALUES ('1399', '1', 'admin', '登录', '251', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 11:48:28');
-INSERT INTO `sys_log` VALUES ('1400', '1', 'admin', '请求访问主页', '95', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 11:48:28');
-INSERT INTO `sys_log` VALUES ('1401', '1', 'admin', '登录', '302', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 14:09:33');
-INSERT INTO `sys_log` VALUES ('1402', '1', 'admin', '请求访问主页', '88', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 14:09:34');
-INSERT INTO `sys_log` VALUES ('1403', '1', 'admin', '请求更改用户密码', '3', 'com.java2nb.system.controller.UserController.resetPwd()', null, '127.0.0.1', '2020-05-13 14:11:49');
-INSERT INTO `sys_log` VALUES ('1404', '1', 'admin', 'admin提交更改用户密码', '140', 'com.java2nb.system.controller.UserController.adminResetPwd()', null, '127.0.0.1', '2020-05-13 14:11:50');
-INSERT INTO `sys_log` VALUES ('1405', '1', 'admin', '请求更改用户密码', '4', 'com.java2nb.system.controller.UserController.resetPwd()', null, '127.0.0.1', '2020-05-13 14:12:11');
-INSERT INTO `sys_log` VALUES ('1406', '1', 'admin', '登录', '275', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 14:14:26');
-INSERT INTO `sys_log` VALUES ('1407', '1', 'admin', '请求访问主页', '73', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 14:14:27');
-INSERT INTO `sys_log` VALUES ('1408', '1', 'admin', 'error', null, 'http://127.0.0.1/novel/author/update', 'org.springframework.validation.BindException: org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object \'authorDO\' on field \'id\': rejected value [1,1]; codes [typeMismatch.authorDO.id,typeMismatch.id,typeMismatch.java.lang.Long,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [authorDO.id,id]; arguments []; default message [id]]; default message [Failed to convert property value of type \'java.lang.String\' to required type \'java.lang.Long\' for property \'id\'; nested exception is java.lang.NumberFormatException: For input string: \"1,1\"]', null, '2020-05-13 14:14:38');
-INSERT INTO `sys_log` VALUES ('1409', '1', 'admin', 'error', null, 'http://127.0.0.1/novel/author/update', 'org.springframework.validation.BindException: org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object \'authorDO\' on field \'id\': rejected value [1,1]; codes [typeMismatch.authorDO.id,typeMismatch.id,typeMismatch.java.lang.Long,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [authorDO.id,id]; arguments []; default message [id]]; default message [Failed to convert property value of type \'java.lang.String\' to required type \'java.lang.Long\' for property \'id\'; nested exception is java.lang.NumberFormatException: For input string: \"1,1\"]', null, '2020-05-13 14:14:47');
-INSERT INTO `sys_log` VALUES ('1410', '1', 'admin', '登录', '261', 'com.java2nb.system.controller.LoginController.ajaxLogin()', null, '127.0.0.1', '2020-05-13 14:18:07');
-INSERT INTO `sys_log` VALUES ('1411', '1', 'admin', '请求访问主页', '83', 'com.java2nb.system.controller.LoginController.index()', null, '127.0.0.1', '2020-05-13 14:18:07');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -1047,9 +994,6 @@ CREATE TABLE `sys_role` (
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role` VALUES ('1', '超级用户角色', 'admin', '拥有最高权限', '2', '2017-08-12 00:43:52', '2017-08-12 19:14:59');
-INSERT INTO `sys_role` VALUES ('59', '普通用户', null, '基本用户权限', null, null, null);
-INSERT INTO `sys_role` VALUES ('60', '测试', null, '&lt;div&gt;', null, null, null);
-INSERT INTO `sys_role` VALUES ('61', 'test', null, '测试', null, null, null);
 
 -- ----------------------------
 -- Table structure for sys_role_data_perm
@@ -1497,19 +1441,7 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'd633268afedf209e1e4ea0f5f43228a8', '6', 'admin@example.com', '17699999999', '1', '1', '2017-08-15 21:40:39', '2017-08-15 21:41:00', '96', '2017-12-14 00:00:00', '148', 'ccc', '122;121;', '北京市', '北京市市辖区', '东城区');
-INSERT INTO `sys_user` VALUES ('2', 'test', '临时用户', 'd0af8fa1272ef5a152d9e27763eea293', '6', 'test@bootdo.com', null, '1', '1', '2017-08-14 13:43:05', '2017-08-14 21:15:36', null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('36', 'ldh', '刘德华', 'bfd9394475754fbe45866eba97738c36', '7', 'ldh@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('123', 'zxy', '张学友', '35174ba93f5fe7267f1fb3c1bf903781', '6', 'zxy@bootdo', null, '0', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('124', 'wyf', '吴亦凡', 'e179e6f687bbd57b9d7efc4746c8090a', '6', 'wyf@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('130', 'lh', '鹿晗', '7924710cd673f68967cde70e188bb097', '9', 'lh@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('131', 'lhc', '令狐冲', 'd515538e17ecb570ba40344b5618f5d4', '6', 'lhc@bootdo.com', null, '0', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('132', 'lyf', '刘亦菲', '7fdb1d9008f45950c1620ba0864e5fbd', '13', 'lyf@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('134', 'lyh', '李彦宏', 'dc26092b3244d9d432863f2738180e19', '8', 'lyh@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('135', 'wjl', '王健林', '3967697dfced162cf6a34080259b83aa', '6', 'wjl@bootod.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('136', 'gdg', '郭德纲', '3bb1bda86bc02bf6478cd91e42135d2f', '9', 'gdg@bootdo.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('137', 'test2', 'test2', '649169898e69272c0e5bc899baf1e904', null, '1179705413@qq.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `sys_user` VALUES ('138', 'test3', 'test3', '79ba2d0b58d8a2e94f6b18744c8cd280', '16', '1179705413@qq.com', null, '1', null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'd633268afedf209e1e4ea0f5f43228a8', '14', 'admin@example.com', '17699999999', '1', '1', '2017-08-15 21:40:39', '2017-08-15 21:41:00', '96', '2017-12-14 00:00:00', '148', 'ccc', '122;121;', '北京市', '北京市市辖区', '东城区');
 
 -- ----------------------------
 -- Table structure for sys_user_role
