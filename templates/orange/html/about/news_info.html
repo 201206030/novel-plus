@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'新闻公告_'+#{website.name}"></title>
+    <meta name="keywords" content="新闻公告,小说,小说网,言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,原创网络文学"/>
+    <meta name="description" th:content="#{website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+#{website.name}+'小说！'" />
+    <link rel="stylesheet" href="/css/about.css" />
+</head>
+<body class="body">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="newsMain cf">
+        <div class="nav_sub">
+            当前位置：<a href="/" > 首页 </a> &gt; <a href="/about/news.html" > 新闻公告 </a> &gt; <span th:utext="${news.title}">  </span>
+        </div>
+        <div class="channelWrap channelNews cf">
+            <div class="news_title">
+                <h2 th:utext="${news.title}"></h2>
+                <p class="from" th:text="'来源：'+${news.sourceName}"> <span class="time" th:text="${#dates.format(news.createTime, 'yy-MM-dd')}"></span></p>
+            </div>
+            <div class="news_info" th:utext="${news.content}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+
+</body>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+</html>

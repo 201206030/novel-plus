@@ -1,0 +1,26 @@
+@charset "utf-8";
+.userBox { width: 998px; border: 1px solid #eaeaea; margin: 0 auto 50px; background: #fff }
+.my_l { width: 198px; float: left;    font-size: 13px;
+    padding-top: 20px; }
+.my_l li a { display: block; height: 48px; line-height: 48px; padding-left: 40px; border-left: 2px solid transparent; font-size: 14px; margin: 0 0 2px; }
+.my_l li .on { border-left: 2px solid #f80; background: #f8f8f8 }
+.my_r { width: 739px; padding: 30px; float: right; border-left: 1px solid #ededed; min-height: 470px; background: #fff }
+.my_r .title { padding: 15px 0 }
+.my_r h4 { font-size: 15px; color: #666; font-weight: bold }
+.newsBox { }
+.news_list .dot { width: 4px; height: 4px; border-radius: 50%; background-color: #999; display: inline-block; margin: 0 10px 3px 0; }
+.news_list li { padding: 0 0 20px; margin-bottom: 20px; border-bottom: 1px solid #f5f5f5 }
+.news_list li h5 { font-size: 14px }
+.news_list li p { color: #999; padding-top: 15px }
+.news_nav { color: #999; padding: 0px 0; line-height: 2.5; }
+.news_nav a { font: 12px/1 "Microsoft YaHei"; margin: 0 5px; }
+.news_title { text-align: center; border-bottom: 1px solid #eee; margin: 30px auto 40px; }
+.news_title h2 { font-size: 20px; }
+.news_title .from { color: #999; display: block; margin: 20px 0; }
+.news_title .time { margin-left: 20px }
+.news_info { padding: 0 60px; line-height: 28px; font-size: 14px; min-height:400px }
+.news_info p { margin-bottom: 30px }
+.aboutBox h2 { font-size:16px; margin-bottom:15px }
+.about_info { line-height: 28px; font-size: 14px; min-height:400px }
+.about_info p, .about_info h4 { margin-bottom: 10px }
+.news_info img { max-width: 100% }

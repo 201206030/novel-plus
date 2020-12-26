@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:utext="${book.bookName}+'目录,'+${book.bookName}+'最新章节列表_'+#{website.name}"></title>
+    <meta name="keywords" th:content="${book.bookName}+','+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表'"/>
+    <meta name="description"
+          th:content="#{website.name}+'小说为您提供'+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表,'+${book.bookName}+'全文阅读,'+${book.bookName}+'免费阅读,'+${book.bookName}+'下载'"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/book.css"/>
+</head>
+<body>
+
+<div th:replace="common/top :: top('')">
+</div>
+
+<div class="main box_center cf">
+    <div class="nav_sub">
+        <a href="/" th:text="#{website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
+            th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}"></a>&gt;<a
+            th:href="'/book/indexList-'+${book.id}+'.html'">作品目录</a>
+    </div>
+    <div class="channelWrap channelChapterlist cf mb50">
+
+        <div class="bookMain">
+            <div class="bookCover cf">
+                <div class="book_info1">
+                    <div class="tit">
+                        <h1 th:utext="${book.bookName}"></h1><!--<i class="vip_b">VIP</i>-->
+                    </div>
+                    <ul class="list">
+                        <li>
+                            <span>作者：<a href="javascript:void(0)" th:utext="${book.authorName}"></a></span>
+                            <span>类别：<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a></span>
+                            <span th:switch="${book.bookStatus}">状态：<em class="black3" th:case="'0'">连载中</em><em class="black3"
+                                                                                  th:case="*">已完结</em></span>
+                            <span>总点击：<em class="black3" id="cTotal" th:text="${book.visitCount}"></em></span>
+                            <span>总字数：<em class="black3" th:text="${book.wordCount}"></em></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dirWrap cf">
+                <h3 th:text="'正文('+${bookIndexCount}+')'"></h3>
+                <div class="dirList">
+                    <ul th:each="bookIndex : ${bookIndexList}">
+                        <li><a th:if="${bookIndex.isVip} != '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" >
+                            <span th:utext="${bookIndex.indexName}"></span><i class="red" > [免费]</i>
+                        </a>
+                            <a th:if="${bookIndex.isVip} == '1'" th:href="'/book/'+${book.id}+'/'+${bookIndex.id}+'.html'" th:utext="${bookIndex.indexName}">
+                            </a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div th:replace="common/footer :: footer">
+    </div>
+    <div th:replace="common/js :: js"></div>
+    <script src="/javascript/bookdetail.js" type="text/javascript"></script>
+
+</body>
+</html>

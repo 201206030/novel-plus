@@ -25,6 +25,14 @@ spring:
     jest:
       uris: http://127.0.0.1:9200
 
+  #thymeleaf模版路径配置
+  thymeleaf:
+    prefix: file:${user.dir}/templates/${templates.name}/html/
+    suffix: .html
+  #静态文件路径配置
+  resources:
+    static-locations: file:${user.dir}/templates/${templates.name}/static/
+
 redisson:
   singleServerConfig:
     address: 127.0.0.1:6379
@@ -65,3 +73,13 @@ book:
     word-count: 1000
     #价值(屋币)
     value: 5
+
+
+
+#模版配置
+templates:
+  name: orange
+
+
+
+

@@ -1,0 +1,368 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:utext="${book.bookName}+'_'+${bookIndex.indexName}+'_'+#{website.name}"></title>
+    <meta name="keywords" th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节,'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'" />
+    <meta name="description" th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+#{website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+#{website.name}+'。'" />
+    <link rel="stylesheet" href="/css/read.css" />
+    <link href="/css/book.css" rel="stylesheet" />
+
+</head>
+<link href="/layui/css/layui.css" rel="stylesheet"/>
+<style type="text/css">
+    .screen_toolbar {
+        position: fixed;
+        width: 100%;
+        left: 0px;
+        bottom: 0px;
+        text-align: center;
+        z-index: 100;
+    }
+
+</style>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+<script type="text/javascript">
+    BookDetail.SetReadFontFamilyClear(0);
+    var font =  localStorage.getItem("fonts");
+    var colorNum = localStorage.getItem("colorNum");
+    var fontNum = localStorage.getItem("fontNum");
+
+
+</script>
+<body class="read_style_1"  oncontextmenu="return false" onselectstart="return false"
+      ondragstart="return false" onbeforecopy="return false" oncopy="document.selection.empty()"
+      onselect="document.selection.empty()">
+
+<input type="hidden" id="bookId" th:value="${book.id}"/>
+<input type="hidden" id="bookName" th:value="${book.bookName}"/>
+<input type="hidden" id="preIndexName" th:value="${bookIndex.indexName}"/>
+
+<input type="hidden" id="preContentId" th:value="${bookIndex.id}"/>
+<input type="hidden" id="preIndexId" th:value="${preBookIndexId}"/>
+<input type="hidden" id="nextIndexId" th:value="${nextBookIndexId}"/>
+
+<div th:replace="common/top :: top('10')">
+</div>
+
+<div id="showDetail">
+
+    <div class="readBody cf">
+        <div class="readMain cf">
+            <div class="read_menu">
+                <div class="menu_left" style="">
+                    <ul>
+                        <li><a class="ico_catalog" th:href="'/book/indexList-'+${book.id}+'.html'"  title="目录">
+                            <b>目录</b></a></li>
+                        <li><a class="ico_page" th:href="'/book/'+${book.id}+'.html'"  title="返回书页"><b>书页</b></a></li>
+                        <li class="li_shelf" id="cFavs"><a class="ico_shelf" href="javascript:void(0);" title="加入书架"
+                                                           onclick="javascript:BookDetail.AddFavorites(37,1959973,1);"><b>加书架</b></a></li>
+                        <li class="li_shelfed" style="display: none;"><a class="ico_shelfed" href="javascript:void(0);"
+                                                                         title="已收藏"><b>已收藏</b></a></li>
+
+                        <li><a class="ico_comment" th:href="'/book/comment-'+${book.id}+'.html'"  title="评论">
+                            <b>评论</b></a></li>
+                        <li><a class="ico_setup" href="javascript:void(0);" title="设置"><b>设置</b></a></li>
+                    </ul>
+                </div>
+                <div class="menu_right" style="position: fixed; bottom: 0">
+                    <ul>
+                        <li><a class="ico_pagePrev" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'" title="上一章"><i>上一章</i></a></li>
+                        <li><a class="ico_pageNext" th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'" title="下一章"><i>下一章</i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="readWrap">
+                <div class="bookNav">
+                    <a href="/" >首页 </a>&gt; <a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}">
+                </a>&gt; <a th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}">
+
+                </a>
+                </div>
+                <div id="readcontent">
+                    <div class="textbox cf">
+
+                        <div class="book_title">
+                            <h1 th:utext="${bookIndex.indexName}">
+                                </h1>
+                            <div class="textinfo">
+                                类别：<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>
+                                作者：<a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'" th:utext="${book.authorName}"></a><span th:text="'字数：'+${bookIndex.wordCount}"></span><span th:text="'更新时间：'+${#dates.format(bookIndex.updateTime, 'yy/MM/dd HH:mm:ss')}"></span>
+                            </div>
+                        </div>
+                        <div class="txtwrap" th:if="${needBuy}">
+                            <div id="showReading" class="readBox" style="font-size: 16px; font-family: microsoft yahei">
+                                <p>
+
+                                </p>
+
+                                <div class="pc_bar" style="display: none;">
+                                    <a href="javascript:void(0);" class="icon_pc" onclick="javascript:uFans.startSupportRead();">
+                                        <span><i class="icon_yb"></i><em>捧场</em></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="showBooking" class="orderBox">
+                                <h3>此章为VIP章节，需要订阅后才能继续阅读</h3>
+                                <form method="post" action="./2052117.html?bid=302&amp;cid=2052117" id="Form1">
+                                    <div class="aspNetHidden">
+                                        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTI5NzI4MTkzMQ9kFgRmD2QWAmYPFgIeBFRleHQFqAE8YSBocmVmPSIvc2VhcmNoLmFzcHg/c2VhcmNoS2V5PeWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqyIgdGFyZ2V0PSJfYmxhbmsiPuWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqzwvYT5kAgEPZBYIZg8WAh8ABQnkupHmg7PlrrlkAgEPFgIfAAUEMTE0NmQCAg8WAh8ABREyMDIwLzEvNyAxMDoxOTo1MWQCBA9kFgICAQ9kFg5mDxYCHwAFBDExNDZkAgEPFgIfAAUBNmQCAg8WAh8ABQEwZAIDDxYCHwAFATBkAgQPFgIeB1Zpc2libGVnZAIFDxYCHwFnZAIGDxYCHwFoZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQUOY2J4QXV0b0Jvb2tpbmfqQ909Hciz2aB+AfEr2lQsyt0OxDFr478jb+bXR8kVYA==">
+                                    </div>
+
+                                    <div class="aspNetHidden">
+
+                                        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="0F20AF34">
+                                        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAX4WEeZOhVYVmRzc9paH9JSy/08L4LdXX0bnEtd0tA2crFh4MPja1O/9L0Y0B5Q7Mkw2OnJlkYmOh3/iyqfPkkn99UiP/cCDJ38/2cPKg8P57VHEmkKJr8/tJbwExBtkfhGxxoA1kMIQUaw59BH5iPe">
+                                    </div>
+                                    <ul class="order_list">
+                                        <li>价格：<span class="red" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span></li>
+                                        <li id="panelPay" class="btns"><a class="btn_red" href="javascript:buyBookIndex()" >购买</a></li>
+
+                                    </ul>
+                                    <input type="hidden" name="HidCId" id="HidCId" value="2052117">
+                                    <input type="hidden" name="HidBId" id="HidBId" value="302">
+                                    <input type="hidden" name="HidCRank" id="HidCRank" value="49">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="txtwrap" th:if="${!needBuy}">
+                            <div id="showReading" class="readBox" style="font-size: 16px; font-family: microsoft yahei" th:utext="${bookContent.content}">
+
+
+                                <div class="pc_bar" style="display: none;">
+                                    <a href="javascript:void(0);" class="icon_pc" onclick="javascript:uFans.startSupportRead();">
+                                        <span><i class="icon_yb"></i><em>捧场</em></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="nextPageBox">
+                    <a class="prev" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a> <a class="dir" th:href="'/book/indexList-'+${book.id}+'.html'"
+                                                                          >目录</a> <a class="next" th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="readPopup qrBox" style="display: none">
+        <a class="closePopup" href="javascript:void(0);" onclick="javascript:$('.maskBox,.qrBox').hide();"></a>
+        <div class="popupTit">
+            <h3>手机阅读</h3>
+        </div>
+        <div class="qrList">
+            <ul>
+            </ul>
+        </div>
+    </div>
+    <div class="readPopup setupBox" style="display: none;">
+        <a class="closePopup" href="javascript:void(0);" onclick="javascript:$('.maskBox,.setupBox').hide();"></a>
+        <div class="popupTit">
+            <h3>设置</h3>
+        </div>
+        <div class="setupList">
+            <ul>
+                <li class="readTheme">
+                    <em class="tit">阅读主题：</em>
+                    <a id="setup_color_white" class="white current"
+                       href="javascript:void(0);" title="白色" onclick="javascript:BookDetail.SetBackUpColor(1);"></a><a id="setup_color_green" class="green" href="javascript:void(0);" title="绿色"
+                                                                                                                       onclick="javascript:BookDetail.SetBackUpColor(2);"></a><a id="setup_color_pink" class="pink"
+                                                                                                                                                                                 href="javascript:void(0);" title="粉色" onclick="javascript:BookDetail.SetBackUpColor(3);"></a><a id="setup_color_yellow" class="yellow" href="javascript:void(0);" title="黄色"
+                                                                                                                                                                                                                                                                                 onclick="javascript:BookDetail.SetBackUpColor(4);"></a><a id="setup_color_gray" class="gray"
+                                                                                                                                                                                                                                                                                                                                           href="javascript:void(0);" title="灰色" onclick="javascript:BookDetail.SetBackUpColor(5);"></a><a id="setup_color_night" class="night" href="javascript:void(0);" title="夜间"
+                                                                                                                                                                                                                                                                                                                                                                                                                                           onclick="javascript:BookDetail.SetBackUpColor(6);"></a></li>
+                <li class="setFont setBtn"><em class="tit">正文字体：</em> <a id="setup_font_yahei" class="setYahei current"
+                                                                         href="javascript:void(0);" onclick="javascript:BookDetail.SetReadFontFamily(0);">雅黑</a> <a id="setup_font_simsun" class="setSimsun" href="javascript:void(0);" onclick="javascript:BookDetail.SetReadFontFamily(1);">宋体</a> <a id="setup_font_ks" class="setKs" href="javascript:void(0);" onclick="javascript:BookDetail.SetReadFontFamily(2);">楷书</a> </li>
+                <li class="fontSize setBtn"><em class="tit">字体大小：</em> <a class="small" href="javascript:void(0);"
+                                                                          onclick="javascript:BookDetail.SetReadFont(-2);">A-</a><span class="current_font"
+                                                                                                                                       id="cFonts">
+                            16</span><a class="big" href="javascript:void(0);" onclick="javascript:BookDetail.SetReadFont(2);">A+</a> </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="maskBox" style="display: none">
+</div>
+<div id="showError">
+    <span id="LabErrorStatus"></span>
+</div>
+
+<div class="maskBox" style="display: none" onclick="javascript:uFans.closeBox();"></div>
+<div class="readPopup pcBox" style="display: none" id="showPC"></div>
+<div class="readPopup flowerBox" style="display: none" id="showFlower"></div>
+<div class="readPopup newsTipBox" style="display: none;" id="showNote"></div>
+
+<!--
+<div id="screenInput" class="screen_toolbar" >
+    <div style="height: 5px" class="layui-col-xs2 layui-col-sm3 layui-col-md4 layui-col-lg4"></div>
+    <div class="layui-col-xs6 layui-col-sm4 layui-col-md4 layui-col-lg4">
+        <input type="text" id="screenBulletText" required lay-verify="required" placeholder="请输入弹幕内容,右下角开关可控制弹幕是否开启" autocomplete="off"
+               class="layui-input">
+
+    </div>
+    <div class="layui-col-xs2 layui-col-sm1 layui-col-md1 layui-col-lg1">
+        <button class="layui-btn  layui-btn-danger send">发送</button>
+    </div>
+</div>
+<form id="screenSwitch" class="layui-form">
+    <div class="layui-form-item" style="position: fixed;right: 0px;bottom: 100px" title="弹幕开关">
+        &lt;!&ndash; <label  class="layui-form-label" style="opacity:0.5;font-weight: bold;color: red;">弹幕</label>&ndash;&gt;
+        <div class="layui-input-block">
+            <input class="clear" type="checkbox" name="switch" lay-skin="switch">
+        </div>
+    </div>
+</form>-->
+
+<script language="javascript" type="text/javascript">
+    if(font){
+        $(".readBox").css("font-size", font + "px");
+        $("#cFonts").html(font);
+        $("#ChapterBody").attr("class","article-content font"+font);
+        BookDetail.reShowCover();
+    }
+    if(fontNum){
+        BookDetail.SetReadFontFamily(fontNum);
+    }
+    if(colorNum){
+        BookDetail.SetBackUpColor(colorNum);
+        if(colorNum == 6){
+            $(".logo img").attr("src", "/images/logo_white.png");
+        }
+    }
+    //查询是否在书架
+    $.ajax({
+        type: "get",
+        url: "/user/queryIsInShelf",
+        data: {'bookId':$("#bookId").val()},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if(data.data){
+                    $("#cFavs").html("<a class=\"ico_shelf\" href=\"javascript:void(0);\"><b>已收藏</b></a>");
+                }
+                //添加阅读记录
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addReadHistory",
+                    data: {'bookId': $("#bookId").val(), 'preContentId': $("#preContentId").val()},
+                    dataType: "json",
+                    success: function (data) {
+
+                    },
+                    error: function () {
+                    }
+                })
+
+
+            } else if(data.code == 1001){
+                //未登录
+
+            }else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+
+    var bookId = $("#bookId").val();
+    var indexId = $("#preContentId").val();
+    var preIndexId = $("#preIndexId").val();
+    var nextIndexId = $("#nextIndexId").val();
+    $(function () {
+        BookDetail.GetReadSet(bookId,indexId,preIndexId,nextIndexId,1);
+        $(".ico_setup").click(function () {
+
+            $(".maskBox,.setupBox").show();
+        });
+        $(".ico_phone").click(function () {
+            $(".maskBox,.qrBox").show();
+        });
+
+        $(window).scroll(function () {
+            var vtop = $(document).scrollTop();
+            var vbottom = $(document).height() - vtop - $(window).height();
+            if (vtop > 50) {
+                $(".menu_left").css("position", "fixed"); $(".menu_left").css("top", "2px");
+            }
+            else {
+                $(".menu_left").css("position", "absolute"); $(".menu_left").css("top", "60px")
+            }
+
+            if (vbottom < 150) {
+                $(".menu_right").css("position", "absolute"); $(".menu_right").css("bottom", "150px");
+            }
+            else {
+                $(".menu_right").css("position", "fixed"); $(".menu_right").css("bottom", "2px");
+            }
+        });
+
+        var bgClass = '1';
+        if (bgClass == 6) {
+            $(".logo img").attr("src", "/images/logo_white.png");
+        }
+        $(".readTheme a").click(function () {
+            $(".logo img").attr("src", "/images/logo.png");
+        })
+        $("#setup_color_night").click(function () {
+            $(".logo img").attr("src", "/images/logo_white.png");
+        });
+
+
+    });
+
+    function enterPreIndexPage(bookId,bookIndexId){
+        if(bookIndexId != 0){
+            window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
+        }else{
+            window.location.href = '/book/indexList-' + bookId + '.html';
+        }
+
+    }
+    function enterNextIndexPage(bookId,bookIndexId){
+        if(bookIndexId != 0){
+            window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
+        }else{
+            window.location.href = '/book/indexList-' + bookId + '.html';
+        }
+
+    }
+
+    function buyBookIndex(){
+        $.ajax({
+            type: "POST",
+            url: "/user/buyBookIndex",
+            data: {'bookId':$("#bookId").val(),"bookName":$("#bookName").val(),
+                "bookIndexId":$("#preContentId").val(),"bookIndexName":$("#preIndexName").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                   location.reload();
+
+
+                } else if(data.code == 1001){
+                    //未登录
+
+                }else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    $.post("/book/addVisitCount", {"bookId": $("#bookId").val()}, function () {
+    });
+</script>
+</body>
+</html>

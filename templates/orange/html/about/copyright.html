@@ -1,0 +1,54 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'版权声明_'+#{website.name}"></title>
+    <meta name="keywords" content="版权声明,小说,小说网,言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,原创网络文学" />
+    <meta name="description" th:content="#{website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+#{website.name}+'小说！'" />
+    <link rel="stylesheet" href="/css/about.css"/>
+</head>
+<body class="body">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+            <ul class="log_list">
+
+                <li><a href="/about/default.html">关于我们</a></li>
+                <li><a href="/about/contact.html">联系我们</a></li>
+                <li><a href="/about/user_agreement.html">用户协议</a></li>
+                <li><a class="on" href="/about/copyright.html">版权声明</a></li>
+                <li><a href="/about/submission.html">投稿说明</a></li>
+                <li><a  href="/user/feedback.html">反馈留言</a></li>
+            </ul>
+        </div>
+        <div class="my_r">
+            <div class="aboutBox">
+                <h2>版权声明</h2>
+                <div class="about_info">
+                    <p>本版权与免责声明系为保证小说精品屋（<a href="/">www.java2nb.com</a>）的正常发展、规避意外风险而设，其初衷是为了向用户提供不间断的优质数字阅读服务。因此，建议您在接受本站服务之前，请务必仔细阅读本条款。</p>
+                    <p>1. 无论是驻站作者原创的作品，还是由读者投稿或转载的文章，其版权均归原作者所有，所有使用必须事先征得原作者同意，若作者有版权声明的或文章从其他网站转载而附带有原所有站的版权声明者，其版权归属以附带声明为准。如有侵犯您的权利，请联系我们，本站立即改正。</p>
+                    <p>2. 本站所收录作品、社区话题、书库评论及均属发布者其个人行为，与本站立场无关，并不表示我们赞同文章中的观点，如果有某些文章侵犯了您的权益，请您和我们联系，我们会马上处理。</p>
+                    <p>3. 未经本站的明确许可，任何人不得转载、盗链本站作品；不得复制或仿造本网站。</p>
+                    <p>4. 如因作品内容、版权和其它问题需要同本网联系的，请在30日内进行。</p>
+                    <p>5. 本网站尊重他人之知识产权。如果您确认您的作品在本网站以某种方式被抄袭，并且该行为触犯了中国及国际版权法的，请向本网站做版权投诉并提供相关证明文件及理由。</p>
+                    <p>6. 除本网站注明之服务条款外：小说精品屋对本网站上所有内容（包括但不限于本网站上的信息、内容、材料或产品）的合法性、准确性、真实性、实用性和安全性，不提供任何形式的保证，亦不承担任何法律责任。</p>
+                    <p>7. 您仅有权按照本网站的明确说明和规定使用、浏览本网站相关服务或页面。未经小说精品屋或相关权利人明确书面许可，不得对本网站任何组成部分（包括作品页 面、作品段落、作品内容等）进行修改、分发、再造、复制、抄袭、交易、转载等。如果本站确定您的行为违法或有损本网站和他人的利益，将保留包括但不限于拒绝提供服务、删除用户账户、提起诉讼的权利。</p>
+                    <p>8. 本声明未涉及的问题参见国家有关法律法规，当本声明与国家法律法规冲突时，以国家法律法规为准。本声明的修改及更新权均属于小说精品屋所有。</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+
+</body>
+</html>

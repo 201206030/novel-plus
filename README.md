@@ -29,6 +29,7 @@ Gitee仓库地址： https://gitee.com/novel_dev_team/novel-cloud
 - [x] 服务端代码重构，MyBatis3升级为MyBatis3DynamicSql。
 - [x] 移动站与PC站站点分离，浏览器自动识别跳转。
 - [x] PC站UI更新。
+- [x] 支持前端模版自定义，内置多套模版。
 - [x] 新闻模块。
 - [x] 排行榜。
 - [x] 小说评论模块。
@@ -46,7 +47,8 @@ novel-plus -- 父工程
 ├── novel-common -- 通用模块
 ├── novel-front -- 前台门户&作家后台管理子系统（可拆分）
 ├── novel-crawl -- 爬虫管理子系统
-└── novel-admin -- 平台后台管理子系统
+├── novel-admin -- 平台后台管理子系统
+└── templates -- 前端模版
 ```
 
 #### 技术选型
@@ -78,7 +80,7 @@ novel-plus -- 父工程
 
 #### 接口文档
 
-[点击查看接口文档示例](./doc/api.md)
+[点击查看接口文档示例](doc/api/api.md)
 
 #### PC站截图
 
@@ -175,19 +177,25 @@ novel-plus -- 父工程
 1. 安装MySQL软件。
 2. 修改MySQL`max_allowed_packet `配置（建议100M）。
 3. 新建数据库，设置编码为utf8mb4。
-4. 执行sql/novel_plus.sql脚本文件。
+4. 执行doc/sql/novel_plus.sql脚本文件。
 
 ##### 爬虫管理系统安装：
 
-1.  修改novel-common模块下application-dev.yml文件中的数据库的配置。
+1. 修改novel-common模块下application-common-dev.yml配置文件中的数据库配置。
 2. 修改novel-crawl模块下application.yml文件中的管理员账号密码。
 3. 启动程序，打开浏览器，默认8081端口访问。
 4. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始爬取小说数据。
 
 ##### 前台小说门户安装：
 
-1. 修改novel-common模块下application-dev.yml文件中的数据库的配置。
-2. 启动程序，打开浏览器，默认8080端口访问。
+1. 修改novel-common模块下application-common-dev.yml配置文件中的数据库配置。
+2. 修改novel-front模块下application.yml配置文件中的模版名（内置orange和blue两套模版）。
+    `
+    #模版配置
+    templates:
+      name: orange
+      `
+3. 启动程序，打开浏览器，默认8080端口访问。
 
 **喜欢此项目的可以给我的GitHub和Gitee加个Star支持一下 。**
 
@@ -209,7 +217,7 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 [点击前往官网查看](https://xiongxyang.gitee.io/home/service.htm)
 
-#### 微信公众号（发布最新更新资讯）
+#### 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、技术文档等）
 
 ![mini-code](https://s3.ax1x.com/2020/12/03/DoImOx.png)
 

@@ -1,0 +1,64 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'投稿说明_'+#{website.name}"></title>
+    <meta name="keywords" content="投稿说明,小说,小说网,言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,原创网络文学" />
+    <meta name="description" th:content="#{website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+#{website.name}+'小说！'" />
+    <link rel="stylesheet" href="/css/about.css"/>
+</head>
+<body class="body">
+
+<div th:replace="common/top :: top('')">
+</div>
+<!--主体 start-->
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+            <ul class="log_list">
+
+                <li><a href="/about/default.html">关于我们</a></li>
+                <li><a href="/about/contact.html">联系我们</a></li>
+                <li><a href="/about/user_agreement.html">用户协议</a></li>
+                <li><a href="/about/copyright.html">版权声明</a></li>
+                <li><a class="on" href="/about/submission.html">投稿说明</a></li>
+                <li><a  href="/user/feedback.html">反馈留言</a></li>
+            </ul>
+        </div>
+        <div class="my_r">
+            <div class="aboutBox">
+                <h2>投稿说明</h2>
+                <div class="about_info">
+                    <p>“小说精品屋”是新兴的互联网网站平台，以下声明中的“本站”指的均是“小说精品屋”。</p>
+                    <p>凡符合国家法律法规，由作者本人创作的作品，均可在授权本站发表或转载，并将被视为本站的“专栏作家”。</p>
+                    <p>凡在本站授权本站发表或转载的作品，根据作品授权的不同级别，其版权归作者所有或作者与小说精品屋共同享有。本站对经授权的作品享有在网络上刊登、转载、排版、宣传等权力。</p>
+                    <p>本站一经核实作者作品属于非原创作品，将根据相关规定进行处理。此类作品所产生的一切后果责任由投稿人自负。</p>
+                    <p>本站拒绝一切诸如反动、淫秽之类违反国家法律法规的作品，对于那些有悖社会道德伦理、政治色彩强烈的作品本站不予发表。</p>
+                    <p>本站谢绝任何不符合小说精品屋原创文学发展方向的作品。</p>
+                    <p>本站不建议您在未获得稳定稿酬收入之前，进行休学写作、辞职写作或进行其他可能影响到您正常家庭、学习、工作生活的写作行为。</p>
+                    <p>任何在未征得原作者或本站同意，请不要转载本站作品内容，违者自负法律责任！如欲转载本站发表之原创作品，必须请作者或本站联系，并且在转载时应保留本站信息。</p>
+                    <h4>作品授权级别说明</h4>
+                    <p>为了尊重作者版权、更好地保护作者的切身利益，请您在作者专栏开通后，就发表作品的版权授权，务必以单一选择方式作出选择说明：</p>
+                    <p>本站首发：我谨保证我是此作品的著作权合法人，保证此稿件系首发于“小说精品屋”及“小说精品屋”所属合作的网站、平台和媒体，同意小说精品屋作为此稿件版权 的独家发布人。在撤销本委托之前，保证不再将此稿件投给其他出版社媒体，有关此稿件发表和转载等任何事宜，由小说精品屋全权代理，向其他出版媒体推荐作品。</p>
+                    <p>他站首发：我谨保证我是此作品的著作权合法人，此作品授权“小说精品屋”及“小说精品屋”所属合作的网站、平台和媒体交流发表，未经作者本人同意，小说精品屋不可向其他出版媒体推荐，其它出版媒体也一律不得转载。 </p>
+                    <h4>免责声明</h4>
+                    <p>凡有小说精品屋用户未经作者许可，在小说精品屋社区论坛内转载作品，小说精品屋对用户转载行为不负任何责任，但承诺接到作者投诉后，第一时间内删除该贴并对该用户进行扣分处理。</p>
+                    <p>属于资料和学习性质的“书评”等版面内容，在无法与作者取得联系的前提下，小说精品屋保证转载后不作为任何商业用途，如作者对此有异议，可以通知小说精品屋将其删除。</p>
+                    <p>因有人恶意冒充网络作者向本站投稿，并被本站接受录入非其所有的原创作品，本站不承担任何责任，但保证接到真实作者投诉时，经验证后第一时间内删除该作品及冒充者账号。</p>
+                    <p>小说精品屋不保证收录作品稿件的安全性，请作者自行留存原稿。</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+
+</body>
+</html>
