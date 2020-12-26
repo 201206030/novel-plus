@@ -82,7 +82,8 @@ novel-plus -- 父工程
 
 [点击查看接口文档示例](doc/api/api.md)
 
-#### PC站截图
+#### 橙色主题模版截图
+##### PC站截图
 
 1. 首页
 
@@ -136,7 +137,7 @@ novel-plus -- 父工程
 
 ![img](https://oscimg.oschina.net/oscnet/up-f849960f4c1303fea77d26e64fc505a7180.png)
 
-#### 手机站截图
+##### 手机站截图
 
 1. 首页
 
@@ -154,13 +155,13 @@ novel-plus -- 父工程
 
    <img src="https://s3.ax1x.com/2020/12/04/Dbsew4.jpg" alt="QQ图片20191018161901" style="zoom:33%;" />
 
-#### 爬虫管理系统截图
+##### 爬虫管理系统截图
 
 ![img](https://s1.ax1x.com/2020/11/03/BsOgbD.png)
 
 ![img](https://s1.ax1x.com/2020/11/03/BsOHr8.png)
 
-#### 后台管理系统截图
+##### 后台管理系统截图
 
 ![img](https://oscimg.oschina.net/oscnet/up-0552343538674a22a64819834100558f39b.png)
 
@@ -169,6 +170,30 @@ novel-plus -- 父工程
 ![img](https://s3.ax1x.com/2020/12/01/DfmRCd.png)
 
 ![img](https://oscimg.oschina.net/oscnet/up-faf5dda7320674c29a1772bc0c81d74762e.png)
+
+#### 深色主题模版截图
+##### PC站截图
+
+1. 首页
+
+   ![index](https://static.oschina.net/uploads/img/202006/24151811_wIus.png)
+
+##### 手机站截图
+1. 首页
+
+   ![index](https://static.oschina.net/uploads/img/202006/24151812_OOob.jpg)
+
+4. 小说详情页
+
+   ![微信图片_20190904181558](https://static.oschina.net/uploads/img/202006/24151812_ZosF.png)
+
+5. 目录页
+
+   ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151812_Krva.png)
+
+5. 小说阅读页
+
+   ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151813_fDgT.png)
 
 #### 安装步骤
 
