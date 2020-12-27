@@ -95,7 +95,7 @@ novel-plus -- 父工程
 
 3. 搜索页
 
-![img](https://gitee.com/xiongxyang/novel-plus/raw/release_v2.1.0/assets/QQ20200520-215756.png)
+![img](https://s3.ax1x.com/2020/12/27/r5TO8x.png)
 
 ![img](https://oscimg.oschina.net/oscnet/up-ed5f689557718924acac76bc3ebca36afcb.png)
 
