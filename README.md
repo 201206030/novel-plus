@@ -87,7 +87,7 @@ novel-plus -- 父工程
 
 1. 首页
 
-![img](https://oscimg.oschina.net/oscnet/up-bbb1c7f72e183327bff754a9fa8bb75223e.png)
+![img](https://s3.ax1x.com/2020/12/27/r5400A.png)
 
 2. 分类索引页
 
@@ -141,19 +141,19 @@ novel-plus -- 父工程
 
 1. 首页
 
-   <img src="https://s3.ax1x.com/2020/12/04/DbsSoj.jpg" alt="index" style="zoom:33%;" />
+   <img src="https://s3.ax1x.com/2020/12/27/r5447n.jpg" alt="index" width="300" />
 
 2. 小说列表页
 
-   <img src="https://s3.ax1x.com/2020/12/04/DbrfsO.jpg" alt="微信图片_20190904181558" style="zoom: 33%;" />
+   <img src="https://s3.ax1x.com/2020/12/27/r55xKg.jpg" alt="微信图片_20190904181558" width="300" />
 
 3. 小说详情页
 
-   <img src="https://s3.ax1x.com/2020/12/04/DbsklV.jpg" alt="QQ图片20191018161901" style="zoom:33%;" />
+   <img src="https://s3.ax1x.com/2020/12/27/r54XnJ.jpg" alt="QQ图片20191018161901" width="300" />
 
 4. 小说阅读页
 
-   <img src="https://s3.ax1x.com/2020/12/04/Dbsew4.jpg" alt="QQ图片20191018161901" style="zoom:33%;" />
+   <img src="https://s3.ax1x.com/2020/12/27/r55Stx.jpg" alt="QQ图片20191018161901" width="300" />
 
 ##### 爬虫管理系统截图
 
