@@ -35,7 +35,7 @@ public class NewsServiceImpl implements NewsService {
     public List<News> listIndexNews() {
         List<News> result = (List<News>) cacheService.getObject(CacheKey.INDEX_NEWS_KEY);
         if(result == null || result.size() == 0) {
-            SelectStatementProvider selectStatement = select(id, catName, catId, title)
+            SelectStatementProvider selectStatement = select(id, catName, catId, title,createTime)
                     .from(news)
                     .orderBy(createTime.descending())
                     .limit(2)

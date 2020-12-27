@@ -195,6 +195,12 @@ novel-plus -- 父工程
 
    ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151813_fDgT.png)
 
+#### 蓝色主题模版截图（更新中）
+
+   ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
+
+
+
 #### 安装步骤
 
 ##### 数据库安装：

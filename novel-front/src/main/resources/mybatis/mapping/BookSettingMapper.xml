@@ -4,7 +4,7 @@
 <mapper namespace="com.java2nb.novel.mapper.FrontBookSettingMapper">
     
     <select id="listVO" resultType="com.java2nb.novel.vo.BookSettingVO">
-        select t1.book_id,t1.type,t1.sort,t2.book_name,t2.author_name,t2.pic_url,t2.book_desc,t2.score
+        select t1.book_id,t1.type,t1.sort,t2.book_name,t2.author_name,t2.pic_url,t2.book_desc,t2.score,t2.cat_id,t2.cat_name,t2.book_status
         from book_setting t1 inner join book t2
         on t1.book_id = t2.id
         order by t1.sort

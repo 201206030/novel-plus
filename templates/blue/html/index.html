@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>小说精品屋无弹窗广告小说免费阅读,值得收藏的小说阅读网 - 小说精品屋</title>
+    <meta name="keywords" content="小说精品屋">
+    <meta name="description"
+          content="小说精品屋致力于提供无弹窗广告小说在线免费阅读,一个值得收藏的小说阅读网。小说精品屋收录了当前最火热的网络小说,免费提供高质量的小说最新章节,小说TXT全文,小说爱好者必备。">
+    <link href="/favicon.ico" rel="shortcut icon">
+    <link href="/css/base.css" rel="stylesheet" type="text/css">
+    <link href="/css/hs13.css" rel="stylesheet" type="text/css">
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <script src="/javascript/jquery-1.7.2.min.js"></script>
+    <script src="/javascript/function.js"></script>
+</head>
+<body>
+<!--header-->
+<div th:replace="common/top :: top('0')">
+</div>
+<!--/header-->
+<!--container-->
+<div class="container clearfix">
+
+    <div class="wrap box3 clearfix">
+        <div class="rec-book">
+            <h3>精品推荐</h3>
+            <div id="classicBook" class="carousel">
+            </div>
+            <div class="rec-list">
+                <ul id="classicBooks">
+                </ul>
+            </div>
+
+        </div>
+        <div class="latest-news">
+            <!--category-->
+            <div class="category">
+                <ul class="clearfix">
+                    <li><a href="#" target="_self">玄幻奇幻</a></li>
+                    <li><a href="#" target="_self">武侠仙侠</a></li>
+                    <li><a href="#" target="_self">都市言情</a></li>
+                    <li><a href="#" target="_self">历史军事</a></li>
+                    <li><a href="#" target="_self">科幻灵异</a></li>
+                    <li><a href="#" target="_self">网游竞技</a></li>
+                    <li><a href="#" target="_self">女生频道</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="wrap box3 clearfix">
+            <div class="rec-book">
+                <h3>热门推荐</h3>
+                <div id="hotRecBook" class="carousel">
+
+                </div>
+                <div class="rec-list">
+                    <ul class="clearfix" id="hotRecBooks">
+                    </ul>
+                </div>
+            </div>
+            <div class="latest-news">
+                <h3>最新新闻</h3>
+                <ul id="indexNews">
+                </ul>
+            </div>
+        </div>
+        <!--/box3-->
+        <!--box4-->
+        <div class="wrap box4 clearfix">
+            <div class="new-book">
+                <h3>最近更新</h3>
+                <!--tab1-->
+                <ul class="clearfix home_cid_list" id="updateRankBooks">
+                </ul>
+            </div>
+        </div>
+        <!--/box4-->
+        <!--box5-->
+        <!--/box5-->
+        <!--friend-link-->
+        <div class="wrap clearfix">
+            <div class="friend-link">
+                <h5>友情链接</h5>
+                <ul class="clearfix" id="friendLink" style="padding: 10px">
+                </ul>
+            </div>
+        </div>
+        <!--/friend-link-->
+    </div>
+    <script src="/javascript/focus.js"></script>
+    <!--/container-->
+    <!--footer-->
+    <div th:replace="common/footer :: footer">
+    </div>
+    <!--/footer-->
+
+    <script type="text/javascript" src="/layui/layui.js"></script>
+    <script type="text/javascript" src="/javascript/bookcase.js"></script>
+    <script type="text/javascript">
+        //搜索输入字符串合法性验证
+        $("#search-btn").on("click", function () {
+            var str = $("#q").val();
+            var ret = /[^\w\u4e00-\u9fa5]/;
+            if (ret.test(str)) {
+                alert("搜索内容不合法");
+                return false;
+            } else if (str === null || str === undefined || str === '') {
+                alert("搜索内容不能为空");
+                return false;
+            } else {
+                return ture;
+            }
+        });
+
+        $(function () {
+            //加载首页书籍设置数据
+            $.ajax({
+                type: "get",
+                url: "/book/listBookSetting",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+
+
+                        //热门推荐
+                        var hotRecBooks = data.data[3];
+                        var hotRecBooksHtml = "";
+                        for (var i = 0; i < hotRecBooks.length; i++) {
+                            var hotRecBook = hotRecBooks[i];
+                            if(i == 0){
+                                $("#hotRecBook").html("<div class=\"carousel-img\">\n" +
+                                    "                        <a href=\"/book/"+hotRecBook.bookId+".html\" target=\"_blank\" title=\""+hotRecBook.bookName+"\"><img class=\"lazy\"\n" +
+                                    "                                                                                                          src=\""+hotRecBook.picUrl+"\"\n" +
+                                    "                                                                                                          alt=\""+hotRecBook.bookName+"\"></a>\n" +
+                                    "                    </div>\n" +
+                                    "                    <ul class=\"carousel-nav\">\n" +
+                                    "                        <li >\n" +
+                                    "                            <h4><a href=\"#\" target=\"_blank\">"+hotRecBook.bookName+"</a></h4>\n" +
+                                    "                            <p class=\"author\">"+hotRecBook.authorName+"</p>\n" +
+                                    "                            <p class=\"info\"><span class=\"type\">"+hotRecBook.catName+"</span><span class=\"serial\">连载中</span></p>\n" +
+                                    "                            <p class=\"intro\">"+hotRecBook.bookDesc+"</p>\n" +
+                                    "                            <a class=\"view\" href=\"#\" target=\"_blank\">小说详情</a>\n" +
+                                    "                        </li>\n" +
+                                    "                    </ul>");
+                            }else{
+                            hotRecBooksHtml += ("<li>\n" +
+                                "                            <a class=\"pic\" href=\"#\" target=\"_blank\"><img class=\"lazy\"\n" +
+                                "                                                                                                           src=\""+hotRecBook.picUrl+"\"\n" +
+                                "                                                                                                           alt=\""+hotRecBook.bookName+"\"></a>\n" +
+                                "                            <h5 class=\"tit\"><a href=\"#\" target=\"_blank\">"+hotRecBook.bookName+"</a>\n" +
+                                "                            </h5>\n" +
+                                "                            <p class=\"intro\">"+hotRecBook.bookDesc+"</p>\n" +
+                                "                            <p class=\"info\">作者：<span>"+hotRecBook.authorName+"</span><em>"+hotRecBook.catName+"</em></p>\n" +
+                                "                        </li>");
+                            }
+
+                        }
+                        $("#hotRecBooks").html(hotRecBooksHtml);
+
+                        //精品推荐
+                        var classicBooks = data.data[4];
+                        var classicBooksHtml = "";
+                        for (var i = 0; i < classicBooks.length; i++) {
+                            var classicBook = classicBooks[i];
+                            if(i == 0) {
+                                $("#classicBook").html("<div class=\"carousel-img\">\n" +
+                                    "                        <a href=\"/book/"+classicBook.bookId+".html\" target=\"_blank\" title=\""+classicBook.bookName+"\"><img class=\"lazy\"\n" +
+                                    "                                                                                                          src=\""+classicBook.picUrl+"\"\n" +
+                                    "                                                                                                          alt=\""+classicBook.bookName+"\"></a>\n" +
+                                    "                    </div>\n" +
+                                    "                    <ul class=\"carousel-nav\">\n" +
+                                    "                        <li >\n" +
+                                    "                            <h4><a href=\"#\" target=\"_blank\">"+classicBook.bookName+"</a></h4>\n" +
+                                    "                            <p class=\"author\">"+classicBook.authorName+"</p>\n" +
+                                    "                            <p class=\"info\"><span class=\"type\">"+classicBook.catName+"</span><span class=\"serial\">连载中</span></p>\n" +
+                                    "                            <p class=\"intro\">"+classicBook.bookDesc+"</p>\n" +
+                                    "                            <a class=\"view\" href=\"#\" target=\"_blank\">小说详情</a>\n" +
+                                    "                        </li>\n" +
+                                    "                    </ul>");
+                            }else{
+                                classicBooksHtml += ("<li>\n" +
+                                    "                            <a class=\"pic\" href=\"#\" target=\"_blank\"><img class=\"lazy\"\n" +
+                                    "                                                                                                           src=\""+classicBook.picUrl+"\"\n" +
+                                    "                                                                                                           alt=\""+classicBook.bookName+"\"></a>\n" +
+                                    "                            <h5 class=\"tit\"><a href=\"#\" target=\"_blank\">"+classicBook.bookName+"</a>\n" +
+                                    "                            </h5>\n" +
+                                    "                            <p class=\"intro\">"+classicBook.bookDesc+"</p>\n" +
+                                    "                            <p class=\"info\">作者：<span>"+classicBook.authorName+"</span><em>"+classicBook.catName+"</em></p>\n" +
+                                    "                        </li>");
+
+                            }
+
+                        }
+                        $("#classicBooks").html(classicBooksHtml);
+
+
+                    } else {
+                        layer.alert(data.msg);
+                    }
+
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            })
+            //首页新闻查询
+            $.ajax({
+                type: "get",
+                url: "/news/listByPage",
+                data: {'curr':1,'limit':12},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        var indexNewsList = data.data.list;
+                        var indexNewsHtml = "";
+                        for (var i = 0; i < indexNewsList.length; i++) {
+                            var indexNews = indexNewsList[i];
+                            indexNewsHtml += ("<li><em>"+indexNews.createTime.substring(5,10)+"</em><a href=\"#\"\n" +
+                                "                                         target=\"_blank\">"+indexNews.title+"</a></li>");
+                        }
+                        $("#indexNews").html(indexNewsHtml);
+                    } else {
+                        layer.alert(data.msg);
+                    }
+
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            })
+
+
+            //更新榜单查询
+            $.ajax({
+                type: "get",
+                url: "/book/listUpdateRank",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        var updateRankBooks = data.data;
+                        var updateRankBookHtml = "";
+                        for (var i = 0; i < updateRankBooks.length; i++) {
+                            var updateRankBook = updateRankBooks[i];
+                            updateRankBookHtml += ("<li>\n" +
+                                "                        <a href=\"#\" target=\"_blank\"><img class=\"lazy\"\n" +
+                                "                                                                                          src=\""+updateRankBook.picUrl+"\"\n" +
+                                "                                                                                          alt=\""+updateRankBook.bookName+"\"><span>"+updateRankBook.bookName+"</span></a>\n" +
+                                "                        \n" +
+                                "                    </li>");
+                        }
+                        $("#updateRankBooks").html(updateRankBookHtml);
+                    } else {
+                        layer.alert(data.msg);
+                    }
+
+                }
+                ,
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            })
+            //友情链接查询
+            $.ajax({
+                type: "get",
+                url: "/friendLink/listIndexLink",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        var friendLinkList = data.data;
+                        var friendLinkHtml = "";
+                        for (var i = 0; i < friendLinkList.length; i++) {
+                            var friendLink = friendLinkList[i];
+                            friendLinkHtml += ("<li><a target='_blank' href=\""+friendLink.linkUrl+"\">"+friendLink.linkName+"</a></li>");
+                        }
+                        $("#friendLink").append(friendLinkHtml);
+                    } else {
+                        layer.alert(data.msg);
+                    }
+
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            })
+        });
+    </script>
+
+    <script src="/layui/lay/modules/layer.js"></script>
+</div>
+</body>
+</html>
