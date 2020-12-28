@@ -3,9 +3,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
-    <title th:text="'会员登录_'+#{website.name}"></title>
-    <meta name="keywords" th:content="'会员登录,个人中心,'+#{website.name}+'小说,'+#{website.name}" />
-    <meta name="description"  th:content="#{website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+#{website.name}+'小说！'" />
+    <title th:text="'会员登录_'+${application.website.name}"></title>
+    <meta name="keywords" th:content="'会员登录,个人中心,'+${application.website.name}+'小说,'+${application.website.name}" />
+    <meta name="description"  th:content="${application.website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'小说！'" />
     <link rel="stylesheet" href="/css/user.css" />
 </head>
 <body class="">
@@ -26,7 +26,7 @@
                     <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="C93BE1AE" />
                     <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAXkRxK+hbBn9D6bVAXo8t/4qKSXUE1UN51mNFrIuw38c3Y2+Mc6SrnAqio3oCKbxYainihG6d/Xh3PZm3b5AoMQ2xnvcKe7Apj/DdmzfeCXoTjAjITeRewsBR3AmjdQ75+yP5bUUcdUUiZlMKONJDef" />
                 </div>
-                <h3 th:text="'登陆'+#{website.name}"></h3>
+                <h3 th:text="'登陆'+${application.website.name}"></h3>
                 <ul class="log_list">
                     <li><span id="LabErr"></span></li>
                     <li><input name="txtUName" type="text" id="txtUName" placeholder="手机号码" class="s_input icon_name" /></li>

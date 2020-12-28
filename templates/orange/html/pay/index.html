@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
-    <title th:text="'充值_'+#{website.name}"></title>
+    <title th:text="'充值_'+${application.website.name}"></title>
     <link rel="stylesheet" href="/css/base.css"/>
     <link rel="stylesheet" href="/css/main.css"/>
 </head>

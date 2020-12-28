@@ -2,10 +2,10 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
-    <title th:utext="${book.bookName}+'目录,'+${book.bookName}+'最新章节列表_'+#{website.name}"></title>
+    <title th:utext="${book.bookName}+'目录,'+${book.bookName}+'最新章节列表_'+${application.website.name}"></title>
     <meta name="keywords" th:content="${book.bookName}+','+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表'"/>
     <meta name="description"
-          th:content="#{website.name}+'小说为您提供'+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表,'+${book.bookName}+'全文阅读,'+${book.bookName}+'免费阅读,'+${book.bookName}+'下载'"/>
+          th:content="${application.website.name}+'小说为您提供'+${book.bookName}+'目录,'+${book.bookName}+'最新章节列表,'+${book.bookName}+'全文阅读,'+${book.bookName}+'免费阅读,'+${book.bookName}+'下载'"/>
     <link rel="stylesheet" href="/css/main.css"/>
     <link rel="stylesheet" href="/css/book.css"/>
 </head>
@@ -16,7 +16,7 @@
 
 <div class="main box_center cf">
     <div class="nav_sub">
-        <a href="/" th:text="#{website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
+        <a href="/" th:text="${application.website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
             th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}"></a>&gt;<a
             th:href="'/book/indexList-'+${book.id}+'.html'">作品目录</a>
     </div>

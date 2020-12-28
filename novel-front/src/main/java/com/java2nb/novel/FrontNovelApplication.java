@@ -5,6 +5,7 @@ import io.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableScheduling
 @EnableCaching
+@ServletComponentScan
 @MapperScan(basePackages = {"com.java2nb.novel.mapper"})
 @Import(FdfsClientConfig.class)
 public class FrontNovelApplication {

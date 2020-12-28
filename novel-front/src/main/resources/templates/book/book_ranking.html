@@ -3,9 +3,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
-    <title th:text="'小说排行榜_'+#{website.name}"></title>
+    <title th:text="'小说排行榜_'+${application.website.name}"></title>
     <meta name="keywords" content="小说排行榜,热门小说榜,小说排行榜完结版,完结小说排行榜,完本小说排行榜,最新小说排行榜,网络小说排行榜,排行榜,点击榜,新书榜,推荐榜" />
-    <meta name="description" th:content="'最新热门网络小说排行榜,包含各类热门小说榜,小说排行榜上都是受用户喜爱的小说作品,精彩尽在'+#{website.name}+'。'" />
+    <meta name="description" th:content="'最新热门网络小说排行榜,包含各类热门小说榜,小说排行榜上都是受用户喜爱的小说作品,精彩尽在'+${application.website.name}+'。'" />
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/book.css" />
 </head>

@@ -2,11 +2,11 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
-    <title th:utext="${book.bookName}+'_'+${book.authorName}+'_'+${book.bookName}+'txt下载'+'_'+${book.bookName}+'无弹窗_'+#{website.name}"></title>
+    <title th:utext="${book.bookName}+'_'+${book.authorName}+'_'+${book.bookName}+'txt下载'+'_'+${book.bookName}+'无弹窗_'+${application.website.name}"></title>
     <meta name="keywords"
           th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'"/>
     <meta name="description"
-          th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+${book.bookName}+'由作家'+${book.authorName}+'创作,'+#{website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+#{website.name}+'。'"/>
+          th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+${book.bookName}+'由作家'+${book.authorName}+'创作,'+${application.website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+${application.website.name}+'。'"/>
     <link rel="stylesheet" href="/css/main.css"/>
     <link href="/css/book.css?v=2019" rel="stylesheet"/>
 </head>
@@ -22,7 +22,7 @@
 
 <div class="main box_center cf mb50">
     <div class="nav_sub">
-        <a href="/" th:text="#{website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
+        <a href="/" th:text="${application.website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
             th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}"></a>
     </div>
     <div class="channelWrap channelBookInfo cf">

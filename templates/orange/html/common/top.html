@@ -2,7 +2,7 @@
     <div class="topBar" style="display: none">
         <div class="box_center cf">
             <div class="top_l">
-                <a href="/" class="on" th:text="#{website.name}"></a><i class="line">|</i><a
+                <a href="/" class="on" th:text="${application.website.name}"></a><i class="line">|</i><a
                     href="/?m=2">手机女生版</a><i class="line">|</i><a
                     href="/?m=1">手机男生版</a><i class="line">|</i><a
                     href="/">客户端下载</a>
@@ -21,7 +21,7 @@
     </div>
     <div class="topMain">
         <div class="box_center cf">
-            <a href="/?m=2" class="logo fl"><img src="/images/logo.png" th:alt="#{website.name}"/></a>
+            <a href="/?m=2" class="logo fl"><img src="/images/logo.png" th:alt="${application.website.name}"/></a>
             <div class="searchBar fl">
                 <div class="search cf">
                     <input type="text" placeholder="书名、作者、关键字" class="s_int" name="searchKey" id="searchKey"/>

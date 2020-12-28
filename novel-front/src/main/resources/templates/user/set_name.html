@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
-    <title th:text="'修改昵称_'+#{website.name}"></title>
+    <title th:text="'修改昵称_'+${application.website.name}"></title>
     <link rel="stylesheet" href="/css/user.css"/>
 </head>
 <body class="">
