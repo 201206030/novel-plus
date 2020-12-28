@@ -221,7 +221,7 @@ novel-plus -- 父工程
 
 1. 修改novel-common模块下application-common-dev.yml配置文件中的数据库配置。
 2. 修改novel-front模块下application-website配置文件中的网站信息。
-![mini-code](https://s3.ax1x.com/2020/12/28/roUiIs.png)   
+![mini-code](https://s3.ax1x.com/2020/12/28/royaex.png)   
 3. 修改novel-front模块下application.yml配置文件中的模版名为你需要使用的模版名（templates文件夹下的模版文件夹名）（内置orange和dark两套模版）。
 ![mini-code](https://s3.ax1x.com/2020/12/26/r4uGM6.png)   
 4. 启动程序，打开浏览器，默认8080端口访问。
