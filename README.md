@@ -149,7 +149,7 @@ novel-plus -- 父工程
 
 3. 小说详情页
 
-   <img src="https://s3.ax1x.com/2020/12/27/r54XnJ.jpg" alt="QQ图片20191018161901" width="300" />
+   <img src="https://s3.ax1x.com/2020/12/28/roZWOf.jpg" alt="QQ图片20191018161901" width="300" />
 
 4. 小说阅读页
 
