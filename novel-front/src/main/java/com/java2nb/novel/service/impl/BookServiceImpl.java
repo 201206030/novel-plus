@@ -600,6 +600,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.selectMany(select(book.allColumns())
                 .from(book)
                 .where(updateTime, isGreaterThan(startDate))
+                .and(lastIndexId,isNotNull())
                 .orderBy(updateTime)
                 .limit(limit)
                 .build()

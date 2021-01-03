@@ -23,7 +23,7 @@ spring:
     #是否开启搜索引擎，1：开启，0：不开启
     enable: 0
     jest:
-      uris: http://127.0.0.1:9200
+      uris: http://192.168.0.105:9200
 
   #thymeleaf模版路径配置
   thymeleaf:

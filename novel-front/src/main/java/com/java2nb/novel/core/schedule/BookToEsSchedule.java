@@ -2,19 +2,11 @@ package com.java2nb.novel.core.schedule;
 
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.SearchService;
-import com.java2nb.novel.vo.EsBookVO;
-import io.searchbox.client.JestClient;
-import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Index;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -67,8 +59,6 @@ public class BookToEsSchedule {
                     Thread.sleep(5000);
 
                 }
-
-
 
                 cacheService.setObject(CacheKey.ES_LAST_UPDATE_TIME, lastDate);
 
