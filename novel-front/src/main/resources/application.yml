@@ -21,7 +21,7 @@ spring:
 
   elasticsearch:
     #是否开启搜索引擎，1：开启，0：不开启
-    enable: 0
+    enable: 1
     jest:
       uris: http://192.168.0.105:9200
 

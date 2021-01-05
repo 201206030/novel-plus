@@ -1,6 +1,9 @@
 #端口号
 server:
   port: 8081
+  servlet:
+    session:
+      timeout: 1D
 
 spring:
   profiles:
@@ -17,5 +20,8 @@ admin:
 crawl:
   update:
     thread: 1
+
+
+
 
 
