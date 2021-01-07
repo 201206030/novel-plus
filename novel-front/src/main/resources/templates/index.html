@@ -4,9 +4,9 @@
 
 <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
     <title th:text="${application.website.name}+'_原创小说网站'"></title>
-    <meta name="keywords" th:content="${application.website.name}+',小说,小说网,言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,原创网络文学'"/>
+    <meta name="keywords" th:content="${application.website.keyword}"/>
     <meta name="description"
-          th:content="${application.website.name}+'每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'。'"/>
+          th:content="${application.website.description}"/>
     <link href="favicon.ico" type="image/x-icon" rel="shortcut icon"/>
     <link href="favicon.ico" type="image/x-icon" rel="Bookmark"/>
     <link rel="stylesheet" href="/css/main.css"/>

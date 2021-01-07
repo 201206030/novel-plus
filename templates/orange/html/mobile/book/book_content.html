@@ -204,9 +204,9 @@
 </p>
 <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
-    <a style="color: #333" th:href="${preBookIndexId!=0?'/book/'+book.id+'/'+preBookIndexId+'.html':'#'}">上一章</a>
+    <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
     <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-    <a style="color: #333" th:href="${nextBookIndexId!=0?'/book/'+book.id+'/'+nextBookIndexId+'.html':'#'}">下一章</a>
+    <a style="color: #333" th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
 </div>
 <!--<div id="screenInput" class="screen_toolbar" style="display: none">
     <div style="height: 5px" class="layui-col-xs2 layui-col-sm3 layui-col-md3 layui-col-lg3"></div>
@@ -244,9 +244,9 @@
 </div>
 <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
-    <a style="color: #333" th:href="${preBookIndexId!=0?'/book/'+book.id+'/'+preBookIndexId+'.html':'#'}">上一章</a>
+    <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
     <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-    <a style="color: #333" th:href="${nextBookIndexId!=0?'/book/'+book.id+'/'+nextBookIndexId+'.html':'#'}">下一章</a>
+    <a style="color: #333" th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
 
 </div>
 
@@ -356,6 +356,24 @@
 
     $.post("/book/addVisitCount", {"bookId": $("#bookIdHidden").val()}, function () {
     });
+
+
+    function enterPreIndexPage(bookId,bookIndexId){
+        if(bookIndexId != 0){
+            window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
+        }else{
+            window.location.href = '/book/indexList-' + bookId + '.html';
+        }
+
+    }
+    function enterNextIndexPage(bookId,bookIndexId){
+        if(bookIndexId != 0){
+            window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
+        }else{
+            window.location.href = '/book/indexList-' + bookId + '.html';
+        }
+
+    }
 
 </script>
 
