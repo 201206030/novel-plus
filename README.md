@@ -79,7 +79,7 @@ novel-plus -- 父工程
                  
 
 #### 开发工具
-感谢Jetbrains公司提供的免费Lisence。
+感谢Jetbrains公司提供的免费License。
 
 [![index]( https://s3.ax1x.com/2021/01/14/sdHsJg.png )]( https://www.jetbrains.com/?from=小说精品屋)
 
