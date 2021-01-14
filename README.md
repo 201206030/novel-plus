@@ -78,6 +78,12 @@ novel-plus -- 父工程
 | Layui                | 前端UI                    
                  
 
+#### 开发工具
+感谢Jetbrains公司提供的免费Lisence。
+
+[![index]( https://s3.ax1x.com/2021/01/14/sdHsJg.png )]( https://www.jetbrains.com/?from=小说精品屋)
+
+
 #### 接口文档
 
 [点击查看接口文档示例](doc/api/api.md)
@@ -199,8 +205,6 @@ novel-plus -- 父工程
 
    ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
 
-
-
 #### 安装步骤
 
 ##### 数据库安装：
@@ -252,6 +256,14 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 [点击前往官网查看](https://xiongxyang.gitee.io/home/service.htm)
 
+问问题的三要素
+
+1. 说明背景，使用了哪个模块，要做什么？
+
+2. 怎么输入或操作的得到了什么结果？ 截图，日志
+
+3. 哪里不明白或有什么疑问 ？
+
 #### 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、技术文档等）
 
 ![mini-code](https://s3.ax1x.com/2020/12/03/DoImOx.png)
@@ -266,12 +278,12 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 ![mini-code](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
-### 免责声明
+#### 免责声明
 
 本项目提供的爬虫工具仅用于采集项目初期的测试数据，请勿用于商业盈利。
 用户使用本系统从事任何违法违规的事情，一切后果由用户自行承担，作者不承担任何责任。
 
-### 备注
+#### 备注
 
 精品小说屋所有相关项目均已在开源中国公开，感兴趣的可进入[开源中国](https://www.oschina.net/p/fiction_house)按关键字`精品小说屋`搜索。
 
