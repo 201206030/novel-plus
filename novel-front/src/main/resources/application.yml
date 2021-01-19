@@ -25,10 +25,7 @@ spring:
     jest:
       uris: http://192.168.0.105:9200
 
-  #thymeleaf模版路径配置
-  thymeleaf:
-    prefix: file:${user.dir}/templates/${templates.name}/html/
-    suffix: .html
+
   #静态文件路径配置
   resources:
     static-locations: file:${user.dir}/templates/${templates.name}/static/
@@ -76,9 +73,7 @@ book:
 
 
 
-#模版配置
-templates:
-  name: orange
+
 
 
 

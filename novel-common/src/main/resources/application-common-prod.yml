@@ -67,6 +67,15 @@ sharding:
                 algorithm-expression: book_content${index_id % 10}
 
 
+logging:
+  level:
+    root: error
+    com.java2nb: error
+
+
+
+
+
 
 
 
