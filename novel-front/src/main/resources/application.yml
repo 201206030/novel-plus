@@ -26,9 +26,6 @@ spring:
       uris: http://192.168.0.105:9200
 
 
-  #静态文件路径配置
-  resources:
-    static-locations: file:${user.dir}/templates/${templates.name}/static/
 
 redisson:
   singleServerConfig:

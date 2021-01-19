@@ -2,6 +2,9 @@ spring:
   profiles:
     include: [common-prod]
 
+  #静态文件路径配置
+  resources:
+    static-locations: file:${user.dir}/templates/${templates.name}/static/
   #thymeleaf模版路径配置
   thymeleaf:
     prefix: file:${user.dir}/templates/${templates.name}/html/
