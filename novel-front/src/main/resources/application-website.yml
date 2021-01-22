@@ -3,7 +3,7 @@ website:
   #网站名
   name: 小说精品屋
   #域名
-  domain: xiongxyang.gitee.io/home
+  domain: xiongxyang.gitee.io
   #SEO关键词
   keyword: ${website.name},小说,小说CMS,原创文学系统,开源小说系统,免费小说建站程序
   #SEO描述
