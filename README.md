@@ -259,7 +259,7 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 #### QQ交流群
 
-[点击前往官网查看](https://xiongxyang.gitee.io/home/service.htm)
+[点击前往官网查看](https://xiongxyang.gitee.io/service.htm)
 
 问问题的三要素
 
