@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 /**
- * 章节费用配置
+ * 章节费用配置属性
  * @author cd
  */
 @Component
 @Data
 @ConfigurationProperties(prefix = "book.price")
-public class BookPriceConfig {
+public class BookPriceProperties {
 
     private BigDecimal wordCount;
 

@@ -22,3 +22,14 @@ pic:
     path: /var/pic  #图片保存路径
 
 
+#线程池配置
+thread:
+  pool:
+    #核心线程池数量
+    core-pool-size: 5
+    #最大线程池数量
+    maximum-pool-size: 10
+    #线程超时时间（分钟）
+    keep-alive-time: 10
+
+

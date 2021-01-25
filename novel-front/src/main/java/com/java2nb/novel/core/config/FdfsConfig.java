@@ -9,5 +9,5 @@ import org.springframework.jmx.support.RegistrationPolicy;
  */
 @Configuration
 @EnableMBeanExport(registration= RegistrationPolicy.IGNORE_EXISTING)
-public class FdfsConfiguration {
+public class FdfsConfig {
 }

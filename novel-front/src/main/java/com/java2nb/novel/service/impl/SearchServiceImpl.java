@@ -7,7 +7,7 @@ import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.SearchService;
 import com.java2nb.novel.vo.EsBookVO;
 import io.searchbox.client.JestClient;
@@ -71,7 +71,7 @@ public class SearchServiceImpl implements SearchService {
 
     @SneakyThrows
     @Override
-    public PageInfo searchBook(BookSP params, int page, int pageSize) {
+    public PageInfo searchBook(BookSpVO params, int page, int pageSize) {
         List<EsBookVO> bookList = new ArrayList<>(0);
 
         //使用搜索引擎搜索

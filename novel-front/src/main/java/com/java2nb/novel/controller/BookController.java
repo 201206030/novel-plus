@@ -5,7 +5,7 @@ import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.entity.BookComment;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookVO;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +79,7 @@ public class BookController extends BaseController{
      * 分页搜索
      * */
     @GetMapping("searchByPage")
-    public ResultBean searchByPage(BookSP bookSP, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "20") int pageSize){
+    public ResultBean searchByPage(BookSpVO bookSP, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "20") int pageSize){
         PageInfo<BookVO> pageInfo = bookService.searchByPage(bookSP,page,pageSize);
         return ResultBean.ok(pageInfo);
     }

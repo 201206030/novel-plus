@@ -1,6 +1,6 @@
 package com.java2nb.novel.core.listener;
 
-import com.java2nb.novel.core.config.WebsiteConfig;
+import com.java2nb.novel.core.config.WebsiteProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +17,7 @@ import javax.servlet.annotation.WebListener;
 @RequiredArgsConstructor
 public class StarterListener implements ServletContextListener {
 
-    private final WebsiteConfig websiteConfig;
+    private final WebsiteProperties websiteConfig;
 
 
     @Override

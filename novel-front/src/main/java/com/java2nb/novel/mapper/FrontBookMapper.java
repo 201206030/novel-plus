@@ -1,11 +1,10 @@
 package com.java2nb.novel.mapper;
 
 import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.vo.BookVO;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
 public interface FrontBookMapper extends BookMapper {
 
 
-    List<BookVO> searchByPage(BookSP params);
+    List<BookVO> searchByPage(BookSpVO params);
 
     void addVisitCount(@Param("bookId") Long bookId, @Param("visitCount") Integer visitCount);
 

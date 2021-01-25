@@ -5,14 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.config.BookPriceConfig;
+import com.java2nb.novel.core.config.BookPriceProperties;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.*;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.mapper.*;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FileService;
@@ -89,7 +89,7 @@ public class BookServiceImpl implements BookService {
 
     private final FileService fileService;
 
-    private final BookPriceConfig bookPriceConfig;
+    private final BookPriceProperties bookPriceConfig;
 
 
     @SneakyThrows
@@ -186,7 +186,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public PageInfo searchByPage(BookSP params, int page, int pageSize) {
+    public PageInfo searchByPage(BookSpVO params, int page, int pageSize) {
 
 
         if (params.getUpdatePeriod() != null) {

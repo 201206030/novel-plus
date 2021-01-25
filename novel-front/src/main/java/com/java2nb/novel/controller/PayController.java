@@ -5,7 +5,7 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.java2nb.novel.core.bean.UserDetails;
-import com.java2nb.novel.core.config.AlipayConfig;
+import com.java2nb.novel.core.config.AlipayProperties;
 import com.java2nb.novel.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class PayController extends BaseController {
 
 
-    private final AlipayConfig alipayConfig;
+    private final AlipayProperties alipayConfig;
 
     private final OrderService orderService;
 

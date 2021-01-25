@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix="alipay")
-public class AlipayConfig {
+public class AlipayProperties {
 
     private String appId;
     private String merchantPrivateKey;

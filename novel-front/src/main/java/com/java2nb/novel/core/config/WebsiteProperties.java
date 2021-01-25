@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix="website")
-public class WebsiteConfig {
+public class WebsiteProperties {
 
     private String name;
     private String domain;

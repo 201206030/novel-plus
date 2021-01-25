@@ -2,7 +2,7 @@ package com.java2nb.novel.service;
 
 
 import com.github.pagehelper.PageInfo;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.entity.*;
@@ -48,7 +48,7 @@ public interface BookService {
      * @param pageSize 分页大小
      * @return 小说集合分页信息
      * */
-    PageInfo searchByPage(BookSP params, int page, int pageSize);
+    PageInfo searchByPage(BookSpVO params, int page, int pageSize);
 
     /**
      * 查询小说分类列表

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 /**
- * 作家收入配置
+ * 作家收入配置属性
  * @author cd
  */
 @Component
 @Data
 @ConfigurationProperties(prefix = "author.income")
-public class AuthorIncomeConfig {
+public class AuthorIncomeProperties {
 
     private BigDecimal taxRate;
 

@@ -1,4 +1,4 @@
-package com.java2nb.novel.search;
+package com.java2nb.novel.vo;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.Date;
  * @author 11797
  */
 @Data
-public class BookSP {
+public class BookSpVO {
 
     private String keyword;
 
