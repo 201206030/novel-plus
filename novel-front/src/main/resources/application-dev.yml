@@ -15,8 +15,10 @@ pic:
 thread:
   pool:
     #核心线程池数量
-    core-pool-size: 100
+    core-pool-size: 10
     #最大线程池数量
-    maximum-pool-size: 10000
-    #线程超时时间（分钟）
+    maximum-pool-size: 20
+    #线程超时时间（秒）
     keep-alive-time: 10
+    #队列大小
+    queue-size: 100
