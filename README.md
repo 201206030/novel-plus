@@ -226,7 +226,7 @@ novel-plus -- 父工程
 3. 启动程序，打开浏览器，默认8081端口访问。
 4. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始爬取小说数据。
 
-##### 前台小说门户安装（jar包形式部署时，需要复制templates文件夹到jar文件的相同目录下）：
+##### 前台小说门户安装（prod环境下的jar包形式部署时，需要复制templates文件夹到jar文件的相同目录下）：
 
 1. 修改novel-common模块下application-common-dev.yml配置文件中的数据库配置。
 2. 修改novel-front模块下application-website配置文件中的网站信息。
