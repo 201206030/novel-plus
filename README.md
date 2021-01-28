@@ -239,6 +239,14 @@ novel-plus -- 父工程
 
 #### 其他安装教程
 
+##### version>=3.5.0版本
+
+包安装及低版本升级教程：[点击前往](https://my.oschina.net/java2nb/blog/4914688)
+
+##### 3.3.0<=version<3.5.0版本
+
+包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4842472) 
+
 ##### version<3.3.0版本
 
 包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4272630) 
@@ -246,14 +254,6 @@ novel-plus -- 父工程
 宝塔安装教程（非官方）：[点击前往](https://www.daniao.org/9166.html) 
 
 docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
-
-##### version>=3.3.0版本
-
-包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4842472) 
-
-##### version>=3.5.0版本
-
-包安装及低版本升级教程：[点击前往](https://my.oschina.net/java2nb/blog/4914688)
 
 #### 代码仓库
 
