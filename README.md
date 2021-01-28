@@ -251,6 +251,10 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4842472) 
 
+##### version>=3.5.0版本
+
+包安装及低版本升级教程：[点击前往](https://my.oschina.net/java2nb/blog/4914688)
+
 #### 代码仓库
 
  GitHub仓库地址： https://github.com/201206030/novel-plus 
