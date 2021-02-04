@@ -1,19 +1,17 @@
 package com.java2nb.novel.controller;
 
 import com.java2nb.common.utils.DateUtils;
-import com.java2nb.common.utils.PageBean;
-import com.java2nb.common.utils.Query;
 import com.java2nb.common.utils.R;
-import com.java2nb.novel.domain.AuthorCodeDO;
-import com.java2nb.novel.service.*;
-import com.java2nb.test.service.OrderService;
-import io.swagger.annotations.ApiOperation;
+import com.java2nb.novel.service.AuthorService;
+import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.service.PayService;
+import com.java2nb.novel.service.UserService;
 import lombok.SneakyThrows;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
