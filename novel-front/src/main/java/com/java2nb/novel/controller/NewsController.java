@@ -31,7 +31,7 @@ public class NewsController {
      * */
     @GetMapping("listByPage")
     public ResultBean listByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize){
-        return ResultBean.ok(new PageInfo<>(newsService.listByPage(page,pageSize)));
+        return ResultBean.ok(newsService.listByPage(page,pageSize));
     }
 
 

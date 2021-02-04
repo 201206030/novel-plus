@@ -1,13 +1,17 @@
 package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
+import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.core.utils.IdWorker;
 import com.java2nb.novel.core.utils.SpringUtil;
 import com.java2nb.novel.core.utils.ThreadUtil;
@@ -16,6 +20,8 @@ import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
+import com.java2nb.novel.vo.CrawlSingleTaskVO;
+import com.java2nb.novel.vo.CrawlSourceVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -66,14 +72,17 @@ public class CrawlServiceImpl implements CrawlService {
     }
 
     @Override
-    public List<CrawlSource> listCrawlByPage(int page, int pageSize) {
+    public PageBean<CrawlSource> listCrawlByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider render = select(id, sourceName, sourceStatus, createTime, updateTime)
                 .from(crawlSource)
                 .orderBy(updateTime)
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return crawlSourceMapper.selectMany(render);
+        List<CrawlSource> crawlSources = crawlSourceMapper.selectMany(render);
+        PageBean<CrawlSource> pageBean = new PageBean<>(crawlSources);
+        pageBean.setList(BeanUtil.copyList(crawlSources, CrawlSourceVO.class));
+        return pageBean;
     }
 
     @SneakyThrows
@@ -156,14 +165,17 @@ public class CrawlServiceImpl implements CrawlService {
     }
 
     @Override
-    public List<CrawlSingleTask> listCrawlSingleTaskByPage(int page, int pageSize) {
+    public PageBean<CrawlSingleTask> listCrawlSingleTaskByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider render = select(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask.allColumns())
                 .from(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask)
                 .orderBy(CrawlSingleTaskDynamicSqlSupport.createTime.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return crawlSingleTaskMapper.selectMany(render);
+        List<CrawlSingleTask> crawlSingleTasks = crawlSingleTaskMapper.selectMany(render);
+        PageBean<CrawlSingleTask> pageBean = new PageBean<>(crawlSingleTasks);
+        pageBean.setList(BeanUtil.copyList(crawlSingleTasks, CrawlSingleTaskVO.class));
+        return pageBean;
     }
 
     @Override

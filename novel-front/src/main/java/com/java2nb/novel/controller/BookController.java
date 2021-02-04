@@ -1,9 +1,11 @@
 package com.java2nb.novel.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookComment;
 import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.BookService;
@@ -80,8 +82,7 @@ public class BookController extends BaseController{
      * */
     @GetMapping("searchByPage")
     public ResultBean searchByPage(BookSpVO bookSP, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "20") int pageSize){
-        PageInfo<BookVO> pageInfo = bookService.searchByPage(bookSP,page,pageSize);
-        return ResultBean.ok(pageInfo);
+        return ResultBean.ok(bookService.searchByPage(bookSP,page,pageSize));
     }
 
     /**
@@ -143,7 +144,7 @@ public class BookController extends BaseController{
      * */
     @GetMapping("listCommentByPage")
     public ResultBean listCommentByPage(@RequestParam("bookId") Long bookId,@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize) {
-        return ResultBean.ok(new PageInfo<>(bookService.listCommentByPage(null,bookId,page,pageSize)));
+        return ResultBean.ok(bookService.listCommentByPage(null,bookId,page,pageSize));
     }
 
     /**
@@ -172,7 +173,7 @@ public class BookController extends BaseController{
      * */
     @GetMapping("/queryIndexList")
     public ResultBean indexList(Long bookId,@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize,@RequestParam(value = "orderBy",defaultValue = "index_num desc") String orderBy) {
-        return ResultBean.ok(new PageInfo<>(bookService.queryIndexList(bookId,orderBy,page,pageSize)));
+        return ResultBean.ok(new PageBean<>(bookService.queryIndexList(bookId,orderBy,page,pageSize)));
     }
 
 

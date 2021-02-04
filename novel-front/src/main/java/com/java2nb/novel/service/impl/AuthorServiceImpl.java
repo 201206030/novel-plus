@@ -1,6 +1,7 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
@@ -170,9 +171,9 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public List<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId, Date startTime, Date endTime) {
+    public PageBean<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId, Date startTime, Date endTime) {
         PageHelper.startPage(page, pageSize);
-        return authorIncomeDetailMapper.selectMany(
+        return new PageBean<>(authorIncomeDetailMapper.selectMany(
                 select(AuthorIncomeDetailDynamicSqlSupport.incomeDate, AuthorIncomeDetailDynamicSqlSupport.incomeAccount
                         , AuthorIncomeDetailDynamicSqlSupport.incomeCount, AuthorIncomeDetailDynamicSqlSupport.incomeNumber)
                         .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
@@ -182,14 +183,14 @@ public class AuthorServiceImpl implements AuthorService {
                         .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isLessThanOrEqualTo(endTime))
                         .orderBy(AuthorIncomeDetailDynamicSqlSupport.incomeDate.descending())
                         .build()
-                        .render(RenderingStrategies.MYBATIS3));
+                        .render(RenderingStrategies.MYBATIS3)));
     }
 
 
     @Override
-    public List<AuthorIncome> listIncomeMonthByPage(int page, int pageSize, Long userId, Long bookId) {
+    public PageBean<AuthorIncome> listIncomeMonthByPage(int page, int pageSize, Long userId, Long bookId) {
         PageHelper.startPage(page, pageSize);
-        return authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.incomeMonth
+        return new PageBean<>(authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.incomeMonth
                 , AuthorIncomeDynamicSqlSupport.preTaxIncome
                 , AuthorIncomeDynamicSqlSupport.afterTaxIncome
                 , AuthorIncomeDynamicSqlSupport.payStatus
@@ -199,6 +200,6 @@ public class AuthorServiceImpl implements AuthorService {
                 .and(AuthorIncomeDynamicSqlSupport.bookId, isEqualTo(bookId))
                 .orderBy(AuthorIncomeDynamicSqlSupport.incomeMonth.descending())
                 .build()
-                .render(RenderingStrategies.MYBATIS3));
+                .render(RenderingStrategies.MYBATIS3)));
     }
 }

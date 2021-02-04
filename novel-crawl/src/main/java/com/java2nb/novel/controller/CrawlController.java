@@ -39,8 +39,7 @@ public class CrawlController {
     @GetMapping("listCrawlByPage")
     public ResultBean listCrawlByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize){
 
-        return ResultBean.ok(new PageInfo<>(BeanUtil.copyList(crawlService.listCrawlByPage(page,pageSize), CrawlSourceVO.class)
-                 ));
+        return ResultBean.ok(crawlService.listCrawlByPage(page,pageSize));
     }
 
     /**
@@ -71,8 +70,7 @@ public class CrawlController {
     @GetMapping("listCrawlSingleTaskByPage")
     public ResultBean listCrawlSingleTaskByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize){
 
-        return ResultBean.ok(new PageInfo<>(BeanUtil.copyList(crawlService.listCrawlSingleTaskByPage(page,pageSize), CrawlSingleTaskVO.class)
-        ));
+        return ResultBean.ok(crawlService.listCrawlSingleTaskByPage(page,pageSize));
     }
 
     /**

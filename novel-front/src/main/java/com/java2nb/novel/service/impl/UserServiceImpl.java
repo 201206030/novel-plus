@@ -1,6 +1,7 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.entity.*;
@@ -147,9 +148,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BookShelfVO> listBookShelfByPage(Long userId, int page, int pageSize) {
+    public PageBean<BookShelfVO> listBookShelfByPage(Long userId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        return userBookshelfMapper.listBookShelf(userId);
+        return new PageBean<>(userBookshelfMapper.listBookShelf(userId));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -201,7 +202,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserFeedbackVO> listUserFeedBackByPage(Long userId, int page, int pageSize) {
+    public PageBean<UserFeedback> listUserFeedBackByPage(Long userId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider selectStatement = select(UserFeedbackDynamicSqlSupport.content, UserFeedbackDynamicSqlSupport.createTime)
                 .from(userFeedback)
@@ -209,7 +210,10 @@ public class UserServiceImpl implements UserService {
                 .orderBy(UserFeedbackDynamicSqlSupport.id.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return BeanUtil.copyList(userFeedbackMapper.selectMany(selectStatement),UserFeedbackVO.class);
+        List<UserFeedback> userFeedbacks = userFeedbackMapper.selectMany(selectStatement);
+        PageBean<UserFeedback> pageBean = new PageBean<>(userFeedbacks);
+        pageBean.setList(BeanUtil.copyList(userFeedbacks,UserFeedbackVO.class));
+        return pageBean;
     }
 
     @Override
@@ -223,9 +227,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BookReadHistoryVO> listReadHistoryByPage(Long userId, int page, int pageSize) {
+    public PageBean<BookReadHistoryVO> listReadHistoryByPage(Long userId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        return userReadHistoryMapper.listReadHistory(userId);
+        return new PageBean<>(userReadHistoryMapper.listReadHistory(userId));
     }
 
     @Override

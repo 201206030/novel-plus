@@ -3,6 +3,7 @@ package com.java2nb.novel.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.config.BookPriceProperties;
@@ -186,7 +187,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public PageInfo searchByPage(BookSpVO params, int page, int pageSize) {
+    public PageBean searchByPage(BookSpVO params, int page, int pageSize) {
 
 
         if (params.getUpdatePeriod() != null) {
@@ -213,7 +214,7 @@ public class BookServiceImpl implements BookService {
         if (StringUtils.isNotBlank(params.getSort())) {
             OrderByHelper.orderBy(params.getSort() + " desc");
         }
-        return new PageInfo<>(bookMapper.searchByPage(params));
+        return new PageBean(bookMapper.searchByPage(params));
 
 
     }
@@ -382,10 +383,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
+    public PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         OrderByHelper.orderBy("t1.create_time desc");
-        return bookCommentMapper.listCommentByPage(userId, bookId);
+        return new PageBean<>(bookCommentMapper.listCommentByPage(userId, bookId));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -491,7 +492,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
+    public PageBean<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
 
         PageHelper.startPage(page, pageSize);
 
@@ -501,7 +502,7 @@ public class BookServiceImpl implements BookService {
                 .orderBy(BookDynamicSqlSupport.createTime.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return bookMapper.selectMany(selectStatement);
+        return new PageBean<>(bookMapper.selectMany(selectStatement));
 
     }
 

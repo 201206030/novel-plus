@@ -47,8 +47,7 @@ public class AuthorController extends BaseController{
     @GetMapping("listBookByPage")
     public ResultBean listBookByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize ,HttpServletRequest request){
 
-        return ResultBean.ok(new PageInfo<>(bookService.listBookPageByUserId(getUserDetails(request).getId(),page,pageSize)
-        ));
+        return ResultBean.ok(bookService.listBookPageByUserId(getUserDetails(request).getId(),page,pageSize));
     }
 
     /**
@@ -172,8 +171,7 @@ public class AuthorController extends BaseController{
                                             @RequestParam(value = "endTime",defaultValue = "2030-01-01") Date endTime,
                                             HttpServletRequest request){
 
-        return ResultBean.ok(new PageInfo<>(authorService.listIncomeDailyByPage(page,pageSize,getUserDetails(request).getId(),bookId,startTime,endTime)
-        ));
+        return ResultBean.ok(authorService.listIncomeDailyByPage(page,pageSize,getUserDetails(request).getId(),bookId,startTime,endTime));
     }
 
 
@@ -186,8 +184,7 @@ public class AuthorController extends BaseController{
                                             @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
                                             HttpServletRequest request){
 
-        return ResultBean.ok(new PageInfo<>(authorService.listIncomeMonthByPage(page,pageSize,getUserDetails(request).getId(),bookId)
-        ));
+        return ResultBean.ok(authorService.listIncomeMonthByPage(page,pageSize,getUserDetails(request).getId(),bookId));
     }
 
     private Author checkAuthor(HttpServletRequest request) {

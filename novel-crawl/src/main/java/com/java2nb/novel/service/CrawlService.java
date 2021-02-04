@@ -1,8 +1,11 @@
 package com.java2nb.novel.service;
 
+import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
+import com.java2nb.novel.vo.CrawlSourceVO;
 
 import java.util.List;
 
@@ -22,9 +25,9 @@ public interface CrawlService {
      * 爬虫源分页列表
      * @param page 当前页码
      * @param pageSize 分页大小
-     *@return 爬虫源集合
+     *@return 爬虫源分页数据
      * */
-    List<CrawlSource> listCrawlByPage(int page, int pageSize);
+    PageBean<CrawlSource> listCrawlByPage(int page, int pageSize);
 
     /**
      * 开启或停止爬虫
@@ -83,9 +86,9 @@ public interface CrawlService {
      * 单本采集任务分页列表查询
      * @param page 当前页码
      * @param pageSize 分页大小
-     * @return 单本采集任务集合
+     * @return 单本采集任务分页数据
      * */
-    List<CrawlSingleTask> listCrawlSingleTaskByPage(int page, int pageSize);
+    PageBean<CrawlSingleTask> listCrawlSingleTaskByPage(int page, int pageSize);
 
     /**
      * 删除采集任务

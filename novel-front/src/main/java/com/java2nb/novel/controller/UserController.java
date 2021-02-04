@@ -1,6 +1,5 @@
 package com.java2nb.novel.controller;
 
-import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.cache.CacheService;
@@ -19,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,7 +145,7 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
         }
-        return ResultBean.ok(new PageInfo<>(userService.listBookShelfByPage(userDetails.getId(),page,pageSize)));
+        return ResultBean.ok(userService.listBookShelfByPage(userDetails.getId(),page,pageSize));
     }
 
     /**
@@ -159,7 +157,7 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
         }
-        return ResultBean.ok(new PageInfo<>(userService.listReadHistoryByPage(userDetails.getId(),page,pageSize)));
+        return ResultBean.ok(userService.listReadHistoryByPage(userDetails.getId(),page,pageSize));
     }
 
     /**
@@ -197,7 +195,7 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
         }
-        return ResultBean.ok(new PageInfo<>(userService.listUserFeedBackByPage(userDetails.getId(),page,pageSize)));
+        return ResultBean.ok(userService.listUserFeedBackByPage(userDetails.getId(),page,pageSize));
     }
 
     /**
@@ -257,7 +255,7 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return ResultBean.fail(ResponseStatus.NO_LOGIN);
         }
-        return ResultBean.ok(new PageInfo<>(bookService.listCommentByPage(userDetails.getId(),null,page,pageSize)));
+        return ResultBean.ok(bookService.listCommentByPage(userDetails.getId(),null,page,pageSize));
     }
 
 

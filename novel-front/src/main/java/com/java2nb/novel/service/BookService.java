@@ -2,6 +2,7 @@ package com.java2nb.novel.service;
 
 
 import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
@@ -48,7 +49,7 @@ public interface BookService {
      * @param pageSize 分页大小
      * @return 小说集合分页信息
      * */
-    PageInfo searchByPage(BookSpVO params, int page, int pageSize);
+    PageBean searchByPage(BookSpVO params, int page, int pageSize);
 
     /**
      * 查询小说分类列表
@@ -144,9 +145,9 @@ public interface BookService {
      * @param bookId 书籍ID
      * @param page 页码
      * @param pageSize 分页大小
-     * @return 评论集合
+     * @return 评论分页数据
      * */
-    List<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize);
+    PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize);
 
     /**
      * 新增评价
@@ -202,9 +203,9 @@ public interface BookService {
      * @param userId 用户ID
      * @param page 页码
      * @param pageSize 分页大小
-     * @return 小说集合
+     * @return 小说分页数据
      * */
-    List<Book> listBookPageByUserId(Long userId, int page, int pageSize);
+    PageBean<Book> listBookPageByUserId(Long userId, int page, int pageSize);
 
     /**
      * 发布小说
