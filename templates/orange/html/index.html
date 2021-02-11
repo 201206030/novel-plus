@@ -57,7 +57,6 @@
             <div class="picRecommend cf" id="hotRecBooks">
 
 
-
             </div>
         </div>
         <div id="bookrank1_ShowBookRank">
@@ -81,7 +80,6 @@
                 <h2>精品推荐</h2>
             </div>
             <div class="picRecommend cf" id="classicBooks">
-
 
 
             </div>
@@ -141,7 +139,7 @@
 
     </div>
 </div>
-<div class="friend_link" >
+<div class="friend_link">
     <div class="box_center cf" id="friendLink">
         <span>友情链接：</span>
     </div>
@@ -153,6 +151,7 @@
 
 </body>
 <div th:replace="common/js :: js"></div>
+<script src="/javascript/lazyload.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
     $(function () {
         //加载首页书籍设置数据
@@ -174,7 +173,7 @@
                         if (i == 0) {
                             classHtml = "on";
                         }
-                        carouseBigHtml += ("<dd class=\"" + classHtml + "\"><a href=\"/book/"+carouselBook.bookId+".html\">" +
+                        carouseBigHtml += ("<dd class=\"" + classHtml + "\"><a href=\"/book/" + carouselBook.bookId + ".html\">" +
                             "<img src=\"" + carouselBook.picUrl + "\" alt=\"" + carouselBook.bookName + "\"/></a></dd>");
 
                         carouseSmallHtml += " <li class=\"" + classHtml + "\">" +
@@ -231,7 +230,7 @@
                             } else if (i % 2 == 1) {
                                 topBooks1Html += "<dd>";
                             }
-                            topBooks1Html += ("<a href=\"book/"+toBook.bookId+".html\">" + toBook.bookName + "</a>");
+                            topBooks1Html += ("<a href=\"book/" + toBook.bookId + ".html\">" + toBook.bookName + "</a>");
                             if (i == 0) {
                                 topBooks1Html += "</dt>";
                             } else if (i % 2 == 0) {
@@ -244,7 +243,7 @@
                             } else if (i % 2 == 0) {
                                 topBooks2Html += "<dd>";
                             }
-                            topBooks2Html += ("<a href=\"book/"+toBook.bookId+".html\">" + toBook.bookName + "</a>");
+                            topBooks2Html += ("<a href=\"book/" + toBook.bookId + ".html\">" + toBook.bookName + "</a>");
                             if (i == 5) {
                                 topBooks2Html += "</dt>";
                             } else if (i % 2 == 1) {
@@ -262,19 +261,20 @@
                     for (var i = 0; i < rightListBooks.length; i++) {
                         var rightListBook = rightListBooks[i];
                         var classHtml = "";
+                        var imageHtml = "";
                         if (i == 0) {
                             classHtml = "on";
+                            imageHtml = "<img src=\"" + rightListBook.picUrl + "\" alt=\"" + rightListBook.bookName + "\"/></a>\n";
                         }
                         if (i < 3) {
                             classHtml += (" num" + (i + 1));
                         }
                         rightListBooksHtml += ("<li class=\"" + classHtml + "\">\n" +
-                            "                        <div class=\"book_name\"><i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/"+rightListBook.bookId+".html\">" + rightListBook.bookName + "</a></div>\n" +
+                            "                        <div class=\"book_name\"><i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + rightListBook.bookId + ".html\">" + rightListBook.bookName + "</a></div>\n" +
                             "                        <div class=\"book_intro\">\n" +
-                            "                            <div class=\"cover\"><a href=\"/book/"+rightListBook.bookId+".html\"><img\n" +
-                            "                                    src=\"" + rightListBook.picUrl + "\" alt=\"" + rightListBook.bookName + "\"/></a>\n" +
+                            "                            <div class=\"cover\"><a href=\"/book/" + rightListBook.bookId + ".html\">" + imageHtml +
                             "                            </div>\n" +
-                            "                            <a class=\"txt\" href=\"/book/"+rightListBook.bookId+".html\">" + rightListBook.bookDesc + "</a>\n" +
+                            "                            <a class=\"txt\" href=\"/book/" + rightListBook.bookId + ".html\">" + rightListBook.bookDesc + "</a>\n" +
                             "                        </div>\n" +
                             "                    </li>");
                     }
@@ -286,13 +286,13 @@
                     for (var i = 0; i < hotRecBooks.length; i++) {
                         var hotRecBook = hotRecBooks[i];
                         hotRecBooksHtml += (" <div class=\"itemsList\">\n" +
-                            "                    <a class=\"items_img\" href=\"/book/"+hotRecBook.bookId+".html\">\n" +
-                            "                        <img src=\"" + hotRecBook.picUrl + "\" alt=\"" + hotRecBook.bookName + "\"/>\n" +
+                            "                    <a class=\"items_img\" href=\"/book/" + hotRecBook.bookId + ".html\">\n" +
+                            "                        <img class=\"lazyload\" src='/images/default.gif' data-src=\"" + hotRecBook.picUrl + "\" alt=\"" + hotRecBook.bookName + "\"/>\n" +
                             "                    </a>\n" +
                             "                    <div class=\"items_txt\">\n" +
-                            "                        <h4><a href=\"/book/"+hotRecBook.bookId+".html\">" + hotRecBook.bookName + "</a></h4>\n" +
+                            "                        <h4><a href=\"/book/" + hotRecBook.bookId + ".html\">" + hotRecBook.bookName + "</a></h4>\n" +
                             "                        <p class=\"author\"><a href=\"javascript:void(0)\">作者：" + hotRecBook.authorName + "</a></p>\n" +
-                            "                        <p class=\"intro\"><a href=\"/book/"+hotRecBook.bookId+".html\">" + hotRecBook.bookDesc + "</a>\n" +
+                            "                        <p class=\"intro\"><a href=\"/book/" + hotRecBook.bookId + ".html\">" + hotRecBook.bookDesc + "</a>\n" +
                             "                        </p>\n" +
                             "                    </div>\n" +
                             "                </div>");
@@ -305,13 +305,13 @@
                     for (var i = 0; i < classicBooks.length; i++) {
                         var classicBook = classicBooks[i];
                         classicBooksHtml += (" <div class=\"itemsList\">\n" +
-                            "                    <a class=\"items_img\" href=\"/book/"+classicBook.bookId+".html\">\n" +
-                            "                        <img src=\"" + classicBook.picUrl + "\" alt=\"" + classicBook.bookName + "\"/>\n" +
+                            "                    <a class=\"items_img\" href=\"/book/" + classicBook.bookId + ".html\">\n" +
+                            "                        <img class=\"lazyload\" src='/images/default.gif' data-src=\"" + classicBook.picUrl + "\" alt=\"" + classicBook.bookName + "\"/>\n" +
                             "                    </a>\n" +
                             "                    <div class=\"items_txt\">\n" +
-                            "                        <h4><a href=\"/book/"+classicBook.bookId+".html\">" + classicBook.bookName + "</a></h4>\n" +
+                            "                        <h4><a href=\"/book/" + classicBook.bookId + ".html\">" + classicBook.bookName + "</a></h4>\n" +
                             "                        <p class=\"author\"><a href=\"javascript:void(0)\">作者：" + classicBook.authorName + "</a></p>\n" +
-                            "                        <p class=\"intro\"><a href=\"/book/"+classicBook.bookId+".html\">" + classicBook.bookDesc + "</a>\n" +
+                            "                        <p class=\"intro\"><a href=\"/book/" + classicBook.bookId + ".html\">" + classicBook.bookDesc + "</a>\n" +
                             "                        </p>\n" +
                             "                    </div>\n" +
                             "                </div>");
@@ -319,6 +319,7 @@
                     }
                     $("#classicBooks").html(classicBooksHtml);
 
+                    lazyload();
 
                 } else {
                     layer.alert(data.msg);
@@ -342,7 +343,7 @@
                     for (var i = 0; i < indexNewsList.length; i++) {
                         var indexNews = indexNewsList[i];
                         indexNewsHtml += ("<dd style=\"text-align:left;\"><span>[" + indexNews.catName + "]</span><a\n" +
-                            "                            href=\"/about/newsInfo-"+indexNews.id+".html\">" + indexNews.title + "</a>\n" +
+                            "                            href=\"/about/newsInfo-" + indexNews.id + ".html\">" + indexNews.title + "</a>\n" +
                             "                    </dd>");
                     }
                     $("#indexNews").html(indexNewsHtml);
@@ -368,24 +369,25 @@
                     var clickRankBooks = data.data;
                     var clickRankBooksHtml = "";
                     for (var i = 0; i < clickRankBooks.length; i++) {
+                        var clickRankBook = clickRankBooks[i];
                         var classHtml = "";
+                        var imageHtml = "";
                         if (i == 0) {
                             classHtml = "on";
+                            imageHtml = "<img src=\"" + clickRankBook.picUrl + "\" alt=\"" + clickRankBook.bookName + "\"/>";
                         }
                         if (i < 3) {
                             classHtml += (" num" + (i + 1));
                         }
-                        var clickRankBook = clickRankBooks[i];
                         clickRankBooksHtml += ("<li class=\"" + classHtml + "\">\n" +
                             "                            <div class=\"book_name\">\n" +
-                            "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/"+clickRankBook.id+".html\">" + clickRankBook.bookName + "</a>\n" +
+                            "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + clickRankBook.id + ".html\">" + clickRankBook.bookName + "</a>\n" +
                             "                            </div>\n" +
                             "                            <div class=\"book_intro\">\n" +
                             "                                <div class=\"cover\">\n" +
-                            "                                    <a href=\"book/"+clickRankBook.id+".html\"><img src=\"" + clickRankBook.picUrl + "\"\n" +
-                            "                                                             alt=\"" + clickRankBook.bookName + "\"/></a>\n" +
+                            "                                    <a href=\"book/" + clickRankBook.id + ".html\">"+ imageHtml +"</a>\n" +
                             "                                </div>\n" +
-                            "                                <a class=\"txt\" href=\"/book/"+clickRankBook.id+".html\">" + clickRankBook.bookDesc + "</a>\n" +
+                            "                                <a class=\"txt\" href=\"/book/" + clickRankBook.id + ".html\">" + clickRankBook.bookDesc + "</a>\n" +
                             "                            </div>\n" +
                             "\n" +
                             "                        </li>");
@@ -411,25 +413,25 @@
                     var newRankBooks = data.data;
                     var newRankBooksHtml = "";
                     for (var i = 0; i < newRankBooks.length; i++) {
+                        var newRankBook = newRankBooks[i];
                         var classHtml = "";
+                        var imageHtml = "";
                         if (i == 0) {
                             classHtml = "on";
+                            imageHtml = "<img src=\"" + newRankBook.picUrl + "\" alt=\"" + newRankBook.bookName + "\"/>";
                         }
                         if (i < 3) {
                             classHtml += (" num" + (i + 1));
                         }
-                        var newRankBook = newRankBooks[i];
                         newRankBooksHtml += ("<li class=\"" + classHtml + "\">\n" +
                             "                            <div class=\"book_name\">\n" +
-                            "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/"+newRankBook.id+".html\">" + newRankBook.bookName + "</a>\n" +
+                            "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + newRankBook.id + ".html\">" + newRankBook.bookName + "</a>\n" +
                             "                            </div>\n" +
                             "                            <div class=\"book_intro\">\n" +
                             "                                <div class=\"cover\">\n" +
-                            "                                    <a href=\"book/"+newRankBook.id+".html\"><img\n" +
-                            "                                            src=\"" + newRankBook.picUrl + "\"\n" +
-                            "                                            alt=\"" + newRankBook.bookName + "\"/></a>\n" +
+                            "                                    <a href=\"book/" + newRankBook.id + ".html\">" + imageHtml + "</a>\n" +
                             "                                </div>\n" +
-                            "                                <a class=\"txt\" href=\"/book/"+newRankBook.id+".html\">" + newRankBook.bookDesc + "</a>\n" +
+                            "                                <a class=\"txt\" href=\"/book/" + newRankBook.id + ".html\">" + newRankBook.bookDesc + "</a>\n" +
                             "                            </div>\n" +
                             "\n" +
                             "                        </li>");
@@ -456,34 +458,34 @@
                     var updateRankBookHtml = "";
                     var updateRankBookHtml2 = "";
                     for (var i = 0; i < updateRankBooks.length; i++) {
+                        var updateRankBook = updateRankBooks[i];
                         var classHtml = "";
+                        var imageHtml = "";
                         if (i == 0) {
                             classHtml = "on";
+                            imageHtml = "<img\ src=\"" + updateRankBook.picUrl + "\" alt=\"" + updateRankBook.bookName + "\"/>";
                         }
                         if (i < 3) {
                             classHtml += (" num" + (i + 1));
                         }
-                        var updateRankBook = updateRankBooks[i];
                         if (i < 10) {
                             updateRankBookHtml += ("<li class=\"" + classHtml + "\">\n" +
                                 "                            <div class=\"book_name\">\n" +
-                                "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/"+updateRankBook.id+".html\">" + updateRankBook.bookName + "</a>\n" +
+                                "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookName + "</a>\n" +
                                 "                            </div>\n" +
                                 "                            <div class=\"book_intro\">\n" +
                                 "                                <div class=\"cover\">\n" +
-                                "                                    <a href=\"book/"+updateRankBook.id+".html\"><img\n" +
-                                "                                            src=\"" + updateRankBook.picUrl + "\"\n" +
-                                "                                            alt=\"" + updateRankBook.bookName + "\"/></a>\n" +
+                                "                                    <a href=\"book/" + updateRankBook.id + ".html\">" + imageHtml + "</a>\n" +
                                 "                                </div>\n" +
-                                "                                <a class=\"txt\" href=\"/book/"+updateRankBook.id+".html\">" + updateRankBook.bookDesc + "</a>\n" +
+                                "                                <a class=\"txt\" href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookDesc + "</a>\n" +
                                 "                            </div>\n" +
                                 "\n" +
                                 "                        </li>");
                         }
                         updateRankBookHtml2 += ("<tr>\n" +
-                            "                        <td class=\"style\"><a href=\"book/bookclass.html?c="+updateRankBook.catId+"\">[" + updateRankBook.catName + "]</a></td>\n" +
-                            "                        <td class=\"name\"><a href=\"/book/"+updateRankBook.id+".html\">" + updateRankBook.bookName + "</a></td>\n" +
-                            "                        <td class=\"chapter\"><a href=\"/book/"+updateRankBook.id+".html\">" + updateRankBook.lastIndexName + "</a>\n" +
+                            "                        <td class=\"style\"><a href=\"book/bookclass.html?c=" + updateRankBook.catId + "\">[" + updateRankBook.catName + "]</a></td>\n" +
+                            "                        <td class=\"name\"><a href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookName + "</a></td>\n" +
+                            "                        <td class=\"chapter\"><a href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.lastIndexName + "</a>\n" +
                             "                            <i class=\"\"></i>\n" +
                             "                        </td>\n" +
                             "                        <td class=\"author\"><a href=\"javascript:void(0)\">" + updateRankBook.authorName + "</a></td>\n" +
@@ -514,7 +516,7 @@
                     var friendLinkHtml = "";
                     for (var i = 0; i < friendLinkList.length; i++) {
                         var friendLink = friendLinkList[i];
-                        friendLinkHtml += ("<a target='_blank' href=\""+friendLink.linkUrl+"\">"+friendLink.linkName+"</a>");
+                        friendLinkHtml += ("<a target='_blank' href=\"" + friendLink.linkUrl + "\">" + friendLink.linkName + "</a>");
                     }
                     $("#friendLink").append(friendLinkHtml);
                 } else {
