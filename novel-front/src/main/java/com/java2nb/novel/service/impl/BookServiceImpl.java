@@ -126,9 +126,9 @@ public class BookServiceImpl implements BookService {
                     type = 0;
                 } else if (i < 14) {
                     type = 1;
-                } else if (i < 20) {
+                } else if (i < 19) {
                     type = 2;
-                } else if (i < 26) {
+                } else if (i < 25) {
                     type = 3;
                 } else {
                     type = 4;
