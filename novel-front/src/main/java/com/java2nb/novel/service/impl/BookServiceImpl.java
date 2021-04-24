@@ -830,5 +830,18 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Override
+    public void updateBookPic(Long bookId, String bookPic, Long authorId) {
+        bookMapper.update(update(book)
+                .set(picUrl)
+                .equalTo(bookPic)
+                .set(updateTime)
+                .equalTo(new Date())
+                .where(id, isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+    }
+
 
 }

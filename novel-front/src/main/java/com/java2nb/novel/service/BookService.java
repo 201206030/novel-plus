@@ -279,4 +279,12 @@ public interface BookService {
      * @param authorId
      */
     void updateBookContent( Long indexId, String indexName, String content, Long authorId);
+
+    /**
+     * 修改小说封面
+     * @param bookId
+     * @param bookPic
+     * @param authorId
+     */
+    void updateBookPic(Long bookId, String bookPic, Long authorId);
 }

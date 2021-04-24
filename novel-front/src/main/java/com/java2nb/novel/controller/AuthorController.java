@@ -161,6 +161,17 @@ public class AuthorController extends BaseController{
     }
 
     /**
+     * 修改小说封面
+     */
+    @PostMapping("updateBookPic")
+    public ResultBean updateBookPic(@RequestParam("bookId") Long bookId,@RequestParam("bookPic") String bookPic,HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        bookService.updateBookPic(bookId,bookPic, author.getId());
+        return ResultBean.ok();
+    }
+
+
+    /**
      * 作家日收入统计数据分页列表查询
      * */
     @GetMapping("listIncomeDailyByPage")
