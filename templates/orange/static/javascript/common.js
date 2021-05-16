@@ -125,3 +125,35 @@ function logout() {
     $.cookie('Authorization', null,{ path: '/'  });
     location.reload();
 }
+
+
+function isImg(str) {
+    return !str.search("[.]+(jpg|jpeg|swf|gif|png|JPG|JPEG|SWF|GIF|PNG)$");
+}
+
+
+//校验图片上传
+function checkPicUpload(file){
+
+    if(!isImg(file.value.substr(file.value.lastIndexOf(".")))){
+        layer.alert('只能上传图片格式的文件！');
+        return false;
+    }
+    var fileSize = 0;
+    var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+    if (isIE && !file.files) {
+        var filePath = file.value;
+        var fileSystem = new ActiveXObject("Scripting.FileSystemfileect");
+        var file = fileSystem.GetFile (filePath);
+        fileSize = file.Size;
+    }else {
+        fileSize = file.files[0].size;
+    }
+    fileSize=Math.round(fileSize/1024*100)/100; //单位为KB
+    if(fileSize>=1024){
+        layer.alert('上传的图片大小不能超过1M！');
+        return false;
+    }
+    return true;
+}
+
