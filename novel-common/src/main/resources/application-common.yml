@@ -11,6 +11,11 @@ spring:
     generator:
       write-numbers-as-strings: true
 
+  #上传文件的最大值（1M）
+  servlet:
+    multipart:
+      max-file-size: 1048576
+
 #缓存类型，ehcache(默认)、redis
 cache:
   type: ehcache
@@ -24,5 +29,7 @@ mybatis:
 
 logging:
   config: classpath:logback-boot.xml
+
+
 
 

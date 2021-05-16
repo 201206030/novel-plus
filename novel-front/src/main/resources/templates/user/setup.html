@@ -96,45 +96,48 @@
         var file = $("#file0").val(); //文件名称
         if (file != "") {
 
-            $.ajaxFileUpload({
-                url : "/file/upload", //用于文件上传的服务器端请求地址
-                secureuri : false, //是否需要安全协议，一般设置为false
-                fileElementId : "file0", //文件上传域的ID
-                dataType : "json", //返回值类型 一般设置为json
-                type : "post",
-                success : function(data) { //服务器成功响应处理函数
-                    if (data.code == 200) {
+            if(checkPicUpload($("#file0")[0])) {
 
-                        $.ajax({
-                            type: "POST",
-                            url: "/user/updateUserInfo",
-                            data: {'userPhoto':data.data},
-                            dataType: "json",
-                            success: function (data) {
-                                if (data.code == 200) {
-                                    window.location.href = '/user/setup.html';
+                $.ajaxFileUpload({
+                    url: "/file/picUpload", //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: "file0", //文件上传域的ID
+                    dataType: "json", //返回值类型 一般设置为json
+                    type: "post",
+                    success: function (data) { //服务器成功响应处理函数
+                        if (data.code == 200) {
 
-                                } else if (data.code == 1001) {
-                                    //未登录
-                                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/updateUserInfo",
+                                data: {'userPhoto': data.data},
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        window.location.href = '/user/setup.html';
 
-                                } else {
-                                    layer.alert(data.msg);
+                                    } else if (data.code == 1001) {
+                                        //未登录
+                                        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                                    } else {
+                                        layer.alert(data.msg);
+                                    }
+
+                                },
+                                error: function () {
+                                    layer.alert('网络异常');
                                 }
+                            })
 
-                            },
-                            error: function () {
-                                layer.alert('网络异常');
-                            }
-                        })
+                        } else {
+                            layer.alert(data.msg);
+                        }
 
-                    }else {
-                        layer.alert('图片上传失败');
                     }
 
-                }
-
-            });
+                });
+            }
         } else {
             alert("请选择上传文件！");
         }

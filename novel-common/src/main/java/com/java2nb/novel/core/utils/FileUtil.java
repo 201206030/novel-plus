@@ -1,6 +1,7 @@
 package com.java2nb.novel.core.utils;
 
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.client.utils.DateUtils;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
 import java.util.Objects;
@@ -19,13 +21,14 @@ import java.util.Objects;
  * 文件操作工具类
  * @author 11797
  */
+@UtilityClass
 @Slf4j
 public class FileUtil {
 
     /**
      * 网络图片转本地
      * */
-    public static String network2Local(String picSrc,String picSavePath,String visitPrefix) {
+    public String network2Local(String picSrc,String picSavePath,String visitPrefix) {
         InputStream input = null;
         OutputStream out = null;
         try {
@@ -79,6 +82,22 @@ public class FileUtil {
 
 
         return picSrc;
+    }
+
+
+    /**
+     * 判断文件是否为图片
+     * @param file 需要判断的文件
+     * @return true:是图片，false:不是图片
+     * */
+    @SneakyThrows
+    public boolean isImage(File file){
+
+        BufferedImage bi = ImageIO.read(file);
+
+        return bi != null;
+
+
     }
 
 

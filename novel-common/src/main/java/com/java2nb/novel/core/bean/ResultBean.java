@@ -30,9 +30,9 @@ public class ResultBean<T> implements Serializable {
 
     }
 
-    private ResultBean(ResponseStatus ResponseStatus) {
-        this.code = ResponseStatus.getCode();;
-        this.msg = ResponseStatus.getMsg();
+    private ResultBean(ResponseStatus responseStatus) {
+        this.code = responseStatus.getCode();;
+        this.msg = responseStatus.getMsg();
     }
 
     private ResultBean(T data) {
@@ -44,30 +44,30 @@ public class ResultBean<T> implements Serializable {
     /**
      * 业务处理成功,无数据返回
      * */
-    public static ResultBean ok() {
-        return new ResultBean();
+    public static ResultBean<Void> ok() {
+        return new ResultBean<>();
     }
 
     /**
      * 业务处理成功，有数据返回
      * */
-    public static <T> ResultBean ok(T data) {
-        return new ResultBean(data);
+    public static <T> ResultBean<T> ok(T data) {
+        return new ResultBean<>(data);
     }
 
     /**
      * 业务处理失败
      * */
-    public static ResultBean fail(ResponseStatus ResponseStatus) {
-        return new ResultBean(ResponseStatus);
+    public static ResultBean<Void> fail(ResponseStatus responseStatus) {
+        return new ResultBean<>(responseStatus);
     }
 
 
     /**
      * 系统错误
      * */
-    public static ResultBean error() {
-        return new ResultBean(ResponseStatus.ERROR);
+    public static ResultBean<Void> error() {
+        return new ResultBean<>(ResponseStatus.ERROR);
     }
 }
 

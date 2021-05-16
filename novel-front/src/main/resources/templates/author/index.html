@@ -138,6 +138,7 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script src="/javascript/date.js" type="text/javascript"></script>
+<script src="/javascript/common.js" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
     search(1, 5);
@@ -281,44 +282,46 @@
     function picChange(bookId) {
         var file = $("#file0").val(); //文件名称
         if (file != "") {
+            if(checkPicUpload($("#file0")[0])) {
 
-            $.ajaxFileUpload({
-                url : "/file/upload", //用于文件上传的服务器端请求地址
-                secureuri : false, //是否需要安全协议，一般设置为false
-                fileElementId : "file0", //文件上传域的ID
-                dataType : "json", //返回值类型 一般设置为json
-                type : "post",
-                success : function(data) { //服务器成功响应处理函数
-                    if (data.code == 200) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/author/updateBookPic",
-                            data: {'bookId':bookId,'bookPic':data.data},
-                            dataType: "json",
-                            success: function (data) {
-                                if (data.code == 200) {
+                $.ajaxFileUpload({
+                    url: "/file/picUpload", //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: "file0", //文件上传域的ID
+                    dataType: "json", //返回值类型 一般设置为json
+                    type: "post",
+                    success: function (data) { //服务器成功响应处理函数
+                        if (data.code == 200) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/author/updateBookPic",
+                                data: {'bookId': bookId, 'bookPic': data.data},
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data.code == 200) {
 
-                                    location.reload();
+                                        location.reload();
 
-                                } else {
+                                    } else {
+                                        lock = false;
+                                        layer.alert(data.msg);
+                                    }
+
+                                },
+                                error: function () {
                                     lock = false;
-                                    layer.alert(data.msg);
+                                    layer.alert('网络异常');
                                 }
+                            })
 
-                            },
-                            error: function () {
-                                lock = false;
-                                layer.alert('网络异常');
-                            }
-                        })
+                        } else {
+                            layer.alert(data.msg);
+                        }
 
-                    }else {
-                        layer.alert('图片上传失败');
                     }
 
-                }
-
-            });
+                });
+            }
         } else {
             alert("请选择上传文件！");
         }
