@@ -1,6 +1,7 @@
 package com.java2nb.novel.page;
 
 import com.java2nb.novel.controller.BaseController;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;
@@ -8,6 +9,7 @@ import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.NewsService;
 import com.java2nb.novel.service.UserService;
+import com.java2nb.novel.vo.BookCommentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +80,7 @@ public class PageController extends BaseController {
      */
     @RequestMapping(path = {"/", "/index", "/index.html"})
     public String index(Model model) {
-        model.addAttribute("bookMap",bookService.listBookSettingVO());
+        model.addAttribute("bookMap", bookService.listBookSettingVO());
         return ThreadLocalUtil.getTemplateDir() + "index";
     }
 
@@ -106,13 +108,42 @@ public class PageController extends BaseController {
     @SneakyThrows
     @RequestMapping("/book/{bookId}.html")
     public String bookDetail(@PathVariable("bookId") Long bookId, Model model) {
-        Book book = bookService.queryBookDetail(bookId);
-        model.addAttribute("book", book);
-        if (book.getLastIndexId() != null) {
-            //查询首章目录ID
-            Long firstBookIndexId = bookService.queryFirstBookIndexId(bookId);
-            model.addAttribute("firstBookIndexId", firstBookIndexId);
-        }
+        //加载小说基本信息线程
+        CompletableFuture<Book> bookCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            //查询书籍
+            Book book = bookService.queryBookDetail(bookId);
+            log.debug("加载小说基本信息线程结束");
+            return book;
+        }, threadPoolExecutor);
+        //加载小说评论列表线程
+        CompletableFuture<PageBean<BookCommentVO>> bookCommentPageBeanCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            PageBean<BookCommentVO> bookCommentVOPageBean = bookService.listCommentByPage(null, bookId, 1, 5);
+            log.debug("加载小说评论列表线程结束");
+            return bookCommentVOPageBean;
+        }, threadPoolExecutor);
+        //加载小说首章信息线程，该线程在加载小说基本信息线程执行完毕后才执行
+        CompletableFuture<Long> firstBookIndexIdCompletableFuture = bookCompletableFuture.thenApplyAsync((book) -> {
+            if (book.getLastIndexId() != null) {
+                //查询首章目录ID
+                Long firstBookIndexId = bookService.queryFirstBookIndexId(bookId);
+                log.debug("加载小说基本信息线程结束");
+                return firstBookIndexId;
+            }
+            return null;
+        }, threadPoolExecutor);
+        //加载随机推荐小说线程，该线程在加载小说基本信息线程执行完毕后才执行
+        CompletableFuture<List<Book>> recBookCompletableFuture = bookCompletableFuture.thenApplyAsync((book) -> {
+            List<Book> books = bookService.listRecBookByCatId(book.getCatId());
+            log.debug("加载随机推荐小说线程结束");
+            return books;
+        }, threadPoolExecutor);
+
+
+        model.addAttribute("book", bookCompletableFuture.get());
+        model.addAttribute("firstBookIndexId", firstBookIndexIdCompletableFuture.get());
+        model.addAttribute("recBooks", recBookCompletableFuture.get());
+        model.addAttribute("bookCommentPageBean", bookCommentPageBeanCompletableFuture.get());
+
         return ThreadLocalUtil.getTemplateDir() + "book/book_detail";
     }
 
@@ -136,8 +167,6 @@ public class PageController extends BaseController {
     @SneakyThrows
     @RequestMapping("/book/{bookId}/{bookIndexId}.html")
     public String indexList(@PathVariable("bookId") Long bookId, @PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request, Model model) {
-
-
         //加载小说基本信息线程
         CompletableFuture<Book> bookCompletableFuture = CompletableFuture.supplyAsync(() -> {
             //查询书籍

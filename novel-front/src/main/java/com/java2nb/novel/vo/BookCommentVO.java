@@ -1,6 +1,8 @@
 package com.java2nb.novel.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.java2nb.novel.core.serialize.CommentUserNameSerialize;
 import com.java2nb.novel.entity.BookComment;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ import java.util.Date;
 @Data
 public class BookCommentVO extends BookComment {
 
+    @JsonSerialize(using = CommentUserNameSerialize.class)
     private String createUserName;
 
     private String createUserPhoto;
