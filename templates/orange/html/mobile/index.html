@@ -49,7 +49,7 @@
 
 <!-- 你的HTML代码 -->
 <a name="top"></a>
-<ul  class="layui-nav app" lay-filter="" style="display:none;padding:0 10px;text-align: center">
+<ul class="layui-nav app" lay-filter="" style="display:none;padding:0 10px;text-align: center">
     <li class="layui-nav-item"><a>分类</a>
         <dl class="layui-nav-child">
             <dd><a href="/book/book_ranking.html?catId=1&sort=last_index_update_time">玄幻小说</a></dd>
@@ -145,46 +145,48 @@
         </blockquote>
 
 
-            <div class="layui-container" style="padding: 0px">
+        <div class="layui-container" style="padding: 0px">
 
-                <div class="layui-row" style="text-align: center" id="currentWeek">
-                </div>
+            <div class="layui-row" style="text-align: center" id="currentWeek" th:if="${bookMap['4']}">
+                    <span th:each="book,iterStat : ${bookMap['4']}" th:if="${iterStat.index<3}">
+                        <a th:href="'/book/'+${book.bookId}+'.html'">
+                            <div style="padding: 1%" class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
+                                <img style=" width:100px; height:125px; max-width:100%; max-height:100%;"
+                                     th:src="${book.picUrl}">
+
+                                <br>
+                                <span th:text="${#strings.length(book.bookName) > 5}? (${#strings.substring(book.bookName,0,5)}+'...'): ${book.bookName}  "></span>
+
+                            </div>
+                        </a>
+                   </span>
             </div>
+        </div>
     </div>
     <div class="layui-colla-item">
         <blockquote class="layui-elem-quote" style="text-align: left;font-size: 16px">
             热门推荐
         </blockquote>
 
-            <div class="layui-container">
-                <div class="layui-row" id="hotRecBooks">
+        <div class="layui-container">
+            <div class="layui-row" id="hotRecBooks" th:if="${bookMap['3']}">
+                <div th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}" style="margin-bottom: 5px" class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                    <a th:href="'/book/'+${book.bookId}+'.html'">
+                        <div class="layui-col-xs5 layui-col-sm4 layui-col-md4 layui-col-lg4">
+                            <img style=" width:100px; height:125px;" th:src="${book.picUrl}">
 
-
-                    <!--<div th:each="hotBook : ${hotBooks}" style="margin-top: 1%"
-                     class="layui-col-xs12 layui-col-sm6 layui-col-md6 layui-col-lg6">
-                    <a th:href="'/book/'+${hotBook.id}+'.html'">
-                        <div class="layui-col-xs5 layui-col-sm3 layui-col-md3 layui-col-lg3">
-                            <img style=" width:100px; height:125px;"
-                                 th:src="${hotBook.picUrl}"/>
                         </div>
-
-                        <div class="layui-col-xs7 layui-col-sm6 layui-col-md7 layui-col-lg7"
-                             style="float: left;padding-right: 10px">
-                            <div><b th:text="${hotBook.bookName}"></b></div>
-                            <div class="layui-col-xs8 layui-col-sm9 layui-col-md10 layui-col-lg10"
-                                 th:text="'作者：'+ ${hotBook.author}"></div>
-                            <div class="layui-col-xs3 layui-col-sm2 layui-col-md1 layui-col-lg1" style="text-align: right;">
-                            <b><i style="color: red"
-                                  th:text="${hotBook.score} + '分'"></i></b></div>
-                           </div>
-                            <div class="layui-elip layui-col-xs12 layui-col-sm9 layui-col-md10 layui-col-lg10 layui-col-sm9 layui-col-md10 layui-col-lg10"
-                                 th:text="${hotBook.bookDesc}">
-                            </div>
-
-
-
+                        <div class="layui-col-xs5 layui-col-sm6 layui-col-md6 layui-col-lg6">
+                            <ul>
+                                <li style="padding-bottom: 2px" class="line-limit-length" th:text="${book.bookName}"></li>
+                                <li style="padding-bottom: 2px;color: #a6a6a6" th:text="'作者：'+${book.authorName}"></li>
+                                <li style="color: #a6a6a6;width: 180px;height:60px;overflow: hidden" th:utext="${book.bookDesc}">                                </li></ul>
+                        </div>
+                        <div style="font-style: italic;color: red" class="layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2"></div>
                     </a>
-                </div>-->
+                </div>
+
+
             </div>
 
         </div>
@@ -209,7 +211,6 @@
             <div class="layui-row" id="updateRankBooks">
 
 
-
             </div>
         </div>
 
@@ -227,87 +228,6 @@
 
 
 <script>
-    //加载首页书籍设置数据
-    $.ajax({
-        type: "get",
-        url: "/book/listBookSetting",
-        data: {},
-        dataType: "json",
-        success: function (data) {
-            if (data.code == 200) {
-
-                //精品推荐
-                var rightListBooks = data.data[4];
-                var rightListBooksHtml = "";
-                for (var i = 0; i < 3; i++) {
-                    var rightListBook = rightListBooks[i];
-                    var classHtml = "";
-                    if (i == 0) {
-                        classHtml = "on";
-                    }
-                    if (i < 3) {
-                        classHtml += (" num" + (i + 1));
-                    }
-
-                    rightListBooksHtml += (" <span>\n" +
-                        "                    <a href=\"/book/"+rightListBook.bookId+".html\">\n" +
-                        "                        <div style=\"padding: 1%\" class=\"layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4\">\n" +
-                        "                            <img style=\" width:100px; height:125px; max-width:100%; max-height:100%;\"\n" +
-                        "                                 src=\""+rightListBook.picUrl+"\"/>\n" +
-                        "\n" +
-                        "                            <br/>\n" +
-                        "                            <span >"+(rightListBook.bookName.length>5?(rightListBook.bookName.substr(0,5)+'...'):rightListBook.bookName)+"</span>\n" +
-                        "\n" +
-                        "                        </div>\n" +
-                        "                    </a>\n" +
-                        "                        </span>");
-                }
-                $("#currentWeek").html(rightListBooksHtml);
-
-                //热门推荐
-                var hotRecBooks = data.data[3];
-                var hotRecBooksHtml = "";
-                for (var i = 0; i < 6; i++) {
-                    var hotRecBook = hotRecBooks[i];
-
-                    if(hotRecBook.bookDesc){
-                        hotRecBook.bookDesc = hotRecBook.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"");
-                    }
-
-                    //手机浏览器不支持String.replaceAll()方法
-
-                    hotRecBooksHtml += ("<div style=\"margin-bottom: 5px\" class=\"layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4\">\n" +
-                        "                        <a href=\"/book/"+hotRecBook.bookId+".html\">\n" +
-                        "                            <div class=\"layui-col-xs5 layui-col-sm4 layui-col-md4 layui-col-lg4\" >\n" +
-                        "                                <img style=\" width:100px; height:125px;\"\n" +
-                        "                                     src=\""+hotRecBook.picUrl+"\"/>\n" +
-                        "\n" +
-                        "                            </div>\n" +
-                        "                            <div class=\"layui-col-xs5 layui-col-sm6 layui-col-md6 layui-col-lg6\">\n" +
-                        "                                <ul>\n" +
-                        "                                    <li style='padding-bottom: 2px' class=\"line-limit-length\" >"+hotRecBook.bookName+"</li>\n" +
-                        "                                    <li style='padding-bottom: 2px;color: #a6a6a6'>作者："+hotRecBook.authorName+"</li>\n" +
-                        "                                    <li style=\"color: #a6a6a6;width: 180px;height:60px;overflow: hidden\">"+hotRecBook.bookDesc +
-                        "                                </ul>\n" +
-                        "                            </div>\n" +
-                        "                            <div style=\"font-style: italic;color: red\"\n" +
-                        "                                 class=\"layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2\"></div>\n" +
-                        "                        </a>\n" +
-                        "                    </div>");
-                }
-                $("#hotRecBooks").html(hotRecBooksHtml);
-
-
-
-            } else {
-                layer.alert(data.msg);
-            }
-
-        },
-        error: function () {
-            layer.alert('网络异常');
-        }
-    })
 
 
     //更新榜单查询
@@ -323,26 +243,24 @@
                 for (var i = 0; i < 10; i++) {
 
                     var updateRankBook = updateRankBooks[i];
-                    if(updateRankBook.bookDesc){
-                        updateRankBook.bookDesc = updateRankBook.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"");
+                    if (updateRankBook.bookDesc) {
+                        updateRankBook.bookDesc = updateRankBook.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "");
                     }
 
-                        updateRankBookHtml += ("<div style=\"padding-bottom: 30px\"\n" +
-                            "                     class=\"layui-col-xs12 layui-col-sm6 layui-col-md6 layui-col-lg6\">\n" +
-                            "\n" +
-                            "                    <a href=\"/book/"+updateRankBook.id+".html\">\n" +
-                            "                        <div class=\"line-limit-length layui-col-xs8 layui-col-sm6 layui-col-md6 layui-col-lg6\"><span '>"+(i+1)+"."+updateRankBook.bookName+"</span> - <span class=\"layui-elip\" style='color: #a6a6a6;'>"+updateRankBook.authorName+"</span>\n" +
-                            "                        </div>\n" +
-                            "                        <div class=\"layui-col-sm3 layui-col-md3 layui-col-lg3\"\n" +
-                            "                             style=\"color: #FF5722;float: right;margin-right:5px\"><i>"+updateRankBook.lastIndexUpdateTime+"</i></div>\n" +
-                            "\n" +
-                            "                        <div style=\"clear: both\"></div>\n" +
-                            "                        <div style=\"color: #a6a6a6;padding-left: 5px;padding-top: 5px\"\n" +
-                            "                             class=\"layui-elip layui-col-md11 layui-col-sm11 layui-col-lg11\">简介：　　"+updateRankBook.bookDesc+"" +
-                            "                    </div></a>\n" +
-                            "                </div>");
-
-
+                    updateRankBookHtml += ("<div style=\"padding-bottom: 30px\"\n" +
+                        "                     class=\"layui-col-xs12 layui-col-sm6 layui-col-md6 layui-col-lg6\">\n" +
+                        "\n" +
+                        "                    <a href=\"/book/" + updateRankBook.id + ".html\">\n" +
+                        "                        <div class=\"line-limit-length layui-col-xs8 layui-col-sm6 layui-col-md6 layui-col-lg6\"><span '>" + (i + 1) + "." + updateRankBook.bookName + "</span> - <span class=\"layui-elip\" style='color: #a6a6a6;'>" + updateRankBook.authorName + "</span>\n" +
+                        "                        </div>\n" +
+                        "                        <div class=\"layui-col-sm3 layui-col-md3 layui-col-lg3\"\n" +
+                        "                             style=\"color: #FF5722;float: right;margin-right:5px\"><i>" + updateRankBook.lastIndexUpdateTime + "</i></div>\n" +
+                        "\n" +
+                        "                        <div style=\"clear: both\"></div>\n" +
+                        "                        <div style=\"color: #a6a6a6;padding-left: 5px;padding-top: 5px\"\n" +
+                        "                             class=\"layui-elip layui-col-md11 layui-col-sm11 layui-col-lg11\">简介：　　" + updateRankBook.bookDesc + "" +
+                        "                    </div></a>\n" +
+                        "                </div>");
 
 
                 }
@@ -357,7 +275,6 @@
             layer.alert('网络异常');
         }
     })
-
 
 
     function moreNewBooks(event) {
