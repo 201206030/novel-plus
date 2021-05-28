@@ -3,16 +3,6 @@ var UserPay = {
     czPayPalData: [[20, "10000屋币"], [50, "25000屋币"], [100, "50000屋币"], [80, "全站包年阅读"]],
     sendPay: function () {
         $("#payform").submit();
-    },
-    GetPayState: function (payId) {
-        $.post("/api/book.aspx", { act: "getpaystatus", pid: payId }, function (data, textStatus) {
-            if (data == "1") {
-                location.href = '/pay/wx_return.aspx?out_trade_no=sc'+payId;
-            }
-            else {
-                setTimeout("UserPay.GetPayState("+payId+")",3000);
-            }
-        }, "html");
     }
 }
 
@@ -46,20 +36,6 @@ $(function () {
             $("#ulZFWXXJ").show();
         }
 
-        var postUrl = "";
-        switch (type)
-        {
-            case "1":
-                postUrl = "sendalipay.aspx";
-                break;
-            case "2":
-                postUrl = "sendwxpaynowqr.aspx";
-                break;
-            case "3":
-                postUrl = "sendpaypal.aspx";
-                break;
-        }
-        $("#payform").attr("action", postUrl);
     })
 
     $("#ulZFWX li").click(function () {

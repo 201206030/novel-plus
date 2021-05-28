@@ -55,7 +55,7 @@ public class NovelFilter implements Filter {
             userMark = UUIDUtil.getUUID32();
             CookieUtil.setCookie(resp,Constants.USER_CLIENT_MARK_KEY,userMark);
         }
-        ThreadLocalUtil.setCientId(userMark);
+        ThreadLocalUtil.setClientId(userMark);
         //根据浏览器类型选择前端模板
         String to = req.getParameter("to");
         CacheService cacheService = SpringUtil.getBean(CacheService.class);

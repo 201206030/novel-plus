@@ -77,7 +77,8 @@ public class PageController extends BaseController {
      * 首页
      */
     @RequestMapping(path = {"/", "/index", "/index.html"})
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("bookMap",bookService.listBookSettingVO());
         return ThreadLocalUtil.getTemplateDir() + "index";
     }
 
