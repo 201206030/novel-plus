@@ -41,7 +41,7 @@ public class ThreadLocalUtil {
     /**
      * 设置当前访问线程的客户端ID
      * */
-    public static void setCientId(String id){
+    public static void setClientId(String id){
         clientId.set(id);
     }
 
