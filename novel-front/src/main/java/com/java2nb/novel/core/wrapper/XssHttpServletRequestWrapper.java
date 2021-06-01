@@ -15,11 +15,6 @@ import java.util.List;
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     /**
-     * 假如有有html 代码是自己传来的  需要设定对应的name 不过滤
-     */
-    private static final List<String> noFilterNames = Arrays.asList("content");
-
-    /**
      * @param request
      */
     public XssHttpServletRequestWrapper(HttpServletRequest request) {
@@ -29,7 +24,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
         String[] values = super.getParameterValues(name);
-        if (!noFilterNames.contains(name) && values != null) {
+        if (values != null) {
             int length = values.length;
             String[] escapseValues = new String[length];
             for (int i = 0; i < length; i++) {
