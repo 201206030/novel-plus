@@ -45,6 +45,8 @@
                 </dl>
 
                 <dl class="hot_notice" id="indexNews">
+                    <dd style="text-align:left;" th:each="news : ${newsList}"><span th:text="'['+${news.catName}+']'"></span><a th:href="'/about/newsInfo-'+${news.id}+'.html'" th:utext="${news.title}"></a>
+                    </dd>
 
                 </dl>
             </div>
@@ -230,33 +232,6 @@
 
     lazyload();
     $(function () {
-        //首页新闻查询
-        $.ajax({
-            type: "get",
-            url: "/news/listIndexNews",
-            data: {},
-            dataType: "json",
-            success: function (data) {
-                if (data.code == 200) {
-                    var indexNewsList = data.data;
-                    var indexNewsHtml = "";
-                    for (var i = 0; i < indexNewsList.length; i++) {
-                        var indexNews = indexNewsList[i];
-                        indexNewsHtml += ("<dd style=\"text-align:left;\"><span>[" + indexNews.catName + "]</span><a\n" +
-                            "                            href=\"/about/newsInfo-" + indexNews.id + ".html\">" + indexNews.title + "</a>\n" +
-                            "                    </dd>");
-                    }
-                    $("#indexNews").html(indexNewsHtml);
-                } else {
-                    layer.alert(data.msg);
-                }
-
-            },
-            error: function () {
-                layer.alert('网络异常');
-            }
-        })
-
 
         //点击榜单数据查询
         $.ajax({

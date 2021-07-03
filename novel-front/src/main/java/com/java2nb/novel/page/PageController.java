@@ -10,6 +10,7 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.NewsService;
 import com.java2nb.novel.service.UserService;
 import com.java2nb.novel.vo.BookCommentVO;
+import com.java2nb.novel.vo.BookSettingVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -78,9 +80,15 @@ public class PageController extends BaseController {
     /**
      * 首页
      */
+    @SneakyThrows
     @RequestMapping(path = {"/", "/index", "/index.html"})
     public String index(Model model) {
-        model.addAttribute("bookMap", bookService.listBookSettingVO());
+        //加载小说首页小说基本信息线程
+        CompletableFuture<Map<Byte, List<BookSettingVO>>> bookCompletableFuture = CompletableFuture.supplyAsync(bookService::listBookSettingVO, threadPoolExecutor);
+        //加载首页新闻线程
+        CompletableFuture<List<News>> newsCompletableFuture = CompletableFuture.supplyAsync(newsService::listIndexNews, threadPoolExecutor);
+        model.addAttribute("bookMap", bookCompletableFuture.get());
+        model.addAttribute("newsList", newsCompletableFuture.get());
         return ThreadLocalUtil.getTemplateDir() + "index";
     }
 
