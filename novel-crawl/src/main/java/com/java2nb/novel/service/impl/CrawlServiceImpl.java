@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
+import com.java2nb.novel.core.crawl.ChapterBean;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
@@ -303,9 +304,9 @@ public class CrawlServiceImpl implements CrawlService {
             book.setCrawlLastTime(new Date());
             book.setId(new IdWorker().nextId());
             //解析章节目录
-            Map<Integer, List> indexAndContentList = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0));
+            ChapterBean chapter = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0));
 
-            bookService.saveBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY));
+            bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
 
         } else {
             //只更新书籍的爬虫相关字段

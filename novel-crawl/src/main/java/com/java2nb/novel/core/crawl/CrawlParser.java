@@ -26,15 +26,11 @@ import static java.util.regex.Pattern.compile;
 @Slf4j
 public class CrawlParser {
 
-    private static IdWorker idWorker = new IdWorker();
+    private static final IdWorker idWorker = new IdWorker();
 
-    public static final Integer BOOK_INDEX_LIST_KEY = 1;
+    private static final RestTemplate restTemplate = RestTemplateUtil.getInstance("utf-8");
 
-    public static final Integer BOOK_CONTENT_LIST_KEY = 2;
-
-    private static RestTemplate restTemplate = RestTemplateUtil.getInstance("utf-8");
-
-    private static ThreadLocal<Integer> retryCount = new ThreadLocal<>();
+    private static final ThreadLocal<Integer> retryCount = new ThreadLocal<>();
 
     @SneakyThrows
     public static Book parseBook(RuleBean ruleBean, String bookId) {
@@ -113,14 +109,14 @@ public class CrawlParser {
                         }
                     }
 
-                    if (StringUtils.isNotBlank(ruleBean.getUpadateTimePatten()) && StringUtils.isNotBlank(ruleBean.getUpadateTimeFormatPatten())) {
-                        Pattern updateTimePatten = compile(ruleBean.getUpadateTimePatten());
+                    if (StringUtils.isNotBlank(ruleBean.getUpdateTimePatten()) && StringUtils.isNotBlank(ruleBean.getUpdateTimeFormatPatten())) {
+                        Pattern updateTimePatten = compile(ruleBean.getUpdateTimePatten());
                         Matcher updateTimeMatch = updateTimePatten.matcher(bookDetailHtml);
                         boolean isFindUpdateTime = updateTimeMatch.find();
                         if (isFindUpdateTime) {
                             String updateTime = updateTimeMatch.group(1);
                             //设置更新时间
-                            book.setLastIndexUpdateTime(new SimpleDateFormat(ruleBean.getUpadateTimeFormatPatten()).parse(updateTime));
+                            book.setLastIndexUpdateTime(new SimpleDateFormat(ruleBean.getUpdateTimeFormatPatten()).parse(updateTime));
 
                         }
                     }
@@ -142,10 +138,7 @@ public class CrawlParser {
         return book;
     }
 
-    public static Map<Integer, List> parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Map<Integer, BookIndex> hasIndexs) {
-        Map<Integer, List> result = new HashMap<>(2);
-        result.put(BOOK_INDEX_LIST_KEY, new ArrayList(0));
-        result.put(BOOK_CONTENT_LIST_KEY, new ArrayList(0));
+    public static ChapterBean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Map<Integer, BookIndex> existBookIndexMap) {
 
         Date currentDate = new Date();
 
@@ -171,11 +164,11 @@ public class CrawlParser {
             int indexNum = 0;
 
             //总字数
-            Integer totalWordCount = book.getWordCount() == null ? 0 : book.getWordCount();
+            int totalWordCount = book.getWordCount() == null ? 0 : book.getWordCount();
 
             while (isFindIndex) {
 
-                BookIndex hasIndex = hasIndexs.get(indexNum);
+                BookIndex hasIndex = existBookIndexMap.get(indexNum);
                 String indexName = indexNameMatch.group(1);
 
                 if (hasIndex == null || !StringUtils.deleteWhitespace(hasIndex.getIndexName()).equals(StringUtils.deleteWhitespace(indexName))) {
@@ -221,7 +214,7 @@ public class CrawlParser {
                         BookIndex bookIndex = new BookIndex();
                         bookIndex.setIndexName(indexName);
                         bookIndex.setIndexNum(indexNum);
-                        Integer wordCount = StringUtil.getStrValidWordCount(content);
+                        int wordCount = StringUtil.getStrValidWordCount(content);
                         bookIndex.setWordCount(wordCount);
                         indexList.add(bookIndex);
 
@@ -277,15 +270,20 @@ public class CrawlParser {
 
             if (indexList.size() == contentList.size() && indexList.size() > 0) {
 
-                result.put(BOOK_INDEX_LIST_KEY, indexList);
-                result.put(BOOK_CONTENT_LIST_KEY, contentList);
+                return new ChapterBean(){{
+                    setBookIndexList(indexList);
+                    setBookContentList(contentList);
+                }};
 
             }
 
         }
 
 
-        return result;
+        return new ChapterBean(){{
+            setBookIndexList(new ArrayList<>(0));
+            setBookContentList(new ArrayList<>(0));
+        }};
     }
 
 
@@ -294,6 +292,7 @@ public class CrawlParser {
             ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
             if (forEntity.getStatusCode() == HttpStatus.OK) {
                 String body = forEntity.getBody();
+                assert body != null;
                 if (body.length() < Constants.INVALID_HTML_LENGTH) {
                     return processErrorHttpResult(url);
                 }

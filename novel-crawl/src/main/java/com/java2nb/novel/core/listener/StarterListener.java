@@ -1,6 +1,7 @@
 package com.java2nb.novel.core.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java2nb.novel.core.crawl.ChapterBean;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.entity.*;
@@ -16,9 +17,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Administrator
@@ -66,15 +67,15 @@ public class StarterListener implements ServletContextListener {
                                 //查询已存在的章节
                                 Map<Integer, BookIndex> existBookIndexMap = bookService.queryExistBookIndexMap(needUpdateBook.getId());
                                 //解析章节目录
-                                Map<Integer, List> indexAndContentList = CrawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(), book, ruleBean, existBookIndexMap);
-                                bookService.updateBookAndIndexAndContent(book, (List<BookIndex>) indexAndContentList.get(CrawlParser.BOOK_INDEX_LIST_KEY), (List<BookContent>) indexAndContentList.get(CrawlParser.BOOK_CONTENT_LIST_KEY), existBookIndexMap);
+                                ChapterBean chapter = CrawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(), book, ruleBean, existBookIndexMap);
+                                bookService.updateBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList(), existBookIndexMap);
                             } catch (Exception e) {
                                 log.error(e.getMessage(), e);
                             }
 
                         }
-
-                        Thread.sleep(1000 * 60 * 10);
+                        //  休眠10分钟
+                        TimeUnit.MINUTES.sleep(10);
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);
                     }
@@ -107,7 +108,8 @@ public class StarterListener implements ServletContextListener {
 
                     }
 
-                    Thread.sleep(1000 * 60);
+                    //休眠1分钟
+                    TimeUnit.MINUTES.sleep(1);
 
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
