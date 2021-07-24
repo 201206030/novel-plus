@@ -18,7 +18,8 @@
         <div class="channelWrap channelNews cf">
             <div class="news_title">
                 <h2 th:utext="${news.title}"></h2>
-                <p class="from" th:text="'来源：'+${news.sourceName}"> <span class="time" th:text="${#dates.format(news.createTime, 'yy-MM-dd')}"></span></p>
+                <!--while [[...]] corresponds to th:text (i.e. result will be HTML-escaped), [(...)] corresponds to th:utext-->
+                <p class="from">来源：[[${news.sourceName}]] <span class="time" th:text="'时间：'+${#dates.format(news.createTime, 'yy-MM-dd')}"></span> <span class="time" th:text="'点击：'+'888'"></span></p>
             </div>
             <div class="news_info" th:utext="${news.content}">
             </div>
