@@ -32,4 +32,10 @@ public interface NewsService {
      * @return 新闻分页数据
      * */
     PageBean<News> listByPage(int page, int pageSize);
+
+    /**
+     * 增加新闻阅读量
+     * @param newsId 新闻ID
+     * */
+    void addReadCount(Integer newsId);
 }

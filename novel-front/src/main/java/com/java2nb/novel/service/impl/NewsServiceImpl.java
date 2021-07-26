@@ -3,6 +3,7 @@ package com.java2nb.novel.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.utils.BeanUtil;
+import com.java2nb.novel.mapper.FrontNewsMapper;
 import com.java2nb.novel.service.NewsService;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
@@ -27,7 +28,7 @@ import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 @RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
 
-    private final NewsMapper newsMapper;
+    private final FrontNewsMapper newsMapper;
 
     private final CacheService cacheService;
 
@@ -71,5 +72,10 @@ public class NewsServiceImpl implements NewsService {
         PageBean<News> pageBean = new PageBean<>(news);
         pageBean.setList(BeanUtil.copyList(news,NewsVO.class));
         return pageBean;
+    }
+
+    @Override
+    public void addReadCount(Integer newsId) {
+        newsMapper.addReadCount(newsId);
     }
 }

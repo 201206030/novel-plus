@@ -1,11 +1,9 @@
 package com.java2nb.novel.entity;
 
-
-import javax.annotation.Generated;
-import java.io.Serializable;
 import java.util.Date;
+import javax.annotation.Generated;
 
-public class News implements Serializable {
+public class News {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
@@ -20,6 +18,9 @@ public class News implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String title;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Long readCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date createTime;
@@ -84,6 +85,16 @@ public class News implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTitle(String title) {
         this.title = title == null ? null : title.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Long getReadCount() {
+        return readCount;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setReadCount(Long readCount) {
+        this.readCount = readCount;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

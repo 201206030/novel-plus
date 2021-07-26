@@ -513,7 +513,6 @@ public class BookServiceImpl implements BookService {
             //该作者发布过此书名的小说
             throw new BusinessException(ResponseStatus.BOOKNAME_EXISTS);
         }
-        ;
         book.setAuthorName(penName);
         book.setAuthorId(authorId);
         book.setVisitCount(0L);
@@ -566,7 +565,7 @@ public class BookServiceImpl implements BookService {
                 .render(RenderingStrategies.MYBATIS3));
 
         //计算价格
-        int bookPrice = new BigDecimal(wordCount).divide(bookPriceConfig.getWordCount()).multiply(bookPriceConfig.getValue()).intValue();
+        int bookPrice = new BigDecimal(wordCount).multiply(bookPriceConfig.getValue()).divide(bookPriceConfig.getWordCount(),0,BigDecimal.ROUND_DOWN).intValue();
 
         //更新小说目录表
         int indexNum = 0;

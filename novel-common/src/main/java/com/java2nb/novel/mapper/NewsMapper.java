@@ -35,7 +35,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface NewsMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, catId, catName, sourceName, title, createTime, createUserId, updateTime, updateUserId, content);
+    BasicColumn[] selectList = BasicColumn.columnList(id, catId, catName, sourceName, title, readCount, createTime, createUserId, updateTime, updateUserId, content);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -66,6 +66,7 @@ public interface NewsMapper {
         @Result(column="cat_name", property="catName", jdbcType=JdbcType.VARCHAR),
         @Result(column="source_name", property="sourceName", jdbcType=JdbcType.VARCHAR),
         @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
+        @Result(column="read_count", property="readCount", jdbcType=JdbcType.BIGINT),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="create_user_id", property="createUserId", jdbcType=JdbcType.BIGINT),
         @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
@@ -103,6 +104,7 @@ public interface NewsMapper {
             .map(catName).toProperty("catName")
             .map(sourceName).toProperty("sourceName")
             .map(title).toProperty("title")
+            .map(readCount).toProperty("readCount")
             .map(createTime).toProperty("createTime")
             .map(createUserId).toProperty("createUserId")
             .map(updateTime).toProperty("updateTime")
@@ -119,6 +121,7 @@ public interface NewsMapper {
             .map(catName).toProperty("catName")
             .map(sourceName).toProperty("sourceName")
             .map(title).toProperty("title")
+            .map(readCount).toProperty("readCount")
             .map(createTime).toProperty("createTime")
             .map(createUserId).toProperty("createUserId")
             .map(updateTime).toProperty("updateTime")
@@ -135,6 +138,7 @@ public interface NewsMapper {
             .map(catName).toPropertyWhenPresent("catName", record::getCatName)
             .map(sourceName).toPropertyWhenPresent("sourceName", record::getSourceName)
             .map(title).toPropertyWhenPresent("title", record::getTitle)
+            .map(readCount).toPropertyWhenPresent("readCount", record::getReadCount)
             .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
             .map(createUserId).toPropertyWhenPresent("createUserId", record::getCreateUserId)
             .map(updateTime).toPropertyWhenPresent("updateTime", record::getUpdateTime)
@@ -177,6 +181,7 @@ public interface NewsMapper {
                 .set(catName).equalTo(record::getCatName)
                 .set(sourceName).equalTo(record::getSourceName)
                 .set(title).equalTo(record::getTitle)
+                .set(readCount).equalTo(record::getReadCount)
                 .set(createTime).equalTo(record::getCreateTime)
                 .set(createUserId).equalTo(record::getCreateUserId)
                 .set(updateTime).equalTo(record::getUpdateTime)
@@ -191,6 +196,7 @@ public interface NewsMapper {
                 .set(catName).equalToWhenPresent(record::getCatName)
                 .set(sourceName).equalToWhenPresent(record::getSourceName)
                 .set(title).equalToWhenPresent(record::getTitle)
+                .set(readCount).equalToWhenPresent(record::getReadCount)
                 .set(createTime).equalToWhenPresent(record::getCreateTime)
                 .set(createUserId).equalToWhenPresent(record::getCreateUserId)
                 .set(updateTime).equalToWhenPresent(record::getUpdateTime)
@@ -205,6 +211,7 @@ public interface NewsMapper {
             .set(catName).equalTo(record::getCatName)
             .set(sourceName).equalTo(record::getSourceName)
             .set(title).equalTo(record::getTitle)
+            .set(readCount).equalTo(record::getReadCount)
             .set(createTime).equalTo(record::getCreateTime)
             .set(createUserId).equalTo(record::getCreateUserId)
             .set(updateTime).equalTo(record::getUpdateTime)
@@ -221,6 +228,7 @@ public interface NewsMapper {
             .set(catName).equalToWhenPresent(record::getCatName)
             .set(sourceName).equalToWhenPresent(record::getSourceName)
             .set(title).equalToWhenPresent(record::getTitle)
+            .set(readCount).equalToWhenPresent(record::getReadCount)
             .set(createTime).equalToWhenPresent(record::getCreateTime)
             .set(createUserId).equalToWhenPresent(record::getCreateUserId)
             .set(updateTime).equalToWhenPresent(record::getUpdateTime)
