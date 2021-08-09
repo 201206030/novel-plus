@@ -18,6 +18,7 @@
 .news_title h2 { font-size: 20px; }
 .news_title .from { color: #999; display: block; margin: 20px 0; }
 .news_title .time { margin-left: 20px }
+.news_title .click { margin-left: 40px }
 .news_info { padding: 0 60px; line-height: 28px; font-size: 14px; min-height:400px }
 .news_info p { margin-bottom: 30px }
 .aboutBox h2 { font-size:16px; margin-bottom:15px }

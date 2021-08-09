@@ -10,6 +10,7 @@
 
 <div th:replace="common/top :: top('')">
 </div>
+<input type="hidden" id="newsId" th:value="${news.id}"/>
 <div class="main box_center cf">
     <div class="newsMain cf">
         <div class="nav_sub">
@@ -18,7 +19,8 @@
         <div class="channelWrap channelNews cf">
             <div class="news_title">
                 <h2 th:utext="${news.title}"></h2>
-                <p class="from" th:text="'来源：'+${news.sourceName}"> <span class="time" th:text="${#dates.format(news.createTime, 'yy-MM-dd')}"></span></p>
+                <!--while [[...]] corresponds to th:text (i.e. result will be HTML-escaped), [(...)] corresponds to th:utext-->
+                <p class="from">来源：[[${news.sourceName}]] <span class="time" th:text="'时间：'+${#dates.format(news.createTime, 'yy-MM-dd')}"></span> <span class="time" th:text="'阅读量：'+${news.readCount}"></span></p>
             </div>
             <div class="news_info" th:utext="${news.content}">
             </div>
@@ -32,4 +34,8 @@
 </body>
 <div th:replace="common/js :: js"></div>
 <script src="/javascript/bookdetail.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.post("/news/addReadCount", {"newsId": $("#newsId").val()}, function () {
+    });
+</script>
 </html>
