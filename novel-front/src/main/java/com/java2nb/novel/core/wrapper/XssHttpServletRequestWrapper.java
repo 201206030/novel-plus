@@ -26,12 +26,12 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String[] values = super.getParameterValues(name);
         if (values != null) {
             int length = values.length;
-            String[] escapseValues = new String[length];
+            String[] escapeValues = new String[length];
             for (int i = 0; i < length; i++) {
-                escapseValues[i] = values[i].replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+                escapeValues[i] = values[i].replaceAll("<", "&lt;").replaceAll(">", "&gt;");
             }
-            return escapseValues;
+            return escapeValues;
         }
-        return values;
+        return null;
     }
 }

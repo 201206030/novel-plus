@@ -1,6 +1,7 @@
 package com.java2nb.novel.controller;
 
 import com.java2nb.novel.core.bean.ResultBean;
+import com.java2nb.novel.entity.FriendLink;
 import com.java2nb.novel.service.FriendLinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author 11797
@@ -24,7 +27,7 @@ public class FriendLinkController {
      * 查询首页友情链接
      * */
     @GetMapping("listIndexLink")
-    public ResultBean listIndexLink(){
+    public ResultBean<List<FriendLink>> listIndexLink(){
         return ResultBean.ok(friendLinkService.listIndexLink());
     }
 

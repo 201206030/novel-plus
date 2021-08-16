@@ -5,7 +5,6 @@ import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
-import com.java2nb.novel.entity.FriendLink;
 
 import java.util.Date;
 import java.util.List;

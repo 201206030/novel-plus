@@ -1,11 +1,9 @@
 package com.java2nb.novel.service;
 
-import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
-import com.java2nb.novel.vo.CrawlSourceVO;
 
 import java.util.List;
 
@@ -64,7 +62,7 @@ public interface CrawlService {
      * 根据分类ID和规则解析分类列表
      * @param catId 分类ID
      * @param ruleBean 规则对象
-     * @param sourceId
+     * @param sourceId 爬虫源ID
      */
     void parseBookList(int catId, RuleBean ruleBean, Integer sourceId);
 

@@ -30,7 +30,7 @@ public class EsConfig {
             String uri = uris[i];
             String scheme = uri.substring(0,uri.indexOf(":")).trim();
             String hostname = uri.substring(uri.indexOf("://")+3,uri.lastIndexOf(":")).trim();
-            Integer port = Integer.parseInt(uri.substring(uri.lastIndexOf(":")+1).trim());
+            int port = Integer.parseInt(uri.substring(uri.lastIndexOf(":")+1).trim());
             hosts[i] = new HttpHost(hostname,port,scheme);
         }
 

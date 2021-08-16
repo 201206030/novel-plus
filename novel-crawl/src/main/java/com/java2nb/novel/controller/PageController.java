@@ -1,17 +1,10 @@
 package com.java2nb.novel.controller;
 
-import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.entity.BookContent;
-import com.java2nb.novel.entity.BookIndex;
-import com.java2nb.novel.entity.News;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 /**
  * @author 11797

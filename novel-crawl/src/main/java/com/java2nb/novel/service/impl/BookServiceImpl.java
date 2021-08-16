@@ -176,19 +176,4 @@ public class BookServiceImpl implements BookService {
 
     }
 
-    /**
-     * 查询最后的章节
-     * */
-    private BookIndex queryLastIndex(Long bookId) {
-        return bookIndexMapper.queryLastIndex(bookId);
-    }
-
-    /**
-     * 查询小说总字数
-     * */
-    private Integer queryTotalWordCount(Long bookId) {
-
-        return bookMapper.queryTotalWordCount(bookId);
-
-    }
 }

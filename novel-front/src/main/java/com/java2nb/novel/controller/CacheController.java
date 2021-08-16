@@ -40,7 +40,7 @@ public class CacheController {
      * @param type 缓存类型，1：首页书籍推荐，2：首页新闻，3：首页友情链接
      * */
     @GetMapping("refresh/{pass}/{type}")
-    public ResultBean refreshCache(@PathVariable("type") Byte type, @PathVariable("pass") String pass){
+    public ResultBean<Void> refreshCache(@PathVariable("type") Byte type, @PathVariable("pass") String pass){
         if(!cacheManagerPass.equals(pass)){
             return ResultBean.fail(ResponseStatus.PASSWORD_ERROR);
         }

@@ -1,9 +1,7 @@
 package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
@@ -16,9 +14,13 @@ import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.core.utils.IdWorker;
 import com.java2nb.novel.core.utils.SpringUtil;
 import com.java2nb.novel.core.utils.ThreadUtil;
-import com.java2nb.novel.entity.*;
+import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
-import com.java2nb.novel.mapper.*;
+import com.java2nb.novel.mapper.CrawlSingleTaskDynamicSqlSupport;
+import com.java2nb.novel.mapper.CrawlSingleTaskMapper;
+import com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport;
+import com.java2nb.novel.mapper.CrawlSourceMapper;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.vo.CrawlSingleTaskVO;
@@ -30,18 +32,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.java2nb.novel.core.utils.HttpUtil.getByHttpClient;
 import static com.java2nb.novel.core.utils.HttpUtil.getByHttpClientWithChrome;
-import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlBookId;
-import static com.java2nb.novel.mapper.BookDynamicSqlSupport.crawlSourceId;
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
 /**
@@ -122,11 +120,7 @@ public class CrawlServiceImpl implements CrawlService {
                 //按分类开始爬虫解析任务
                 for (int i = 1; i < 8; i++) {
                     final int catId = i;
-                    Thread thread = new Thread(() -> {
-
-                        parseBookList(catId, ruleBean, sourceId);
-
-                    });
+                    Thread thread = new Thread(() -> CrawlServiceImpl.this.parseBookList(catId, ruleBean, sourceId));
                     thread.start();
                     //thread加入到监控缓存中
                     threadIds.add(thread.getId());

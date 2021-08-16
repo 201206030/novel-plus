@@ -1,12 +1,11 @@
 package com.java2nb.novel.service;
 
 
-import com.github.pagehelper.PageInfo;
 import com.java2nb.novel.core.bean.PageBean;
-import com.java2nb.novel.vo.BookSpVO;
+import com.java2nb.novel.entity.*;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
-import com.java2nb.novel.entity.*;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.vo.BookVO;
 
 import java.util.Date;
@@ -32,7 +31,7 @@ public interface BookService {
 
     /**
      * 查询首页新书榜单数据
-     * @return
+     * @return 小说列表
      * */
     List<Book> listNewRank();
 
@@ -49,7 +48,7 @@ public interface BookService {
      * @param pageSize 分页大小
      * @return 小说集合分页信息
      * */
-    PageBean searchByPage(BookSpVO params, int page, int pageSize);
+    PageBean<?> searchByPage(BookSpVO params, int page, int pageSize);
 
     /**
      * 查询小说分类列表
@@ -163,6 +162,7 @@ public interface BookService {
      * @param workDirection 作品方向
      * @return 作者ID
      * */
+    @Deprecated
     Long getOrCreateAuthorIdByName(String authorName, Byte workDirection);
 
 
@@ -180,6 +180,7 @@ public interface BookService {
      * @param bookId 小说ID
      * @return 目录号集合
      * */
+    @Deprecated
     List<Integer> queryIndexNumByBookId(Long bookId);
 
     /**
