@@ -37,8 +37,8 @@ public class RuleBean {
     private String visitCountPatten;
     private String descStart;
     private String descEnd;
-    private String updateTimePatten;
-    private String updateTimeFormatPatten;
+    private String upadateTimePatten;
+    private String upadateTimeFormatPatten;
     private String bookIndexUrl;
     private String indexIdPatten;
     private String indexNamePatten;

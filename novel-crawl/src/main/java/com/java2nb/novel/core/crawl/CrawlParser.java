@@ -109,14 +109,14 @@ public class CrawlParser {
                         }
                     }
 
-                    if (StringUtils.isNotBlank(ruleBean.getUpdateTimePatten()) && StringUtils.isNotBlank(ruleBean.getUpdateTimeFormatPatten())) {
-                        Pattern updateTimePatten = compile(ruleBean.getUpdateTimePatten());
+                    if (StringUtils.isNotBlank(ruleBean.getUpadateTimePatten()) && StringUtils.isNotBlank(ruleBean.getUpadateTimeFormatPatten())) {
+                        Pattern updateTimePatten = compile(ruleBean.getUpadateTimePatten());
                         Matcher updateTimeMatch = updateTimePatten.matcher(bookDetailHtml);
                         boolean isFindUpdateTime = updateTimeMatch.find();
                         if (isFindUpdateTime) {
                             String updateTime = updateTimeMatch.group(1);
                             //设置更新时间
-                            book.setLastIndexUpdateTime(new SimpleDateFormat(ruleBean.getUpdateTimeFormatPatten()).parse(updateTime));
+                            book.setLastIndexUpdateTime(new SimpleDateFormat(ruleBean.getUpadateTimeFormatPatten()).parse(updateTime));
 
                         }
                     }
