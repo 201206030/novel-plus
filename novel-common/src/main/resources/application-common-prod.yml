@@ -74,7 +74,10 @@ logging:
 
 
 
-
+txt:
+  save:
+    storage: db #存储介质，db：数据库，file：txt文本
+    path: /Users/xiongxiaoyang/books  #txt小说文本保存路径
 
 
 

@@ -4,6 +4,7 @@ import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.mapper.*;
+import com.java2nb.novel.service.BookContentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.utils.Constants;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class BookServiceImpl implements BookService {
 
     private final CrawlBookIndexMapper bookIndexMapper;
 
-    private final BookContentMapper bookContentMapper;
+    private final BookContentService bookContentService;
 
 
     @Override
@@ -46,7 +47,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.count(countFrom(BookDynamicSqlSupport.book).where(BookDynamicSqlSupport.bookName, isEqualTo(bookName))
                 .and(BookDynamicSqlSupport.authorName, isEqualTo(authorName))
                 .build()
-                .render(RenderingStrategies.MYBATIS3))>0;
+                .render(RenderingStrategies.MYBATIS3)) > 0;
 
     }
 
@@ -57,7 +58,7 @@ public class BookServiceImpl implements BookService {
                 .equalTo(sourceId)
                 .set(crawlBookId)
                 .equalTo(bookId)
-                .where(BookDynamicSqlSupport.id,isEqualTo(id))
+                .where(BookDynamicSqlSupport.id, isEqualTo(id))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
     }
@@ -74,9 +75,9 @@ public class BookServiceImpl implements BookService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveBookAndIndexAndContent(Book book, List<BookIndex> bookIndexList, List<BookContent> bookContentList) {
-        if(!queryIsExistByBookNameAndAuthorName(book.getBookName(),book.getAuthorName())) {
+        if (!queryIsExistByBookNameAndAuthorName(book.getBookName(), book.getAuthorName())) {
 
-            if(bookIndexList.size()>0) {
+            if (bookIndexList.size() > 0) {
 
                 //保存小说主表
 
@@ -85,7 +86,7 @@ public class BookServiceImpl implements BookService {
 
                 //批量保存目录和内容
                 bookIndexMapper.insertMultiple(bookIndexList);
-                bookContentMapper.insertMultiple(bookContentList);
+                bookContentService.saveBookContent(bookContentList,book.getId());
 
             }
         }
@@ -96,7 +97,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> queryNeedUpdateBook(Date startDate, int limit) {
         List<Book> books = bookMapper.queryNeedUpdateBook(startDate, limit);
-        if(books.size()>0) {
+        if (books.size() > 0) {
             //更新最后抓取时间为当前时间
             bookMapper.updateCrawlLastTime(books, new Date());
         }
@@ -105,38 +106,33 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Map<Integer, BookIndex> queryExistBookIndexMap(Long bookId) {
-        List<BookIndex> bookIndexs = bookIndexMapper.selectMany(select(BookIndexDynamicSqlSupport.id,BookIndexDynamicSqlSupport.indexNum,BookIndexDynamicSqlSupport.indexName,BookIndexDynamicSqlSupport.wordCount)
+        List<BookIndex> bookIndexs = bookIndexMapper.selectMany(select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount)
                 .from(BookIndexDynamicSqlSupport.bookIndex)
-                .where(BookIndexDynamicSqlSupport.bookId,isEqualTo(bookId))
+                .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
         if (bookIndexs.size() > 0) {
-            return  bookIndexs.stream().collect(Collectors.toMap(BookIndex::getIndexNum, Function.identity()));
+            return bookIndexs.stream().collect(Collectors.toMap(BookIndex::getIndexNum, Function.identity()));
         }
         return new HashMap<>(0);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateBookAndIndexAndContent(Book book,  List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap) {
+    public void updateBookAndIndexAndContent(Book book, List<BookIndex> bookIndexList, List<BookContent> bookContentList, Map<Integer, BookIndex> existBookIndexMap) {
         for (int i = 0; i < bookIndexList.size(); i++) {
             BookIndex bookIndex = bookIndexList.get(i);
             BookContent bookContent = bookContentList.get(i);
 
 
-            if(!existBookIndexMap.containsKey(bookIndex.getIndexNum())) {
+            if (!existBookIndexMap.containsKey(bookIndex.getIndexNum())) {
                 //插入
                 bookIndexMapper.insertSelective(bookIndex);
-                bookContentMapper.insertSelective(bookContent);
-            }else{
+                bookContentService.saveBookContent(bookContent,book.getId());
+            } else {
                 //更新
                 bookIndexMapper.updateByPrimaryKeySelective(bookIndex);
-                bookContentMapper.update(update(BookContentDynamicSqlSupport.bookContent)
-                        .set(BookContentDynamicSqlSupport.content)
-                        .equalTo(bookContent.getContent())
-                        .where(BookContentDynamicSqlSupport.indexId,isEqualTo(bookContent.getIndexId()))
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3));
+                bookContentService.updateBookContent(bookContent,book.getId());
             }
 
 
@@ -145,7 +141,7 @@ public class BookServiceImpl implements BookService {
         //更新小说主表
         book.setBookName(null);
         book.setAuthorName(null);
-        if(Constants.VISIT_COUNT_DEFAULT.equals(book.getVisitCount())) {
+        if (Constants.VISIT_COUNT_DEFAULT.equals(book.getVisitCount())) {
             book.setVisitCount(null);
         }
         bookMapper.updateByPrimaryKeySelective(book);
@@ -168,7 +164,7 @@ public class BookServiceImpl implements BookService {
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
 
-        if(books.size()>0){
+        if (books.size() > 0) {
             return books.get(0);
         }
 
