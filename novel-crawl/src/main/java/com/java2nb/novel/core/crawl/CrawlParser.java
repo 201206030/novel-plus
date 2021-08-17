@@ -33,7 +33,7 @@ public class CrawlParser {
     private static final ThreadLocal<Integer> retryCount = new ThreadLocal<>();
 
     @SneakyThrows
-    public static Book parseBook(RuleBean ruleBean, String bookId) {
+    public static void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler) {
         Book book = new Book();
         String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
         String bookDetailHtml = getByHttpClientWithChrome(bookDetailUrl);
@@ -135,10 +135,10 @@ public class CrawlParser {
                 }
             }
         }
-        return book;
+        handler.handle(book);
     }
 
-    public static ChapterBean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Map<Integer, BookIndex> existBookIndexMap) {
+    public static void parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) {
 
         Date currentDate = new Date();
 
@@ -228,7 +228,7 @@ public class CrawlParser {
                             bookContent.setIndexId(hasIndex.getId());
 
                             //计算总字数
-                            totalWordCount = (totalWordCount+wordCount-hasIndex.getWordCount());
+                            totalWordCount = (totalWordCount + wordCount - hasIndex.getWordCount());
                         } else {
                             //章节插入
                             //设置目录和章节内容
@@ -246,7 +246,6 @@ public class CrawlParser {
                         bookIndex.setUpdateTime(currentDate);
 
 
-
                     }
 
 
@@ -259,7 +258,7 @@ public class CrawlParser {
             if (indexList.size() > 0) {
                 //如果有爬到最新章节，则设置小说主表的最新章节信息
                 //获取爬取到的最新章节
-                BookIndex lastIndex = indexList.get(indexList.size()-1);
+                BookIndex lastIndex = indexList.get(indexList.size() - 1);
                 book.setLastIndexId(lastIndex.getId());
                 book.setLastIndexName(lastIndex.getIndexName());
                 book.setLastIndexUpdateTime(currentDate);
@@ -270,20 +269,22 @@ public class CrawlParser {
 
             if (indexList.size() == contentList.size() && indexList.size() > 0) {
 
-                return new ChapterBean(){{
+                handler.handle(new ChapterBean() {{
                     setBookIndexList(indexList);
                     setBookContentList(contentList);
-                }};
+                }});
+
+                return;
 
             }
 
         }
 
-
-        return new ChapterBean(){{
+        handler.handle(new ChapterBean() {{
             setBookIndexList(new ArrayList<>(0));
             setBookContentList(new ArrayList<>(0));
-        }};
+        }});
+
     }
 
 

@@ -5,7 +5,6 @@ import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.crawl.ChapterBean;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
@@ -34,6 +33,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -274,39 +274,46 @@ public class CrawlServiceImpl implements CrawlService {
 
     @Override
     public boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId) {
-        Book book = CrawlParser.parseBook(ruleBean, bookId);
-        if(book.getBookName() == null || book.getAuthorName() == null){
-            return false;
-        }
-        //这里只做新书入库，查询是否存在这本书
-        Book existBook = bookService.queryBookByBookNameAndAuthorName(book.getBookName(), book.getAuthorName());
-        //如果该小说不存在，则可以解析入库，但是标记该小说正在入库，30分钟之后才允许再次入库
-        if (existBook == null) {
-            //没有该书，可以入库
-            book.setCatId(catId);
-            //根据分类ID查询分类
-            book.setCatName(bookService.queryCatNameByCatId(catId));
-            if (catId == 7) {
-                //女频
-                book.setWorkDirection((byte) 1);
-            } else {
-                //男频
-                book.setWorkDirection((byte) 0);
+
+        final AtomicBoolean parseResult = new AtomicBoolean(false);
+
+        CrawlParser.parseBook(ruleBean, bookId, book -> {
+            if(book.getBookName() == null || book.getAuthorName() == null){
+                return;
             }
-            book.setCrawlBookId(bookId);
-            book.setCrawlSourceId(sourceId);
-            book.setCrawlLastTime(new Date());
-            book.setId(new IdWorker().nextId());
-            //解析章节目录
-            ChapterBean chapter = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0));
+            //这里只做新书入库，查询是否存在这本书
+            Book existBook = bookService.queryBookByBookNameAndAuthorName(book.getBookName(), book.getAuthorName());
+            //如果该小说不存在，则可以解析入库，但是标记该小说正在入库，30分钟之后才允许再次入库
+            if (existBook == null) {
+                //没有该书，可以入库
+                book.setCatId(catId);
+                //根据分类ID查询分类
+                book.setCatName(bookService.queryCatNameByCatId(catId));
+                if (catId == 7) {
+                    //女频
+                    book.setWorkDirection((byte) 1);
+                } else {
+                    //男频
+                    book.setWorkDirection((byte) 0);
+                }
+                book.setCrawlBookId(bookId);
+                book.setCrawlSourceId(sourceId);
+                book.setCrawlLastTime(new Date());
+                book.setId(new IdWorker().nextId());
+                //解析章节目录
+                CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0),chapter -> {
+                    bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
+                });
 
-            bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
+            } else {
+                //只更新书籍的爬虫相关字段
+                bookService.updateCrawlProperties(existBook.getId(), sourceId, bookId);
+            }
+            parseResult.set(true);
+        });
 
-        } else {
-            //只更新书籍的爬虫相关字段
-            bookService.updateCrawlProperties(existBook.getId(), sourceId, bookId);
-        }
-        return true;
+        return parseResult.get();
+
     }
 
     @Override
