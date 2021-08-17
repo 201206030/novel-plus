@@ -101,6 +101,7 @@ public interface BookService {
      * @param bookIndexId 目录ID
      * @return 书籍内容
      * */
+    @Deprecated
     BookContent queryBookContent(Long bookIndexId);
 
     /**
