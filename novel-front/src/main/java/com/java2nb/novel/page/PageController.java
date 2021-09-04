@@ -34,7 +34,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Controller
 public class PageController extends BaseController {
 
-    @Value("${txt.save.path}")
+    @Value("${content.save.path}")
     private String fileSavePath;
 
     private final BookService bookService;

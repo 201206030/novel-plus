@@ -15,10 +15,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "txt.save", name = "storage", havingValue = "file")
+@ConditionalOnProperty(prefix = "content.save", name = "storage", havingValue = "file")
 public class FileBookContentServiceImpl implements BookContentService {
 
-    @Value("${txt.save.path}")
+    @Value("${content.save.path}")
     private String fileSavePath;
 
     @SneakyThrows

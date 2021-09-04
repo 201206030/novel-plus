@@ -17,7 +17,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.update;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "txt.save", name = "storage", havingValue = "db")
+@ConditionalOnProperty(prefix = "content.save", name = "storage", havingValue = "db")
 public class DbBookContentServiceImpl implements BookContentService {
 
     private final BookContentMapper bookContentMapper;
