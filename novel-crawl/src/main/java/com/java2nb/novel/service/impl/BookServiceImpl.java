@@ -9,6 +9,7 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,10 @@ public class BookServiceImpl implements BookService {
 
     private final CrawlBookIndexMapper bookIndexMapper;
 
-    private final BookContentService bookContentService;
+    private final Map<String, BookContentService> bookContentServiceMap;
+
+    @Value("${content.save.storage}")
+    private String storageType;
 
 
     @Override
@@ -85,8 +89,11 @@ public class BookServiceImpl implements BookService {
                 bookMapper.insertSelective(book);
 
                 //批量保存目录和内容
+                bookIndexList.forEach(bookIndex -> {
+                    bookIndex.setStorageType(storageType);
+                });
                 bookIndexMapper.insertMultiple(bookIndexList);
-                bookContentService.saveBookContent(bookContentList,book.getId());
+                bookContentServiceMap.get(storageType).saveBookContent(bookContentList, book.getId());
 
             }
         }
@@ -106,7 +113,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Map<Integer, BookIndex> queryExistBookIndexMap(Long bookId) {
-        List<BookIndex> bookIndexs = bookIndexMapper.selectMany(select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount)
+        List<BookIndex> bookIndexs = bookIndexMapper.selectMany(select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.storageType)
                 .from(BookIndexDynamicSqlSupport.bookIndex)
                 .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
                 .build()
@@ -127,12 +134,13 @@ public class BookServiceImpl implements BookService {
 
             if (!existBookIndexMap.containsKey(bookIndex.getIndexNum())) {
                 //插入
+                bookIndex.setStorageType(storageType);
                 bookIndexMapper.insertSelective(bookIndex);
-                bookContentService.saveBookContent(bookContent,book.getId());
+                bookContentServiceMap.get(storageType).saveBookContent(bookContent, book.getId());
             } else {
                 //更新
                 bookIndexMapper.updateByPrimaryKeySelective(bookIndex);
-                bookContentService.updateBookContent(bookContent,book.getId());
+                bookContentServiceMap.get(existBookIndexMap.get(bookIndex.getIndexNum()).getStorageType()).updateBookContent(bookContent, book.getId());
             }
 
 

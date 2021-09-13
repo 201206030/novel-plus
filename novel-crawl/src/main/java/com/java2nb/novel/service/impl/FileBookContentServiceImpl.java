@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service(value = "txt")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "content.save", name = "storage", havingValue = "file")
 public class FileBookContentServiceImpl implements BookContentService {
 
     @Value("${content.save.path}")

@@ -1,21 +1,17 @@
 package com.java2nb.novel.service.impl;
 
-import com.java2nb.novel.core.utils.FileUtil;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.service.BookContentService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.List;
 
-@Service
+@Service(value = "txt")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "content.save", name = "storage", havingValue = "file")
 public class FileBookContentServiceImpl implements BookContentService {
 
     @Value("${content.save.path}")

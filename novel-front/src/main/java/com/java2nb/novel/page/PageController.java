@@ -45,10 +45,9 @@ public class PageController extends BaseController {
 
     private final UserService userService;
 
-    private final BookContentService bookContentService;
-
     private final ThreadPoolExecutor threadPoolExecutor;
 
+    private final Map<String, BookContentService> bookContentServiceMap;
 
     @RequestMapping("{url}.html")
     public String module(@PathVariable("url") String url) {
@@ -210,10 +209,10 @@ public class PageController extends BaseController {
             return nextBookIndexId;
         }, threadPoolExecutor);
 
-        //加载小说内容信息线程
-        CompletableFuture<BookContent> bookContentCompletableFuture = CompletableFuture.supplyAsync(() -> {
+        //加载小说内容信息线程，该线程在加载小说章节信息线程执行完毕后才执行
+        CompletableFuture<BookContent> bookContentCompletableFuture = bookIndexCompletableFuture.thenApplyAsync((bookIndex) -> {
             //查询内容
-            BookContent bookContent = bookContentService.queryBookContent(bookId, bookIndexId);
+            BookContent bookContent = bookContentServiceMap.get(bookIndex.getStorageType()).queryBookContent(bookId, bookIndexId);
             log.debug("加载小说内容信息线程结束");
             return bookContent;
         }, threadPoolExecutor);

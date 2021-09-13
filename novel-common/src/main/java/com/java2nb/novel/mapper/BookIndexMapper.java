@@ -37,46 +37,47 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface BookIndexMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, bookId, indexNum, indexName, wordCount, isVip, bookPrice, createTime, updateTime);
+    BasicColumn[] selectList = BasicColumn.columnList(id, bookId, indexNum, indexName, wordCount, isVip, bookPrice, storageType, createTime, updateTime);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @DeleteProvider(type = SqlProviderAdapter.class, method = "delete")
+    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<BookIndex> insertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @InsertProvider(type = SqlProviderAdapter.class, method = "insertMultiple")
+    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<BookIndex> multipleInsertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("BookIndexResult")
     Optional<BookIndex> selectOne(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
-    @Results(id = "BookIndexResult", value = {
-            @Result(column = "id", property = "id", jdbcType = JdbcType.BIGINT, id = true),
-            @Result(column = "book_id", property = "bookId", jdbcType = JdbcType.BIGINT),
-            @Result(column = "index_num", property = "indexNum", jdbcType = JdbcType.INTEGER),
-            @Result(column = "index_name", property = "indexName", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "word_count", property = "wordCount", jdbcType = JdbcType.INTEGER),
-            @Result(column = "is_vip", property = "isVip", jdbcType = JdbcType.TINYINT),
-            @Result(column = "book_price", property = "bookPrice", jdbcType = JdbcType.INTEGER),
-            @Result(column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP),
-            @Result(column = "update_time", property = "updateTime", jdbcType = JdbcType.TIMESTAMP)
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @Results(id="BookIndexResult", value = {
+        @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column="book_id", property="bookId", jdbcType=JdbcType.BIGINT),
+        @Result(column="index_num", property="indexNum", jdbcType=JdbcType.INTEGER),
+        @Result(column="index_name", property="indexName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="word_count", property="wordCount", jdbcType=JdbcType.INTEGER),
+        @Result(column="is_vip", property="isVip", jdbcType=JdbcType.TINYINT),
+        @Result(column="book_price", property="bookPrice", jdbcType=JdbcType.INTEGER),
+        @Result(column="storage_type", property="storageType", jdbcType=JdbcType.VARCHAR),
+        @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP)
     })
     List<BookIndex> selectMany(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @UpdateProvider(type = SqlProviderAdapter.class, method = "update")
+    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -92,52 +93,55 @@ public interface BookIndexMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Long id_) {
         return delete(c ->
-                c.where(id, isEqualTo(id_))
+            c.where(id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(BookIndex record) {
         return MyBatis3Utils.insert(this::insert, record, bookIndex, c ->
-                c.map(id).toProperty("id")
-                        .map(bookId).toProperty("bookId")
-                        .map(indexNum).toProperty("indexNum")
-                        .map(indexName).toProperty("indexName")
-                        .map(wordCount).toProperty("wordCount")
-                        .map(isVip).toProperty("isVip")
-                        .map(bookPrice).toProperty("bookPrice")
-                        .map(createTime).toProperty("createTime")
-                        .map(updateTime).toProperty("updateTime")
+            c.map(id).toProperty("id")
+            .map(bookId).toProperty("bookId")
+            .map(indexNum).toProperty("indexNum")
+            .map(indexName).toProperty("indexName")
+            .map(wordCount).toProperty("wordCount")
+            .map(isVip).toProperty("isVip")
+            .map(bookPrice).toProperty("bookPrice")
+            .map(storageType).toProperty("storageType")
+            .map(createTime).toProperty("createTime")
+            .map(updateTime).toProperty("updateTime")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertMultiple(Collection<BookIndex> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, bookIndex, c ->
-                c.map(id).toProperty("id")
-                        .map(bookId).toProperty("bookId")
-                        .map(indexNum).toProperty("indexNum")
-                        .map(indexName).toProperty("indexName")
-                        .map(wordCount).toProperty("wordCount")
-                        .map(isVip).toProperty("isVip")
-                        .map(bookPrice).toProperty("bookPrice")
-                        .map(createTime).toProperty("createTime")
-                        .map(updateTime).toProperty("updateTime")
+            c.map(id).toProperty("id")
+            .map(bookId).toProperty("bookId")
+            .map(indexNum).toProperty("indexNum")
+            .map(indexName).toProperty("indexName")
+            .map(wordCount).toProperty("wordCount")
+            .map(isVip).toProperty("isVip")
+            .map(bookPrice).toProperty("bookPrice")
+            .map(storageType).toProperty("storageType")
+            .map(createTime).toProperty("createTime")
+            .map(updateTime).toProperty("updateTime")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(BookIndex record) {
         return MyBatis3Utils.insert(this::insert, record, bookIndex, c ->
-                c.map(id).toPropertyWhenPresent("id", record::getId)
-                        .map(bookId).toPropertyWhenPresent("bookId", record::getBookId)
-                        .map(indexNum).toPropertyWhenPresent("indexNum", record::getIndexNum)
-                        .map(indexName).toPropertyWhenPresent("indexName", record::getIndexName)
-                        .map(wordCount).toPropertyWhenPresent("wordCount", record::getWordCount)
-                        .map(isVip).toPropertyWhenPresent("isVip", record::getIsVip)
-                        .map(bookPrice).toPropertyWhenPresent("bookPrice", record::getBookPrice)
-                        .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
-                        .map(updateTime).toPropertyWhenPresent("updateTime", record::getUpdateTime)
+            c.map(id).toPropertyWhenPresent("id", record::getId)
+            .map(bookId).toPropertyWhenPresent("bookId", record::getBookId)
+            .map(indexNum).toPropertyWhenPresent("indexNum", record::getIndexNum)
+            .map(indexName).toPropertyWhenPresent("indexName", record::getIndexName)
+            .map(wordCount).toPropertyWhenPresent("wordCount", record::getWordCount)
+            .map(isVip).toPropertyWhenPresent("isVip", record::getIsVip)
+            .map(bookPrice).toPropertyWhenPresent("bookPrice", record::getBookPrice)
+            .map(storageType).toPropertyWhenPresent("storageType", record::getStorageType)
+            .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
+            .map(updateTime).toPropertyWhenPresent("updateTime", record::getUpdateTime)
         );
     }
 
@@ -159,7 +163,7 @@ public interface BookIndexMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<BookIndex> selectByPrimaryKey(Long id_) {
         return selectOne(c ->
-                c.where(id, isEqualTo(id_))
+            c.where(id, isEqualTo(id_))
         );
     }
 
@@ -177,6 +181,7 @@ public interface BookIndexMapper {
                 .set(wordCount).equalTo(record::getWordCount)
                 .set(isVip).equalTo(record::getIsVip)
                 .set(bookPrice).equalTo(record::getBookPrice)
+                .set(storageType).equalTo(record::getStorageType)
                 .set(createTime).equalTo(record::getCreateTime)
                 .set(updateTime).equalTo(record::getUpdateTime);
     }
@@ -190,6 +195,7 @@ public interface BookIndexMapper {
                 .set(wordCount).equalToWhenPresent(record::getWordCount)
                 .set(isVip).equalToWhenPresent(record::getIsVip)
                 .set(bookPrice).equalToWhenPresent(record::getBookPrice)
+                .set(storageType).equalToWhenPresent(record::getStorageType)
                 .set(createTime).equalToWhenPresent(record::getCreateTime)
                 .set(updateTime).equalToWhenPresent(record::getUpdateTime);
     }
@@ -197,30 +203,32 @@ public interface BookIndexMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(BookIndex record) {
         return update(c ->
-                c.set(bookId).equalTo(record::getBookId)
-                        .set(indexNum).equalTo(record::getIndexNum)
-                        .set(indexName).equalTo(record::getIndexName)
-                        .set(wordCount).equalTo(record::getWordCount)
-                        .set(isVip).equalTo(record::getIsVip)
-                        .set(bookPrice).equalTo(record::getBookPrice)
-                        .set(createTime).equalTo(record::getCreateTime)
-                        .set(updateTime).equalTo(record::getUpdateTime)
-                        .where(id, isEqualTo(record::getId))
+            c.set(bookId).equalTo(record::getBookId)
+            .set(indexNum).equalTo(record::getIndexNum)
+            .set(indexName).equalTo(record::getIndexName)
+            .set(wordCount).equalTo(record::getWordCount)
+            .set(isVip).equalTo(record::getIsVip)
+            .set(bookPrice).equalTo(record::getBookPrice)
+            .set(storageType).equalTo(record::getStorageType)
+            .set(createTime).equalTo(record::getCreateTime)
+            .set(updateTime).equalTo(record::getUpdateTime)
+            .where(id, isEqualTo(record::getId))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(BookIndex record) {
         return update(c ->
-                c.set(bookId).equalToWhenPresent(record::getBookId)
-                        .set(indexNum).equalToWhenPresent(record::getIndexNum)
-                        .set(indexName).equalToWhenPresent(record::getIndexName)
-                        .set(wordCount).equalToWhenPresent(record::getWordCount)
-                        .set(isVip).equalToWhenPresent(record::getIsVip)
-                        .set(bookPrice).equalToWhenPresent(record::getBookPrice)
-                        .set(createTime).equalToWhenPresent(record::getCreateTime)
-                        .set(updateTime).equalToWhenPresent(record::getUpdateTime)
-                        .where(id, isEqualTo(record::getId))
+            c.set(bookId).equalToWhenPresent(record::getBookId)
+            .set(indexNum).equalToWhenPresent(record::getIndexNum)
+            .set(indexName).equalToWhenPresent(record::getIndexName)
+            .set(wordCount).equalToWhenPresent(record::getWordCount)
+            .set(isVip).equalToWhenPresent(record::getIsVip)
+            .set(bookPrice).equalToWhenPresent(record::getBookPrice)
+            .set(storageType).equalToWhenPresent(record::getStorageType)
+            .set(createTime).equalToWhenPresent(record::getCreateTime)
+            .set(updateTime).equalToWhenPresent(record::getUpdateTime)
+            .where(id, isEqualTo(record::getId))
         );
     }
 }

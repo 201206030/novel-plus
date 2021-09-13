@@ -149,7 +149,7 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public void addCrawlSingleTask(CrawlSingleTask singleTask) {
 
-        if(bookService.queryIsExistByBookNameAndAuthorName(singleTask.getBookName(),singleTask.getAuthorName())){
+        if (bookService.queryIsExistByBookNameAndAuthorName(singleTask.getBookName(), singleTask.getAuthorName())) {
             throw new BusinessException(ResponseStatus.BOOK_EXISTS);
 
         }
@@ -181,23 +181,23 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public CrawlSingleTask getCrawlSingleTask() {
 
-         List<CrawlSingleTask> list = crawlSingleTaskMapper.selectMany(select(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask.allColumns())
+        List<CrawlSingleTask> list = crawlSingleTaskMapper.selectMany(select(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask.allColumns())
                 .from(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask)
-                .where(CrawlSingleTaskDynamicSqlSupport.taskStatus,isEqualTo((byte)2))
-                 .orderBy(CrawlSingleTaskDynamicSqlSupport.createTime)
-                 .limit(1)
+                .where(CrawlSingleTaskDynamicSqlSupport.taskStatus, isEqualTo((byte) 2))
+                .orderBy(CrawlSingleTaskDynamicSqlSupport.createTime)
+                .limit(1)
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
 
-         return list.size() > 0 ? list.get(0) : null;
+        return list.size() > 0 ? list.get(0) : null;
     }
 
     @Override
     public void updateCrawlSingleTask(CrawlSingleTask task, Byte status) {
         byte excCount = task.getExcCount();
-        excCount+=1;
+        excCount += 1;
         task.setExcCount(excCount);
-        if(status == 1 || excCount == 5){
+        if (status == 1 || excCount == 5) {
             //当采集成功或者采集次数等于5，则更新采集最终状态，并停止采集
             task.setTaskStatus(status);
         }
@@ -219,7 +219,7 @@ public class CrawlServiceImpl implements CrawlService {
 
             try {
 
-                if(StringUtils.isNotBlank(ruleBean.getCatIdRule().get("catId" + catId))) {
+                if (StringUtils.isNotBlank(ruleBean.getCatIdRule().get("catId" + catId))) {
                     //拼接分类URL
                     String catBookListUrl = ruleBean.getBookListUrl()
                             .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
@@ -235,7 +235,7 @@ public class CrawlServiceImpl implements CrawlService {
                                 //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
                                 //捕获中断异常InterruptedException来退出线程。
                                 //2.非阻塞过程中通过判断中断标志来退出线程。
-                                if(Thread.currentThread().isInterrupted()){
+                                if (Thread.currentThread().isInterrupted()) {
                                     return;
                                 }
 
@@ -262,8 +262,8 @@ public class CrawlServiceImpl implements CrawlService {
 
                     }
                 }
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
 
             page += 1;
@@ -278,7 +278,7 @@ public class CrawlServiceImpl implements CrawlService {
         final AtomicBoolean parseResult = new AtomicBoolean(false);
 
         CrawlParser.parseBook(ruleBean, bookId, book -> {
-            if(book.getBookName() == null || book.getAuthorName() == null){
+            if (book.getBookName() == null || book.getAuthorName() == null) {
                 return;
             }
             //这里只做新书入库，查询是否存在这本书
@@ -301,7 +301,7 @@ public class CrawlServiceImpl implements CrawlService {
                 book.setCrawlLastTime(new Date());
                 book.setId(new IdWorker().nextId());
                 //解析章节目录
-                CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0),chapter -> {
+                CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0), chapter -> {
                     bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
                 });
 

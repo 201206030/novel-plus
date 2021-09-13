@@ -37,9 +37,9 @@ public class BookController extends BaseController {
 
     private final BookService bookService;
 
-    private final BookContentService bookContentService;
-
     private final RabbitTemplate rabbitTemplate;
+
+    private final Map<String, BookContentService> bookContentServiceMap;
 
     @Value("${spring.rabbitmq.enable}")
     private Integer enableMq;
@@ -130,7 +130,8 @@ public class BookController extends BaseController {
     public ResultBean<Map<String, Object>> queryBookIndexAbout(Long bookId, Long lastBookIndexId) {
         Map<String, Object> data = new HashMap<>(2);
         data.put("bookIndexCount", bookService.queryIndexCount(bookId));
-        String lastBookContent = bookContentService.queryBookContent(bookId,lastBookIndexId).getContent();
+        BookIndex bookIndex = bookService.queryBookIndex(lastBookIndexId);
+        String lastBookContent = bookContentServiceMap.get(bookIndex.getStorageType()).queryBookContent(bookId,lastBookIndexId).getContent();
         if (lastBookContent.length() > 42) {
             lastBookContent = lastBookContent.substring(0, 42);
         }
