@@ -496,11 +496,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public PageBean<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
 
+        Author author = authorService.queryAuthor(userId);
         PageHelper.startPage(page, pageSize);
 
         SelectStatementProvider selectStatement = select(id, bookName, picUrl, catName, visitCount, yesterdayBuy, lastIndexUpdateTime, updateTime, wordCount, lastIndexName, status)
                 .from(book)
-                .where(authorId, isEqualTo(authorService.queryAuthor(userId).getId()))
+                .where(authorId, isEqualTo(author.getId()))
                 .orderBy(BookDynamicSqlSupport.createTime.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
