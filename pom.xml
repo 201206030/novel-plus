@@ -75,7 +75,15 @@
         </dependency>
     </dependencies>
 
-
+    <!-- 如果maven无法解析io.github.xxyopen的依赖，需要检查镜像mirror的配置 -->
+    <!-- mirror可以拦截对远程仓库的请求 , 改变对目标仓库的下载地址-->
+    <!-- 如果maven setting.xml中配置了镜像 , 而且镜像配置的规则中匹配到目标仓库时,
+    maven认为目标仓库被镜像了, 不会再去被镜像仓库下载依赖jar包, 而是直接去镜像仓库下载-->
+    <!-- <mirrorOf></mirrorOf>里配置需要拦截的仓库id。-->
+    <!-- 如果填*，就会拦截所有仓库。-->
+    <!-- maven阿里的镜像使用的默认mirrorOf规则=*, 所有的仓库都被镜像，需要改成 *,!oss -->
+    <!-- 另外需要注意的是，由于镜像仓库完全屏蔽了被镜像仓库，当镜像仓库不稳定或者停止服务的时候，
+    Maven仍将无法访问被镜像仓库，因而将无法下载依赖。-->
     <repositories>
         <repository>
             <id>ali</id>
