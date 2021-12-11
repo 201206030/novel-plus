@@ -1,7 +1,7 @@
 package com.java2nb.novel.service;
 
 
-import com.java2nb.novel.core.bean.PageBean;
+import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.entity.News;
 import com.java2nb.novel.vo.NewsVO;
 

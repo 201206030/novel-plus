@@ -2,15 +2,13 @@ package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pagehelper.PageInfo;
-import com.java2nb.novel.core.bean.PageBean;
+import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
-import com.java2nb.novel.core.utils.StringUtil;
+import io.github.xxyopen.util.StringUtil;
+import io.github.xxyopen.web.exception.BusinessException;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.SearchService;
-import com.java2nb.novel.vo.BookVO;
 import com.java2nb.novel.vo.EsBookVO;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Count;
@@ -200,8 +198,7 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
             }
-
-            return new PageBean<>(page,pageSize,total.longValue(),bookList);
+            return new PageBean<>(page, pageSize, total.longValue(), bookList);
         }
        throw new BusinessException(ResponseStatus.ES_SEARCH_FAIL);
     }

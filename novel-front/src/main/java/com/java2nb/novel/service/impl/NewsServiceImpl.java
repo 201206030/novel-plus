@@ -1,8 +1,8 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.java2nb.novel.core.bean.PageBean;
-import com.java2nb.novel.core.utils.BeanUtil;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.web.util.BeanUtil;
 import com.java2nb.novel.mapper.FrontNewsMapper;
 import com.java2nb.novel.service.NewsService;
 import com.java2nb.novel.core.cache.CacheKey;
@@ -10,6 +10,7 @@ import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.entity.News;
 import com.java2nb.novel.mapper.NewsMapper;
 import com.java2nb.novel.vo.NewsVO;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -69,7 +70,7 @@ public class NewsServiceImpl implements NewsService {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<News> news = newsMapper.selectMany(selectStatement);
-        PageBean<News> pageBean = new PageBean<>(news);
+        PageBean<News> pageBean = PageBuilder.build(news);
         pageBean.setList(BeanUtil.copyList(news,NewsVO.class));
         return pageBean;
     }

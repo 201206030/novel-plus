@@ -1,11 +1,11 @@
 package com.java2nb.novel.entity;
 
-import com.java2nb.novel.core.valid.AddGroup;
-import com.java2nb.novel.core.valid.UpdateGroup;
+import io.github.xxyopen.web.valid.AddGroup;
+import io.github.xxyopen.web.valid.UpdateGroup;
 
-import java.util.Date;
 import javax.annotation.Generated;
 import javax.validation.constraints.*;
+import java.util.Date;
 
 public class User {
 

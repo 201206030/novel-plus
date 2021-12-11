@@ -5,6 +5,7 @@ import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.utils.Constants;
+import io.github.xxyopen.util.IdWorker;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,7 @@ import static java.util.regex.Pattern.compile;
 @Slf4j
 public class CrawlParser {
 
-    private static final IdWorker idWorker = new IdWorker();
+    private static final IdWorker idWorker = IdWorker.INSTANCE;
 
     private static final RestTemplate restTemplate = RestTemplateUtil.getInstance("utf-8");
 

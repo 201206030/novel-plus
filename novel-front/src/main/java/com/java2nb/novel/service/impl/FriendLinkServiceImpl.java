@@ -1,6 +1,6 @@
 package com.java2nb.novel.service.impl;
 
-import com.java2nb.novel.core.utils.BeanUtil;
+import io.github.xxyopen.web.util.BeanUtil;
 import com.java2nb.novel.service.FriendLinkService;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;

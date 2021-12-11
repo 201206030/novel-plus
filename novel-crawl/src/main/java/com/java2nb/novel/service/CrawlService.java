@@ -1,6 +1,6 @@
 package com.java2nb.novel.service;
 
-import com.java2nb.novel.core.bean.PageBean;
+import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;

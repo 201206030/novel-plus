@@ -1,20 +1,21 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.java2nb.novel.core.bean.PageBean;
+import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.core.bean.UserDetails;
-import com.java2nb.novel.core.utils.BeanUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.service.UserService;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
+import io.github.xxyopen.util.IdWorker;
+import io.github.xxyopen.util.MD5Util;
+import io.github.xxyopen.web.exception.BusinessException;
 import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.vo.BookReadHistoryVO;
 import com.java2nb.novel.vo.BookShelfVO;
-import com.java2nb.novel.core.utils.IdWorker;
-import com.java2nb.novel.core.utils.MD5Util;
 import com.java2nb.novel.vo.UserFeedbackVO;
+import io.github.xxyopen.web.util.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.Charsets;
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
         User entity = new User();
         BeanUtils.copyProperties(user,entity);
         //数据库生成注册记录
-        Long id = new IdWorker().nextId();
+        Long id = IdWorker.INSTANCE.nextId();
         entity.setId(id);
         entity.setNickName(entity.getUsername());
         Date currentDate = new Date();
@@ -150,7 +151,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageBean<BookShelfVO> listBookShelfByPage(Long userId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        return new PageBean<>(userBookshelfMapper.listBookShelf(userId));
+        return PageBuilder.build(userBookshelfMapper.listBookShelf(userId));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -211,7 +212,7 @@ public class UserServiceImpl implements UserService {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<UserFeedback> userFeedbacks = userFeedbackMapper.selectMany(selectStatement);
-        PageBean<UserFeedback> pageBean = new PageBean<>(userFeedbacks);
+        PageBean<UserFeedback> pageBean = PageBuilder.build(userFeedbacks);
         pageBean.setList(BeanUtil.copyList(userFeedbacks,UserFeedbackVO.class));
         return pageBean;
     }
@@ -229,7 +230,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageBean<BookReadHistoryVO> listReadHistoryByPage(Long userId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        return new PageBean<>(userReadHistoryMapper.listReadHistory(userId));
+        return PageBuilder.build(userReadHistoryMapper.listReadHistory(userId));
     }
 
     @Override

@@ -2,17 +2,17 @@ package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import com.java2nb.novel.core.bean.PageBean;
+import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
-import com.java2nb.novel.core.utils.BeanUtil;
-import com.java2nb.novel.core.utils.IdWorker;
-import com.java2nb.novel.core.utils.SpringUtil;
-import com.java2nb.novel.core.utils.ThreadUtil;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
+import io.github.xxyopen.util.IdWorker;
+import io.github.xxyopen.util.ThreadUtil;
+import io.github.xxyopen.web.exception.BusinessException;
+import io.github.xxyopen.web.util.BeanUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
@@ -24,6 +24,7 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.vo.CrawlSingleTaskVO;
 import com.java2nb.novel.vo.CrawlSourceVO;
+import io.github.xxyopen.web.util.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +80,7 @@ public class CrawlServiceImpl implements CrawlService {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<CrawlSource> crawlSources = crawlSourceMapper.selectMany(render);
-        PageBean<CrawlSource> pageBean = new PageBean<>(crawlSources);
+        PageBean<CrawlSource> pageBean = PageBuilder.build(crawlSources);
         pageBean.setList(BeanUtil.copyList(crawlSources, CrawlSourceVO.class));
         return pageBean;
     }
@@ -168,7 +169,7 @@ public class CrawlServiceImpl implements CrawlService {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<CrawlSingleTask> crawlSingleTasks = crawlSingleTaskMapper.selectMany(render);
-        PageBean<CrawlSingleTask> pageBean = new PageBean<>(crawlSingleTasks);
+        PageBean<CrawlSingleTask> pageBean = PageBuilder.build(crawlSingleTasks);
         pageBean.setList(BeanUtil.copyList(crawlSingleTasks, CrawlSingleTaskVO.class));
         return pageBean;
     }
@@ -299,7 +300,7 @@ public class CrawlServiceImpl implements CrawlService {
                 book.setCrawlBookId(bookId);
                 book.setCrawlSourceId(sourceId);
                 book.setCrawlLastTime(new Date());
-                book.setId(new IdWorker().nextId());
+                book.setId(IdWorker.INSTANCE.nextId());
                 //解析章节目录
                 CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0), chapter -> {
                     bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());

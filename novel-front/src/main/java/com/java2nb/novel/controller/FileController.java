@@ -1,13 +1,14 @@
 package com.java2nb.novel.controller;
 
-import com.java2nb.novel.core.bean.ResultBean;
+
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.Constants;
 import com.java2nb.novel.core.utils.FileUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
-import com.java2nb.novel.core.utils.UUIDUtil;
+import io.github.xxyopen.model.resp.RestResult;
+import io.github.xxyopen.util.UUIDUtil;
+import io.github.xxyopen.web.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author 11797
@@ -64,7 +64,7 @@ public class FileController {
     @SneakyThrows
     @ResponseBody
     @PostMapping("/picUpload")
-    ResultBean<String> upload(@RequestParam("file") MultipartFile file) {
+    RestResult<String> upload(@RequestParam("file") MultipartFile file) {
         Date currentDate = new Date();
         String savePath =
                 Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +
@@ -86,7 +86,7 @@ public class FileController {
             saveFile.delete();
             throw new BusinessException(ResponseStatus.FILE_NOT_IMAGE);
         };
-        return ResultBean.ok(savePath + "/" + saveFileName);
+        return RestResult.ok(savePath + "/" + saveFileName);
 
     }
 

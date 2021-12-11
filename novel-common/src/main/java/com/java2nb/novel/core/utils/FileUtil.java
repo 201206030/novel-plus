@@ -1,5 +1,6 @@
 package com.java2nb.novel.core.utils;
 
+import io.github.xxyopen.util.UUIDUtil;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

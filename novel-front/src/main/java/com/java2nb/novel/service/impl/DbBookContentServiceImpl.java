@@ -7,14 +7,10 @@ import com.java2nb.novel.service.BookContentService;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.bookContent;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
 

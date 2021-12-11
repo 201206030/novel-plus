@@ -1,10 +1,11 @@
 package com.java2nb.novel.controller;
 
-import com.java2nb.novel.core.bean.PageBean;
-import com.java2nb.novel.core.bean.ResultBean;
+import io.github.xxyopen.model.page.PageBean;
+
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
+import io.github.xxyopen.model.resp.RestResult;
+import io.github.xxyopen.web.exception.BusinessException;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
@@ -35,25 +36,25 @@ public class AuthorController extends BaseController{
      * 校验笔名是否存在
      * */
     @GetMapping("checkPenName")
-    public ResultBean<Boolean> checkPenName(String penName){
+    public RestResult<Boolean> checkPenName(String penName){
 
-        return ResultBean.ok(authorService.checkPenName(penName));
+        return RestResult.ok(authorService.checkPenName(penName));
     }
 
     /**
      * 作家发布小说分页列表查询
      * */
     @GetMapping("listBookByPage")
-    public ResultBean<PageBean<Book>> listBookByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize , HttpServletRequest request){
+    public RestResult<PageBean<Book>> listBookByPage(@RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "10") int pageSize , HttpServletRequest request){
 
-        return ResultBean.ok(bookService.listBookPageByUserId(getUserDetails(request).getId(),page,pageSize));
+        return RestResult.ok(bookService.listBookPageByUserId(getUserDetails(request).getId(),page,pageSize));
     }
 
     /**
      * 发布小说
      * */
     @PostMapping("addBook")
-    public ResultBean<Void> addBook(@RequestParam("bookDesc") String bookDesc,Book book,HttpServletRequest request){
+    public RestResult<Void> addBook(@RequestParam("bookDesc") String bookDesc,Book book,HttpServletRequest request){
 
         Author author = checkAuthor(request);
 
@@ -64,20 +65,20 @@ public class AuthorController extends BaseController{
         //发布小说
         bookService.addBook(book,author.getId(),author.getPenName());
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
     /**
      * 更新小说状态,上架或下架
      * */
     @PostMapping("updateBookStatus")
-    public ResultBean<Void> updateBookStatus(Long bookId,Byte status,HttpServletRequest request){
+    public RestResult<Void> updateBookStatus(Long bookId,Byte status,HttpServletRequest request){
         Author author = checkAuthor(request);
 
         //更新小说状态,上架或下架
         bookService.updateBookStatus(bookId,status,author.getId());
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
 
@@ -86,28 +87,28 @@ public class AuthorController extends BaseController{
      * 删除章节
      */
     @DeleteMapping("deleteIndex/{indexId}")
-    public ResultBean<Void> deleteIndex(@PathVariable("indexId") Long indexId,  HttpServletRequest request) {
+    public RestResult<Void> deleteIndex(@PathVariable("indexId") Long indexId,  HttpServletRequest request) {
 
         Author author = checkAuthor(request);
 
         //删除章节
         bookService.deleteIndex(indexId, author.getId());
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
     /**
      * 更新章节名
      */
     @PostMapping("updateIndexName")
-    public ResultBean<Void> updateIndexName(Long indexId,  String indexName, HttpServletRequest request) {
+    public RestResult<Void> updateIndexName(Long indexId,  String indexName, HttpServletRequest request) {
 
         Author author = checkAuthor(request);
 
         //更新章节名
         bookService.updateIndexName(indexId, indexName, author.getId());
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
 
@@ -117,7 +118,7 @@ public class AuthorController extends BaseController{
      * 发布章节内容
      */
     @PostMapping("addBookContent")
-    public ResultBean<Void> addBookContent(Long bookId, String indexName, String content,Byte isVip, HttpServletRequest request) {
+    public RestResult<Void> addBookContent(Long bookId, String indexName, String content,Byte isVip, HttpServletRequest request) {
         Author author = checkAuthor(request);
 
         content = content.replaceAll("\\n", "<br>")
@@ -125,14 +126,14 @@ public class AuthorController extends BaseController{
         //发布章节内容
         bookService.addBookContent(bookId, indexName, content,isVip, author.getId());
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
     /**
      * 查询章节内容
      */
     @GetMapping("queryIndexContent/{indexId}")
-    public ResultBean<String> queryIndexContent(@PathVariable("indexId") Long indexId,  HttpServletRequest request) {
+    public RestResult<String> queryIndexContent(@PathVariable("indexId") Long indexId,  HttpServletRequest request) {
 
         Author author = checkAuthor(request);
 
@@ -141,14 +142,14 @@ public class AuthorController extends BaseController{
         content = content.replaceAll("<br>", "\n")
                 .replaceAll("&nbsp;", " ");
 
-        return ResultBean.ok(content);
+        return RestResult.ok(content);
     }
 
     /**
      * 更新章节内容
      */
     @PostMapping("updateBookContent")
-    public ResultBean<Void> updateBookContent(Long indexId, String indexName, String content, HttpServletRequest request) {
+    public RestResult<Void> updateBookContent(Long indexId, String indexName, String content, HttpServletRequest request) {
         Author author = checkAuthor(request);
 
         content = content.replaceAll("\\n", "<br>")
@@ -156,17 +157,17 @@ public class AuthorController extends BaseController{
         //更新章节内容
         bookService.updateBookContent(indexId, indexName, content, author.getId());
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
     /**
      * 修改小说封面
      */
     @PostMapping("updateBookPic")
-    public ResultBean<Void> updateBookPic(@RequestParam("bookId") Long bookId,@RequestParam("bookPic") String bookPic,HttpServletRequest request) {
+    public RestResult<Void> updateBookPic(@RequestParam("bookId") Long bookId,@RequestParam("bookPic") String bookPic,HttpServletRequest request) {
         Author author = checkAuthor(request);
         bookService.updateBookPic(bookId,bookPic, author.getId());
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
 
@@ -174,14 +175,14 @@ public class AuthorController extends BaseController{
      * 作家日收入统计数据分页列表查询
      * */
     @GetMapping("listIncomeDailyByPage")
-    public ResultBean<PageBean<AuthorIncomeDetail>> listIncomeDailyByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
+    public RestResult<PageBean<AuthorIncomeDetail>> listIncomeDailyByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
                                                                           @RequestParam(value = "limit", defaultValue = "10") int pageSize ,
                                                                           @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
                                                                           @RequestParam(value = "startTime",defaultValue = "2020-05-01") Date startTime,
                                                                           @RequestParam(value = "endTime",defaultValue = "2030-01-01") Date endTime,
                                                                           HttpServletRequest request){
 
-        return ResultBean.ok(authorService.listIncomeDailyByPage(page,pageSize,getUserDetails(request).getId(),bookId,startTime,endTime));
+        return RestResult.ok(authorService.listIncomeDailyByPage(page,pageSize,getUserDetails(request).getId(),bookId,startTime,endTime));
     }
 
 
@@ -189,12 +190,12 @@ public class AuthorController extends BaseController{
      * 作家月收入统计数据分页列表查询
      * */
     @GetMapping("listIncomeMonthByPage")
-    public ResultBean<PageBean<AuthorIncome>> listIncomeMonthByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
+    public RestResult<PageBean<AuthorIncome>> listIncomeMonthByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
                                                                     @RequestParam(value = "limit", defaultValue = "10") int pageSize ,
                                                                     @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
                                                                     HttpServletRequest request){
 
-        return ResultBean.ok(authorService.listIncomeMonthByPage(page,pageSize,getUserDetails(request).getId(),bookId));
+        return RestResult.ok(authorService.listIncomeMonthByPage(page,pageSize,getUserDetails(request).getId(),bookId));
     }
 
     private Author checkAuthor(HttpServletRequest request) {

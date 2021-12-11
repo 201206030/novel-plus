@@ -1,13 +1,13 @@
 package com.java2nb.novel.page;
 
 import com.java2nb.novel.controller.BaseController;
-import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.*;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
+import io.github.xxyopen.model.page.PageBean;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

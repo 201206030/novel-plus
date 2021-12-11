@@ -2,6 +2,7 @@ package com.java2nb.novel.core.utils;
 
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
+import io.github.xxyopen.web.util.SpringUtil;
 
 /**
  * 模板操作工具类

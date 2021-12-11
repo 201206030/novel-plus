@@ -3,9 +3,9 @@ package com.java2nb.novel.core.schedule;
 
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.utils.ThreadUtil;
 import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.service.CrawlService;
+import io.github.xxyopen.util.ThreadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

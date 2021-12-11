@@ -2,15 +2,12 @@ package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.config.BookPriceProperties;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
-import com.java2nb.novel.core.utils.BeanUtil;
+import io.github.xxyopen.web.util.BeanUtil;
 import com.java2nb.novel.core.utils.Constants;
-import com.java2nb.novel.core.utils.IdWorker;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.*;
@@ -23,6 +20,10 @@ import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.vo.BookVO;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
+import io.github.xxyopen.util.IdWorker;
+import io.github.xxyopen.web.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -216,8 +217,7 @@ public class BookServiceImpl implements BookService {
         if (StringUtils.isNotBlank(params.getSort())) {
             OrderByHelper.orderBy(params.getSort() + " desc");
         }
-        return new PageBean<>(bookMapper.searchByPage(params));
-
+        return PageBuilder.build(bookMapper.searchByPage(params));
 
     }
 
@@ -388,7 +388,7 @@ public class BookServiceImpl implements BookService {
     public PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         OrderByHelper.orderBy("t1.create_time desc");
-        return new PageBean<>(bookCommentMapper.listCommentByPage(userId, bookId));
+        return PageBuilder.build(bookCommentMapper.listCommentByPage(userId, bookId));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -428,7 +428,7 @@ public class BookServiceImpl implements BookService {
         } else {
             //作者不存在，先创建作者
             Date currentDate = new Date();
-            authorId = new IdWorker().nextId();
+            authorId = IdWorker.INSTANCE.nextId();
             BookAuthor bookAuthor = new BookAuthor();
             bookAuthor.setId(authorId);
             bookAuthor.setPenName(authorName);
@@ -505,7 +505,7 @@ public class BookServiceImpl implements BookService {
                 .orderBy(BookDynamicSqlSupport.createTime.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return new PageBean<>(bookMapper.selectMany(selectStatement));
+        return PageBuilder.build(bookMapper.selectMany(selectStatement));
 
     }
 
@@ -548,7 +548,7 @@ public class BookServiceImpl implements BookService {
             //并不是更新自己的小说
             return;
         }
-        Long lastIndexId = new IdWorker().nextId();
+        Long lastIndexId = IdWorker.INSTANCE.nextId();
         Date currentDate = new Date();
         int wordCount = StringUtil.getStrValidWordCount(content);
 

@@ -1,12 +1,13 @@
 package com.java2nb.novel.controller;
 
-import com.java2nb.novel.core.bean.ResultBean;
+
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FriendLinkService;
 import com.java2nb.novel.service.NewsService;
+import io.github.xxyopen.model.resp.RestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,9 +41,9 @@ public class CacheController {
      * @param type 缓存类型，1：首页书籍推荐，2：首页新闻，3：首页友情链接
      * */
     @GetMapping("refresh/{pass}/{type}")
-    public ResultBean<Void> refreshCache(@PathVariable("type") Byte type, @PathVariable("pass") String pass){
+    public RestResult<Void> refreshCache(@PathVariable("type") Byte type, @PathVariable("pass") String pass){
         if(!cacheManagerPass.equals(pass)){
-            return ResultBean.fail(ResponseStatus.PASSWORD_ERROR);
+            return RestResult.fail(ResponseStatus.PASSWORD_ERROR);
         }
         switch (type){
             case 1:{
@@ -69,7 +70,7 @@ public class CacheController {
 
         }
 
-        return ResultBean.ok();
+        return RestResult.ok();
     }
 
 

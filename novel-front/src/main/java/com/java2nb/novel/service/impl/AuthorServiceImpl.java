@@ -1,11 +1,12 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.java2nb.novel.core.bean.PageBean;
+import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.exception.BusinessException;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
+import io.github.xxyopen.web.exception.BusinessException;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
@@ -173,7 +174,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public PageBean<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId, Date startTime, Date endTime) {
         PageHelper.startPage(page, pageSize);
-        return new PageBean<>(authorIncomeDetailMapper.selectMany(
+        return PageBuilder.build(authorIncomeDetailMapper.selectMany(
                 select(AuthorIncomeDetailDynamicSqlSupport.incomeDate, AuthorIncomeDetailDynamicSqlSupport.incomeAccount
                         , AuthorIncomeDetailDynamicSqlSupport.incomeCount, AuthorIncomeDetailDynamicSqlSupport.incomeNumber)
                         .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
@@ -190,7 +191,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public PageBean<AuthorIncome> listIncomeMonthByPage(int page, int pageSize, Long userId, Long bookId) {
         PageHelper.startPage(page, pageSize);
-        return new PageBean<>(authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.incomeMonth
+        return PageBuilder.build(authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.incomeMonth
                 , AuthorIncomeDynamicSqlSupport.preTaxIncome
                 , AuthorIncomeDynamicSqlSupport.afterTaxIncome
                 , AuthorIncomeDynamicSqlSupport.payStatus
