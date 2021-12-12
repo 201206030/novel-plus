@@ -1,7 +1,6 @@
 package com.java2nb.novel;
 
 import com.github.tobato.fastdfs.FdfsClientConfig;
-import io.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

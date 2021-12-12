@@ -126,19 +126,19 @@
         <dependency>
             <groupId>io.github.xxyopen</groupId>
             <artifactId>xxy-model</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${xxyopen.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.xxyopen</groupId>
             <artifactId>xxy-web</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${xxyopen.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.xxyopen</groupId>
             <artifactId>xxy-util</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${xxyopen.version}</version>
         </dependency>
 
 
