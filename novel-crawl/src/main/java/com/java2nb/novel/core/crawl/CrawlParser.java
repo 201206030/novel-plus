@@ -139,7 +139,7 @@ public class CrawlParser {
         handler.handle(book);
     }
 
-    public static void parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) {
+    public static boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) {
 
         Date currentDate = new Date();
 
@@ -275,7 +275,7 @@ public class CrawlParser {
                     setBookContentList(contentList);
                 }});
 
-                return;
+                return true;
 
             }
 
@@ -285,6 +285,7 @@ public class CrawlParser {
             setBookIndexList(new ArrayList<>(0));
             setBookContentList(new ArrayList<>(0));
         }});
+        return false;
 
     }
 

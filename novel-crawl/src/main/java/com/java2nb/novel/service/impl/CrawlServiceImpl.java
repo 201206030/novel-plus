@@ -302,15 +302,16 @@ public class CrawlServiceImpl implements CrawlService {
                 book.setCrawlLastTime(new Date());
                 book.setId(IdWorker.INSTANCE.nextId());
                 //解析章节目录
-                CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0), chapter -> {
+                boolean parseIndexContentResult = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0), chapter -> {
                     bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
                 });
+                parseResult.set(parseIndexContentResult);
 
             } else {
                 //只更新书籍的爬虫相关字段
                 bookService.updateCrawlProperties(existBook.getId(), sourceId, bookId);
+                parseResult.set(true);
             }
-            parseResult.set(true);
         });
 
         return parseResult.get();
