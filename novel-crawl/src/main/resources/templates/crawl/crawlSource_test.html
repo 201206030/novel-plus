@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>爬虫管理系统-小说精品屋</title>
+        <link rel="stylesheet" href="/css/base.css?v=1"/>
+        <link rel="stylesheet" href="/css/user.css"/>
+    </head>
+</head>
+<body class="">
+
+<div class="header">
+    <div class="mainNav" id="mainNav">
+        <div class="box_center cf"
+             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+
+            小说精品屋爬虫管理
+
+        </div>
+    </div>
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_1 on" href="/">爬虫源管理</a></li>
+                <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
+                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank" >规则测试</a></li>
+                <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
+                <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+
+                <div class="userBox cf">
+                    <form method="post" action="./register.html" id="form2">
+                        <div class="aspNetHidden">
+                            <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
+                                   value="/wEPDwUKLTIzNjMxNDQxNw9kFgJmD2QWAmYPFgIeBFRleHQFqAE8YSBocmVmPSIvc2VhcmNoLmFzcHg/c2VhcmNoS2V5PeWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqyIgdGFyZ2V0PSJfYmxhbmsiPuWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqzwvYT5kZOquoASBvnvPbc/TYIQiLhSPJ8GKnYQrmk7jGhb5AC5Q">
+                        </div>
+
+                        <div class="aspNetHidden">
+
+                            <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="23AA6834">
+                            <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
+                                   value="/wEdAAVece19BIZ9HiByRfHz3pfnqKSXUE1UN51mNFrIuw38c3Y2+Mc6SrnAqio3oCKbxYZZ1lS+gZUZKpbsAea8j7ASAv40DHFcQ/NE7tJUnABeyQ3d9sFDIcFCYNqlVtprfLoh4JFy0U+R/CcMuyAiWTz7">
+                        </div>
+                        <div class="user_l">
+                            <div></div>
+                            <h3>爬虫源信息填写（示例均为顶点小说网：dingdiann.com）</h3>
+                            <ul class="log_list">
+                                <li><span id="LabErr"></span></li>
+                                示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
+                                <li><input type="text" id="url" class="s_input icon_key"
+                                           placeholder="url"></li>
+
+                                示例：<b>value=\"(\\d+)/\\d+\"</b>
+                                <li><input type="text" id="rule" class="s_input icon_name" placeholder="规则"></li>
+                                示例：<b>1强制刷新 空或0使用缓存</b>
+                                <li><input type="text" id="isRefresh" class="s_input icon_name" placeholder="是否强制刷新"></li>
+
+                                <li><textarea rows="20" cols="100" id="resultMap"></textarea></li>
+
+
+
+                                <li><input type="button" onclick="testCrawlSource()" name="btnRegister" value="测试"
+                                           id="btnRegister" class="btn_red"></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <!--<div id="divData" class="updateTable">
+                    <table cellpadding="0" cellspacing="0">
+                        <thead>
+                        <tr>
+
+                            <th class="name">
+                                爬虫源（已开启的爬虫源）
+                            </th>
+                            <th class="chapter">
+                                成功爬取数量（websocket实现）
+                            </th>
+                            <th class="time">
+                            目标爬取数量
+                            </th>
+                            <th class="goread">
+                                状态（正在运行，已停止）（一次只能运行一个爬虫源）
+                            </th>
+                            <th class="goread">
+                                操作（启动，停止）
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="bookShelfList">
+
+
+
+                        </tbody>
+                    </table>
+                    <div class="pageBox cf" id="shellPage">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/header.js" type="text/javascript"></script>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    function load() {
+       var testParseUrl= localStorage.getItem("testParseUrl");
+       $("#url").val(testParseUrl);
+        var testParseRule=localStorage.getItem("testParseRule");
+        $("#rule").val(testParseRule);
+    }
+    function testCrawlSource() {
+
+        var data = {};
+
+
+        var isRefresh = $("#isRefresh").val();
+        data.isRefresh = isRefresh;
+        var rule = $("#rule").val();
+        if (rule.length == 0) {
+            layer.alert("正则必填");
+            return false;
+        }
+        data.rule = rule;
+        var url = $("#url").val();
+        if (url.length == 0) {
+            layer.alert("url必填");
+            return false;
+        }
+        data.url = url;
+
+        localStorage.setItem("testParseUrl",url);
+        localStorage.setItem("testParseRule",rule);
+        $.ajax({
+            type: "POST",
+            url: "/crawl/testParse",
+            data: data,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#resultMap").val(JSON.stringify(data.data));
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+</script>
+</html>

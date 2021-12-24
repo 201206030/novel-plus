@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 
 import static com.java2nb.novel.core.utils.HttpUtil.getByHttpClientWithChrome;
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.*;
+import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
@@ -69,7 +70,24 @@ public class CrawlServiceImpl implements CrawlService {
         crawlSourceMapper.insertSelective(source);
 
     }
-
+    @Override
+    public void updateCrawlSource(CrawlSource source) {
+        if(source.getId()!=null){
+            Optional<CrawlSource> opt=crawlSourceMapper.selectByPrimaryKey(source.getId());
+            if(opt.isPresent()) {
+                CrawlSource crawlSource =opt.get();
+                if (crawlSource.getSourceStatus() == (byte) 1) {
+                    //关闭
+                    openOrCloseCrawl(crawlSource.getId(),(byte)0);
+                }
+                Date currentDate = new Date();
+                crawlSource.setUpdateTime(currentDate);
+                crawlSource.setCrawlRule(source.getCrawlRule());
+                crawlSource.setSourceName(source.getSourceName());
+                crawlSourceMapper.updateByPrimaryKey(crawlSource);
+            }
+        }
+    }
     @Override
     public PageBean<CrawlSource> listCrawlByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
@@ -138,12 +156,17 @@ public class CrawlServiceImpl implements CrawlService {
 
     @Override
     public CrawlSource queryCrawlSource(Integer sourceId) {
-        SelectStatementProvider render = select(CrawlSourceDynamicSqlSupport.sourceStatus, CrawlSourceDynamicSqlSupport.crawlRule)
+
+        SelectStatementProvider render = select(id, sourceName, sourceStatus, createTime, updateTime,crawlRule)
                 .from(crawlSource)
                 .where(id, isEqualTo(sourceId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return crawlSourceMapper.selectMany(render).get(0);
+        List<CrawlSource>  list= crawlSourceMapper.selectMany(render);
+        if(list!=null&&list.size()>0){
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -203,6 +226,16 @@ public class CrawlServiceImpl implements CrawlService {
         }
         crawlSingleTaskMapper.updateByPrimaryKeySelective(task);
 
+    }
+
+    @Override
+    public CrawlSource getCrawlSource(Integer id) {
+            Optional<CrawlSource> opt=crawlSourceMapper.selectByPrimaryKey(id);
+            if(opt.isPresent()) {
+                CrawlSource crawlSource =opt.get();
+                return crawlSource;
+            }
+            return null;
     }
 
     /**

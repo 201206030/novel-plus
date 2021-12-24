@@ -41,6 +41,7 @@
 
                 <div class="userBox cf">
                     <form method="post" action="./register.html" id="form2">
+                        <input type="hidden" name="id" id="sourceId"/>
                         <div class="aspNetHidden">
                             <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
                                    value="/wEPDwUKLTIzNjMxNDQxNw9kFgJmD2QWAmYPFgIeBFRleHQFqAE8YSBocmVmPSIvc2VhcmNoLmFzcHg/c2VhcmNoS2V5PeWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqyIgdGFyZ2V0PSJfYmxhbmsiPuWWu+Wuiembr++8jOeLhOazve+8jOeBteW8gu+8jOWJjeS4luS7iueUn++8jOWGpeeOi+msvOWkqzwvYT5kZOquoASBvnvPbc/TYIQiLhSPJ8GKnYQrmk7jGhb5AC5Q">
@@ -153,7 +154,7 @@
                                 <li><input type="text" id="contentEnd" class="s_input icon_key"
                                            placeholder="小说内容结束截取字符串："></li>
 
-                                <li><input type="button" onclick="addCrawlSource()" name="btnRegister" value="提交"
+                                <li><input type="button" onclick="updateCrawlSource()" name="btnRegister" value="提交"
                                            id="btnRegister" class="btn_red"></li>
                             </ul>
                         </div>
@@ -202,9 +203,89 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
-    function addCrawlSource() {
+
+    function load(){
+        var crawlSourceId = localStorage.getItem("crawlSourceId")
+        if(crawlSourceId!=null){
+            $.ajax({
+                type: "GET",
+                url: "/crawl/getCrawlSource/"+crawlSourceId,
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        loadPage(data.data);
+                    } else if (data.code == 1001) {
+                        //未登录
+                        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                    }else {
+                        layer.alert(data.msg);
+                    }
+
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            })
+        }
+    }
+    function loadPage(data){
+        $("#sourceId").val(data.id);
+        $("#sourceName").val(data.sourceName);
+        if(data.crawlRule){
+
+
+            var crawlRule= JSON.parse(data.crawlRule);
+            $("#bookListUrl").val(crawlRule.bookListUrl);
+            var catIdRule = crawlRule.catIdRule;
+            try{
+                for (var i = 1; i <= 7; i++) {
+                    $("#catId" + i).val(catIdRule["catId" + i]);
+                }
+            }catch(e){
+            }
+            $("#bookIdPatten").val(crawlRule.bookIdPatten);
+            $("#pagePatten").val(crawlRule.pagePatten);
+            $("#totalPagePatten").val(crawlRule.totalPagePatten);
+            $("#bookDetailUrl").val(crawlRule.bookDetailUrl);
+            $("#bookNamePatten").val(crawlRule.bookNamePatten);
+            $("#authorNamePatten").val(crawlRule.authorNamePatten);
+            $("#picUrlPatten").val(crawlRule.picUrlPatten);
+            $("#picUrlPrefix").val(crawlRule.picUrlPrefix);
+            $("#statusPatten").val(crawlRule.statusPatten);
+            try{
+                var bookStatusRule = crawlRule.bookStatusRule;
+                var i=0;
+                for(var key in bookStatusRule){
+                    $("#bookStatus" + i).val(key);
+                    i++;
+                }
+            }catch (e) {
+
+            }
+            $("#scorePatten").val(crawlRule.scorePatten);
+            $("#visitCountPatten").val(crawlRule.visitCountPatten);
+            $("#descStart").val(crawlRule.descStart);
+            $("#descEnd").val(crawlRule.descEnd);
+            $("#upadateTimePatten").val(crawlRule.upadateTimePatten);
+            $("#upadateTimeFormatPatten").val(crawlRule.upadateTimeFormatPatten);
+            $("#bookIndexUrl").val(crawlRule.bookIndexUrl);
+            $("#bookIndexStart").val(crawlRule.bookIndexStart);
+            $("#indexIdPatten").val(crawlRule.indexIdPatten);
+            $("#indexNamePatten").val(crawlRule.indexNamePatten);
+            $("#bookContentUrl").val(crawlRule.bookContentUrl);
+            $("#contentStart").val(crawlRule.contentStart);
+            $("#contentEnd").val(crawlRule.contentEnd);
+
+        }
+    }
+    load();
+
+    function updateCrawlSource() {
 
         var crawlRule = {};
+        var sourceId =$("#sourceId").val();
+
         var sourceName = $("#sourceName").val();
         if (sourceName.length == 0) {
             layer.alert("源站名必填");
@@ -416,8 +497,8 @@
 
         $.ajax({
             type: "POST",
-            url: "/crawl/addCrawlSource",
-            data: {'sourceName': sourceName, 'crawlRule': JSON.stringify(crawlRule)},
+            url: "/crawl/updateCrawlSource",
+            data: {'id':sourceId,'sourceName': sourceName, 'crawlRule': JSON.stringify(crawlRule)},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
