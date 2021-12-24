@@ -70,7 +70,24 @@ public class CrawlServiceImpl implements CrawlService {
         crawlSourceMapper.insertSelective(source);
 
     }
-
+    @Override
+    public void updateCrawlSource(CrawlSource source) {
+        if(source.getId()!=null){
+            Optional<CrawlSource> opt=crawlSourceMapper.selectByPrimaryKey(source.getId());
+            if(opt.isPresent()) {
+                CrawlSource crawlSource =opt.get();
+                if (crawlSource.getSourceStatus() == (byte) 1) {
+                    //关闭
+                    openOrCloseCrawl(crawlSource.getId(),(byte)0);
+                }
+                Date currentDate = new Date();
+                crawlSource.setUpdateTime(currentDate);
+                crawlSource.setCrawlRule(source.getCrawlRule());
+                crawlSource.setSourceName(source.getSourceName());
+                crawlSourceMapper.updateByPrimaryKey(crawlSource);
+            }
+        }
+    }
     @Override
     public PageBean<CrawlSource> listCrawlByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
@@ -204,6 +221,16 @@ public class CrawlServiceImpl implements CrawlService {
         }
         crawlSingleTaskMapper.updateByPrimaryKeySelective(task);
 
+    }
+
+    @Override
+    public CrawlSource getCrawlSource(Integer id) {
+            Optional<CrawlSource> opt=crawlSourceMapper.selectByPrimaryKey(id);
+            if(opt.isPresent()) {
+                CrawlSource crawlSource =opt.get();
+                return crawlSource;
+            }
+            return null;
     }
 
     /**

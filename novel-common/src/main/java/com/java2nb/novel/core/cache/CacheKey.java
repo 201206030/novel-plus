@@ -65,4 +65,8 @@ public interface CacheKey {
      * 累积的小说点击量
      * */
     String BOOK_ADD_VISIT_COUNT = "bookAddVisitCount";
+    /**
+     * 测试爬虫规则缓存
+     */
+    String BOOK_TEST_PARSE = "testParse";
 }
