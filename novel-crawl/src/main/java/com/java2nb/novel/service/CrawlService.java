@@ -1,6 +1,7 @@
 package com.java2nb.novel.service;
 
 import com.java2nb.novel.core.bean.PageBean;
+import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
@@ -18,7 +19,11 @@ public interface CrawlService {
      * */
     void addCrawlSource(CrawlSource source);
 
-
+    /**
+     * 修改爬虫源
+     * @param source
+     */
+    void updateCrawlSource(CrawlSource source);
     /**
      * 爬虫源分页列表
      * @param page 当前页码
@@ -106,4 +111,11 @@ public interface CrawlService {
      * @param status 采集状态
      * */
     void updateCrawlSingleTask(CrawlSingleTask task, Byte status);
+
+    /**
+     * 获取采集规则详细
+     * @param id
+     * @return
+     */
+    CrawlSource getCrawlSource(Integer id);
 }
