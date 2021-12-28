@@ -173,6 +173,10 @@
                                         <include name="**/*.*"/>
                                         <exclude name="mybatis/*/*.*"/>
                                     </fileset>
+                                    <fileset dir="${basedir}/../novel-common/src/main/resources">
+                                        <include name="**/*.*"/>
+                                        <exclude name="mybatis/**"/>
+                                    </fileset>
                                 </copy>
                                 <move todir="${project.build.directory}/build/lib">
                                     <fileset dir="target/lib"/>
