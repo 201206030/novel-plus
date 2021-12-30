@@ -2,8 +2,11 @@ package com.java2nb.novel.service;
 
 
 import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
+import com.java2nb.novel.vo.BookVO;
+import com.java2nb.novel.vo.EsBookVO;
 
 /**
  * @author 11797
@@ -23,5 +26,5 @@ public interface SearchService {
      * @param pageSize 每页大小
      * @return 分页信息
      */
-    PageInfo searchBook(BookSP params, int page, int pageSize);
+    PageBean<EsBookVO> searchBook(BookSpVO params, int page, int pageSize);
 }

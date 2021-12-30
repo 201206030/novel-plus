@@ -5,7 +5,7 @@
 
     <groupId>com.java2nb</groupId>
     <artifactId>novel-admin</artifactId>
-    <version>3.1.0</version>
+    <version>3.6.0</version>
     <packaging>jar</packaging>
 
     <name>novel-admin</name>

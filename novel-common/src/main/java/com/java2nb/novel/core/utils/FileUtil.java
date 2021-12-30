@@ -1,6 +1,7 @@
 package com.java2nb.novel.core.utils;
 
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.client.utils.DateUtils;
@@ -11,21 +12,24 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
 import java.util.Objects;
 
 /**
  * 文件操作工具类
+ *
  * @author 11797
  */
+@UtilityClass
 @Slf4j
 public class FileUtil {
 
     /**
      * 网络图片转本地
-     * */
-    public static String network2Local(String picSrc,String picSavePath,String visitPrefix) {
+     */
+    public String network2Local(String picSrc, String picSavePath, String visitPrefix) {
         InputStream input = null;
         OutputStream out = null;
         try {
@@ -50,37 +54,70 @@ public class FileUtil {
             }
 
             out.flush();
-            if( ImageIO.read(picFile) == null){
+            if (ImageIO.read(picFile) == null) {
                 picSrc = "/images/default.gif";
             }
 
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
 
             picSrc = "/images/default.gif";
-        }finally {
-            if(input != null){
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }finally {
-                    if(out != null){
-                        try {
-                            out.close();
-                        } catch (IOException e) {
-                            log.error(e.getMessage(),e);
-                        }
-                    }
-                }
-            }
+        } finally {
+            closeStream(input, out);
         }
-
 
 
         return picSrc;
     }
 
+    @SneakyThrows
+    private void closeStream(InputStream input, OutputStream out) {
+        if (input != null) {
+            input.close();
+        }
+        if (out != null) {
+            out.close();
+        }
+    }
+
+
+    /**
+     * 判断文件是否为图片
+     *
+     * @param file 需要判断的文件
+     * @return true:是图片，false:不是图片
+     */
+    @SneakyThrows
+    public boolean isImage(File file) {
+
+        BufferedImage bi = ImageIO.read(file);
+
+        return bi != null;
+
+
+    }
+
+    public void writeContentToFile(String fileSavePath, String fileSrc, String content) {
+        OutputStream out = null;
+        try {
+            File file = new File(fileSavePath + fileSrc);
+            File parentFile = file.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+            out = new FileOutputStream(file);
+            out.write(content.getBytes());
+            byte[] b = new byte[4096];
+            out.flush();
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException("文件写入失败");
+        } finally {
+            closeStream(null, out);
+        }
+
+    }
 
 
 }

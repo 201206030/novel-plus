@@ -5,7 +5,7 @@
 
     <groupId>com.java2nb</groupId>
     <artifactId>novel</artifactId>
-    <version>3.1.0</version>
+    <version>3.6.0</version>
     <modules>
         <module>novel-common</module>
         <module>novel-front</module>
@@ -37,7 +37,7 @@
         <orderbyhelper.version>1.0.2</orderbyhelper.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <jjwt.version>0.9.0</jjwt.version>
-        <elasticsearch.version>6.2.2</elasticsearch.version>
+        <elasticsearch.version>7.9.3</elasticsearch.version>
         <jest.version>6.3.1</jest.version>
         <redis.version>1.4.1.RELEASE</redis.version>
         <redisson.version>3.12.5</redisson.version>

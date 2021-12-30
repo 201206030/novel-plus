@@ -2,23 +2,26 @@ package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.config.BookPriceConfig;
+import com.java2nb.novel.core.config.BookPriceProperties;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
-import com.java2nb.novel.core.utils.*;
-import com.java2nb.novel.entity.*;
+import com.java2nb.novel.core.utils.BeanUtil;
+import com.java2nb.novel.core.utils.Constants;
+import com.java2nb.novel.core.utils.IdWorker;
+import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.*;
 import com.java2nb.novel.mapper.*;
-import com.java2nb.novel.search.BookSP;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FileService;
 import com.java2nb.novel.service.SearchService;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.vo.BookVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.orderbyhelper.OrderByHelper;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,7 +92,7 @@ public class BookServiceImpl implements BookService {
 
     private final FileService fileService;
 
-    private final BookPriceConfig bookPriceConfig;
+    private final BookPriceProperties bookPriceConfig;
 
 
     @SneakyThrows
@@ -125,9 +128,9 @@ public class BookServiceImpl implements BookService {
                     type = 0;
                 } else if (i < 14) {
                     type = 1;
-                } else if (i < 20) {
+                } else if (i < 19) {
                     type = 2;
-                } else if (i < 26) {
+                } else if (i < 25) {
                     type = 3;
                 } else {
                     type = 4;
@@ -186,7 +189,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public PageInfo searchByPage(BookSP params, int page, int pageSize) {
+    public PageBean<?> searchByPage(BookSpVO params, int page, int pageSize) {
 
 
         if (params.getUpdatePeriod() != null) {
@@ -213,7 +216,7 @@ public class BookServiceImpl implements BookService {
         if (StringUtils.isNotBlank(params.getSort())) {
             OrderByHelper.orderBy(params.getSort() + " desc");
         }
-        return new PageInfo<>(bookMapper.searchByPage(params));
+        return new PageBean<>(bookMapper.searchByPage(params));
 
 
     }
@@ -382,10 +385,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
+    public PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         OrderByHelper.orderBy("t1.create_time desc");
-        return bookCommentMapper.listCommentByPage(userId, bookId);
+        return new PageBean<>(bookCommentMapper.listCommentByPage(userId, bookId));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -491,7 +494,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
+    public PageBean<Book> listBookPageByUserId(Long userId, int page, int pageSize) {
 
         PageHelper.startPage(page, pageSize);
 
@@ -501,7 +504,7 @@ public class BookServiceImpl implements BookService {
                 .orderBy(BookDynamicSqlSupport.createTime.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return bookMapper.selectMany(selectStatement);
+        return new PageBean<>(bookMapper.selectMany(selectStatement));
 
     }
 
@@ -512,7 +515,6 @@ public class BookServiceImpl implements BookService {
             //该作者发布过此书名的小说
             throw new BusinessException(ResponseStatus.BOOKNAME_EXISTS);
         }
-        ;
         book.setAuthorName(penName);
         book.setAuthorId(authorId);
         book.setVisitCount(0L);
@@ -565,7 +567,7 @@ public class BookServiceImpl implements BookService {
                 .render(RenderingStrategies.MYBATIS3));
 
         //计算价格
-        int bookPrice = new BigDecimal(wordCount).divide(bookPriceConfig.getWordCount()).multiply(bookPriceConfig.getValue()).intValue();
+        int bookPrice = new BigDecimal(wordCount).multiply(bookPriceConfig.getValue()).divide(bookPriceConfig.getWordCount(),0, RoundingMode.DOWN).intValue();
 
         //更新小说目录表
         int indexNum = 0;
@@ -600,6 +602,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.selectMany(select(book.allColumns())
                 .from(book)
                 .where(updateTime, isGreaterThan(startDate))
+                .and(lastIndexId,isNotNull())
                 .orderBy(updateTime)
                 .limit(limit)
                 .build()
@@ -624,7 +627,7 @@ public class BookServiceImpl implements BookService {
         List<BookIndex> bookIndices = bookIndexMapper.selectMany(
                 select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
                         .from(bookIndex)
-                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategies.MYBATIS3));
         if (bookIndices.size() > 0) {
             BookIndex bookIndex = bookIndices.get(0);
             //获取小说ID
@@ -635,7 +638,7 @@ public class BookServiceImpl implements BookService {
                             .from(book)
                             .where(id, isEqualTo(bookId))
                             .build()
-                            .render(RenderingStrategy.MYBATIS3));
+                            .render(RenderingStrategies.MYBATIS3));
             if (books.size() > 0) {
                 Book book = books.get(0);
                 int wordCount = book.getWordCount();
@@ -658,7 +661,7 @@ public class BookServiceImpl implements BookService {
                                     .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
                                     .limit(1)
                                     .build()
-                                    .render(RenderingStrategy.MYBATIS3));
+                                    .render(RenderingStrategies.MYBATIS3));
                     if (lastBookIndices.size() > 0) {
                         BookIndex lastBookIndex = lastBookIndices.get(0);
                         lastIndexId = lastBookIndex.getId();
@@ -698,7 +701,7 @@ public class BookServiceImpl implements BookService {
         List<BookIndex> bookIndices = bookIndexMapper.selectMany(
                 select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
                         .from(bookIndex)
-                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategies.MYBATIS3));
         if (bookIndices.size() > 0) {
             BookIndex bookIndex = bookIndices.get(0);
             //获取小说ID
@@ -709,7 +712,7 @@ public class BookServiceImpl implements BookService {
                             .from(book)
                             .where(id, isEqualTo(bookId))
                             .build()
-                            .render(RenderingStrategy.MYBATIS3));
+                            .render(RenderingStrategies.MYBATIS3));
             if (books.size() > 0) {
                 Book book = books.get(0);
                 //作者ID相同，表明该小说是登录用户发布，可以修改
@@ -723,7 +726,7 @@ public class BookServiceImpl implements BookService {
                                     .equalTo(new Date())
                                     .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
                                     .build()
-                                    .render(RenderingStrategy.MYBATIS3));
+                                    .render(RenderingStrategies.MYBATIS3));
 
 
                 }
@@ -739,7 +742,7 @@ public class BookServiceImpl implements BookService {
         List<BookIndex> bookIndices = bookIndexMapper.selectMany(
                 select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
                         .from(bookIndex)
-                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategies.MYBATIS3));
         if (bookIndices.size() > 0) {
             BookIndex bookIndex = bookIndices.get(0);
             //获取小说ID
@@ -750,7 +753,7 @@ public class BookServiceImpl implements BookService {
                             .from(book)
                             .where(id, isEqualTo(bookId))
                             .build()
-                            .render(RenderingStrategy.MYBATIS3));
+                            .render(RenderingStrategies.MYBATIS3));
             if (books.size() > 0) {
                 Book book = books.get(0);
                 //作者ID相同，表明该小说是登录用户发布
@@ -760,7 +763,7 @@ public class BookServiceImpl implements BookService {
                                     .from(bookContent)
                                     .where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId))
                                     .limit(1)
-                                    .build().render(RenderingStrategy.MYBATIS3))
+                                    .build().render(RenderingStrategies.MYBATIS3))
                             .get(0).getContent();
                 }
 
@@ -777,7 +780,7 @@ public class BookServiceImpl implements BookService {
         List<BookIndex> bookIndices = bookIndexMapper.selectMany(
                 select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
                         .from(bookIndex)
-                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategy.MYBATIS3));
+                        .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategies.MYBATIS3));
         if (bookIndices.size() > 0) {
             BookIndex bookIndex = bookIndices.get(0);
             //获取小说ID
@@ -788,7 +791,7 @@ public class BookServiceImpl implements BookService {
                             .from(book)
                             .where(id, isEqualTo(bookId))
                             .build()
-                            .render(RenderingStrategy.MYBATIS3));
+                            .render(RenderingStrategies.MYBATIS3));
             if (books.size() > 0) {
                 Book book = books.get(0);
                 //作者ID相同，表明该小说是登录用户发布，可以修改
@@ -797,11 +800,11 @@ public class BookServiceImpl implements BookService {
                     int wordCount = StringUtil.getStrValidWordCount(content);
 
                     //计算价格
-                    int bookPrice = new BigDecimal(wordCount).divide(bookPriceConfig.getWordCount()).multiply(bookPriceConfig.getValue()).intValue();
+                    int bookPrice = new BigDecimal(wordCount).multiply(bookPriceConfig.getValue()).divide(bookPriceConfig.getWordCount(),0,RoundingMode.DOWN).intValue();
 
 
                     //更新小说目录表
-                    int update = bookIndexMapper.update(
+                    bookIndexMapper.update(
                             update(BookIndexDynamicSqlSupport.bookIndex)
                                     .set(BookIndexDynamicSqlSupport.indexName)
                                     .equalTo(indexName)
@@ -812,7 +815,7 @@ public class BookServiceImpl implements BookService {
                                     .set(BookIndexDynamicSqlSupport.updateTime)
                                     .equalTo(currentDate)
                                     .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
-                                    .build().render(RenderingStrategy.MYBATIS3));
+                                    .build().render(RenderingStrategies.MYBATIS3));
 
                     //更新小说内容表
                     bookContentMapper.update(
@@ -820,12 +823,25 @@ public class BookServiceImpl implements BookService {
                                     .set(BookContentDynamicSqlSupport.content)
                                     .equalTo(content)
                                     .where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId))
-                                    .build().render(RenderingStrategy.MYBATIS3));
+                                    .build().render(RenderingStrategies.MYBATIS3));
 
                 }
             }
 
         }
+    }
+
+    @Override
+    public void updateBookPic(Long bookId, String bookPic, Long authorId) {
+        bookMapper.update(update(book)
+                .set(picUrl)
+                .equalTo(bookPic)
+                .set(updateTime)
+                .equalTo(new Date())
+                .where(id, isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
     }
 
 

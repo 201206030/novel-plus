@@ -1,7 +1,6 @@
 package com.java2nb.novel.core.schedule;
 
 
-import com.java2nb.novel.core.config.AuthorIncomeConfig;
 import com.java2nb.novel.core.utils.DateUtil;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncomeDetail;

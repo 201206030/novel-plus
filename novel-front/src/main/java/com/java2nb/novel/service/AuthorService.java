@@ -1,10 +1,10 @@
 package com.java2nb.novel.service;
 
 
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
-import com.java2nb.novel.entity.FriendLink;
 
 import java.util.Date;
 import java.util.List;
@@ -111,9 +111,9 @@ public interface AuthorService {
      * @param bookId 小说ID
      * @param startTime 开始时间
      * @param endTime 结束时间
-     * @return 日收入统计数据列表
+     * @return 日收入统计数据分页数据
      */
-    List<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId, Date startTime, Date endTime);
+    PageBean<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId, Date startTime, Date endTime);
 
 
     /**
@@ -122,7 +122,7 @@ public interface AuthorService {
      * @param pageSize 分页大小
      * @param userId 用户ID
      * @param bookId 小说ID
-     * @return
+     * @return 分页数据
      * */
-    List<AuthorIncome> listIncomeMonthByPage(int page, int pageSize, Long userId, Long bookId);
+    PageBean<AuthorIncome> listIncomeMonthByPage(int page, int pageSize, Long userId, Long bookId);
 }

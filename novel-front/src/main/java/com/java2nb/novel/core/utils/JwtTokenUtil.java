@@ -86,7 +86,11 @@ public class JwtTokenUtil {
      */
     private boolean isTokenExpired(String token) {
         Date expiredDate = getExpiredDateFromToken(token);
-        return expiredDate.before(new Date());
+        if(expiredDate == null){
+            return true;
+        }else {
+            return expiredDate.before(new Date());
+        }
     }
 
     /**
@@ -94,7 +98,7 @@ public class JwtTokenUtil {
      */
     private Date getExpiredDateFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
-        return claims.getExpiration();
+        return claims != null ? claims.getExpiration() : null;
     }
 
     /**

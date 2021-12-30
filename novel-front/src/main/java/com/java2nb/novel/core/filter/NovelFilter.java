@@ -38,7 +38,7 @@ public class NovelFilter implements Filter {
             //缓存10天
             resp.setDateHeader("expires", System.currentTimeMillis()+60*60*24*10*1000);
             OutputStream out = resp.getOutputStream();
-            InputStream input = new FileInputStream(new File(picSavePath + requestUri));
+            InputStream input = new FileInputStream(picSavePath + requestUri);
             byte[] b = new byte[4096];
             for (int n; (n = input.read(b)) != -1; ) {
                 out.write(b, 0, n);
@@ -55,7 +55,7 @@ public class NovelFilter implements Filter {
             userMark = UUIDUtil.getUUID32();
             CookieUtil.setCookie(resp,Constants.USER_CLIENT_MARK_KEY,userMark);
         }
-        ThreadLocalUtil.setCientId(userMark);
+        ThreadLocalUtil.setClientId(userMark);
         //根据浏览器类型选择前端模板
         String to = req.getParameter("to");
         CacheService cacheService = SpringUtil.getBean(CacheService.class);

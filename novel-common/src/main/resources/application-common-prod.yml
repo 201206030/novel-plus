@@ -1,0 +1,85 @@
+spring:
+  profiles:
+    include: [common]
+  main:
+    allow-bean-definition-overriding: true
+  #Redis服务器IP
+  redis:
+    host: 127.0.0.1
+    #Redis服务器连接端口
+    port: 6379
+    #Redis服务器连接密码
+    password: test
+    jedis:
+      pool:
+        #连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 1
+        #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8
+        #连接池中的最小空闲连接
+        min-idle: 0
+    #连接超时时间（毫秒）
+    timeout: 30000
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/novel_biz?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: test123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+####使用shardingJdbc时，
+####所有的jdbcType都不能是LONGVARCHAR,否则会导致java.io.NotSerializableException: java.io.StringReader错误
+##### 应该替换所有的 LONGVARCHAR 类型为VARCHAR
+
+sharding:
+  jdbc:
+    datasource:
+      names: ds0 #,ds1
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: test123456
+    #      ds1:
+    #        type: com.alibaba.druid.pool.DruidDataSource
+    #        driver-class-name: com.mysql.jdbc.Driver
+    #        url: jdbc:mysql://localhost:3306/novel_plus2
+    #        username: root
+    #        password: test123456
+    config:
+      sharding:
+        props:
+          sql.show: true
+        tables:
+          book_content:  #book_content表
+            key-generator-column-name: id  #主键
+            actual-data-nodes: ds${0}.book_content${0..9}  #数据节点
+            #            database-strategy:  #分库策略
+            #              inline:
+            #                sharding-column: book_id
+            #                algorithm-expression: ds${book_id % 10}
+            table-strategy:  #分表策略
+              inline:
+                shardingColumn: index_id
+                algorithm-expression: book_content${index_id % 10}
+
+
+logging:
+  level:
+    root: error
+    com.java2nb: error
+
+
+
+txt:
+  save:
+    storage: db #存储介质，db：数据库，file：txt文本
+    path: /Users/xiongxiaoyang/books  #txt小说文本保存路径
+
+
+
+
+

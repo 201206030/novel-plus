@@ -1,19 +1,17 @@
 package com.java2nb.novel.core.schedule;
 
 
-import com.java2nb.novel.core.config.AuthorIncomeConfig;
+import com.java2nb.novel.core.config.AuthorIncomeProperties;
 import com.java2nb.novel.core.utils.DateUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
-import com.java2nb.novel.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class MonthIncomeStaSchedule {
 
     private final BookService bookService;
 
-    private final AuthorIncomeConfig authorIncomeConfig;
+    private final AuthorIncomeProperties authorIncomeConfig;
 
     /**
      * 每个月1号凌晨2点统计上个月数据
@@ -60,8 +58,8 @@ public class MonthIncomeStaSchedule {
                 //2.查询作家作品
                 List<Book> books = bookService.queryBookList(authorId);
 
-                Long totalPreTaxIncome = 0L;
-                Long totalAfterTaxIncome = 0L;
+                long totalPreTaxIncome = 0L;
+                long totalAfterTaxIncome = 0L;
                 for (Book book : books) {
 
                     Long bookId = book.getId();
@@ -72,14 +70,14 @@ public class MonthIncomeStaSchedule {
 
                     BigDecimal monthIncomeShare = new BigDecimal(monthIncome)
                             .multiply(authorIncomeConfig.getShareProportion());
-                    Long preTaxIncome = monthIncomeShare
+                    long preTaxIncome = monthIncomeShare
                             .multiply(authorIncomeConfig.getExchangeProportion())
                             .multiply(new BigDecimal(100))
                             .longValue();
 
                     totalPreTaxIncome += preTaxIncome;
 
-                    Long afterTaxIncome = monthIncomeShare
+                    long afterTaxIncome = monthIncomeShare
                             .multiply(authorIncomeConfig.getTaxRate())
                             .multiply(authorIncomeConfig.getExchangeProportion())
                             .multiply(new BigDecimal(100))

@@ -3,19 +3,29 @@ package com.java2nb.novel.service.impl;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.search.BookSP;
+import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.SearchService;
+import com.java2nb.novel.vo.BookVO;
 import com.java2nb.novel.vo.EsBookVO;
 import io.searchbox.client.JestClient;
-import io.searchbox.core.*;
+import io.searchbox.core.Count;
+import io.searchbox.core.CountResult;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -37,11 +47,11 @@ import java.util.Map;
 @Slf4j
 public class SearchServiceImpl implements SearchService {
 
-    private final String INDEX = "novel";
-
-    private final String TYPE = "book";
-
     private final JestClient jestClient;
+
+    private final RestHighLevelClient restHighLevelClient;
+
+    private final String INDEX = "novel";
 
 
     @Override
@@ -51,16 +61,19 @@ public class SearchServiceImpl implements SearchService {
         EsBookVO esBookVO = new EsBookVO();
         BeanUtils.copyProperties(book, esBookVO, "lastIndexUpdateTime");
         esBookVO.setLastIndexUpdateTime(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(book.getLastIndexUpdateTime()));
-        Index action = new Index.Builder(esBookVO).index(INDEX).type(TYPE).id(book.getId().toString()).build();
 
-        jestClient.execute(action);
+        IndexRequest request = new IndexRequest(INDEX);
+        request.id(book.getId()+"");
+        request.source(new ObjectMapper().writeValueAsString(esBookVO), XContentType.JSON);
+        IndexResponse index = restHighLevelClient.index(request, RequestOptions.DEFAULT);
 
+        log.debug(index.getResult().toString());
 
     }
 
     @SneakyThrows
     @Override
-    public PageInfo searchBook(BookSP params, int page, int pageSize) {
+    public PageBean<EsBookVO> searchBook(BookSpVO params, int page, int pageSize) {
         List<EsBookVO> bookList = new ArrayList<>(0);
 
         //使用搜索引擎搜索
@@ -102,7 +115,7 @@ public class SearchServiceImpl implements SearchService {
         searchSourceBuilder.query(boolQueryBuilder);
 
 
-        Count count = new Count.Builder().addIndex(INDEX).addType(TYPE)
+        Count count = new Count.Builder().addIndex(INDEX)
                 .query(searchSourceBuilder.toString()).build();
         CountResult results = jestClient.execute(count);
         Double total = results.getCount();
@@ -130,7 +143,7 @@ public class SearchServiceImpl implements SearchService {
         searchSourceBuilder.size(pageSize);
 
         // 构建Search对象
-        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX).addType(TYPE).build();
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX).build();
         log.debug(search.toString());
         SearchResult result;
         result = jestClient.execute(search);
@@ -188,11 +201,7 @@ public class SearchServiceImpl implements SearchService {
                 }
             }
 
-            PageInfo<EsBookVO> pageInfo = new PageInfo<>(bookList);
-            pageInfo.setTotal(total.longValue());
-            pageInfo.setPageNum(page);
-            pageInfo.setPageSize(pageSize);
-            return pageInfo;
+            return new PageBean<>(page,pageSize,total.longValue(),bookList);
         }
        throw new BusinessException(ResponseStatus.ES_SEARCH_FAIL);
     }

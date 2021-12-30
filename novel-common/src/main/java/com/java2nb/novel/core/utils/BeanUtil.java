@@ -19,7 +19,7 @@ public class BeanUtil {
      * @return 新集合
      * */
     @SneakyThrows
-    public static <T> List<T> copyList(List source,Class<T> targetClass){
+    public static <T> List<T> copyList(List<? super T> source,Class<T> targetClass){
         List<T> target = new ArrayList<>(source.size());
         for( int i = 0 ; i < source.size() ; i++){
             Object sourceItem = source.get(i);

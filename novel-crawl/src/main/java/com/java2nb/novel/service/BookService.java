@@ -72,6 +72,7 @@ public interface BookService {
      * 更新一下最后一次的抓取时间
      * @param bookId 小说ID
      * */
+    @Deprecated
     void updateCrawlLastTime(Long bookId);
 
     /**

@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,12 +34,10 @@ public class XssFilter implements Filter {
         String tempEnabled = filterConfig.getInitParameter("enabled");
         if (StringUtils.isNotBlank(tempExcludes)) {
             String[] url = tempExcludes.split(",");
-            for (int i = 0; url != null && i < url.length; i++) {
-                excludes.add(url[i]);
-            }
+            excludes.addAll(Arrays.asList(url));
         }
         if (StringUtils.isNotEmpty(tempEnabled)) {
-            enabled = Boolean.valueOf(tempEnabled);
+            enabled = Boolean.parseBoolean(tempEnabled);
         }
     }
 
@@ -48,8 +46,7 @@ public class XssFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             {
         HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
-        if (handleExcludeURL(req, resp)) {
+                if (handleExcludeURL(req)) {
             chain.doFilter(request, response);
             return;
         }
@@ -57,7 +54,7 @@ public class XssFilter implements Filter {
         chain.doFilter(xssRequest, response);
     }
 
-    private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response) {
+    private boolean handleExcludeURL(HttpServletRequest request) {
         if (!enabled) {
             return true;
         }

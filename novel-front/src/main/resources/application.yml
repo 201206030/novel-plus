@@ -4,7 +4,7 @@ server:
 spring:
   profiles:
     active: dev
-    include: alipay,oss,fastdfs
+    include: website,alipay,oss,fastdfs
 
 
   rabbitmq:
@@ -23,7 +23,9 @@ spring:
     #是否开启搜索引擎，1：开启，0：不开启
     enable: 0
     jest:
-      uris: http://127.0.0.1:9200
+      uris: http://192.168.0.105:9200
+
+
 
 redisson:
   singleServerConfig:
@@ -46,7 +48,7 @@ xss:
   # 排除链接（多个用逗号分隔）
   excludes: /system/notice/*
   # 匹配链接 （多个用逗号分隔）
-  urlPatterns: /book/addBookComment,/user/addFeedBack,/author/addBook,/author/addBookContent,/author/register.html
+  urlPatterns: /book/addBookComment,/user/addFeedBack,/author/addBook,/author/addBookContent,/author/updateBookContent,/author/register.html
 
 
 author:
@@ -65,3 +67,11 @@ book:
     word-count: 1000
     #价值(屋币)
     value: 5
+
+
+
+
+
+
+
+

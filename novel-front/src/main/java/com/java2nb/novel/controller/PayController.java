@@ -5,7 +5,7 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.java2nb.novel.core.bean.UserDetails;
-import com.java2nb.novel.core.config.AlipayConfig;
+import com.java2nb.novel.core.config.AlipayProperties;
 import com.java2nb.novel.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -31,7 +31,7 @@ import java.util.Map;
 public class PayController extends BaseController {
 
 
-    private final AlipayConfig alipayConfig;
+    private final AlipayProperties alipayConfig;
 
     private final OrderService orderService;
 
@@ -47,7 +47,6 @@ public class PayController extends BaseController {
         if (userDetails == null) {
             //未登录，跳转到登陆页面
             httpResponse.sendRedirect("/user/login.html?originUrl=/pay/aliPay?payAmount="+payAmount);
-            return;
         }else {
             //创建充值订单
             Long outTradeNo = orderService.createPayOrder((byte)1,payAmount,userDetails.getId());
@@ -92,11 +91,10 @@ public class PayController extends BaseController {
         PrintWriter out = httpResponse.getWriter();
 
         //获取支付宝POST过来反馈信息
-        Map<String,String> params = new HashMap<String,String>();
+        Map<String,String> params = new HashMap<>();
         Map<String,String[]> requestParams = request.getParameterMap();
-        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
-            String[] values = (String[]) requestParams.get(name);
+        for (String name : requestParams.keySet()) {
+            String[] values = requestParams.get(name);
             String valueStr = "";
             for (int i = 0; i < values.length; i++) {
                 valueStr = (i == values.length - 1) ? valueStr + values[i]
@@ -119,13 +117,13 @@ public class PayController extends BaseController {
         if(signVerified) {
             //验证成功
             //商户订单号
-            String outTradeNo = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            String outTradeNo = new String(request.getParameter("out_trade_no").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
             //支付宝交易号
-            String tradeNo = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            String tradeNo = new String(request.getParameter("trade_no").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
             //交易状态
-            String tradeStatus = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
+            String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
             //更新订单状态
             orderService.updatePayOrder(Long.parseLong(outTradeNo), tradeNo, tradeStatus);

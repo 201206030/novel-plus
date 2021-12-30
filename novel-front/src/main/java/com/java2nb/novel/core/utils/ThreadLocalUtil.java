@@ -12,12 +12,12 @@ public class ThreadLocalUtil {
     /**
      * 存储当前线程访问的模板目录
      * */
-    private static ThreadLocal<String> templateDir = new ThreadLocal<>();
+    private static final ThreadLocal<String> templateDir = new ThreadLocal<>();
 
     /**
      * 存储当前会话的sessionID
      * */
-    private static ThreadLocal<String> clientId = new ThreadLocal<>();
+    private static final ThreadLocal<String> clientId = new ThreadLocal<>();
 
     /**
      * 设置当前应该访问的模板目录
@@ -41,7 +41,7 @@ public class ThreadLocalUtil {
     /**
      * 设置当前访问线程的客户端ID
      * */
-    public static void setCientId(String id){
+    public static void setClientId(String id){
         clientId.set(id);
     }
 

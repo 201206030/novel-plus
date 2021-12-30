@@ -1,8 +1,10 @@
 package com.java2nb.novel.service;
 
 
+import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.entity.UserBuyRecord;
+import com.java2nb.novel.entity.UserFeedback;
 import com.java2nb.novel.vo.BookReadHistoryVO;
 import com.java2nb.novel.vo.BookShelfVO;
 import com.java2nb.novel.entity.User;
@@ -58,9 +60,9 @@ public interface UserService {
      * @param userId 用户ID
      * @param page
      * @param pageSize
-     * @return 书架集合
+     * @return 书架分页信息
      * */
-    List<BookShelfVO> listBookShelfByPage(Long userId, int page, int pageSize);
+    PageBean<BookShelfVO> listBookShelfByPage(Long userId, int page, int pageSize);
 
     /**
      * 添加阅读记录
@@ -82,9 +84,9 @@ public interface UserService {
      * @param userId 用户ID
      * @param page 页码
      * @param pageSize 分页大小
-     * @return 反馈集合
+     * @return 反馈分页数据
      * */
-    List<UserFeedbackVO> listUserFeedBackByPage(Long userId, int page, int pageSize);
+    PageBean<UserFeedback> listUserFeedBackByPage(Long userId, int page, int pageSize);
 
     /**
      * 查询个人信息
@@ -98,9 +100,9 @@ public interface UserService {
      * @param userId 用户id
      * @param page 页码
      * @param pageSize 分页大小
-     * @return
+     * @return 分页数据
      * */
-    List<BookReadHistoryVO> listReadHistoryByPage(Long userId, int page, int pageSize);
+    PageBean<BookReadHistoryVO> listReadHistoryByPage(Long userId, int page, int pageSize);
 
     /**
      * 更新个人信息

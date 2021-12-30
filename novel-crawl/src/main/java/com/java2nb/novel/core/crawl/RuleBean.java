@@ -35,7 +35,7 @@ public class RuleBean {
     private String statusPatten;
     private String scorePatten;
     private String visitCountPatten;
-    private String descStart;;
+    private String descStart;
     private String descEnd;
     private String upadateTimePatten;
     private String upadateTimeFormatPatten;

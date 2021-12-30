@@ -1,0 +1,28 @@
+<div th:fragment="top(navType)" class="header">
+        <div class="inner">
+            <div class="logo"><a href="/"><img src="/images/logo.png" alt="小说精品屋"></a></div>
+            <div class="nav">
+                <ul class="clearfix">
+                    <li class="on">
+                        <a href="/">首页</a>
+                    </li>
+                    <li>
+                        <a href="/#">书库</a>
+                    </li>
+                    <li>
+                        <a href="/#">排行</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="search">
+                <form method="get" name="search" action="/#" target="_blank">
+                    <input type="text" name="keyword" id="q" placeholder="请输入书名·作者" class="search-key">
+                    <button type="submit" class="search-btn" id="search-btn">搜索</button>
+                </form>
+            </div>
+            <div class="other">
+                <a class="link-wap" href="/">手机版</a>
+
+            </div>
+        </div>
+</div>

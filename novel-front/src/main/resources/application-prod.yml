@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    include: [common-prod]
+
+  #静态文件路径配置
+  resources:
+    static-locations: file:${user.dir}/templates/${templates.name}/static/
+  #thymeleaf模版路径配置
+  thymeleaf:
+    prefix: file:${user.dir}/templates/${templates.name}/html/
+    suffix: .html
+
+#模版配置
+templates:
+  name: orange
+
+
+pic:
+  save:
+    type: 2 #图片保存方式, 1不保存，使用爬取的网络图片 ，2保存在自己的存储介质
+    storage: local #存储介质，local：本地，OSS：阿里云对象存储，fastDfs：分布式文件系统
+    path: /var/pic  #图片保存路径
+
+
+#线程池配置
+thread:
+  pool:
+    #核心线程池数量
+    core-pool-size: 10
+    #最大线程池数量
+    maximum-pool-size: 20
+    #线程超时时间（秒）
+    keep-alive-time: 10
+    #队列大小
+    queue-size: 1000
+
+

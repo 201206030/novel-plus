@@ -2,14 +2,15 @@ package com.java2nb.novel.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.java2nb.novel.entity.CrawlSingleTask;
-import com.java2nb.novel.entity.CrawlSource;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
 /**
  * @author Administrator
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class CrawlSingleTaskVO extends CrawlSingleTask {
 

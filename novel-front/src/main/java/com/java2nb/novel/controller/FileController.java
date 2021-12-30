@@ -2,28 +2,23 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.cache.CacheService;
+import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.exception.BusinessException;
 import com.java2nb.novel.core.utils.Constants;
+import com.java2nb.novel.core.utils.FileUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
-import com.java2nb.novel.core.utils.RestTemplateUtil;
 import com.java2nb.novel.core.utils.UUIDUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.Charsets;
 import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.Date;
 import java.util.Objects;
@@ -63,29 +58,35 @@ public class FileController {
     }
 
     /**
-     * 文件上传
+     * 图片上传
+     * @return
      */
+    @SneakyThrows
     @ResponseBody
-    @PostMapping("/upload")
-    ResultBean upload(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/picUpload")
+    ResultBean<String> upload(@RequestParam("file") MultipartFile file) {
         Date currentDate = new Date();
-        try {
-            String savePath =
-                    Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +
-                    DateUtils.formatDate(currentDate, "MM") + "/" +
-                    DateUtils.formatDate(currentDate, "dd") ;
-            String oriName = file.getOriginalFilename();
-            String saveFileName = UUIDUtil.getUUID32() + oriName.substring(oriName.lastIndexOf("."));
-            File saveFile = new File( picSavePath + savePath, saveFileName);
-            if (!saveFile.getParentFile().exists()) {
-                saveFile.getParentFile().mkdirs();
+        String savePath =
+                Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +
+                        DateUtils.formatDate(currentDate, "MM") + "/" +
+                        DateUtils.formatDate(currentDate, "dd");
+        String oriName = file.getOriginalFilename();
+        assert oriName != null;
+        String saveFileName = UUIDUtil.getUUID32() + oriName.substring(oriName.lastIndexOf("."));
+        File saveFile = new File(picSavePath + savePath, saveFileName);
+        if (!saveFile.getParentFile().exists()) {
+            boolean isSuccess = saveFile.getParentFile().mkdirs();
+            if(!isSuccess){
+                throw new BusinessException(ResponseStatus.FILE_DIR_MAKE_FAIL);
             }
-            file.transferTo(saveFile);
-            return ResultBean.ok(savePath+"/"+saveFileName);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return ResultBean.error();
         }
+        file.transferTo(saveFile);
+        if(!FileUtil.isImage(saveFile)){
+            //上传的文件不是图片
+            saveFile.delete();
+            throw new BusinessException(ResponseStatus.FILE_NOT_IMAGE);
+        };
+        return ResultBean.ok(savePath + "/" + saveFileName);
 
     }
 

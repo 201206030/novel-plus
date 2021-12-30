@@ -3,7 +3,7 @@
 
 <mapper namespace="com.java2nb.novel.mapper.FrontBookMapper">
 
-    <select id="searchByPage" parameterType="com.java2nb.novel.search.BookSP" resultType="com.java2nb.novel.vo.BookVO">
+    <select id="searchByPage" parameterType="com.java2nb.novel.vo.BookSpVO" resultType="com.java2nb.novel.vo.BookVO">
         select
         id,cat_id,cat_name,book_name,author_id,author_name,word_count,last_index_id,last_index_name,score,pic_url,book_status,last_index_update_time,book_desc
         from book where word_count > 0

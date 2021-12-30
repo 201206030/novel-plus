@@ -3,4 +3,5 @@
 **/cachedata
 **/target
 **/*.iml
+**/.DS_Store
 

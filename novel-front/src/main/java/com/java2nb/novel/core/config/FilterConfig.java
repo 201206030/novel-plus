@@ -32,7 +32,7 @@ public class FilterConfig{
     private String urlPatterns;
 
     @Bean
-    public FilterRegistrationBean<NovelFilter> filterRegist() {
+    public FilterRegistrationBean<NovelFilter> filterRegister() {
         FilterRegistrationBean<NovelFilter> frBean = new FilterRegistrationBean<>();
         frBean.setFilter(new NovelFilter());
         frBean.addUrlPatterns("/*");
@@ -41,9 +41,9 @@ public class FilterConfig{
     }
 
     @Bean
-    public FilterRegistrationBean xssFilterRegistration()
+    public FilterRegistrationBean<XssFilter> xssFilterRegistration()
     {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+        FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
         //
         registration.setDispatcherTypes(DispatcherType.REQUEST);
         //过滤器类（继承Filter）
