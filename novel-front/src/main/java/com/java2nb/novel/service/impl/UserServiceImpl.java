@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserBuyRecordMapper userBuyRecordMapper;
 
+    private final IdWorker idWorker = IdWorker.INSTANCE;
 
 
     @Override
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
         User entity = new User();
         BeanUtils.copyProperties(user,entity);
         //数据库生成注册记录
-        Long id = IdWorker.INSTANCE.nextId();
+        Long id = idWorker.nextId();
         entity.setId(id);
         entity.setNickName(entity.getUsername());
         Date currentDate = new Date();

@@ -58,8 +58,9 @@ public class CrawlServiceImpl implements CrawlService {
 
     private final BookService bookService;
 
-
     private final CacheService cacheService;
+
+    private final IdWorker idWorker = IdWorker.INSTANCE;
 
 
     @Override
@@ -327,7 +328,7 @@ public class CrawlServiceImpl implements CrawlService {
                 book.setCrawlBookId(bookId);
                 book.setCrawlSourceId(sourceId);
                 book.setCrawlLastTime(new Date());
-                book.setId(IdWorker.INSTANCE.nextId());
+                book.setId(idWorker.nextId());
                 //解析章节目录
                 boolean parseIndexContentResult = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0), chapter -> {
                     bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
