@@ -1,6 +1,9 @@
 package com.java2nb.novel.core.crawl;
 
-import com.java2nb.novel.core.utils.*;
+import com.java2nb.novel.core.utils.HttpUtil;
+import com.java2nb.novel.core.utils.RandomBookInfoUtil;
+import com.java2nb.novel.core.utils.RestTemplateUtil;
+import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
@@ -9,15 +12,14 @@ import io.github.xxyopen.util.IdWorker;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * 爬虫解析器
@@ -39,14 +41,14 @@ public class CrawlParser {
         String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
         String bookDetailHtml = getByHttpClientWithChrome(bookDetailUrl);
         if (bookDetailHtml != null) {
-            Pattern bookNamePatten = compile(ruleBean.getBookNamePatten());
+            Pattern bookNamePatten = PatternFactory.getPattern(ruleBean.getBookNamePatten());
             Matcher bookNameMatch = bookNamePatten.matcher(bookDetailHtml);
             boolean isFindBookName = bookNameMatch.find();
             if (isFindBookName) {
                 String bookName = bookNameMatch.group(1);
                 //设置小说名
                 book.setBookName(bookName);
-                Pattern authorNamePatten = compile(ruleBean.getAuthorNamePatten());
+                Pattern authorNamePatten = PatternFactory.getPattern(ruleBean.getAuthorNamePatten());
                 Matcher authorNameMatch = authorNamePatten.matcher(bookDetailHtml);
                 boolean isFindAuthorName = authorNameMatch.find();
                 if (isFindAuthorName) {
@@ -54,7 +56,7 @@ public class CrawlParser {
                     //设置作者名
                     book.setAuthorName(authorName);
                     if (StringUtils.isNotBlank(ruleBean.getPicUrlPatten())) {
-                        Pattern picUrlPatten = compile(ruleBean.getPicUrlPatten());
+                        Pattern picUrlPatten = PatternFactory.getPattern(ruleBean.getPicUrlPatten());
                         Matcher picUrlMatch = picUrlPatten.matcher(bookDetailHtml);
                         boolean isFindPicUrl = picUrlMatch.find();
                         if (isFindPicUrl) {
@@ -67,7 +69,7 @@ public class CrawlParser {
                         }
                     }
                     if (StringUtils.isNotBlank(ruleBean.getScorePatten())) {
-                        Pattern scorePatten = compile(ruleBean.getScorePatten());
+                        Pattern scorePatten = PatternFactory.getPattern(ruleBean.getScorePatten());
                         Matcher scoreMatch = scorePatten.matcher(bookDetailHtml);
                         boolean isFindScore = scoreMatch.find();
                         if (isFindScore) {
@@ -77,7 +79,7 @@ public class CrawlParser {
                         }
                     }
                     if (StringUtils.isNotBlank(ruleBean.getVisitCountPatten())) {
-                        Pattern visitCountPatten = compile(ruleBean.getVisitCountPatten());
+                        Pattern visitCountPatten = PatternFactory.getPattern(ruleBean.getVisitCountPatten());
                         Matcher visitCountMatch = visitCountPatten.matcher(bookDetailHtml);
                         boolean isFindVisitCount = visitCountMatch.find();
                         if (isFindVisitCount) {
@@ -98,7 +100,7 @@ public class CrawlParser {
                     //设置书籍简介
                     book.setBookDesc(desc);
                     if (StringUtils.isNotBlank(ruleBean.getStatusPatten())) {
-                        Pattern bookStatusPatten = compile(ruleBean.getStatusPatten());
+                        Pattern bookStatusPatten = PatternFactory.getPattern(ruleBean.getStatusPatten());
                         Matcher bookStatusMatch = bookStatusPatten.matcher(bookDetailHtml);
                         boolean isFindBookStatus = bookStatusMatch.find();
                         if (isFindBookStatus) {
@@ -111,7 +113,7 @@ public class CrawlParser {
                     }
 
                     if (StringUtils.isNotBlank(ruleBean.getUpadateTimePatten()) && StringUtils.isNotBlank(ruleBean.getUpadateTimeFormatPatten())) {
-                        Pattern updateTimePatten = compile(ruleBean.getUpadateTimePatten());
+                        Pattern updateTimePatten = PatternFactory.getPattern(ruleBean.getUpadateTimePatten());
                         Matcher updateTimeMatch = updateTimePatten.matcher(bookDetailHtml);
                         boolean isFindUpdateTime = updateTimeMatch.find();
                         if (isFindUpdateTime) {
@@ -154,10 +156,10 @@ public class CrawlParser {
                 indexListHtml = indexListHtml.substring(indexListHtml.indexOf(ruleBean.getBookIndexStart()) + ruleBean.getBookIndexStart().length());
             }
 
-            Pattern indexIdPatten = compile(ruleBean.getIndexIdPatten());
+            Pattern indexIdPatten = PatternFactory.getPattern(ruleBean.getIndexIdPatten());
             Matcher indexIdMatch = indexIdPatten.matcher(indexListHtml);
 
-            Pattern indexNamePatten = compile(ruleBean.getIndexNamePatten());
+            Pattern indexNamePatten = PatternFactory.getPattern(ruleBean.getIndexNamePatten());
             Matcher indexNameMatch = indexNamePatten.matcher(indexListHtml);
 
             boolean isFindIndex = indexIdMatch.find() & indexNameMatch.find();
