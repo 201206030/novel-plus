@@ -95,6 +95,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookPriceProperties bookPriceConfig;
 
+    private final IdWorker idWorker = IdWorker.INSTANCE;
+
 
     @SneakyThrows
     @Override
@@ -428,7 +430,7 @@ public class BookServiceImpl implements BookService {
         } else {
             //作者不存在，先创建作者
             Date currentDate = new Date();
-            authorId = IdWorker.INSTANCE.nextId();
+            authorId = idWorker.nextId();
             BookAuthor bookAuthor = new BookAuthor();
             bookAuthor.setId(authorId);
             bookAuthor.setPenName(authorName);
@@ -548,7 +550,7 @@ public class BookServiceImpl implements BookService {
             //并不是更新自己的小说
             return;
         }
-        Long lastIndexId = IdWorker.INSTANCE.nextId();
+        Long lastIndexId = idWorker.nextId();
         Date currentDate = new Date();
         int wordCount = StringUtil.getStrValidWordCount(content);
 
