@@ -1,4 +1,4 @@
-[![index]( https://z3.ax1x.com/2021/11/11/IwNJAg.jpg )]( https://cloud.tencent.com/act/cps/redirect?redirect=1052&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console )
+[![index]( https://s1.ax1x.com/2022/04/27/LLVXqJ.png )]( https://s1.ax1x.com/2022/04/27/LLVXqJ.png )
 
 # 小说精品屋-plus
 
