@@ -1,4 +1,4 @@
-[![index]( https://s1.ax1x.com/2022/04/27/LLVXqJ.png )]( https://s1.ax1x.com/2022/04/27/LLVXqJ.png )
+[![index]( https://s1.ax1x.com/2022/04/27/LLVXqJ.png )]( https://curl.qcloud.com/kgMaOjoq )
 
 # 小说精品屋-plus
 
