@@ -35,7 +35,7 @@
             <div class="hot_articles">
                 <dl class="hot_recommend" id="topBooks1" th:if="${bookMap['1']} and ${#lists.size(bookMap['1']) > 0}">
                     <dt><a th:href="'/book/'+${bookMap['1'][0].bookId}+'.html'" th:text="${bookMap['1'][0].bookName}"></a></dt>
-                    <dd th:if="${#lists.size(bookMap['1']) > 1}"><a th:href="'/book/'+${bookMap['1'][1].bookId}+'.html'" th:text="${bookMap['1'][1].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 2}" th:href="'/book/'+${bookMap['1'][1].bookId}+'.html'" th:text="${bookMap['1'][1].bookName}"></a></dd>
+                    <dd th:if="${#lists.size(bookMap['1']) > 1}"><a th:href="'/book/'+${bookMap['1'][1].bookId}+'.html'" th:text="${bookMap['1'][1].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 2}" th:href="'/book/'+${bookMap['1'][2].bookId}+'.html'" th:text="${bookMap['1'][2].bookName}"></a></dd>
                     <dd th:if="${#lists.size(bookMap['1']) > 3}"><a th:href="'/book/'+${bookMap['1'][3].bookId}+'.html'" th:text="${bookMap['1'][3].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 4}" th:href="'/book/'+${bookMap['1'][4].bookId}+'.html'" th:text="${bookMap['1'][4].bookName}"></a></dd>
                 </dl>
                 <dl class="hot_recommend" id="topBooks2" th:if="${bookMap['1']} and ${#lists.size(bookMap['1']) > 5}">
