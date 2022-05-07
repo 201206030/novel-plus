@@ -41,6 +41,9 @@ public class MonthIncomeStaSchedule {
         Date startTime = DateUtil.getLastMonthStartTime();
         Date endTime = DateUtil.getLastMonthEndTime();
 
+
+        //每次查询作家的最后一个主键id
+        long lastAuthorId = -1;
         //每次查询的作家数量
         int needAuthorNumber = 10;
         //查询出来的真实作家数量
@@ -49,8 +52,14 @@ public class MonthIncomeStaSchedule {
         Date maxAuthorCreateTime = new Date();
         do {
             //1.查询作家列表
-            List<Author> authors = authorService.queryAuthorList(needAuthorNumber, maxAuthorCreateTime);
+            List<Author> authors = authorService.queryAuthorList(needAuthorNumber, maxAuthorCreateTime, lastAuthorId);
+            //本次查询到的真实作者数量
             realAuthorNumber = authors.size();
+            //本次查询到的作者最后一个id，用于下次查询传入
+            if(realAuthorNumber != 0){
+                Author author = authors.get(realAuthorNumber - 1);
+                lastAuthorId = author.getId();
+            }
             for (Author author : authors) {
                 maxAuthorCreateTime = author.getCreateTime();
                 Long authorId = author.getId();

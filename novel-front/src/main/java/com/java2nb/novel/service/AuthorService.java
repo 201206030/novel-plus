@@ -48,8 +48,9 @@ public interface AuthorService {
      * @return 作家列表
      * @param limit 查询条数
      * @param maxAuthorCreateTime 最大申请时间
+     * @param fromAuthorId 从第几个id开始查询（不包含此id）
      */
-    List<Author> queryAuthorList(int limit, Date maxAuthorCreateTime);
+    List<Author> queryAuthorList(int limit, Date maxAuthorCreateTime, long fromAuthorId);
 
     /**
      * 查询收入日统计是否入库

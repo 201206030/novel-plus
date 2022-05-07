@@ -101,11 +101,11 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> queryAuthorList(int needAuthorNumber, Date maxAuthorCreateTime) {
+    public List<Author> queryAuthorList(int needAuthorNumber, Date maxAuthorCreateTime, long lastAuthorId) {
         return authorMapper.selectMany(select(AuthorDynamicSqlSupport.id, AuthorDynamicSqlSupport.userId)
                 .from(AuthorDynamicSqlSupport.author)
+                .where(AuthorDynamicSqlSupport.id, isGreaterThan(lastAuthorId))
                 .where(AuthorDynamicSqlSupport.createTime, isLessThan(maxAuthorCreateTime))
-                .orderBy(AuthorDynamicSqlSupport.createTime.descending())
                 .limit(needAuthorNumber)
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
