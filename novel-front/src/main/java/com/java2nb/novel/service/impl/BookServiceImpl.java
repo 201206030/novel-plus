@@ -828,9 +828,54 @@ public class BookServiceImpl implements BookService {
                                     .where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId))
                                     .build().render(RenderingStrategies.MYBATIS3));
 
+
+
+                    //书籍总字数变更计算
+                    int originalWordCount = bookIndex.getWordCount();
+                    int originalTotalCount = book.getWordCount();
+                    int currTotalCount = wordCount - originalWordCount + originalTotalCount;
+                    //更新最新章节
+                    Long lastIndexId = null;
+                    String lastIndexName = null;
+                    Date lastIndexUpdateTime = null;
+                    List<BookIndex> lastBookIndices = bookIndexMapper.selectMany(
+                            select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.createTime)
+                                    .from(BookIndexDynamicSqlSupport.bookIndex)
+                                    .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                                    .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
+                                    .limit(1)
+                                    .build()
+                                    .render(RenderingStrategies.MYBATIS3));
+                    if (lastBookIndices.size() > 0) {
+                        BookIndex lastBookIndex = lastBookIndices.get(0);
+                        lastIndexId = lastBookIndex.getId();
+                        //判断当前章节是不是最新章节
+                        if(lastIndexId.equals(indexId)){
+                            lastIndexName = indexName;
+                            lastIndexUpdateTime = currentDate;
+                        }else{
+                            lastIndexName = lastBookIndex.getIndexName();
+                            lastIndexUpdateTime = lastBookIndex.getUpdateTime();
+                        }
+                    }
+                    //更新小说主表信息
+                    bookMapper.update(update(BookDynamicSqlSupport.book)
+                            .set(BookDynamicSqlSupport.wordCount)
+                            .equalTo(currTotalCount)
+                            .set(updateTime)
+                            .equalTo(currentDate)
+                            .set(BookDynamicSqlSupport.lastIndexId)
+                            .equalTo(lastIndexId)
+                            .set(BookDynamicSqlSupport.lastIndexName)
+                            .equalTo(lastIndexName)
+                            .set(BookDynamicSqlSupport.lastIndexUpdateTime)
+                            .equalTo(lastIndexUpdateTime)
+                            .where(id, isEqualTo(bookId))
+                            .build()
+                            .render(RenderingStrategies.MYBATIS3));
+
                 }
             }
-
         }
     }
 
