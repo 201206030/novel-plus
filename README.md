@@ -1,7 +1,3 @@
-[![index]( https://s1.ax1x.com/2022/04/27/LLVXqJ.png )]( https://curl.qcloud.com/kgMaOjoq )
-
-# 小说精品屋-plus
-
 [![Github stars](https://img.shields.io/github/stars/201206030/novel-plus?logo=github)](https://github.com/201206030/novel-plus)
 [![Github forks](https://img.shields.io/github/forks/201206030/novel-plus?logo=github)](https://github.com/201206030/novel-plus)
 [![Gitee star](https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=gitee)](https://gitee.com/novel_dev_team/novel-plus)
@@ -11,13 +7,9 @@
 
 https://201206030.github.io
 
-#### 新项目：小说精品屋-微服务版
+#### 学习版
 
-基于小说精品屋-plus构建的Spring Cloud 微服务小说门户平台。
-
-GitHub仓库地址： https://github.com/201206030/novel-cloud
-
-Gitee仓库地址： https://gitee.com/novel_dev_team/novel-cloud
+[基于 Spring Boot 3 + Vue 3 开发的前后端分离的学习型小说项目。](https://github.com/201206030/novel)
 
 #### 演示地址
 
@@ -327,5 +319,3 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 #### 备注
 
 精品小说屋所有相关项目均已在开源中国公开，感兴趣的可进入[开源中国](https://www.oschina.net/p/fiction_house)按关键字`精品小说屋`搜索。
-
-[![index](https://s1.ax1x.com/2020/07/03/NOSuMF.jpg)](https://www.aliyun.com/minisite/goods?userCode=uf4nasee )
