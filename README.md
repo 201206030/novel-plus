@@ -9,7 +9,7 @@ https://201206030.github.io
 
 #### 学习版
 
-[基于 Spring Boot 3 + Vue 3 开发的前后端分离的学习型小说项目。](https://github.com/201206030/novel)
+[基于 Spring Boot 3 + Vue 3 开发的前后端分离学习型小说项目。](https://github.com/201206030/novel)
 
 #### 演示地址
 
