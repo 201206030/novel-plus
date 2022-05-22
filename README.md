@@ -13,32 +13,17 @@ https://201206030.github.io
 
 [基于 Spring Boot 3 + Vue 3 开发的前后端分离学习型小说项目。](https://github.com/201206030/novel)
 
+#### 微服务版
+
+[Github](https://github.com/201206030/novel-cloud) | [码云](https://gitee.com/novel_dev_team/novel-cloud)
+
 #### 演示地址
 
 [点击前往](http://47.106.243.172:8888/)
 
-
 #### 项目介绍
 
-小说精品屋-plus是在[小说精品屋](https://github.com/201206030/fiction_house)的基础上，去除了漫画和弹幕模块，专注于小说，是一个多端（PC、WAP）阅读、功能完善的原创文学CMS系统，由前台门户系统、作家后台管理系统、平台后台管理系统、爬虫管理系统等多个子系统构成，支持会员充值、订阅模式、新闻发布和实时统计报表等功能。
-
-小说精品屋-plus重新进行了数据库设计、代码重构和功能增强，提升了程序整体的可读性和性能，增加了很多商用特性。主要升级如下：
-
-- [x] 数据库重新设计，结构调整。
-- [x] 服务端代码重构，MyBatis3升级为MyBatis3DynamicSql。
-- [x] 移动站与PC站站点分离，浏览器自动识别跳转。
-- [x] PC站UI更新。
-- [x] 支持前端模版自定义，内置多套模版。
-- [x] 可拓展的多种方式存储小说内容，内置数据库（分表）存储和TXT文本存储。
-- [x] 新闻模块。
-- [x] 排行榜。
-- [x] 小说评论模块。
-- [x] 阅读主题模块。
-- [x] 作家专区。
-- [x] 充值。
-- [x] 订阅。
-- [x] 后台管理系统。
-- [x] 爬虫管理系统。
+novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS 系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和 TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、会员充值、订阅模式、新闻发布和实时统计报表。
 
 #### 项目结构
 
@@ -53,40 +38,29 @@ novel-plus -- 父工程
 
 #### 技术选型
 
-| 技术                 | 说明                                                         
-| -------------------- | ---------------------------
-| SpringBoot           | Spring应用快速开发脚手架     
-| MyBatis              | 持久层ORM框架 
-| MyBatis Dynamic SQL  | Mybatis动态sql
-| PageHelper           | MyBatis分页插件
-| MyBatisGenerator     | 持久层代码生成插件
-| Sharding-Jdbc        | 代码层分库分表中间件
-| JJWT                 | JWT登录支持  
-| SpringSecurity       | 安全框架                           
-| Shiro                | 安全框架  
-| Ehcache              | Java进程内缓存框架(默认缓存)  
-| Redis                | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)                               
-| ElasticSearch        | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)                      
-| RabbitMq             | 消息队列(流量削峰，默认关闭，一行配置开启)  
-| OSS                  | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换) 
-| FastDfs              |开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)                      
-| Redisson             | 实现分布式锁                                       
-| Lombok               | 简化对象封装工具                                                                               
-| Docker               | 应用容器引擎   
-| Mysql                | 数据库服务   
-| Thymeleaf            | 模板引擎     
-| Layui                | 前端UI                    
-                 
-
-#### 开发工具
-感谢Jetbrains公司提供的免费License。
-
-[![index]( https://s3.ax1x.com/2021/01/14/sdHsJg.png )]( https://www.jetbrains.com/?from=小说精品屋)
-
-
-#### 接口文档
-
-[点击查看接口文档示例](doc/api/api.md)
+| 技术                  | 说明                                                         
+|---------------------| ---------------------------
+| Spring Boot         | Spring 应用快速开发脚手架     
+| MyBatis             | 持久层 ORM 框架 
+| MyBatis Dynamic SQL | Mybatis 动态 sql
+| PageHelper          | MyBatis 分页插件
+| MyBatisGenerator    | 持久层代码生成插件
+| Sharding-Jdbc       | 代码层分库分表中间件
+| JJWT                | JWT 登录支持  
+| SpringSecurity      | 安全框架                           
+| Shiro               | 安全框架  
+| Ehcache             | Java 进程内缓存框架(默认缓存)  
+| Redis               | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)                               
+| Elasticsearch       | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)                      
+| RabbitMQ            | 消息队列(流量削峰，默认关闭，一行配置开启)  
+| Aliyun OSS          | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换) 
+| FastDFS             | 开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)                      
+| Redisson            | 实现分布式锁                                       
+| Lombok              | 简化对象封装工具                                                                               
+| Docker              | 应用容器引擎   
+| MySQL               | 数据库服务   
+| Thymeleaf           | 模板引擎     
+| Layui               | 前端 UI 框架                   
 
 #### 橙色主题模版截图
 ##### PC站截图
@@ -207,27 +181,27 @@ novel-plus -- 父工程
 
 #### 安装步骤（源码，小白请看其他安装教程）
 
-部分环境（如新版Mac OS系统）获取不到主机IP，需要手动修改host文件，增加IP-主机名（通过hostname命令查看主机名）的映射。
+部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。
 
 ##### 数据库安装：
 
-1. 安装MySQL软件。
-2. 修改MySQL`max_allowed_packet `配置（建议100M）。
-3. 新建数据库，设置编码为utf8mb4。
-4. 执行doc/sql/novel_plus.sql脚本文件。
+1. 安装 MySQL 软件。
+2. 修改 MySQL`max_allowed_packet `配置（建议100M）。
+3. 新建数据库，设置编码为 utf8mb4。
+4. 执行 doc/sql/novel_plus.sql 脚本文件。
 
 ##### 爬虫管理系统安装：
 
-1. 修改novel-common模块下application-common-dev.yml（dev环境，默认环境）或application-common-prod.yml（prod环境，需要在application.yml配置文件中切换）配置文件中的数据库配置。
-2. 修改novel-crawl模块下application.yml文件中的管理员账号密码。
-3. 启动程序，打开浏览器，默认8081端口访问。
+1. 修改 novel-common 模块下 application-common-dev.yml（dev环境，默认环境）或 application-common-prod.yml（prod环境，需要在application.yml配置文件中切换）配置文件中的数据库配置。
+2. 修改 novel-crawl 模块下 application.yml 文件中的管理员账号密码。
+3. 启动程序，打开浏览器，默认 8081端口访问。
 4. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始爬取小说数据。
 
 ##### 前台小说门户安装（dev环境跳过3、4步骤）：
 
-1. 修改novel-common模块下application-common-dev.yml（dev环境，默认环境）或application-common-prod.yml（prod环境，需要在application.yml配置文件中切换）配置文件中的数据库配置。
+1. 修改 novel-common 模块下 application-common-dev.yml（dev环境，默认环境）或 application-common-prod.yml（prod环境，需要在application.yml配置文件中切换）配置文件中的数据库配置。
 
-2. 修改novel-front模块下application-website配置文件中的网站信息。
+2. 修改 novel-front 模块下 application-website 配置文件中的网站信息。
 
   ```
   #网站配置
@@ -244,7 +218,7 @@ novel-plus -- 父工程
     qq: 1179705413
   ```
 
-3. prod环境下需要修改novel-front模块下application-prod.yml配置文件中的模版名为你需要使用的模版名（templates文件夹下的模版文件夹名，内置orange和dark两套模版，prod环境下才支持多模版）。
+3. prod 环境下需要修改 novel-front 模块下 application-prod.yml 配置文件中的模版名为你需要使用的模版名（templates文件夹下的模版文件夹名，内置 orange 和 dark 两套模版，prod 环境下才支持多模版）。
 
   ```
   #模版配置
@@ -253,23 +227,23 @@ novel-plus -- 父工程
     name: orange
   ```
 
-4. prod环境下的jar包形式部署时，需要复制templates文件夹到jar文件的相同目录下。   
+4. prod 环境下的 jar 包形式部署时，需要复制 templates 文件夹到 jar 文件的相同目录下。   
 
-5. 启动程序，打开浏览器，默认8080端口访问。
+5. 启动程序，打开浏览器，默认 8080 端口访问。
 
-**喜欢此项目的可以给我的GitHub和Gitee加个Star支持一下 。**
+**喜欢此项目的可以给我的 GitHub 和 Gitee 加个 Star 支持一下 。**
 
 #### 其他安装教程（如果链接打不开，可关注公众号获取）
 
-##### version>=3.5.0版本
+##### version >= 3.5.0 版本
 
 包安装及低版本升级教程：[点击前往](https://my.oschina.net/java2nb/blog/4914688)
 
-##### 3.3.0<=version<3.5.0版本
+##### 3.3.0 <= version < 3.5.0 版本
 
 包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4842472) 
 
-##### version<3.3.0版本
+##### version < 3.3.0 版本
 
 包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4272630) 
 
@@ -279,11 +253,11 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 #### 代码仓库
 
- GitHub仓库地址： https://github.com/201206030/novel-plus 
+ Github 仓库地址： https://github.com/201206030/novel-plus 
 
- Gitee仓库地址： https://gitee.com/novel_dev_team/novel-plus
+ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
-#### QQ交流群
+#### QQ 交流群
 
 [点击前往官网查看](https://xiongxyang.gitee.io/service.htm)
 
