@@ -41,5 +41,13 @@ content:
 
 
 
-
+# HTTP 代理配置
+http:
+  proxy:
+    # 是否开启 HTTP 代理，true-开启，false-不开启
+    enabled: false
+    # 代理 IP
+    ip: u493.kdltps.com
+    # 代理端口号
+    port: 15818
 
