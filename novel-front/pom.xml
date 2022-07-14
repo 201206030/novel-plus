@@ -70,14 +70,12 @@
         </dependency>
 
 
-
-
         <!--引入redisson分布式锁-->
-       <!-- <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>${redisson.version}</version>
-        </dependency>-->
+        <!-- <dependency>
+             <groupId>org.redisson</groupId>
+             <artifactId>redisson-spring-boot-starter</artifactId>
+             <version>${redisson.version}</version>
+         </dependency>-->
 
 
         <dependency>
@@ -87,74 +85,11 @@
         </dependency>
     </dependencies>
 
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
     <build>
         <plugins>
-            <!-- 将相同groupId的依赖模块打包进来 -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>${project.groupId}:*:*</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!--打包时去除第三方依赖-->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <layout>ZIP</layout>
-                    <includes>
-                        <include>
-                            <groupId>non-exists</groupId>
-                            <artifactId>non-exists</artifactId>
-                        </include>
-                    </includes>
-                </configuration>
-            </plugin>
-            <!--拷贝第三方依赖文件到指定目录-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <!--target/lib是依赖jar包的输出目录，根据自己喜好配置-->
-                            <outputDirectory>target/lib</outputDirectory>
-                            <excludeTransitive>false</excludeTransitive>
-                            <stripVersion>false</stripVersion>
-                            <includeScope>runtime</includeScope>
-                            <excludeGroupIds>${project.groupId}</excludeGroupIds>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -168,32 +103,33 @@
                         <configuration>
                             <tasks>
                                 <!-- 文件夹 -->
-                                <copy todir="${project.build.directory}/build/conf" overwrite="true">
-                                    <fileset dir="${basedir}/src/main/resources">
-                                        <include name="**/*.*"/>
-                                        <exclude name="mybatis/*/*.*"/>
+                                <copy todir="${project.build.directory}/build/config" overwrite="true">
+                                    <fileset dir="${basedir}/src/main/build/config">
+                                        <include name="*.*"/>
                                     </fileset>
-                                    <fileset dir="${basedir}/../novel-common/src/main/resources">
-                                        <include name="**/*.*"/>
-                                        <exclude name="mybatis/**"/>
+                                    <fileset dir="${basedir}/src/main/resources">
+                                        <include name="application-alipay.yml"/>
+                                        <include name="application-website.yml"/>
                                     </fileset>
                                 </copy>
-                                <move todir="${project.build.directory}/build/lib">
-                                    <fileset dir="target/lib"/>
-                                </move>
+                                <copy todir="${project.build.directory}/build/templates" overwrite="true">
+                                    <fileset dir="${basedir}/../templates">
+                                        <include name="**/*.*"/>
+                                    </fileset>
+                                </copy>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-                                      tofile="${project.build.directory}/build/${project.artifactId}.jar" />
+                                      tofile="${project.build.directory}/build/${project.artifactId}.jar"/>
 
                                 <fixcrlf srcdir="${basedir}/src/main/build/scripts" eol="unix"/>
                                 <copy todir="${project.build.directory}/build/bin">
                                     <fileset dir="${basedir}/src/main/build/scripts">
-                                        <include name="*.sh" />
-                                        <include name="*.txt" />
-                                        <include name="*.bat" />
+                                        <include name="*.sh"/>
+                                        <include name="*.txt"/>
+                                        <include name="*.bat"/>
                                     </fileset>
                                 </copy>
                                 <zip destfile='${project.build.directory}/build/${project.artifactId}.zip'>
-                                    <zipfileset filemode="755" dir= '${project.build.directory}/build/' />
+                                    <zipfileset filemode="755" dir='${project.build.directory}/build/'/>
                                 </zip>
                             </tasks>
                         </configuration>
@@ -202,5 +138,112 @@
             </plugin>
         </plugins>
     </build>
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            &lt;!&ndash; 将相同groupId的依赖模块打包进来 &ndash;&gt;-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-shade-plugin</artifactId>-->
+    <!--                <configuration>-->
+    <!--                    <createDependencyReducedPom>false</createDependencyReducedPom>-->
+    <!--                </configuration>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <phase>package</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>shade</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <artifactSet>-->
+    <!--                                <includes>-->
+    <!--                                    <include>${project.groupId}:*:*</include>-->
+    <!--                                </includes>-->
+    <!--                            </artifactSet>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--            <plugin>-->
+    <!--                &lt;!&ndash;打包时去除第三方依赖&ndash;&gt;-->
+    <!--                <groupId>org.springframework.boot</groupId>-->
+    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+    <!--                <configuration>-->
+    <!--                    <layout>ZIP</layout>-->
+    <!--                    <includes>-->
+    <!--                        <include>-->
+    <!--                            <groupId>non-exists</groupId>-->
+    <!--                            <artifactId>non-exists</artifactId>-->
+    <!--                        </include>-->
+    <!--                    </includes>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--            &lt;!&ndash;拷贝第三方依赖文件到指定目录&ndash;&gt;-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-dependency-plugin</artifactId>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <id>copy-dependencies</id>-->
+    <!--                        <phase>package</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>copy-dependencies</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            &lt;!&ndash;target/lib是依赖jar包的输出目录，根据自己喜好配置&ndash;&gt;-->
+    <!--                            <outputDirectory>target/lib</outputDirectory>-->
+    <!--                            <excludeTransitive>false</excludeTransitive>-->
+    <!--                            <stripVersion>false</stripVersion>-->
+    <!--                            <includeScope>runtime</includeScope>-->
+    <!--                            <excludeGroupIds>${project.groupId}</excludeGroupIds>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--            <plugin>-->
+    <!--                <artifactId>maven-antrun-plugin</artifactId>-->
+    <!--                <version>1.8</version>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <phase>package</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>run</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <tasks>-->
+    <!--                                &lt;!&ndash; 文件夹 &ndash;&gt;-->
+    <!--                                <copy todir="${project.build.directory}/build/conf" overwrite="true">-->
+    <!--                                    <fileset dir="${basedir}/src/main/resources">-->
+    <!--                                        <include name="**/*.*"/>-->
+    <!--                                        <exclude name="mybatis/*/*.*"/>-->
+    <!--                                    </fileset>-->
+    <!--                                    <fileset dir="${basedir}/../novel-common/src/main/resources">-->
+    <!--                                        <include name="**/*.*"/>-->
+    <!--                                        <exclude name="mybatis/**"/>-->
+    <!--                                    </fileset>-->
+    <!--                                </copy>-->
+    <!--                                <move todir="${project.build.directory}/build/lib">-->
+    <!--                                    <fileset dir="target/lib"/>-->
+    <!--                                </move>-->
+    <!--                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"-->
+    <!--                                      tofile="${project.build.directory}/build/${project.artifactId}.jar" />-->
+
+    <!--                                <fixcrlf srcdir="${basedir}/src/main/build/scripts" eol="unix"/>-->
+    <!--                                <copy todir="${project.build.directory}/build/bin">-->
+    <!--                                    <fileset dir="${basedir}/src/main/build/scripts">-->
+    <!--                                        <include name="*.sh" />-->
+    <!--                                        <include name="*.txt" />-->
+    <!--                                        <include name="*.bat" />-->
+    <!--                                    </fileset>-->
+    <!--                                </copy>-->
+    <!--                                <zip destfile='${project.build.directory}/build/${project.artifactId}.zip'>-->
+    <!--                                    <zipfileset filemode="755" dir= '${project.build.directory}/build/' />-->
+    <!--                                </zip>-->
+    <!--                            </tasks>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 
 </project>
