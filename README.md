@@ -1,4 +1,4 @@
-[![index]( https://youdoc.github.io/img/kuaidl4.png )]( https://www.kuaidaili.com/?ref=mdpz65syhqup )
+[![index]( https://youdoc.github.io/img/tencent.jpg )]( https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console )
 
 <p align="center">
     <a href='https://github.com/201206030/novel-plus'><img alt="Github stars" src="https://img.shields.io/github/stars/201206030/novel-plus?logo=github"></a>
