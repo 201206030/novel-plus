@@ -23,7 +23,9 @@ https://201206030.github.io
 
 #### 项目介绍
 
-novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS 系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和 TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、会员充值、订阅模式、新闻发布和实时统计报表。
+novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS
+系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和
+TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、会员充值、订阅模式、新闻发布和实时统计报表。
 
 #### 项目结构
 
@@ -38,31 +40,32 @@ novel-plus -- 父工程
 
 #### 技术选型
 
-| 技术                  | 说明                                                         
+| 技术                  | 说明
 |---------------------| ---------------------------
-| Spring Boot         | Spring 应用快速开发脚手架     
-| MyBatis             | 持久层 ORM 框架 
+| Spring Boot         | Spring 应用快速开发脚手架
+| MyBatis             | 持久层 ORM 框架
 | MyBatis Dynamic SQL | Mybatis 动态 sql
 | PageHelper          | MyBatis 分页插件
 | MyBatisGenerator    | 持久层代码生成插件
 | Sharding-Jdbc       | 代码层分库分表中间件
-| JJWT                | JWT 登录支持  
-| SpringSecurity      | 安全框架                           
-| Shiro               | 安全框架  
-| Ehcache             | Java 进程内缓存框架(默认缓存)  
-| Redis               | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)                               
-| Elasticsearch       | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)                      
-| RabbitMQ            | 消息队列(流量削峰，默认关闭，一行配置开启)  
-| Aliyun OSS          | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换) 
-| FastDFS             | 开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)                      
-| Redisson            | 实现分布式锁                                       
-| Lombok              | 简化对象封装工具                                                                               
-| Docker              | 应用容器引擎   
-| MySQL               | 数据库服务   
-| Thymeleaf           | 模板引擎     
-| Layui               | 前端 UI 框架                   
+| JJWT                | JWT 登录支持
+| SpringSecurity      | 安全框架
+| Shiro               | 安全框架
+| Ehcache             | Java 进程内缓存框架(默认缓存)
+| Redis               | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)
+| Elasticsearch       | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)
+| RabbitMQ            | 消息队列(流量削峰，默认关闭，一行配置开启)
+| Aliyun OSS          | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换)
+| FastDFS             | 开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)
+| Redisson            | 实现分布式锁
+| Lombok              | 简化对象封装工具
+| Docker              | 应用容器引擎
+| MySQL               | 数据库服务
+| Thymeleaf           | 模板引擎
+| Layui               | 前端 UI 框架
 
 #### 橙色主题模版截图
+
 ##### PC站截图
 
 1. 首页
@@ -152,6 +155,7 @@ novel-plus -- 父工程
 ![img](https://oscimg.oschina.net/oscnet/up-faf5dda7320674c29a1772bc0c81d74762e.png)
 
 #### 深色主题模版截图
+
 ##### PC站截图
 
 1. 首页
@@ -159,6 +163,7 @@ novel-plus -- 父工程
    ![index](https://static.oschina.net/uploads/img/202006/24151811_wIus.png)
 
 ##### 手机站截图
+
 1. 首页
 
    ![index](https://static.oschina.net/uploads/img/202006/24151812_OOob.jpg)
@@ -177,85 +182,72 @@ novel-plus -- 父工程
 
 #### 蓝色主题模版截图（更新中）
 
-   ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
+![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
 
-#### 安装步骤（源码，小白请看其他安装教程）
+#### 源码安装教程
 
-部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。
+- JDK 安装
 
-##### 数据库安装：
+  建议[安装 JDK 8](https://docs.oracle.com/javase/8/docs/technotes/guides/install/linux_jdk.html)
 
-1. 安装 MySQL 软件。
-2. 修改 MySQL`max_allowed_packet `配置（建议100M）。
-3. 新建数据库，设置编码为 utf8mb4。
-4. 执行 doc/sql/novel_plus.sql 脚本文件。
+- MySQL 安装：
 
-##### 爬虫管理系统安装：
+    1. [安装 MySQL 服务](https://dev.mysql.com/doc/refman/8.0/en/linux-installation.html)
+    2. 修改 MySQL`max_allowed_packet `配置（建议 100 M）
+    3. 新建数据库，设置编码为 utf8mb4
+    4. 执行 doc/sql/novel_plus.sql 脚本文件
 
-1. 修改 novel-common 模块下 application-common-dev.yml（dev环境，默认环境）或 application-common-prod.yml（prod环境，需要在application.yml配置文件中切换）配置文件中的数据库配置。
-2. 修改 novel-crawl 模块下 application.yml 文件中的管理员账号密码。
-3. 启动程序，打开浏览器，默认 8081端口访问。
-4. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始爬取小说数据。
+- Maven 安装
 
-##### 前台小说门户安装（dev环境跳过3、4步骤）：
+  [安装 Apache Maven](https://maven.apache.org/install.html)
 
-1. 修改 novel-common 模块下 application-common-dev.yml（dev环境，默认环境）或 application-common-prod.yml（prod环境，需要在application.yml配置文件中切换）配置文件中的数据库配置。
+- 源码打包
 
-2. 修改 novel-front 模块下 application-website 配置文件中的网站信息。
+  novel-plus 根目录下执行打包命令`mvn clean package -Dmaven.test.skip`
 
-  ```
-  #网站配置
-  website:
-    #网站名
-    name: 小说精品屋
-    #域名
-    domain: xiongxyang.gitee.io
-    #SEO关键词
-    keyword: ${website.name},小说,小说CMS,原创文学系统,开源小说系统,免费小说建站程序
-    #SEO描述
-    description: ${website.name}是一个多端（PC、WAP）阅读、功能完善的原创文学CMS系统，由前台门户系统、作家后台管理系统、平台后台管理系统、爬虫管理系统等多个子系统构成，支持会员充值、订阅模式、新闻发布和实时统计报表等功能，新书自动入库，老书自动更新。
-    #联系QQ
-    qq: 1179705413
-  ```
+- 爬虫安装
 
-3. prod 环境下需要修改 novel-front 模块下 application-prod.yml 配置文件中的模版名为你需要使用的模版名（templates文件夹下的模版文件夹名，内置 orange 和 dark 两套模版，prod 环境下才支持多模版）。
+    1. 上传 novel-crawl/target/build/novel-crawl.zip 压缩包到 Linux 服务器的 novel-crawl 目录
+    2. 使用`unzip novel-crawl.zip`命令解压 novel-crawl.zip
+    3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
+    4. 修改 `config/application-common-prod.yml` 文件中的管理员账号密码
+    5. novel-crawl 目录下使用`bin/novel-crawl.sh start`命令启动爬虫程序
+    6. 打开浏览器，默认`8083`端口访问
+    7. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始采集小说数据
+    8. novel-crawl 目录下使用`bin/novel-crawl.sh stop`命令停止爬虫程序
+    9. novel-crawl 目录下使用`bin/novel-crawl.sh restart`命令重启爬虫程序
+    10. novel-crawl 目录下使用`bin/novel-crawl.sh status`命令查看爬虫程序的运行状态
 
-  ```
-  #模版配置
-  templates:
-    #模版名
-    name: orange
-  ```
+- 前台安装
 
-4. prod 环境下的 jar 包形式部署时，需要复制 templates 文件夹到 jar 文件的相同目录下。   
+    1. 上传 novel-front/target/build/novel-front.zip 压缩包到 Linux 服务器的 novel-front 目录
+    2. 使用`unzip novel-front.zip`命令解压 novel-front.zip
+    3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
+    4. 修改 `config/application-website.yml` 配置文件中的网站信息
+    5. novel-front 目录下使用`bin/novel-front.sh start`命令启动前台程序
+    6. 打开浏览器，默认`8085`端口访问
+    7. novel-front 目录下使用`bin/novel-front.sh stop`命令停止前台程序
+    8. novel-front 目录下使用`bin/novel-front.sh restart`命令重启前台程序
+    9. novel-front 目录下使用`bin/novel-front.sh status`命令查看前台程序的运行状态
 
-5. 启动程序，打开浏览器，默认 8080 端口访问。
+- 后台安装
 
-**喜欢此项目的可以给我的 GitHub 和 Gitee 加个 Star 支持一下 。**
+    1. 上传 novel-admin/target/build/novel-admin.zip 压缩包到 Linux 服务器的 novel-admin 目录
+    2. 使用`unzip novel-admin.zip`命令解压 novel-admin.zip
+    3. 修改 `config/application-prod.yml` 文件中的数据库配置
+    4. novel-admin 目录下使用`bin/novel-admin.sh start`命令启动后台程序
+    5. 打开浏览器，默认`8088`端口访问
+    6. novel-admin 目录下使用`bin/novel-admin.sh stop`命令停止后台程序
+    7. novel-admin 目录下使用`bin/novel-admin.sh restart`命令重启后台程序
+    8. novel-admin 目录下使用`bin/novel-admin.sh status`命令查看后台程序的运行状态
 
-#### 其他安装教程（如果链接打不开，可关注公众号获取）
-
-##### version >= 3.5.0 版本
-
-包安装及低版本升级教程：[点击前往](https://my.oschina.net/java2nb/blog/4914688)
-
-##### 3.3.0 <= version < 3.5.0 版本
-
-包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4842472) 
-
-##### version < 3.3.0 版本
-
-包安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4272630) 
-
-宝塔安装教程（非官方）：[点击前往](https://www.daniao.org/9166.html) 
-
-docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
+**注：部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。**
 
 #### 代码仓库
 
- Github 仓库地址： https://github.com/201206030/novel-plus 
+Github 仓库地址： https://github.com/201206030/novel-plus
 
- Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
+Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 #### QQ 交流群
 
@@ -283,14 +275,13 @@ docker安装教程：[点击前往](https://my.oschina.net/java2nb/blog/4271989)
 
 - 服务器的费用也是一笔开销
 - 为用户提供更好的开发环境
-- 一杯咖啡 
+- 一杯咖啡
 
 ![mini-code](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
 #### 免责声明
 
-本项目提供的爬虫工具仅用于采集项目初期的测试数据，请勿用于商业盈利。
-用户使用本系统从事任何违法违规的事情，一切后果由用户自行承担，作者不承担任何责任。
+本项目提供的爬虫工具仅用于采集项目初期的测试数据，请勿用于商业盈利。 用户使用本系统从事任何违法违规的事情，一切后果由用户自行承担，作者不承担任何责任。
 
 #### 备注
 
