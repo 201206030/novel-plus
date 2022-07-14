@@ -259,7 +259,7 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 #### 微信交流群
 
-微信群二维码会过期，所以每周在公众号更新一次，请关注公众号“**xxyopen**”回复关键词“**微信群**”获取。
+微信群人数超过 200 人不能分享二维码，请关注公众号“**xxyopen**”回复关键词“**微信群**”。
 
 问问题的三要素
 
@@ -269,9 +269,9 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 3. 哪里不明白或有什么疑问 ？
 
-#### 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、技术文档等）
+#### 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等）
 
-![mini-code](https://s3.ax1x.com/2020/12/03/DoImOx.png)
+![mini-code](https://youdoc.github.io/img/qrcode_for_gh.jpg)
 
 #### 赞赏支持
 
