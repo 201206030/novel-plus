@@ -1,4 +1,4 @@
-[![index]( https://s1.ax1x.com/2022/05/17/O5tgbR.png )]( https://curl.qcloud.com/kgMaOjoq )
+[![index]( https://youdoc.github.io/img/kuaidl4.png )]( https://www.kuaidaili.com/?ref=mdpz65syhqup )
 
 [![Github stars](https://img.shields.io/github/stars/201206030/novel-plus?logo=github)](https://github.com/201206030/novel-plus)
 [![Github forks](https://img.shields.io/github/forks/201206030/novel-plus?logo=github)](https://github.com/201206030/novel-plus)
