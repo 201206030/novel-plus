@@ -1,9 +1,12 @@
-[![index]( https://s1.ax1x.com/2022/05/17/O5tgbR.png )]( https://curl.qcloud.com/kgMaOjoq )
+[![index]( https://youdoc.github.io/img/kuaidl4.png )]( https://www.kuaidaili.com/?ref=mdpz65syhqup )
 
-[![Github stars](https://img.shields.io/github/stars/201206030/novel-plus?logo=github)](https://github.com/201206030/novel-plus)
-[![Github forks](https://img.shields.io/github/forks/201206030/novel-plus?logo=github)](https://github.com/201206030/novel-plus)
-[![Gitee star](https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=gitee)](https://gitee.com/novel_dev_team/novel-plus)
-[![Gitee fork](https://gitee.com/novel_dev_team/novel-plus/badge/fork.svg?theme=gitee)](https://gitee.com/novel_dev_team/novel-plus)
+<p align="center">
+    <a href='https://github.com/201206030/novel-plus'><img alt="Github stars" src="https://img.shields.io/github/stars/201206030/novel-plus?logo=github"></a>
+    <a href='https://github.com/201206030/novel-plus'><img alt="Github forks" src="https://img.shields.io/github/forks/201206030/novel-plus?logo=github"></a>
+    <a href='https://gitee.com/novel_dev_team/novel-plus'><img alt="Gitee stars" src="https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=gitee"></a>
+    <a href='https://gitee.com/novel_dev_team/novel-plus'><img alt="Gitee forks" src="https://gitee.com/novel_dev_team/novel-plus/badge/fork.svg?theme=gitee"></a>
+    <a href="https://github.com/201206030/novel-plus"><img src="https://visitor-badge.glitch.me/badge?page_id=201206030.novel-plus" alt="visitors"></a>
+</p>
 
 #### 官网
 
@@ -11,7 +14,7 @@ https://201206030.github.io
 
 #### 学习版
 
-[基于 Spring Boot 3 + Vue 3 开发的前后端分离学习型小说项目。](https://github.com/201206030/novel)
+[基于 Spring Boot 3 + Vue 3 开发的前后端分离学习型小说项目](https://github.com/201206030/novel)
 
 #### 微服务版
 
