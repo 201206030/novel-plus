@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: [common]
+    include: [ common ]
   main:
     allow-bean-definition-overriding: true
   #Redis服务器IP
@@ -54,14 +54,14 @@ sharding:
         props:
           sql.show: true
         tables:
-          book_content:  #book_content表
+          book_content: #book_content表
             key-generator-column-name: id  #主键
             actual-data-nodes: ds${0}.book_content${0..9}  #数据节点
             #            database-strategy:  #分库策略
             #              inline:
             #                sharding-column: book_id
             #                algorithm-expression: ds${book_id % 10}
-            table-strategy:  #分表策略
+            table-strategy: #分表策略
               inline:
                 shardingColumn: index_id
                 algorithm-expression: book_content${index_id % 10}
@@ -79,7 +79,15 @@ content:
     storage: db #存储介质，db：数据库，file：txt文本
     path: /Users/xiongxiaoyang/books  #txt小说文本保存路径
 
-
+# HTTP 代理配置
+http:
+  proxy:
+    # 是否开启 HTTP 代理，true-开启，false-不开启
+    enabled: false
+    # 代理 IP
+    ip: 40.83.102.86
+    # 代理端口号
+    port: 80
 
 
 

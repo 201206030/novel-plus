@@ -211,12 +211,13 @@ novel-plus -- 父工程
     2. 使用`unzip novel-crawl.zip`命令解压 novel-crawl.zip
     3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
     4. 修改 `config/application-common-prod.yml` 文件中的管理员账号密码
-    5. novel-crawl 目录下使用`bin/novel-crawl.sh start`命令启动爬虫程序
-    6. 打开浏览器，默认`8083`端口访问
-    7. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始采集小说数据
-    8. novel-crawl 目录下使用`bin/novel-crawl.sh stop`命令停止爬虫程序
-    9. novel-crawl 目录下使用`bin/novel-crawl.sh restart`命令重启爬虫程序
-    10. novel-crawl 目录下使用`bin/novel-crawl.sh status`命令查看爬虫程序的运行状态
+    5. 修改 `config/application-common-prod.yml` 文件中的 HTTP 代理配置
+    6. novel-crawl 目录下使用`bin/novel-crawl.sh start`命令启动爬虫程序
+    7. 打开浏览器，默认`8083`端口访问
+    8. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始采集小说数据
+    9. novel-crawl 目录下使用`bin/novel-crawl.sh stop`命令停止爬虫程序
+    10. novel-crawl 目录下使用`bin/novel-crawl.sh restart`命令重启爬虫程序
+    11. novel-crawl 目录下使用`bin/novel-crawl.sh status`命令查看爬虫程序的运行状态
 
 - 前台安装
 
