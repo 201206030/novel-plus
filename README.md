@@ -73,26 +73,26 @@ novel-plus -- 父工程
 
 ## 源码安装教程
 
-- JDK 安装
+### JDK 安装
 
   建议[安装 JDK 8](https://docs.oracle.com/javase/8/docs/technotes/guides/install/linux_jdk.html)
 
-- MySQL 安装：
+### MySQL 安装：
 
     1. [安装 MySQL 服务](https://dev.mysql.com/doc/refman/8.0/en/linux-installation.html)
     2. 修改 MySQL`max_allowed_packet `配置（建议 100 M）
     3. 新建数据库，设置编码为 utf8mb4
     4. 执行 doc/sql/novel_plus.sql 脚本文件
 
-- Maven 安装
+### Maven 安装
 
   [安装 Apache Maven](https://maven.apache.org/install.html)
 
-- 源码打包
+### 源码打包
 
   novel-plus 根目录下执行打包命令`mvn clean package -Dmaven.test.skip`
 
-- 爬虫安装
+### 爬虫安装
 
     1. 上传 novel-crawl/target/build/novel-crawl.zip 压缩包到 Linux 服务器的 novel-crawl 目录
     2. 使用`unzip novel-crawl.zip`命令解压 novel-crawl.zip
@@ -106,7 +106,7 @@ novel-plus -- 父工程
     10. novel-crawl 目录下使用`bin/novel-crawl.sh restart`命令重启爬虫程序
     11. novel-crawl 目录下使用`bin/novel-crawl.sh status`命令查看爬虫程序的运行状态
 
-- 前台安装
+### 前台安装
 
     1. 上传 novel-front/target/build/novel-front.zip 压缩包到 Linux 服务器的 novel-front 目录
     2. 使用`unzip novel-front.zip`命令解压 novel-front.zip
@@ -118,7 +118,7 @@ novel-plus -- 父工程
     8. novel-front 目录下使用`bin/novel-front.sh restart`命令重启前台程序
     9. novel-front 目录下使用`bin/novel-front.sh status`命令查看前台程序的运行状态
 
-- 后台安装
+### 后台安装
 
     1. 上传 novel-admin/target/build/novel-admin.zip 压缩包到 Linux 服务器的 novel-admin 目录
     2. 使用`unzip novel-admin.zip`命令解压 novel-admin.zip
@@ -145,7 +145,9 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 微信群人数超过 200 人不能分享二维码，请关注公众号“**xxyopen**”回复关键词“**微信群**”。
 
-## 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等）
+## 微信公众号
+
+发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等。
 
 ![img](https://youdoc.github.io/img/qrcode_for_gh.jpg)
 
@@ -160,6 +162,6 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 ![img](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
-#### 免责声明
+## 免责声明
 
 本项目提供的爬虫工具仅用于采集项目初期的测试数据，请勿用于商业盈利。 用户使用本系统从事任何违法违规的事情，一切后果由用户自行承担，作者不承担任何责任。
