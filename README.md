@@ -35,9 +35,9 @@ TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数�
 ```
 novel-plus -- 父工程
 ├── novel-common -- 通用模块
-├── novel-front -- 前台门户&作家后台管理子系统
-├── novel-crawl -- 爬虫管理子系统
-├── novel-admin -- 平台后台管理子系统
+├── novel-front -- 前台门户&作家后台
+├── novel-crawl -- 爬虫
+├── novel-admin -- 平台后台
 └── templates -- 前端模版
 ```
 
