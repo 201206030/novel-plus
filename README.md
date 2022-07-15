@@ -129,6 +129,10 @@ novel-plus -- 父工程
 
 **注：部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。**
 
+## 爬虫规则
+
+[点击查看](https://github.com/201206030/novel-plus/wiki/%E7%88%AC%E8%99%AB%E6%BA%90%E8%A7%84%E5%88%99)
+
 ## 代码仓库
 
 GitHub 仓库地址： https://github.com/201206030/novel-plus
