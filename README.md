@@ -18,7 +18,7 @@ https://201206030.github.io
 
 #### 微服务版
 
-[Github](https://github.com/201206030/novel-cloud) | [码云](https://gitee.com/novel_dev_team/novel-cloud)
+[GitHub](https://github.com/201206030/novel-cloud) | [码云](https://gitee.com/novel_dev_team/novel-cloud)
 
 #### 演示地址
 
