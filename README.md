@@ -67,125 +67,9 @@ novel-plus -- 父工程
 | Thymeleaf           | 模板引擎
 | Layui               | 前端 UI 框架
 
-#### 橙色主题模版截图
+#### 演示图
 
-##### PC站截图
-
-1. 首页
-
-![img](https://s3.ax1x.com/2020/12/27/r5400A.png)
-
-2. 分类索引页
-
-![img](https://oscimg.oschina.net/oscnet/up-d0b2e03129bfae47b8bb96a491b73d383c5.png)
-
-3. 搜索页
-
-![img](https://s3.ax1x.com/2020/12/27/r5TO8x.png)
-
-![img](https://oscimg.oschina.net/oscnet/up-ed5f689557718924acac76bc3ebca36afcb.png)
-
-4. 排行榜
-
-![img](https://oscimg.oschina.net/oscnet/up-78d5a68586cd92a86c669311f414508f922.png)
-
-5. 详情页
-
-![img](https://oscimg.oschina.net/oscnet/up-8be2495a2869f93626b0c9c1df6f329747a.png)
-
-6. 阅读页
-
-![img](https://oscimg.oschina.net/oscnet/up-517c84148d2db8e11717a8bbecc57fa1be7.png)
-
-7. 用户中心
-
-![img](https://oscimg.oschina.net/oscnet/up-805a30e7a663a3fd5cb39a7ea26bc132a01.png)
-
-8. 充值
-
-![img](https://oscimg.oschina.net/oscnet/up-5a601b0b3af3224d0bebcfe12fc15075d34.png)
-
-![img](https://oscimg.oschina.net/oscnet/up-face25d02c07b05b2ce954cc4bf4ee6a0cc.png)
-
-9. 作家专区
-
-![img](https://oscimg.oschina.net/oscnet/up-30766372cc7f56480ff1d7d55198204f6ea.png)
-
-![img](https://s3.ax1x.com/2020/11/17/DVFiQI.png)
-
-![img](https://s1.ax1x.com/2020/11/09/B7X5oF.png)
-
-![img](https://s1.ax1x.com/2020/11/09/B7XLsx.png)
-
-10. 购买
-
-![img](https://oscimg.oschina.net/oscnet/up-ce0f585efd82a9670335f118cf5897c85e9.png)
-
-![img](https://oscimg.oschina.net/oscnet/up-f849960f4c1303fea77d26e64fc505a7180.png)
-
-##### 手机站截图
-
-1. 首页
-
-   <img src="https://s3.ax1x.com/2020/12/27/r5447n.jpg" alt="index" width="300" />
-
-2. 小说列表页
-
-   <img src="https://s3.ax1x.com/2020/12/27/r55xKg.jpg" alt="微信图片_20190904181558" width="300" />
-
-3. 小说详情页
-
-   <img src="https://s3.ax1x.com/2020/12/28/roZWOf.jpg" alt="QQ图片20191018161901" width="300" />
-
-4. 小说阅读页
-
-   <img src="https://s3.ax1x.com/2020/12/27/r55Stx.jpg" alt="QQ图片20191018161901" width="300" />
-
-##### 爬虫管理系统截图
-
-![img](https://s1.ax1x.com/2020/11/03/BsOgbD.png)
-
-![img](https://s1.ax1x.com/2020/11/03/BsOHr8.png)
-
-##### 后台管理系统截图
-
-![img](https://oscimg.oschina.net/oscnet/up-0552343538674a22a64819834100558f39b.png)
-
-![img](https://s3.ax1x.com/2020/12/01/DWgLNT.png)
-
-![img](https://s3.ax1x.com/2020/12/01/DfmRCd.png)
-
-![img](https://oscimg.oschina.net/oscnet/up-faf5dda7320674c29a1772bc0c81d74762e.png)
-
-#### 深色主题模版截图
-
-##### PC站截图
-
-1. 首页
-
-   ![index](https://static.oschina.net/uploads/img/202006/24151811_wIus.png)
-
-##### 手机站截图
-
-1. 首页
-
-   ![index](https://static.oschina.net/uploads/img/202006/24151812_OOob.jpg)
-
-4. 小说详情页
-
-   ![微信图片_20190904181558](https://static.oschina.net/uploads/img/202006/24151812_ZosF.png)
-
-5. 目录页
-
-   ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151812_Krva.png)
-
-5. 小说阅读页
-
-   ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151813_fDgT.png)
-
-#### 蓝色主题模版截图（更新中）
-
-![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
+[点击查看](https://github.com/201206030/novel-plus/wiki/novel%E4%B8%80plus-%E6%BC%94%E7%A4%BA%E5%9B%BE)
 
 #### 源码安装教程
 
@@ -261,17 +145,9 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
 微信群人数超过 200 人不能分享二维码，请关注公众号“**xxyopen**”回复关键词“**微信群**”。
 
-问问题的三要素
-
-1. 说明背景，使用了哪个模块，要做什么？
-
-2. 怎么输入或操作的得到了什么结果？ 截图，日志
-
-3. 哪里不明白或有什么疑问 ？
-
 #### 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等）
 
-![mini-code](https://youdoc.github.io/img/qrcode_for_gh.jpg)
+![img](https://youdoc.github.io/img/qrcode_for_gh.jpg)
 
 #### 赞赏支持
 
@@ -281,7 +157,7 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 - 为用户提供更好的开发环境
 - 一杯咖啡
 
-![mini-code](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
+![img](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
 #### 免责声明
 
