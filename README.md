@@ -8,29 +8,29 @@
     <a href="https://github.com/201206030/novel-plus"><img src="https://visitor-badge.glitch.me/badge?page_id=201206030.novel-plus" alt="visitors"></a>
 </p>
 
-#### 官网
+## 官网
 
 https://201206030.github.io
 
-#### 学习版
+## 学习版
 
 [基于 Spring Boot 3 + Vue 3 开发的前后端分离学习型小说项目](https://github.com/201206030/novel)
 
-#### 微服务版
+## 微服务版
 
 [GitHub](https://github.com/201206030/novel-cloud) | [码云](https://gitee.com/novel_dev_team/novel-cloud)
 
-#### 演示地址
+## 演示地址
 
 [点击前往](http://47.106.243.172:8888/)
 
-#### 项目介绍
+## 项目介绍
 
 novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS
 系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和
 TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、会员充值、订阅模式、新闻发布和实时统计报表。
 
-#### 项目结构
+## 项目结构
 
 ```
 novel-plus -- 父工程
@@ -41,7 +41,7 @@ novel-plus -- 父工程
 └── templates -- 前端模版
 ```
 
-#### 技术选型
+## 技术选型
 
 | 技术                  | 说明
 |---------------------| ---------------------------
@@ -67,11 +67,11 @@ novel-plus -- 父工程
 | Thymeleaf           | 模板引擎
 | Layui               | 前端 UI 框架
 
-#### 演示图
+## 演示图
 
 [点击查看](https://github.com/201206030/novel-plus/wiki/novel%E4%B8%80plus-%E6%BC%94%E7%A4%BA%E5%9B%BE)
 
-#### 源码安装教程
+## 源码安装教程
 
 - JDK 安装
 
@@ -131,30 +131,31 @@ novel-plus -- 父工程
 
 **注：部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。**
 
-#### 代码仓库
+## 代码仓库
 
-Github 仓库地址： https://github.com/201206030/novel-plus
+GitHub 仓库地址： https://github.com/201206030/novel-plus
 
 Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 
-#### QQ 交流群
+## QQ 交流群
 
 [点击前往官网查看](https://xiongxyang.gitee.io/service.htm)
 
-#### 微信交流群
+## 微信交流群
 
 微信群人数超过 200 人不能分享二维码，请关注公众号“**xxyopen**”回复关键词“**微信群**”。
 
-#### 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等）
+## 微信公众号（发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等）
 
 ![img](https://youdoc.github.io/img/qrcode_for_gh.jpg)
 
-#### 赞赏支持
+## 赞赏支持
 
 开源项目不易，若此项目能得到你的青睐，那么你可以赞赏支持作者持续开发与维护。
 
 - 服务器的费用也是一笔开销
-- 为用户提供更好的开发环境
+- 编写更完备的文档教程
+- 发布更多前端模版和爬虫规则
 - 一杯咖啡
 
 ![img](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
