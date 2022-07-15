@@ -37,7 +37,7 @@ novel-plus -- 父工程
 ├── novel-common -- 通用模块
 ├── novel-front -- 前台门户&作家后台
 ├── novel-crawl -- 爬虫
-├── novel-admin -- 平台后台
+├── novel-admin -- 管理后台
 └── templates -- 前端模版
 ```
 
