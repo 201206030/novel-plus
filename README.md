@@ -98,7 +98,7 @@ novel-plus -- 父工程
 2. 使用`unzip novel-crawl.zip`命令解压 novel-crawl.zip
 3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
 4. 修改 `config/application-common-prod.yml` 文件中的管理员账号密码
-5. 根据需要[设置爬虫的代理IP](https://github.com/201206030/novel-plus/wiki/%E7%88%AC%E8%99%AB%E7%A8%8B%E5%BA%8F-HTTP-%E4%BB%A3%E7%90%86%E8%AE%BE%E7%BD%AE)
+5. 根据需要[设置爬虫的代理IP](https://xxyopen.com/2022/07/18/doc/novel-plus/proxy)
 6. novel-crawl 目录下使用`bin/novel-crawl.sh start`命令启动爬虫程序
 7. 打开浏览器，默认`8083`端口访问
 8. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始采集小说数据
