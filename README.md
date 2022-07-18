@@ -129,9 +129,13 @@ novel-plus -- 父工程
 
 **注：部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。**
 
-## 爬虫规则
+## 包安装教程
 
-[点击查看](https://github.com/201206030/novel-plus/wiki/%E7%88%AC%E8%99%AB%E6%BA%90%E8%A7%84%E5%88%99)
+[点击查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/package.html)
+
+## 宝塔安装教程
+
+[点击查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/bt.html)
 
 ## 增值服务
 
