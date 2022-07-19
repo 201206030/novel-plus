@@ -49,11 +49,11 @@ novel-plus -- 父工程
 | MyBatis             | 持久层 ORM 框架
 | MyBatis Dynamic SQL | Mybatis 动态 sql
 | PageHelper          | MyBatis 分页插件
-| MyBatisGenerator    | 持久层代码生成插件
-| Sharding-Jdbc       | 代码层分库分表中间件
+| MyBatis Generator    | 持久层代码生成插件
+| Sharding-JDBC       | 代码层分库分表中间件
 | JJWT                | JWT 登录支持
-| SpringSecurity      | 安全框架
-| Shiro               | 安全框架
+| Spring Security      | 安全框架
+| Apache Shiro               | 安全框架
 | Ehcache             | Java 进程内缓存框架(默认缓存)
 | Redis               | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)
 | Elasticsearch       | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)
