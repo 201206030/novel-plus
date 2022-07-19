@@ -67,10 +67,6 @@ novel-plus -- 父工程
 | Thymeleaf           | 模板引擎
 | Layui               | 前端 UI 框架
 
-## 演示图
-
-[点击查看](https://github.com/201206030/novel-plus/wiki/novel%E4%B8%80plus-%E6%BC%94%E7%A4%BA%E5%9B%BE)
-
 ## 源码安装教程
 
 ### JDK 安装
