@@ -127,21 +127,16 @@ novel-plus -- 父工程
 
 #### 手机站截图
 
-1. 首页
+<p align="center">
 
-   <img src="https://s3.ax1x.com/2020/12/27/r5447n.jpg" alt="index" width="300" />
+   <img src="https://s3.ax1x.com/2020/12/27/r5447n.jpg"  width="300" />
+   <img src="https://s3.ax1x.com/2020/12/27/r55xKg.jpg"  width="300" />
+   <img src="https://s3.ax1x.com/2020/12/28/roZWOf.jpg"  width="300" />
+   <img src="https://s3.ax1x.com/2020/12/27/r55Stx.jpg"  width="300" />
 
-2. 小说列表页
 
-   <img src="https://s3.ax1x.com/2020/12/27/r55xKg.jpg" alt="微信图片_20190904181558" width="300" />
 
-3. 小说详情页
-
-   <img src="https://s3.ax1x.com/2020/12/28/roZWOf.jpg" alt="QQ图片20191018161901" width="300" />
-
-4. 小说阅读页
-
-   <img src="https://s3.ax1x.com/2020/12/27/r55Stx.jpg" alt="QQ图片20191018161901" width="300" />
+</p>
 
 #### 爬虫管理系统截图
 
@@ -169,21 +164,13 @@ novel-plus -- 父工程
 
 #### 手机站截图
 
-1. 首页
+<p align="center">
+      <img src="https://static.oschina.net/uploads/img/202006/24151812_OOob.jpg"  width="300" />
+      <img src="https://static.oschina.net/uploads/img/202006/24151812_ZosF.png"  width="300" />
+      <img src="https://static.oschina.net/uploads/img/202006/24151812_Krva.png"  width="300" />
+      <img src="https://static.oschina.net/uploads/img/202006/24151813_fDgT.png"  width="300" />
 
-   ![index](https://static.oschina.net/uploads/img/202006/24151812_OOob.jpg)
-
-4. 小说详情页
-
-   ![微信图片_20190904181558](https://static.oschina.net/uploads/img/202006/24151812_ZosF.png)
-
-5. 目录页
-
-   ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151812_Krva.png)
-
-5. 小说阅读页
-
-   ![QQ图片20191018161901](https://static.oschina.net/uploads/img/202006/24151813_fDgT.png)
+</p>
 
 ### 蓝色主题模版截图（更新中）
 
