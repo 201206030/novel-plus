@@ -10,7 +10,7 @@
 
 ## 官网
 
-https://201206030.github.io
+https://novel.xxyopen.com
 
 ## 学习版
 
@@ -245,7 +245,7 @@ novel-plus -- 父工程
 
 ## 增值服务
 
-[点击查看](https://201206030.github.io/service.htm)
+[点击查看](https://novel.xxyopen.com/service.htm)
 
 ## 代码仓库
 
