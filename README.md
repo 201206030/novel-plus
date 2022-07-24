@@ -179,61 +179,7 @@ novel-plus -- 父工程
 
 ## 源码安装教程
 
-### JDK 安装
-
-  建议[安装 JDK 8](https://docs.oracle.com/javase/8/docs/technotes/guides/install/linux_jdk.html)
-
-### MySQL 安装：
-
-1. [安装 MySQL 服务](https://dev.mysql.com/doc/refman/8.0/en/linux-installation.html)
-2. 修改 MySQL`max_allowed_packet `配置（建议 100 M）
-3. 新建数据库，设置编码为 utf8mb4
-4. 执行 doc/sql/novel_plus.sql 脚本文件
-
-### Maven 安装
-
-  [安装 Apache Maven](https://maven.apache.org/install.html)
-
-### 源码打包
-
-  novel-plus 根目录下执行打包命令`mvn clean package -Dmaven.test.skip`
-
-### 爬虫安装
-
-1. 上传 novel-crawl/target/build/novel-crawl.zip 压缩包到 Linux 服务器的 novel-crawl 目录
-2. 使用`unzip novel-crawl.zip`命令解压 novel-crawl.zip
-3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
-4. 修改 `config/application-common-prod.yml` 文件中的管理员账号密码
-5. 根据需要[设置爬虫的代理IP](https://www.xxyopen.com/2022/07/18/doc/novel-plus/proxy.html)
-6. novel-crawl 目录下使用`bin/novel-crawl.sh start`命令启动爬虫程序
-7. 打开浏览器，默认`8083`端口访问
-8. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始采集小说数据
-11. novel-crawl 目录下使用`bin/novel-crawl.sh status`命令查看爬虫程序的运行状态
-
-### 前台安装
-
-1. 上传 novel-front/target/build/novel-front.zip 压缩包到 Linux 服务器的 novel-front 目录
-2. 使用`unzip novel-front.zip`命令解压 novel-front.zip
-3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
-4. 修改 `config/application-website.yml` 配置文件中的网站信息
-5. novel-front 目录下使用`bin/novel-front.sh start`命令启动前台程序
-6. 打开浏览器，默认`8085`端口访问
-7. novel-front 目录下使用`bin/novel-front.sh stop`命令停止前台程序
-8. novel-front 目录下使用`bin/novel-front.sh restart`命令重启前台程序
-9. novel-front 目录下使用`bin/novel-front.sh status`命令查看前台程序的运行状态
-
-### 后台安装
-
-1. 上传 novel-admin/target/build/novel-admin.zip 压缩包到 Linux 服务器的 novel-admin 目录
-2. 使用`unzip novel-admin.zip`命令解压 novel-admin.zip
-3. 修改 `config/application-prod.yml` 文件中的数据库配置
-4. novel-admin 目录下使用`bin/novel-admin.sh start`命令启动后台程序
-5. 打开浏览器，默认`8088`端口访问
-6. novel-admin 目录下使用`bin/novel-admin.sh stop`命令停止后台程序
-7. novel-admin 目录下使用`bin/novel-admin.sh restart`命令重启后台程序
-8. novel-admin 目录下使用`bin/novel-admin.sh status`命令查看后台程序的运行状态
-
-**注：部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。**
+[点此查看](http://localhost:4000/2022/07/18/doc/novel-plus/install/source.html)
 
 ## 包安装教程
 
