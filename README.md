@@ -179,7 +179,7 @@ novel-plus -- 父工程
 
 ## 源码安装教程
 
-[点此查看](http://localhost:4000/2022/07/18/doc/novel-plus/install/source.html)
+[点此查看](http://xxyopen.com/2022/07/18/doc/novel-plus/install/source.html)
 
 ## 包安装教程
 
