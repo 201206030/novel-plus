@@ -183,15 +183,15 @@ novel-plus -- 父工程
 
 ## 包安装教程
 
-[点击查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/package.html)
+[点此查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/package.html)
 
 ## 宝塔安装教程
 
-[点击查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/bt.html)
+[点此查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/bt.html)
 
 ## 增值服务
 
-[点击查看](https://novel.xxyopen.com/service.htm)
+[点此查看](https://novel.xxyopen.com/service.htm)
 
 ## 更多
 
