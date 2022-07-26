@@ -193,6 +193,10 @@ novel-plus -- 父工程
 
 [点击查看](https://novel.xxyopen.com/service.htm)
 
+## 更多
+
+- [谷歌搜索](https://www.google.com/search?q=%E5%B0%8F%E8%AF%B4%E7%B2%BE%E5%93%81%E5%B1%8B)
+
 ## 代码仓库
 
 GitHub 仓库地址： https://github.com/201206030/novel-plus
