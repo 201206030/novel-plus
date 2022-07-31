@@ -10,7 +10,7 @@
 
 ## 官网
 
-https://201206030.github.io
+https://novel.xxyopen.com
 
 ## 学习版
 
@@ -37,7 +37,7 @@ novel-plus -- 父工程
 ├── novel-common -- 通用模块
 ├── novel-front -- 前台门户&作家后台
 ├── novel-crawl -- 爬虫
-├── novel-admin -- 平台后台
+├── novel-admin -- 管理后台
 └── templates -- 前端模版
 ```
 
@@ -49,11 +49,11 @@ novel-plus -- 父工程
 | MyBatis             | 持久层 ORM 框架
 | MyBatis Dynamic SQL | Mybatis 动态 sql
 | PageHelper          | MyBatis 分页插件
-| MyBatisGenerator    | 持久层代码生成插件
-| Sharding-Jdbc       | 代码层分库分表中间件
+| MyBatis Generator    | 持久层代码生成插件
+| Sharding-JDBC       | 代码层分库分表中间件
 | JJWT                | JWT 登录支持
-| SpringSecurity      | 安全框架
-| Shiro               | 安全框架
+| Spring Security      | 安全框架
+| Apache Shiro               | 安全框架
 | Ehcache             | Java 进程内缓存框架(默认缓存)
 | Redis               | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)
 | Elasticsearch       | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)
@@ -67,67 +67,135 @@ novel-plus -- 父工程
 | Thymeleaf           | 模板引擎
 | Layui               | 前端 UI 框架
 
-## 演示图
+## 项目截图
 
-[点击查看](https://github.com/201206030/novel-plus/wiki/novel%E4%B8%80plus-%E6%BC%94%E7%A4%BA%E5%9B%BE)
+### 橙色主题模版截图
+
+#### PC站截图
+
+1. 首页
+
+![img](https://s3.ax1x.com/2020/12/27/r5400A.png)
+
+2. 分类索引页
+
+![img](https://oscimg.oschina.net/oscnet/up-d0b2e03129bfae47b8bb96a491b73d383c5.png)
+
+3. 搜索页
+
+![img](https://s3.ax1x.com/2020/12/27/r5TO8x.png)
+
+![img](https://oscimg.oschina.net/oscnet/up-ed5f689557718924acac76bc3ebca36afcb.png)
+
+4. 排行榜
+
+![img](https://oscimg.oschina.net/oscnet/up-78d5a68586cd92a86c669311f414508f922.png)
+
+5. 详情页
+
+![img](https://oscimg.oschina.net/oscnet/up-8be2495a2869f93626b0c9c1df6f329747a.png)
+
+6. 阅读页
+
+![img](https://oscimg.oschina.net/oscnet/up-517c84148d2db8e11717a8bbecc57fa1be7.png)
+
+7. 用户中心
+
+![img](https://oscimg.oschina.net/oscnet/up-805a30e7a663a3fd5cb39a7ea26bc132a01.png)
+
+8. 充值
+
+![img](https://oscimg.oschina.net/oscnet/up-5a601b0b3af3224d0bebcfe12fc15075d34.png)
+
+![img](https://oscimg.oschina.net/oscnet/up-face25d02c07b05b2ce954cc4bf4ee6a0cc.png)
+
+9. 作家专区
+
+![img](https://oscimg.oschina.net/oscnet/up-30766372cc7f56480ff1d7d55198204f6ea.png)
+
+![img](https://s3.ax1x.com/2020/11/17/DVFiQI.png)
+
+![img](https://s1.ax1x.com/2020/11/09/B7X5oF.png)
+
+![img](https://s1.ax1x.com/2020/11/09/B7XLsx.png)
+
+10. 购买
+
+![img](https://oscimg.oschina.net/oscnet/up-ce0f585efd82a9670335f118cf5897c85e9.png)
+
+![img](https://oscimg.oschina.net/oscnet/up-f849960f4c1303fea77d26e64fc505a7180.png)
+
+#### 手机站截图
+
+<p align="center">
+
+   <img src="https://s3.ax1x.com/2020/12/27/r5447n.jpg"  width="300" />
+   <img src="https://s3.ax1x.com/2020/12/27/r55xKg.jpg"  width="300" />
+   <img src="https://s3.ax1x.com/2020/12/28/roZWOf.jpg"  width="300" />
+   <img src="https://s3.ax1x.com/2020/12/27/r55Stx.jpg"  width="300" />
+
+
+
+</p>
+
+#### 爬虫管理系统截图
+
+![img](https://s1.ax1x.com/2020/11/03/BsOgbD.png)
+
+![img](https://s1.ax1x.com/2020/11/03/BsOHr8.png)
+
+#### 后台管理系统截图
+
+![img](https://oscimg.oschina.net/oscnet/up-0552343538674a22a64819834100558f39b.png)
+
+![img](https://s3.ax1x.com/2020/12/01/DWgLNT.png)
+
+![img](https://s3.ax1x.com/2020/12/01/DfmRCd.png)
+
+![img](https://oscimg.oschina.net/oscnet/up-faf5dda7320674c29a1772bc0c81d74762e.png)
+
+### 深色主题模版截图
+
+#### PC站截图
+
+1. 首页
+
+   ![index](https://static.oschina.net/uploads/img/202006/24151811_wIus.png)
+
+#### 手机站截图
+
+<p align="center">
+      <img src="https://static.oschina.net/uploads/img/202006/24151812_OOob.jpg"  width="300" />
+      <img src="https://static.oschina.net/uploads/img/202006/24151812_ZosF.png"  width="300" />
+      <img src="https://static.oschina.net/uploads/img/202006/24151812_Krva.png"  width="300" />
+      <img src="https://static.oschina.net/uploads/img/202006/24151813_fDgT.png"  width="300" />
+
+</p>
+
+### 蓝色主题模版截图（更新中）
+
+![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
+
 
 ## 源码安装教程
 
-### JDK 安装
+[点此查看](http://xxyopen.com/2022/07/18/doc/novel-plus/install/source.html)
 
-  建议[安装 JDK 8](https://docs.oracle.com/javase/8/docs/technotes/guides/install/linux_jdk.html)
+## 包安装教程
 
-### MySQL 安装：
+[点此查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/package.html)
 
-1. [安装 MySQL 服务](https://dev.mysql.com/doc/refman/8.0/en/linux-installation.html)
-2. 修改 MySQL`max_allowed_packet `配置（建议 100 M）
-3. 新建数据库，设置编码为 utf8mb4
-4. 执行 doc/sql/novel_plus.sql 脚本文件
+## 宝塔安装教程
 
-### Maven 安装
+[点此查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/bt.html)
 
-  [安装 Apache Maven](https://maven.apache.org/install.html)
+## 增值服务
 
-### 源码打包
+[点此查看](https://novel.xxyopen.com/service.htm)
 
-  novel-plus 根目录下执行打包命令`mvn clean package -Dmaven.test.skip`
+## 更多
 
-### 爬虫安装
-
-1. 上传 novel-crawl/target/build/novel-crawl.zip 压缩包到 Linux 服务器的 novel-crawl 目录
-2. 使用`unzip novel-crawl.zip`命令解压 novel-crawl.zip
-3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
-4. 修改 `config/application-common-prod.yml` 文件中的管理员账号密码
-5. 根据需要[设置爬虫的代理IP](https://github.com/201206030/novel-plus/wiki/%E7%88%AC%E8%99%AB%E7%A8%8B%E5%BA%8F-HTTP-%E4%BB%A3%E7%90%86%E8%AE%BE%E7%BD%AE)
-6. novel-crawl 目录下使用`bin/novel-crawl.sh start`命令启动爬虫程序
-7. 打开浏览器，默认`8083`端口访问
-8. 选择已有或新增爬虫源（支持自定义爬虫规则），点击`开启`按钮，开始采集小说数据
-11. novel-crawl 目录下使用`bin/novel-crawl.sh status`命令查看爬虫程序的运行状态
-
-### 前台安装
-
-1. 上传 novel-front/target/build/novel-front.zip 压缩包到 Linux 服务器的 novel-front 目录
-2. 使用`unzip novel-front.zip`命令解压 novel-front.zip
-3. 修改 `config/application-common-prod.yml` 文件中的数据库配置
-4. 修改 `config/application-website.yml` 配置文件中的网站信息
-5. novel-front 目录下使用`bin/novel-front.sh start`命令启动前台程序
-6. 打开浏览器，默认`8085`端口访问
-7. novel-front 目录下使用`bin/novel-front.sh stop`命令停止前台程序
-8. novel-front 目录下使用`bin/novel-front.sh restart`命令重启前台程序
-9. novel-front 目录下使用`bin/novel-front.sh status`命令查看前台程序的运行状态
-
-### 后台安装
-
-1. 上传 novel-admin/target/build/novel-admin.zip 压缩包到 Linux 服务器的 novel-admin 目录
-2. 使用`unzip novel-admin.zip`命令解压 novel-admin.zip
-3. 修改 `config/application-prod.yml` 文件中的数据库配置
-4. novel-admin 目录下使用`bin/novel-admin.sh start`命令启动后台程序
-5. 打开浏览器，默认`8088`端口访问
-6. novel-admin 目录下使用`bin/novel-admin.sh stop`命令停止后台程序
-7. novel-admin 目录下使用`bin/novel-admin.sh restart`命令重启后台程序
-8. novel-admin 目录下使用`bin/novel-admin.sh status`命令查看后台程序的运行状态
-
-**注：部分环境（如新版 Mac OS 系统）获取不到主机 IP，需要手动修改 hosts 文件，增加 IP-主机名（通过 hostname 命令查看主机名）的映射。**
+- [谷歌搜索](https://www.google.com/search?q=%E5%B0%8F%E8%AF%B4%E7%B2%BE%E5%93%81%E5%B1%8B)
 
 ## 代码仓库
 
