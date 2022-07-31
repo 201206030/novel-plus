@@ -455,7 +455,7 @@ CREATE TABLE `friend_link`
 -- Records of friend_link
 -- ----------------------------
 INSERT INTO `friend_link`
-VALUES ('5', '小说精品屋', 'https://www.xinshumen.com', '11', '1', null, null, null, null);
+VALUES ('5', '小说精品屋', 'https://novel.xxyopen.com', '11', '1', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for news
@@ -480,12 +480,12 @@ CREATE TABLE `news`
 -- Records of news
 -- ----------------------------
 INSERT INTO `news`
-VALUES ('1', '1', '招募', '小说精品屋', '2019小说精品屋作者福利&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;高价保底买断征稿',
-        '2019小说精品屋作者福利&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;高价保底买断征稿', '2020-04-27 15:42:21', null,
+VALUES ('1', '1', '行业', '未知', '阅文推“单本可选新合同”：授权分级、免费或付费自选',
+        '阅文推“单本可选新合同”：授权分级、免费或付费自选', '2020-04-27 15:42:21', null,
         '2020-04-27 15:42:26', null);
 INSERT INTO `news`
-VALUES ('2', '3', '公告', '小说精品屋', '编辑联系方式及征稿类型&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;版权商务联系方式',
-        '编辑联系方式及征稿类型&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;版权商务联系方式', '2020-04-28 15:44:07', null, '2020-04-28 15:44:12',
+VALUES ('2', '3', '资讯', '全媒派公众号', 'AI小说悄然流行：人类特有的创作力，已经被AI复制？', 'AI小说悄然流行：人类特有的创作力，已经被AI复制？', '2020-04-28 15:44:07',
+        null, '2020-04-28 15:44:12',
         null);
 
 -- ----------------------------
@@ -508,9 +508,9 @@ CREATE TABLE `news_category`
 -- Records of news_category
 -- ----------------------------
 INSERT INTO `news_category`
-VALUES ('1', '招募', '10', null, null, null, null);
+VALUES ('1', '行业', '10', null, null, null, null);
 INSERT INTO `news_category`
-VALUES ('3', '公告', '11', null, null, null, null);
+VALUES ('3', '资讯', '11', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for order_pay
@@ -2702,11 +2702,6 @@ SET `source_name`   = '书趣阁',
     `create_time`   = '2020-05-18 12:02:34',
     `update_time`   = '2020-05-18 12:02:34'
 WHERE `id` = 4;
-
-INSERT INTO `friend_link` (`link_name`, `link_url`, `sort`, `is_open`, `create_user_id`, `create_time`,
-                           `update_user_id`, `update_time`)
-VALUES ('小羊影视', 'http://video.java2nb.com/', 11, 1, NULL, NULL, NULL, NULL),
-       ('官方论坛', 'http://bbs.java2nb.com', 21, 1, NULL, NULL, NULL, NULL);
 
 
 CREATE TABLE `author_income_detail`

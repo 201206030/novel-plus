@@ -14,40 +14,29 @@
 </div>
 <!--主体 start-->
 <div class="main box_center cf">
-    <div class="userBox cf">
-        <div class="my_l">
-            <ul class="log_list">
 
-                <li><a href="/about/default.html">关于我们</a></li>
-                <li><a href="/about/contact.html">联系我们</a></li>
-                <li><a href="/about/user_agreement.html">用户协议</a></li>
-                <li><a href="/about/copyright.html">版权声明</a></li>
-                <li><a href="/about/submission.html">投稿说明</a></li>
-                <li><a  href="/user/feedback.html">反馈留言</a></li>
+
+    <div class="my_r" style="width: 960px">
+        <div class="newsBox">
+            <ul class="news_list" id="newsList">
+
+
             </ul>
+
+
         </div>
-        <div class="my_r">
-            <div class="newsBox">
-                <ul class="news_list" id="newsList">
+        <div class="pageBox cf" id="newsPage">
 
-
-
-
-                </ul>
-
-
-            </div>
-            <div class="pageBox cf" id="newsPage">
-
-            </div>
         </div>
-
     </div>
+
+
 </div>
 <!--主体 end-->
 
 <div th:replace="common/footer :: footer">
-</div>v
+</div>
+v
 <div th:replace="common/js :: js"></div>
 <script src="/javascript/bookdetail.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
@@ -58,7 +47,7 @@
         $.ajax({
             type: "get",
             url: "/news/listByPage",
-            data: {'curr':curr,'limit':limit},
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -68,8 +57,8 @@
                         for (var i = 0; i < newsList.length; i++) {
                             var news = newsList[i];
                             newsListHtml += (" <li>\n" +
-                                "                        <h5><i class=\"dot\"></i><a href=\"newsInfo-"+news.id+".html\" >"+news.title+"</a></h5>\n" +
-                                "                        <p>"+news.createTime+"</p>\n" +
+                                "                        <h5><i class=\"dot\"></i><a href=\"newsInfo-" + news.id + ".html\" >" + news.title + "</a></h5>\n" +
+                                "                        <p>" + news.createTime + "</p>\n" +
                                 "                    </li>");
                         }
                         $("#newsList").html(newsListHtml);
