@@ -8,21 +8,13 @@
     <a href="https://github.com/201206030/novel-plus"><img src="https://visitor-badge.glitch.me/badge?page_id=201206030.novel-plus" alt="visitors"></a>
 </p>
 
-## 官网
-
-https://novel.xxyopen.com
+<p align="center">
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='http://47.106.243.172:8888'>演示站点</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/'>项目文档（含安装教程）</a>
+</p> 
 
 ## 学习版
 
 [基于 Spring Boot 3 + Vue 3 开发的前后端分离学习型小说项目](https://github.com/201206030/novel)
-
-## 微服务版
-
-[GitHub](https://github.com/201206030/novel-cloud) | [码云](https://gitee.com/novel_dev_team/novel-cloud)
-
-## 演示地址
-
-[点击前往](http://47.106.243.172:8888/)
 
 ## 项目介绍
 
@@ -176,46 +168,23 @@ novel-plus -- 父工程
 
 ![QQ图片20191018161901](https://s3.ax1x.com/2020/12/27/r5Fe0A.png)
 
-
-## 源码安装教程
-
-[点此查看](http://xxyopen.com/2022/07/18/doc/novel-plus/install/source.html)
-
-## 包安装教程
-
-[点此查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/package.html)
-
-## 宝塔安装教程
-
-[点此查看](https://xxyopen.com/2022/07/18/doc/novel-plus/install/bt.html)
-
 ## 增值服务
 
-[点此查看](https://novel.xxyopen.com/service.htm)
-
-## 更多
-
-- [谷歌搜索](https://www.google.com/search?q=%E5%B0%8F%E8%AF%B4%E7%B2%BE%E5%93%81%E5%B1%8B)
-
-## 代码仓库
-
-GitHub 仓库地址： https://github.com/201206030/novel-plus
-
-Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
+👉 [了解详情](https://novel.xxyopen.com/service.htm)
 
 ## QQ 交流群
 
-[点击前往官网查看](https://xiongxyang.gitee.io/service.htm)
+👉 [立即查看](https://novel.xxyopen.com/service.htm)
 
 ## 微信交流群
 
-微信群人数超过 200 人不能分享二维码，请关注公众号“**xxyopen**”回复关键词“**微信群**”。
+微信群人数已超 200 人无法分享二维码，请关注公众号“**xxyopen**”回复关键词“**微信群**”。
 
 ## 微信公众号
 
-发布最新更新资讯、最新前端模版、最新爬虫规则、文档教程等。
+发布最新更新动态、最新前端模版、最新爬虫规则、文档教程等。
 
-![img](https://youdoc.github.io/img/qrcode_for_gh.jpg)
+![](https://youdoc.github.io/img/qrcode_for_gh.jpg)
 
 ## 赞赏支持
 
@@ -226,7 +195,7 @@ Gitee 仓库地址： https://gitee.com/novel_dev_team/novel-plus
 - 发布更多前端模版和爬虫规则
 - 一杯咖啡
 
-![img](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
+![](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
 ## 免责声明
 
