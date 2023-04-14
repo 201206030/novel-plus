@@ -76,8 +76,8 @@ function load() {
 
 
                     {
-                        field: 'userId',
-                        title: '充值用户ID'
+                        field: 'userName',
+                        title: '充值用户'
                     },
 
                     {
