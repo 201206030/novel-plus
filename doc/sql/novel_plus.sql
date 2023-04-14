@@ -2937,3 +2937,14 @@ INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `i
 VALUES (602, 601, '删除', null, 'novel:book:remove', '2', null, '6');
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 602);
+
+INSERT
+INTO `sys_menu`(`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (603, 600, '评论管理', 'novel/bookComment', 'novel:bookComment:bookComment', '1', 'fa', '10');
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 603);
+
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (604, 603, '删除', null, 'novel:bookComment:remove', '2', null, '6');
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 604);

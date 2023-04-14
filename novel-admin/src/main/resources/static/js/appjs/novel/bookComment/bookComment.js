@@ -59,49 +59,31 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
-                                                                        {
-                                field: 'id',
-                                title: '主键'
-                            },
 
-                        
-                                                                        {
-                                field: 'bookId',
-                                title: '小说ID'
-                            },
+                    {
+                        field: 'bookId',
+                        title: '小说ID'
+                    },
 
-                        
-                                                                        {
-                                field: 'commentContent',
-                                title: '评价内容'
-                            },
+                    {
+                        field: 'commentContent',
+                        title: '评价内容'
+                    },
 
-                        
-                                                                        {
-                                field: 'replyCount',
-                                title: '回复数量'
-                            },
 
-                        
-                                                                        {
-                                field: 'auditStatus',
-                                title: '审核状态，0：待审核，1：审核通过，2：审核不通过'
-                            },
+                    {
+                        field: 'createTime',
+                        title: '评价时间'
+                    },
 
-                        
-                                                                        {
-                                field: 'createTime',
-                                title: '评价时间'
-                            },
 
-                        
-                                                                        {
-                                field: 'createUserId',
-                                title: '评价人'
-                            },
+                    {
+                        field: 'createUserId',
+                        title: '评价人ID'
+                    },
 
-                        
-                                        {
+
+                    {
                         title: '操作',
                         field: 'id',
                         align: 'center',
@@ -120,9 +102,11 @@ function load() {
                     }]
             });
 }
+
 function reLoad() {
     $('#exampleTable').bootstrapTable('refresh');
 }
+
 function add() {
     layer.open({
         type: 2,
@@ -133,6 +117,7 @@ function add() {
         content: prefix + '/add' // iframe的url
     });
 }
+
 function detail(id) {
     layer.open({
         type: 2,
@@ -143,6 +128,7 @@ function detail(id) {
         content: prefix + '/detail/' + id // iframe的url
     });
 }
+
 function edit(id) {
     layer.open({
         type: 2,
@@ -153,6 +139,7 @@ function edit(id) {
         content: prefix + '/edit/' + id // iframe的url
     });
 }
+
 function remove(id) {
     layer.confirm('确定要删除选中的记录？', {
         btn: ['确定', '取消']
@@ -177,6 +164,7 @@ function remove(id) {
 
 function resetPwd(id) {
 }
+
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length == 0) {
