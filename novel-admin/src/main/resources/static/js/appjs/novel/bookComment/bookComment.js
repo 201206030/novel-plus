@@ -61,25 +61,25 @@ function load() {
                     },
 
                     {
-                        field: 'bookId',
-                        title: '小说ID'
+                        field: 'bookName',
+                        title: '评论小说'
                     },
 
                     {
                         field: 'commentContent',
-                        title: '评价内容'
+                        title: '评论内容'
                     },
 
 
                     {
                         field: 'createTime',
-                        title: '评价时间'
+                        title: '评论时间'
                     },
 
 
                     {
-                        field: 'createUserId',
-                        title: '评价人ID'
+                        field: 'userName',
+                        title: '评论人'
                     },
 
 

@@ -4,8 +4,19 @@
 <mapper namespace="com.java2nb.novel.dao.UserDao">
 
     <select id="get" resultType="com.java2nb.novel.domain.UserDO">
-		select `id`,`username`,`password`,`nick_name`,`user_photo`,`user_sex`,`account_balance`,`status`,`create_time`,`update_time` from user where id = #{value}
-	</select>
+        select `id`,
+               `username`,
+               `password`,
+               `nick_name`,
+               `user_photo`,
+               `user_sex`,
+               `account_balance`,
+               `status`,
+               `create_time`,
+               `update_time`
+        from user
+        where id = #{value}
+    </select>
 
     <select id="list" resultType="com.java2nb.novel.domain.UserDO">
         select
@@ -53,33 +64,28 @@
     </select>
 
     <insert id="save" parameterType="com.java2nb.novel.domain.UserDO">
-		insert into user
-		(
-			`id`, 
-			`username`, 
-			`password`, 
-			`nick_name`, 
-			`user_photo`, 
-			`user_sex`, 
-			`account_balance`, 
-			`status`, 
-			`create_time`, 
-			`update_time`
-		)
-		values
-		(
-			#{id}, 
-			#{username}, 
-			#{password}, 
-			#{nickName}, 
-			#{userPhoto}, 
-			#{userSex}, 
-			#{accountBalance}, 
-			#{status}, 
-			#{createTime}, 
-			#{updateTime}
-		)
-	</insert>
+        insert into user
+        (`id`,
+         `username`,
+         `password`,
+         `nick_name`,
+         `user_photo`,
+         `user_sex`,
+         `account_balance`,
+         `status`,
+         `create_time`,
+         `update_time`)
+        values (#{id},
+                #{username},
+                #{password},
+                #{nickName},
+                #{userPhoto},
+                #{userSex},
+                #{accountBalance},
+                #{status},
+                #{createTime},
+                #{updateTime})
+    </insert>
 
     <insert id="saveSelective" parameterType="com.java2nb.novel.domain.UserDO">
         insert into user
@@ -127,8 +133,10 @@
     </update>
 
     <delete id="remove">
-		delete from user where id = #{value}
-	</delete>
+        delete
+        from user
+        where id = #{value}
+    </delete>
 
     <delete id="batchRemove">
         delete from user where id in
@@ -138,17 +146,20 @@
     </delete>
 
     <select id="tableSta" resultType="map">
-    SELECT
-	DATE_FORMAT( create_time, "%Y-%m-%d" ) AS staDate,
-	COUNT( 1 ) userCount
-    FROM
-    user
-    WHERE
-        create_time >= #{minDate}
-    GROUP BY
-        DATE_FORMAT( create_time, "%Y-%m-%d" )
-    ORDER BY
-        staDate
-	</select>
+        SELECT DATE_FORMAT(create_time, "%Y-%m-%d") AS staDate,
+               COUNT(1)                                userCount
+        FROM user
+        WHERE create_time >= #{minDate}
+        GROUP BY DATE_FORMAT(create_time, "%Y-%m-%d")
+        ORDER BY staDate
+    </select>
+    <select id="batchGet" resultType="com.java2nb.novel.domain.UserDO">
+        select
+        `id`,`username`,`password`,`nick_name`,`user_photo`,`user_sex`,`account_balance`,`status`,`create_time`,`update_time`
+        from user where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

@@ -285,5 +285,13 @@
         GROUP BY DATE_FORMAT(create_time, "%Y-%m-%d")
         ORDER BY staDate
     </select>
+    <select id="batchGet" resultType="com.java2nb.novel.domain.BookDO">
+        select
+        `id`,`work_direction`,`cat_id`,`cat_name`,`pic_url`,`book_name`,`author_id`,`author_name`,`book_desc`,`score`,`book_status`,`visit_count`,`word_count`,`comment_count`,`yesterday_buy`,`last_index_id`,`last_index_name`,`last_index_update_time`,`is_vip`,`status`,`update_time`,`create_time`,`crawl_source_id`,`crawl_book_id`,`crawl_last_time`,`crawl_is_stop`
+        from book where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>
