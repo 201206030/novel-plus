@@ -46,10 +46,7 @@ novel-plus -- 父工程
 | JJWT                | JWT 登录支持
 | Spring Security      | 安全框架
 | Apache Shiro               | 安全框架
-| Ehcache             | Java 进程内缓存框架(默认缓存)
-| Redis               | 分布式缓存(缓存替换方案，默认关闭，一行配置开启)
-| Elasticsearch       | 搜索引擎(搜索增强方案，默认关闭，一行配置开启)
-| RabbitMQ            | 消息队列(流量削峰，默认关闭，一行配置开启)
+| Redis               | 缓存方案
 | Aliyun OSS          | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换)
 | FastDFS             | 开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)
 | Redisson            | 实现分布式锁
