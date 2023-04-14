@@ -103,3 +103,8 @@ INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 600);
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 601);
+
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (602, 601, '删除', null, 'novel:book:remove', '2', null, '6');
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 602);

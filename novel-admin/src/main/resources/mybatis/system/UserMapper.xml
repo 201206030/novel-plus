@@ -4,8 +4,28 @@
 <mapper namespace="com.java2nb.system.dao.SysUserDao">
 
     <select id="get" resultType="com.java2nb.system.domain.UserDO">
-		select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district` from sys_user where user_id = #{value}
-	</select>
+        select `user_id`,
+               `username`,
+               `name`,
+               `password`,
+               `dept_id`,
+               `email`,
+               `mobile`,
+               `status`,
+               `user_id_create`,
+               `gmt_create`,
+               `gmt_modified`,
+               `sex`,
+               `birth`,
+               `pic_id`,
+               `live_address`,
+               `hobby`,
+               `province`,
+               `city`,
+               `district`
+        from sys_user
+        where user_id = #{value}
+    </select>
 
     <select id="list" resultType="com.java2nb.system.domain.UserDO">
         select
@@ -51,7 +71,8 @@
     </select>
 
     <select id="listByPerm" resultType="com.java2nb.system.domain.UserDO">
-        select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
+        select
+        `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
         from (
         select
         `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
@@ -97,7 +118,8 @@
     </select>
     <select id="countByPerm" resultType="int">
         select count(*) from (
-        select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
+        select
+        `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
         from sys_user
         <where>
             <if test="userId != null and userId != ''">and user_id = #{userId}</if>
@@ -149,49 +171,44 @@
     </select>
 
     <insert id="save" parameterType="com.java2nb.system.domain.UserDO" useGeneratedKeys="true" keyProperty="userId">
-		insert into sys_user
-		(
-			`username`, 
-			`name`, 
-			`password`, 
-			`dept_id`, 
-			`email`, 
-			`mobile`, 
-			`status`, 
-			`user_id_create`, 
-			`gmt_create`, 
-			`gmt_modified`, 
-			`sex`, 
-			`birth`, 
-			`pic_id`, 
-			`live_address`, 
-			`hobby`, 
-			`province`, 
-			`city`, 
-			`district`
-		)
-		values
-		(
-			#{username}, 
-			#{name}, 
-			#{password}, 
-			#{deptId}, 
-			#{email}, 
-			#{mobile}, 
-			#{status}, 
-			#{userIdCreate}, 
-			#{gmtCreate}, 
-			#{gmtModified}, 
-			#{sex}, 
-			#{birth}, 
-			#{picId}, 
-			#{liveAddress}, 
-			#{hobby}, 
-			#{province}, 
-			#{city}, 
-			#{district}
-		)
-	</insert>
+        insert into sys_user
+        (`username`,
+         `name`,
+         `password`,
+         `dept_id`,
+         `email`,
+         `mobile`,
+         `status`,
+         `user_id_create`,
+         `gmt_create`,
+         `gmt_modified`,
+         `sex`,
+         `birth`,
+         `pic_id`,
+         `live_address`,
+         `hobby`,
+         `province`,
+         `city`,
+         `district`)
+        values (#{username},
+                #{name},
+                #{password},
+                #{deptId},
+                #{email},
+                #{mobile},
+                #{status},
+                #{userIdCreate},
+                #{gmtCreate},
+                #{gmtModified},
+                #{sex},
+                #{birth},
+                #{picId},
+                #{liveAddress},
+                #{hobby},
+                #{province},
+                #{city},
+                #{district})
+    </insert>
 
     <update id="update" parameterType="com.java2nb.system.domain.UserDO">
         update sys_user
@@ -219,8 +236,10 @@
     </update>
 
     <delete id="remove">
-		delete from sys_user where user_id = #{value}
-	</delete>
+        delete
+        from sys_user
+        where user_id = #{value}
+    </delete>
 
     <delete id="batchRemove">
         delete from sys_user where user_id in
@@ -230,7 +249,8 @@
     </delete>
 
     <select id="listAllDept" resultType="long">
-				select DISTINCT dept_id from sys_user
-	</select>
+        select dept_id
+        from sys_user
+    </select>
 
 </mapper>

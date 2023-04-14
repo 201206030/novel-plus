@@ -136,7 +136,7 @@ novel-plus -- 父工程
 
 ![img](https://oscimg.oschina.net/oscnet/up-0552343538674a22a64819834100558f39b.png)
 
-![img](https://s3.ax1x.com/2020/12/01/DWgLNT.png)
+![img](https://youdoc.gitee.io/resource/images/docs/novel-plus/admin.png)
 
 ![img](https://s3.ax1x.com/2020/12/01/DfmRCd.png)
 

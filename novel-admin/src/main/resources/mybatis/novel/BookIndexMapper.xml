@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.BookIndexDao">
+
+    <select id="get" resultType="com.java2nb.novel.domain.BookIndexDO">
+        select `id`,
+               `book_id`,
+               `index_num`,
+               `index_name`,
+               `word_count`,
+               `is_vip`,
+               `book_price`,
+               `storage_type`,
+               `create_time`,
+               `update_time`
+        from book_index
+        where id = #{value}
+    </select>
+
+    <select id="list" resultType="com.java2nb.novel.domain.BookIndexDO">
+        select
+        `id`,`book_id`,`index_num`,`index_name`,`word_count`,`is_vip`,`book_price`,`storage_type`,`create_time`,`update_time`
+        from book_index
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="bookId != null and bookId != ''">and book_id = #{bookId}</if>
+            <if test="indexNum != null and indexNum != ''">and index_num = #{indexNum}</if>
+            <if test="indexName != null and indexName != ''">and index_name = #{indexName}</if>
+            <if test="wordCount != null and wordCount != ''">and word_count = #{wordCount}</if>
+            <if test="isVip != null and isVip != ''">and is_vip = #{isVip}</if>
+            <if test="bookPrice != null and bookPrice != ''">and book_price = #{bookPrice}</if>
+            <if test="storageType != null and storageType != ''">and storage_type = #{storageType}</if>
+            <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+            <if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from book_index
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="bookId != null and bookId != ''">and book_id = #{bookId}</if>
+            <if test="indexNum != null and indexNum != ''">and index_num = #{indexNum}</if>
+            <if test="indexName != null and indexName != ''">and index_name = #{indexName}</if>
+            <if test="wordCount != null and wordCount != ''">and word_count = #{wordCount}</if>
+            <if test="isVip != null and isVip != ''">and is_vip = #{isVip}</if>
+            <if test="bookPrice != null and bookPrice != ''">and book_price = #{bookPrice}</if>
+            <if test="storageType != null and storageType != ''">and storage_type = #{storageType}</if>
+            <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+            <if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+        </where>
+    </select>
+    <select id="getIdsByBookId" resultType="java.lang.Long">
+        select id
+        from book_index
+        where book_id = #{bookId}
+    </select>
+
+    <insert id="save" parameterType="com.java2nb.novel.domain.BookIndexDO">
+        insert into book_index
+        (`id`,
+         `book_id`,
+         `index_num`,
+         `index_name`,
+         `word_count`,
+         `is_vip`,
+         `book_price`,
+         `storage_type`,
+         `create_time`,
+         `update_time`)
+        values (#{id},
+                #{bookId},
+                #{indexNum},
+                #{indexName},
+                #{wordCount},
+                #{isVip},
+                #{bookPrice},
+                #{storageType},
+                #{createTime},
+                #{updateTime})
+    </insert>
+
+    <insert id="saveSelective" parameterType="com.java2nb.novel.domain.BookIndexDO">
+        insert into book_index
+        (
+        <if test="id != null">`id`,</if>
+        <if test="bookId != null">`book_id`,</if>
+        <if test="indexNum != null">`index_num`,</if>
+        <if test="indexName != null">`index_name`,</if>
+        <if test="wordCount != null">`word_count`,</if>
+        <if test="isVip != null">`is_vip`,</if>
+        <if test="bookPrice != null">`book_price`,</if>
+        <if test="storageType != null">`storage_type`,</if>
+        <if test="createTime != null">`create_time`,</if>
+        <if test="updateTime != null">`update_time`</if>
+        )
+        values
+        (
+        <if test="id != null">#{id},</if>
+        <if test="bookId != null">#{bookId},</if>
+        <if test="indexNum != null">#{indexNum},</if>
+        <if test="indexName != null">#{indexName},</if>
+        <if test="wordCount != null">#{wordCount},</if>
+        <if test="isVip != null">#{isVip},</if>
+        <if test="bookPrice != null">#{bookPrice},</if>
+        <if test="storageType != null">#{storageType},</if>
+        <if test="createTime != null">#{createTime},</if>
+        <if test="updateTime != null">#{updateTime}</if>
+        )
+    </insert>
+
+    <update id="update" parameterType="com.java2nb.novel.domain.BookIndexDO">
+        update book_index
+        <set>
+            <if test="bookId != null">`book_id` = #{bookId},</if>
+            <if test="indexNum != null">`index_num` = #{indexNum},</if>
+            <if test="indexName != null">`index_name` = #{indexName},</if>
+            <if test="wordCount != null">`word_count` = #{wordCount},</if>
+            <if test="isVip != null">`is_vip` = #{isVip},</if>
+            <if test="bookPrice != null">`book_price` = #{bookPrice},</if>
+            <if test="storageType != null">`storage_type` = #{storageType},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete
+        from book_index
+        where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from book_index where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${bookIndex.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">小说ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.bookId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">目录号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.indexNum}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">目录名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.indexName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">字数：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.wordCount}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">是否收费，1：收费，0：免费：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.isVip}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">章节费用（屋币）：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.bookPrice}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">存储方式：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.storageType}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.createTime}==null?null:${#dates.format(bookIndex.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookIndex.updateTime}==null?null:${#dates.format(bookIndex.updateTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

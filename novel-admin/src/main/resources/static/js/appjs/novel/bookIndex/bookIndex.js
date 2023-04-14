@@ -1,4 +1,4 @@
-var prefix = "/novel/book"
+var prefix = "/novel/bookIndex"
 $(function () {
     load();
 });
@@ -59,103 +59,88 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
+                                                                        {
+                                field: 'id',
+                                title: '主键'
+                            },
 
-                    {
-                        field: 'workDirection',
-                        title: '作品方向',
-                        formatter: function (value, row, index) {
-                            return value === 0 ? '男频' : '女频';
-                        }
-                    },
+                        
+                                                                        {
+                                field: 'bookId',
+                                title: '小说ID'
+                            },
 
-                    {
-                        field: 'catName',
-                        title: '分类名'
-                    },
+                        
+                                                                        {
+                                field: 'indexNum',
+                                title: '目录号'
+                            },
 
-                    {
-                        field: 'bookName',
-                        title: '小说名'
-                    },
+                        
+                                                                        {
+                                field: 'indexName',
+                                title: '目录名'
+                            },
 
-                    {
-                        field: 'authorName',
-                        title: '作者名'
-                    },
+                        
+                                                                        {
+                                field: 'wordCount',
+                                title: '字数'
+                            },
 
-                    {
-                        field: 'bookStatus',
-                        title: '书籍状态',
-                        formatter: function (value, row, index) {
-                            return value === 0 ? '连载中' : '已完结';
-                        }
-                    },
+                        
+                                                                        {
+                                field: 'isVip',
+                                title: '是否收费，1：收费，0：免费'
+                            },
 
-                    {
-                        field: 'visitCount',
-                        title: '点击量'
-                    },
+                        
+                                                                        {
+                                field: 'bookPrice',
+                                title: '章节费用（屋币）'
+                            },
 
-                    {
-                        field: 'wordCount',
-                        title: '总字数'
-                    },
+                        
+                                                                        {
+                                field: 'storageType',
+                                title: '存储方式'
+                            },
 
-                    {
-                        field: 'commentCount',
-                        title: '评论数'
-                    },
+                        
+                                                                        {
+                                field: 'createTime',
+                                title: ''
+                            },
 
-                    {
-                        field: 'yesterdayBuy',
-                        title: '昨日订阅数'
-                    },
+                        
+                                                                        {
+                                field: 'updateTime',
+                                title: ''
+                            },
 
-                    {
-                        field: 'lastIndexName',
-                        title: '最新章节'
-                    },
-
-
-                    {
-                        field: 'lastIndexUpdateTime',
-                        title: '最新章节更新时间'
-                    },
-
-
-                    {
-                        field: 'isVip',
-                        title: '是否收费',
-                        formatter: function (value, row, index) {
-                            return value === 1 ? '收费' : '免费';
-                        }
-                    },
-
-                    {
-                        field: 'createTime',
-                        title: '入库时间'
-                    },
-
-                    {
+                        
+                                        {
                         title: '操作',
                         field: 'id',
                         align: 'center',
                         formatter: function (value, row, index) {
+                            var d = '<a class="btn btn-primary btn-sm ' + s_detail_h + '" href="#" mce_href="#" title="详情" onclick="detail(\''
+                                + row.id
+                                + '\')"><i class="fa fa-file"></i></a> ';
+                            var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
+                                + row.id
+                                + '\')"><i class="fa fa-edit"></i></a> ';
                             var r = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
                                 + row.id
                                 + '\')"><i class="fa fa-remove"></i></a> ';
-                            return r;
+                            return d + e + r;
                         }
-                    }
-
-                ]
+                    }]
             });
 }
-
 function reLoad() {
     $('#exampleTable').bootstrapTable('refresh');
 }
-
 function add() {
     layer.open({
         type: 2,
@@ -166,7 +151,6 @@ function add() {
         content: prefix + '/add' // iframe的url
     });
 }
-
 function detail(id) {
     layer.open({
         type: 2,
@@ -177,7 +161,6 @@ function detail(id) {
         content: prefix + '/detail/' + id // iframe的url
     });
 }
-
 function edit(id) {
     layer.open({
         type: 2,
@@ -188,7 +171,6 @@ function edit(id) {
         content: prefix + '/edit/' + id // iframe的url
     });
 }
-
 function remove(id) {
     layer.confirm('确定要删除选中的记录？', {
         btn: ['确定', '取消']
@@ -213,7 +195,6 @@ function remove(id) {
 
 function resetPwd(id) {
 }
-
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length == 0) {

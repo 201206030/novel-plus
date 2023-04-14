@@ -17,13 +17,17 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     active: dev
+  
+  #上传文件的最大值（10M）
   servlet:
     multipart:
-      max-file-size: 30Mb
-      max-request-size: 30Mb
+      max-file-size: 10485760
+        
   devtools:
     restart:
       enabled: true
+  main:
+    allow-bean-definition-overriding: true
 
 mybatis:
   configuration:

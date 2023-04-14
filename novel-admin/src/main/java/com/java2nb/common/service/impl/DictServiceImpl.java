@@ -1,5 +1,8 @@
 package com.java2nb.common.service.impl;
 
+import com.java2nb.common.dao.DictDao;
+import com.java2nb.common.domain.DictDO;
+import com.java2nb.common.service.DictService;
 import com.java2nb.common.utils.StringUtils;
 import com.java2nb.system.domain.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.java2nb.common.dao.DictDao;
-import com.java2nb.common.domain.DictDO;
-import com.java2nb.common.service.DictService;
+import java.util.stream.Collectors;
 
 
 @Service
 public class DictServiceImpl implements DictService {
+
     @Autowired
     private DictDao dictDao;
 
@@ -58,7 +59,7 @@ public class DictServiceImpl implements DictService {
     @Override
 
     public List<DictDO> listType() {
-        return dictDao.listType();
+        return dictDao.listType().stream().distinct().collect(Collectors.toList());
     }
 
     @Override
