@@ -8,6 +8,10 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: test123456
 
 ####使用shardingJdbc时，
 ####所有的jdbcType都不能是LONGVARCHAR,否则会导致java.io.NotSerializableException: java.io.StringReader错误
