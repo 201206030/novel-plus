@@ -23,7 +23,7 @@ VALUES (1, '小说精品屋', 'www.xxyopen.com', '小说精品屋,小说,小说C
         '1179705413', 'https://youdoc.gitee.io/resource/images/logo/logo.png',
         'https://youdoc.gitee.io/resource/images/logo/logo_white.png', null, null, null, null);
 
-INSERT INTO novel_plus.sys_menu (menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified)
+INSERT INTO sys_menu (menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified)
 VALUES (300, 0, '网站管理', '', '', 0, 'fa fa-television', 6, null, null);
 
 INSERT
