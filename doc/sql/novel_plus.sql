@@ -2829,8 +2829,41 @@ alter table news
 alter table book_index
     add column storage_type varchar(10) NOT NULL DEFAULT 'db' COMMENT '存储方式' after book_price;
 
-INSERT INTO `crawl_source` (`id`, `source_name`, `crawl_rule`, `source_status`, `create_time`, `update_time`)
-VALUES (6, '新笔趣阁',
-        '{\n	\"bookListUrl\": \"http://www.xbiquge.la/fenlei/{catId}_{page}.html\",\n	\"catIdRule\": {\n		\"catId1\": \"1\",\n		\"catId2\": \"2\",\n		\"catId3\": \"3\",\n		\"catId4\": \"4\",\n		\"catId5\": \"6\",\n		\"catId6\": \"5\"\n	},\n	\"bookIdPatten\": \"<a\\\\s+href=\\\"http://www.xbiquge.la/(\\\\d+/\\\\d+)/\\\"\\\\s+target=\\\"_blank\\\">\",\n	\"pagePatten\": \"<em\\\\s+id=\\\"pagestats\\\">(\\\\d+)/\\\\d+</em>\",\n	\"totalPagePatten\": \"<em\\\\s+id=\\\"pagestats\\\">\\\\d+/(\\\\d+)</em>\",\n	\"bookDetailUrl\": \"http://www.xbiquge.la/{bookId}/\",\n	\"bookNamePatten\": \"<h1>([^/]+)</h1>\",\n	\"authorNamePatten\": \"者：([^/]+)</p>\",\n	\"picUrlPatten\": \"src=\\\"(http://www.xbiquge.la/files/article/image/\\\\d+/\\\\d+/\\\\d+s\\\\.jpg)\\\"\",\n	\"bookStatusRule\": {},\n	\"descStart\": \"<div id=\\\"intro\\\">\",\n	\"descEnd\": \"</div>\",\n	\"upadateTimePatten\": \"<p>最后更新：(\\\\d+-\\\\d+-\\\\d+\\\\s\\\\d+:\\\\d+:\\\\d+)</p>\",\n	\"upadateTimeFormatPatten\": \"yyyy-MM-dd HH:mm:ss\",\n	\"bookIndexUrl\": \"http://www.xbiquge.la/{bookId}/\",\n	\"indexIdPatten\": \"<a\\\\s+href=\' /\\\\d + /\\\\d + /
-        (\\\\d +) \\\\.html\'\\\\s+>[^/]+</a>\",\n	\"indexNamePatten\": \"<a\\\\s+href=\'/\\\\d+/\\\\d+/\\\\d+\\\\.html\'\\\\s+>([^/]+)</a>\",\n	\"bookContentUrl\": \"http://www.xbiquge.la/{bookId}/{indexId}.html\",\n	\"contentStart\": \"<div id=\\\"content\\\">\",\n	\"contentEnd\": \"<p>\"\n}',
-        0, '2020-05-23 22:46:58', '2020-05-23 22:46:58');
+
+CREATE TABLE `website_info`
+(
+    id             bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    name           varchar(50)  NOT NULL COMMENT '网站名',
+    domain         varchar(50)  NOT NULL COMMENT '网站域名',
+    keyword        varchar(50)  NOT NULL COMMENT 'SEO关键词',
+    description    varchar(512) NOT NULL COMMENT '网站描述',
+    qq             varchar(20)  NOT NULL COMMENT '站长QQ',
+    logo           varchar(200) NOT NULL COMMENT '网站logo图片（默认）',
+    logo_dark      varchar(200) NOT NULL COMMENT '网站logo图片（深色）',
+    create_time    datetime null comment '创建时间',
+    create_user_id bigint null comment '创建人ID',
+    update_time    datetime null comment '更新时间',
+    update_user_id bigint null comment '更新人ID',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='网站信息表';
+
+INSERT INTO website_info (id, name, domain, keyword, description, qq, logo, logo_dark, create_time, create_user_id,
+                          update_time, update_user_id)
+VALUES (1, '小说精品屋', 'www.xxyopen.com', '小说精品屋,小说,小说CMS,原创文学系统,开源小说系统,免费小说建站程序',
+        '小说精品屋是一个多端（PC、WAP）阅读、功能完善的原创文学CMS系统，由前台门户系统、作家后台管理系统、平台后台管理系统、爬虫管理系统等多个子系统构成，支持会员充值、订阅模式、新闻发布和实时统计报表等功能，新书自动入库，老书自动更新。',
+        '1179705413', 'https://youdoc.gitee.io/resource/images/logo/logo.png',
+        'https://youdoc.gitee.io/resource/images/logo/logo_white.png', null, null, null, null);
+
+INSERT INTO novel_plus.sys_menu (menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified)
+VALUES (300, 0, '网站管理', '', '', 0, 'fa fa-television', 6, null, null);
+
+INSERT
+INTO `sys_menu`(`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (301, 300, '网站信息', 'novel/websiteInfo', 'novel:websiteInfo:websiteInfo', '1', 'fa', '6');
+
+
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 300);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 301);

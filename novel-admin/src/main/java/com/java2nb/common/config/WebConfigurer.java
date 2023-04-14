@@ -7,11 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Component
 class WebConfigurer extends WebMvcConfigurerAdapter {
-	@Autowired
+
+    @Autowired
     JnConfig jnConfig;
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/files/**").addResourceLocations("file:///"+ jnConfig.getUploadPath());
-	}
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(Constant.UPLOAD_FILES_PREFIX + "**")
+            .addResourceLocations("file:///" + jnConfig.getUploadPath());
+    }
 
 }

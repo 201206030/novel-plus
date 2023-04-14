@@ -1,14 +1,19 @@
 package com.java2nb.system.service.impl;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.util.*;
-
+import com.java2nb.common.config.Constant;
 import com.java2nb.common.config.JnConfig;
 import com.java2nb.common.domain.FileDO;
+import com.java2nb.common.domain.Tree;
 import com.java2nb.common.service.FileService;
 import com.java2nb.common.utils.*;
+import com.java2nb.system.dao.DeptDao;
+import com.java2nb.system.dao.SysUserDao;
+import com.java2nb.system.dao.UserRoleDao;
+import com.java2nb.system.domain.DeptDO;
+import com.java2nb.system.domain.UserDO;
+import com.java2nb.system.domain.UserRoleDO;
 import com.java2nb.system.service.DeptService;
+import com.java2nb.system.service.SysUserService;
 import com.java2nb.system.vo.UserVO;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
@@ -16,22 +21,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.java2nb.common.domain.Tree;
-import com.java2nb.system.dao.DeptDao;
-import com.java2nb.system.dao.SysUserDao;
-import com.java2nb.system.dao.UserRoleDao;
-import com.java2nb.system.domain.DeptDO;
-import com.java2nb.system.domain.UserDO;
-import com.java2nb.system.domain.UserRoleDO;
-import com.java2nb.system.service.SysUserService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.*;
 
 @Transactional
 @Service
 public class SysUserServiceImpl implements SysUserService {
+
     @Autowired
     SysUserDao userMapper;
     @Autowired
@@ -64,7 +64,7 @@ public class SysUserServiceImpl implements SysUserService {
             List<Long> childIds = deptService.listChildrenIds(deptIdl);
             childIds.add(deptIdl);
             map.put("deptId", null);
-            map.put("deptIds",childIds);
+            map.put("deptIds", childIds);
         }
         return userMapper.listByPerm(map);
     }
@@ -213,7 +213,7 @@ public class SysUserServiceImpl implements SysUserService {
     public Map<String, Object> updatePersonalImg(MultipartFile file, String avatar_data, Long userId) throws Exception {
         String fileName = file.getOriginalFilename();
         fileName = FileUtil.renameToUUID(fileName);
-        FileDO sysFile = new FileDO(FileType.fileType(fileName), "/files/" + fileName, new Date());
+        FileDO sysFile = new FileDO(FileType.fileType(fileName), Constant.UPLOAD_FILES_PREFIX + fileName, new Date());
         //获取图片后缀
         String prefix = fileName.substring((fileName.lastIndexOf(".") + 1));
         String[] str = avatar_data.split(",");

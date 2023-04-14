@@ -49,7 +49,6 @@ novel-plus -- 父工程
 | Redis               | 缓存方案
 | Aliyun OSS          | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换)
 | FastDFS             | 开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)
-| Redisson            | 实现分布式锁
 | Lombok              | 简化对象封装工具
 | Docker              | 应用容器引擎
 | MySQL               | 数据库服务

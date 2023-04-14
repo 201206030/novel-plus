@@ -71,7 +71,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/docs/**", "anon");
         filterChainDefinitionMap.put("/layuimini/**", "anon");
         filterChainDefinitionMap.put("/upload/**", "anon");
-        filterChainDefinitionMap.put("/files/**", "anon");
+        filterChainDefinitionMap.put(Constant.UPLOAD_FILES_PREFIX + "**", "anon");
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/blog", "anon");
         filterChainDefinitionMap.put("/blog/open/**", "anon");

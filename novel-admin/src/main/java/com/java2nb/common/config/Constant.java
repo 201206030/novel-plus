@@ -1,6 +1,7 @@
 package com.java2nb.common.config;
 
 public class Constant {
+
     //演示系统账户
     public static String DEMO_ACCOUNT = "test";
     //自动去除表前缀
@@ -16,9 +17,11 @@ public class Constant {
     //部门根节点id
     public static Long DEPT_ROOT_ID = 0l;
     //缓存方式
-    public static String CACHE_TYPE_REDIS ="redis";
+    public static String CACHE_TYPE_REDIS = "redis";
 
     public static String LOG_ERROR = "error";
 
-    
+    public static final String UPLOAD_FILES_PREFIX = "/files/";
+
+
 }

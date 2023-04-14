@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.WebsiteInfoDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.WebsiteInfoDO">
+		select `id`,`name`,`domain`,`keyword`,`description`,`qq`,`logo`,`logo_dark`,`create_time`,`create_user_id`,`update_time`,`update_user_id` from website_info where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.WebsiteInfoDO">
+		select `id`,`name`,`domain`,`keyword`,`description`,`qq`,`logo`,`logo_dark`,`create_time`,`create_user_id`,`update_time`,`update_user_id` from website_info
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="domain != null and domain != ''"> and domain = #{domain} </if>
+		  		  <if test="keyword != null and keyword != ''"> and keyword = #{keyword} </if>
+		  		  <if test="description != null and description != ''"> and description = #{description} </if>
+		  		  <if test="qq != null and qq != ''"> and qq = #{qq} </if>
+		  		  <if test="logo != null and logo != ''"> and logo = #{logo} </if>
+		  		  <if test="logoDark != null and logoDark != ''"> and logo_dark = #{logoDark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		  <if test="updateUserId != null and updateUserId != ''"> and update_user_id = #{updateUserId} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from website_info
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="domain != null and domain != ''"> and domain = #{domain} </if>
+		  		  <if test="keyword != null and keyword != ''"> and keyword = #{keyword} </if>
+		  		  <if test="description != null and description != ''"> and description = #{description} </if>
+		  		  <if test="qq != null and qq != ''"> and qq = #{qq} </if>
+		  		  <if test="logo != null and logo != ''"> and logo = #{logo} </if>
+		  		  <if test="logoDark != null and logoDark != ''"> and logo_dark = #{logoDark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		  <if test="updateUserId != null and updateUserId != ''"> and update_user_id = #{updateUserId} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.WebsiteInfoDO">
+		insert into website_info
+		(
+			`id`, 
+			`name`, 
+			`domain`, 
+			`keyword`, 
+			`description`, 
+			`qq`, 
+			`logo`, 
+			`logo_dark`, 
+			`create_time`, 
+			`create_user_id`, 
+			`update_time`, 
+			`update_user_id`
+		)
+		values
+		(
+			#{id}, 
+			#{name}, 
+			#{domain}, 
+			#{keyword}, 
+			#{description}, 
+			#{qq}, 
+			#{logo}, 
+			#{logoDark}, 
+			#{createTime}, 
+			#{createUserId}, 
+			#{updateTime}, 
+			#{updateUserId}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.WebsiteInfoDO">
+		insert into website_info
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="name != null"> `name`,  </if>
+					<if test="domain != null"> `domain`,  </if>
+					<if test="keyword != null"> `keyword`,  </if>
+					<if test="description != null"> `description`,  </if>
+					<if test="qq != null"> `qq`,  </if>
+					<if test="logo != null"> `logo`,  </if>
+					<if test="logoDark != null"> `logo_dark`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="createUserId != null"> `create_user_id`,  </if>
+					<if test="updateTime != null"> `update_time`,  </if>
+					<if test="updateUserId != null"> `update_user_id` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="name != null"> #{name},  </if>
+					<if test="domain != null"> #{domain},  </if>
+					<if test="keyword != null"> #{keyword},  </if>
+					<if test="description != null"> #{description},  </if>
+					<if test="qq != null"> #{qq},  </if>
+					<if test="logo != null"> #{logo},  </if>
+					<if test="logoDark != null"> #{logoDark},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="createUserId != null"> #{createUserId},  </if>
+					<if test="updateTime != null"> #{updateTime},  </if>
+					<if test="updateUserId != null"> #{updateUserId} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.WebsiteInfoDO">
+		update website_info 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="domain != null">`domain` = #{domain}, </if>
+			<if test="keyword != null">`keyword` = #{keyword}, </if>
+			<if test="description != null">`description` = #{description}, </if>
+			<if test="qq != null">`qq` = #{qq}, </if>
+			<if test="logo != null">`logo` = #{logo}, </if>
+			<if test="logoDark != null">`logo_dark` = #{logoDark}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="updateUserId != null">`update_user_id` = #{updateUserId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from website_info where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from website_info where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
