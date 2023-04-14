@@ -59,82 +59,50 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
-                                                                        {
-                                field: 'id',
-                                title: '主键'
-                            },
 
-                        
-                                                                        {
-                                field: 'outTradeNo',
-                                title: '保留'
-                            },
+                    {
+                        field: 'outTradeNo',
+                        title: '订单号'
+                    },
 
-                        
-                                                                        {
-                                field: 'tradeNo',
-                                title: '订单号'
-                            },
 
-                        
-                                                                        {
-                                field: 'payChannel',
-                                title: '保留'
-                            },
-
-                        
-                                                                        {
-                                field: 'totalAmount',
-                                title: '交易香蕉币'
-                            },
-
-                        
-                                                                        {
-                                field: 'userId',
-                                title: '支付用户ID'
-                            },
-
-                        
-                                                                        {
-                                field: 'payStatus',
-                                title: '支付状态：0：支付失败，1：支付成功，2：待支付'
-                            },
-
-                        
-                                                                        {
-                                field: 'createTime',
-                                title: '创建时间'
-                            },
-
-                        
-                                                                        {
-                                field: 'updateTime',
-                                title: '更新时间'
-                            },
-
-                        
-                                        {
-                        title: '操作',
-                        field: 'id',
-                        align: 'center',
+                    {
+                        field: 'totalAmount',
+                        title: '充值金额',
                         formatter: function (value, row, index) {
-                            var d = '<a class="btn btn-primary btn-sm ' + s_detail_h + '" href="#" mce_href="#" title="详情" onclick="detail(\''
-                                + row.id
-                                + '\')"><i class="fa fa-file"></i></a> ';
-                            var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
-                                + row.id
-                                + '\')"><i class="fa fa-edit"></i></a> ';
-                            var r = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                + row.id
-                                + '\')"><i class="fa fa-remove"></i></a> ';
-                            return d + e + r;
+                            return '¥' + value;
                         }
-                    }]
+                    },
+
+
+                    {
+                        field: 'userId',
+                        title: '充值用户ID'
+                    },
+
+                    {
+                        field: 'payStatus',
+                        title: '状态',
+                        formatter: function (value, row, index) {
+                            return value === 0 ? '充值失败' : value === 1 ? '充值成功' : value === 2 ? '待支付' : '其它';
+                        }
+                    },
+
+
+                    {
+                        field: 'createTime',
+                        title: '创建时间'
+                    }
+
+
+                ]
             });
 }
+
 function reLoad() {
     $('#exampleTable').bootstrapTable('refresh');
 }
+
 function add() {
     layer.open({
         type: 2,
@@ -145,6 +113,7 @@ function add() {
         content: prefix + '/add' // iframe的url
     });
 }
+
 function detail(id) {
     layer.open({
         type: 2,
@@ -155,6 +124,7 @@ function detail(id) {
         content: prefix + '/detail/' + id // iframe的url
     });
 }
+
 function edit(id) {
     layer.open({
         type: 2,
@@ -165,6 +135,7 @@ function edit(id) {
         content: prefix + '/edit/' + id // iframe的url
     });
 }
+
 function remove(id) {
     layer.confirm('确定要删除选中的记录？', {
         btn: ['确定', '取消']
@@ -189,6 +160,7 @@ function remove(id) {
 
 function resetPwd(id) {
 }
+
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length == 0) {

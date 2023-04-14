@@ -77,3 +77,16 @@ INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 400);
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 401);
+
+
+INSERT INTO sys_menu (menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified)
+VALUES (500, 0, '订单管理', '', '', 0, 'fa fa-money', 19, null, null);
+
+INSERT
+INTO `sys_menu`(`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (501, 500, '订单列表', 'novel/pay', 'novel:pay:pay', '1', 'fa', '6');
+
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 500);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 501);
