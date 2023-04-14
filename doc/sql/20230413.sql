@@ -1,6 +1,6 @@
 CREATE TABLE `website_info`
 (
-    id             bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    id             bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '主键',
     name           varchar(50)  NOT NULL COMMENT '网站名',
     domain         varchar(50)  NOT NULL COMMENT '网站域名',
     keyword        varchar(50)  NOT NULL COMMENT 'SEO关键词',
@@ -8,10 +8,10 @@ CREATE TABLE `website_info`
     qq             varchar(20)  NOT NULL COMMENT '站长QQ',
     logo           varchar(200) NOT NULL COMMENT '网站logo图片（默认）',
     logo_dark      varchar(200) NOT NULL COMMENT '网站logo图片（深色）',
-    create_time    datetime null comment '创建时间',
-    create_user_id bigint null comment '创建人ID',
-    update_time    datetime null comment '更新时间',
-    update_user_id bigint null comment '更新人ID',
+    create_time    datetime     null comment '创建时间',
+    create_user_id bigint       null comment '创建人ID',
+    update_time    datetime     null comment '更新时间',
+    update_user_id bigint       null comment '更新人ID',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='网站信息表';
@@ -64,3 +64,16 @@ INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 314);
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 315);
+
+
+INSERT INTO sys_menu (menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified)
+VALUES (400, 0, '会员管理', '', '', 0, 'fa fa-vcard', 9, null, null);
+
+INSERT
+INTO `sys_menu`(`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (401, 400, '会员列表', 'novel/user', 'novel:user:user', '1', 'fa', '6');
+
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 400);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 401);

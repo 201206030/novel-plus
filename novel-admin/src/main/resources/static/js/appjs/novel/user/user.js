@@ -59,88 +59,47 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
-                                                                        {
-                                field: 'id',
-                                title: '主键'
-                            },
 
-                        
-                                                                        {
-                                field: 'username',
-                                title: '登录名'
-                            },
+                    {
+                        field: 'username',
+                        title: '手机号'
+                    },
+                    {
+                        field: 'nickName',
+                        title: '昵称'
+                    },
 
-                        
-                                                                        {
-                                field: 'password',
-                                title: '登录密码'
-                            },
-
-                        
-                                                                        {
-                                field: 'nickName',
-                                title: '昵称'
-                            },
-
-                        
-                                                                        {
-                                field: 'userPhoto',
-                                title: '用户头像'
-                            },
-
-                        
-                                                                        {
-                                field: 'userSex',
-                                title: '用户性别，0：男，1：女'
-                            },
-
-                        
-                                                                        {
-                                field: 'accountBalance',
-                                title: '账户余额'
-                            },
-
-                        
-                                                                        {
-                                field: 'status',
-                                title: '用户状态，0：正常'
-                            },
-
-                        
-                                                                        {
-                                field: 'createTime',
-                                title: '创建时间'
-                            },
-
-                        
-                                                                        {
-                                field: 'updateTime',
-                                title: '更新时间'
-                            },
-
-                        
-                                        {
-                        title: '操作',
-                        field: 'id',
-                        align: 'center',
+                    {
+                        field: 'userSex',
+                        title: '用户性别',
                         formatter: function (value, row, index) {
-                            var d = '<a class="btn btn-primary btn-sm ' + s_detail_h + '" href="#" mce_href="#" title="详情" onclick="detail(\''
-                                + row.id
-                                + '\')"><i class="fa fa-file"></i></a> ';
-                            var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
-                                + row.id
-                                + '\')"><i class="fa fa-edit"></i></a> ';
-                            var r = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                + row.id
-                                + '\')"><i class="fa fa-remove"></i></a> ';
-                            return d + e + r;
+                            return value === 0 ? '男' : value === 1 ? '女' : '未知';
                         }
-                    }]
+                    },
+
+                    {
+                        field: 'accountBalance',
+                        title: '账户余额',
+                        formatter: function (value, row, index) {
+                            return "¥" + value / 100;
+                        }
+                    },
+
+
+                    {
+                        field: 'createTime',
+                        title: '注册时间'
+                    }
+
+
+                ]
             });
 }
+
 function reLoad() {
     $('#exampleTable').bootstrapTable('refresh');
 }
+
 function add() {
     layer.open({
         type: 2,
@@ -151,6 +110,7 @@ function add() {
         content: prefix + '/add' // iframe的url
     });
 }
+
 function detail(id) {
     layer.open({
         type: 2,
@@ -161,6 +121,7 @@ function detail(id) {
         content: prefix + '/detail/' + id // iframe的url
     });
 }
+
 function edit(id) {
     layer.open({
         type: 2,
@@ -171,6 +132,7 @@ function edit(id) {
         content: prefix + '/edit/' + id // iframe的url
     });
 }
+
 function remove(id) {
     layer.confirm('确定要删除选中的记录？', {
         btn: ['确定', '取消']
@@ -195,6 +157,7 @@ function remove(id) {
 
 function resetPwd(id) {
 }
+
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length == 0) {
