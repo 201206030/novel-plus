@@ -59,220 +59,91 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
-                                                                        {
-                                field: 'id',
-                                title: '主键'
-                            },
 
-                        
-                                                                        {
-                                field: 'workDirection',
-                                title: '作品方向，0：男频，1：女频'
-                            },
-
-                        
-                                                                        {
-                                field: 'catId',
-                                title: '分类ID'
-                            },
-
-                        
-                                                                        {
-                                field: 'catName',
-                                title: '分类名'
-                            },
-
-                        
-                                                                        {
-                                field: 'catChildId',
-                                title: '子分类ID'
-                            },
-
-                        
-                                                                        {
-                                field: 'catChildName',
-                                title: '子分类名'
-                            },
-
-                        
-                                                                        {
-                                field: 'picUrl',
-                                title: '小说封面'
-                            },
-
-                        
-                                                                        {
-                                field: 'bookName',
-                                title: '小说名'
-                            },
-
-                        
-                                                                        {
-                                field: 'heroName',
-                                title: '男主角姓名'
-                            },
-
-                        
-                                                                        {
-                                field: 'ladyName',
-                                title: '女主角姓名'
-                            },
-
-                        
-                                                                        {
-                                field: 'bookStyle',
-                                title: '作品风格，0：甜宠，1：虐恋，2：其他'
-                            },
-
-                        
-                                                                        {
-                                field: 'bookLabel',
-                                title: '作品标签'
-                            },
-
-                        
-                                                                        {
-                                field: 'authorId',
-                                title: '作者id'
-                            },
-
-                        
-                                                                        {
-                                field: 'authorName',
-                                title: '作者名'
-                            },
-
-                        
-                                                                        {
-                                field: 'bookDesc',
-                                title: '书籍描述'
-                            },
-
-                        
-                                                                        {
-                                field: 'score',
-                                title: '评分，预留字段'
-                            },
-
-                        
-                                                                        {
-                                field: 'bookStatus',
-                                title: '书籍状态，0：连载中，1：已完结'
-                            },
-
-                        
-                                                                        {
-                                field: 'visitCount',
-                                title: '点击量'
-                            },
-
-                        
-                                                                        {
-                                field: 'wordCount',
-                                title: '总字数'
-                            },
-
-                        
-                                                                        {
-                                field: 'commentCount',
-                                title: '评论数'
-                            },
-
-                        
-                                                                        {
-                                field: 'yesterdayBuy',
-                                title: '昨日订阅数'
-                            },
-
-                        
-                                                                        {
-                                field: 'lastIndexId',
-                                title: '最新目录ID'
-                            },
-
-                        
-                                                                        {
-                                field: 'lastIndexName',
-                                title: '最新目录名'
-                            },
-
-                        
-                                                                        {
-                                field: 'lastIndexUpdateTime',
-                                title: '最新目录更新时间'
-                            },
-
-                        
-                                                                        {
-                                field: 'isVip',
-                                title: '是否收费，1：收费，0：免费'
-                            },
-
-                        
-                                                                        {
-                                field: 'status',
-                                title: '状态，0：入库，1：上架'
-                            },
-
-                        
-                                                                        {
-                                field: 'updateTime',
-                                title: '更新时间'
-                            },
-
-                        
-                                                                        {
-                                field: 'createTime',
-                                title: '创建时间'
-                            },
-
-                        
-                                                                        {
-                                field: 'crawlSourceId',
-                                title: '爬虫源站ID'
-                            },
-
-                        
-                                                                        {
-                                field: 'crawlBookId',
-                                title: '抓取的源站小说ID'
-                            },
-
-                        
-                                                                        {
-                                field: 'crawlLastTime',
-                                title: '最后一次的抓取时间'
-                            },
-
-                        
-                                                                        {
-                                field: 'crawlIsStop',
-                                title: '是否已停止更新，0：未停止，1：已停止'
-                            },
-
-                        
-                                        {
-                        title: '操作',
-                        field: 'id',
-                        align: 'center',
+                    {
+                        field: 'workDirection',
+                        title: '作品方向',
                         formatter: function (value, row, index) {
-                            var d = '<a class="btn btn-primary btn-sm ' + s_detail_h + '" href="#" mce_href="#" title="详情" onclick="detail(\''
-                                + row.id
-                                + '\')"><i class="fa fa-file"></i></a> ';
-                            var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
-                                + row.id
-                                + '\')"><i class="fa fa-edit"></i></a> ';
-                            var r = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                + row.id
-                                + '\')"><i class="fa fa-remove"></i></a> ';
-                            return d + e + r;
+                            return value === 0 ? '男频' : '女频';
                         }
-                    }]
+                    },
+
+                    {
+                        field: 'catName',
+                        title: '分类名'
+                    },
+
+                    {
+                        field: 'bookName',
+                        title: '小说名'
+                    },
+
+                    {
+                        field: 'authorName',
+                        title: '作者名'
+                    },
+
+                    {
+                        field: 'bookStatus',
+                        title: '书籍状态',
+                        formatter: function (value, row, index) {
+                            return value === 0 ? '连载中' : '已完结';
+                        }
+                    },
+
+                    {
+                        field: 'visitCount',
+                        title: '点击量'
+                    },
+
+                    {
+                        field: 'wordCount',
+                        title: '总字数'
+                    },
+
+                    {
+                        field: 'commentCount',
+                        title: '评论数'
+                    },
+
+                    {
+                        field: 'yesterdayBuy',
+                        title: '昨日订阅数'
+                    },
+
+                    {
+                        field: 'lastIndexName',
+                        title: '最新章节'
+                    },
+
+
+                    {
+                        field: 'lastIndexUpdateTime',
+                        title: '最新章节更新时间'
+                    },
+
+
+                    {
+                        field: 'isVip',
+                        title: '是否收费',
+                        formatter: function (value, row, index) {
+                            return value === 1 ? '收费' : '免费';
+                        }
+                    },
+
+                    {
+                        field: 'createTime',
+                        title: '入库时间'
+                    }
+
+                ]
             });
 }
+
 function reLoad() {
     $('#exampleTable').bootstrapTable('refresh');
 }
+
 function add() {
     layer.open({
         type: 2,
@@ -283,6 +154,7 @@ function add() {
         content: prefix + '/add' // iframe的url
     });
 }
+
 function detail(id) {
     layer.open({
         type: 2,
@@ -293,6 +165,7 @@ function detail(id) {
         content: prefix + '/detail/' + id // iframe的url
     });
 }
+
 function edit(id) {
     layer.open({
         type: 2,
@@ -303,6 +176,7 @@ function edit(id) {
         content: prefix + '/edit/' + id // iframe的url
     });
 }
+
 function remove(id) {
     layer.confirm('确定要删除选中的记录？', {
         btn: ['确定', '取消']
@@ -327,6 +201,7 @@ function remove(id) {
 
 function resetPwd(id) {
 }
+
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length == 0) {

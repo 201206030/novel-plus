@@ -10,28 +10,142 @@
     <link rel="stylesheet" href="/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
     <link rel="stylesheet" href="/layuimini/css/public.css" media="all">
     <style>
-        .layui-card {border:1px solid #f2f2f2;border-radius:5px;}
-        .icon {margin-right:10px;color:#1aa094;}
-        .icon-cray {color:#ffb800!important;}
-        .icon-blue {color:#1e9fff!important;}
-        .icon-tip {color:#ff5722!important;}
-        .layuimini-qiuck-module {text-align:center;margin-top: 10px}
-        .layuimini-qiuck-module a i {display:inline-block;width:100%;height:60px;line-height:60px;text-align:center;border-radius:2px;font-size:30px;background-color:#F8F8F8;color:#333;transition:all .3s;-webkit-transition:all .3s;}
-        .layuimini-qiuck-module a cite {position:relative;top:2px;display:block;color:#666;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:14px;}
-        .welcome-module {width:100%;height:210px;}
-        .panel {background-color:#fff;border:1px solid transparent;border-radius:3px;-webkit-box-shadow:0 1px 1px rgba(0,0,0,.05);box-shadow:0 1px 1px rgba(0,0,0,.05)}
-        .panel-body {padding:10px}
-        .panel-title {margin-top:0;margin-bottom:0;font-size:12px;color:inherit}
-        .label {display:inline;padding:.2em .6em .3em;font-size:75%;font-weight:700;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.25em;margin-top: .3em;}
-        .layui-red {color:red}
-        .main_btn > p {height:40px;}
-        .layui-bg-number {background-color:#F8F8F8;}
-        .layuimini-notice:hover {background:#f6f6f6;}
-        .layuimini-notice {padding:7px 16px;clear:both;font-size:12px !important;cursor:pointer;position:relative;transition:background 0.2s ease-in-out;}
-        .layuimini-notice-title,.layuimini-notice-label {
-            padding-right: 70px !important;text-overflow:ellipsis!important;overflow:hidden!important;white-space:nowrap!important;}
-        .layuimini-notice-title {line-height:28px;font-size:14px;}
-        .layuimini-notice-extra {position:absolute;top:50%;margin-top:-8px;right:16px;display:inline-block;height:16px;color:#999;}
+        .layui-card {
+            border: 1px solid #f2f2f2;
+            border-radius: 5px;
+        }
+
+        .icon {
+            margin-right: 10px;
+            color: #1aa094;
+        }
+
+        .icon-cray {
+            color: #ffb800 !important;
+        }
+
+        .icon-blue {
+            color: #1e9fff !important;
+        }
+
+        .icon-tip {
+            color: #ff5722 !important;
+        }
+
+        .layuimini-qiuck-module {
+            text-align: center;
+            margin-top: 10px
+        }
+
+        .layuimini-qiuck-module a i {
+            display: inline-block;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 2px;
+            font-size: 30px;
+            background-color: #F8F8F8;
+            color: #333;
+            transition: all .3s;
+            -webkit-transition: all .3s;
+        }
+
+        .layuimini-qiuck-module a cite {
+            position: relative;
+            top: 2px;
+            display: block;
+            color: #666;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .welcome-module {
+            width: 100%;
+            height: 210px;
+        }
+
+        .panel {
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+        }
+
+        .panel-body {
+            padding: 10px
+        }
+
+        .panel-title {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            color: inherit
+        }
+
+        .label {
+            display: inline;
+            padding: .2em .6em .3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25em;
+            margin-top: .3em;
+        }
+
+        .layui-red {
+            color: red
+        }
+
+        .main_btn > p {
+            height: 40px;
+        }
+
+        .layui-bg-number {
+            background-color: #F8F8F8;
+        }
+
+        .layuimini-notice:hover {
+            background: #f6f6f6;
+        }
+
+        .layuimini-notice {
+            padding: 7px 16px;
+            clear: both;
+            font-size: 12px !important;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .layuimini-notice-title, .layuimini-notice-label {
+            padding-right: 70px !important;
+            text-overflow: ellipsis !important;
+            overflow: hidden !important;
+            white-space: nowrap !important;
+        }
+
+        .layuimini-notice-title {
+            line-height: 28px;
+            font-size: 14px;
+        }
+
+        .layuimini-notice-extra {
+            position: absolute;
+            top: 50%;
+            margin-top: -8px;
+            right: 16px;
+            display: inline-block;
+            height: 16px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
@@ -133,7 +247,7 @@
                             <tr>
                                 <td>项目名称</td>
                                 <td>
-                                    小说精品屋
+                                    novel
                                 </td>
                             </tr>
                             <tr>
@@ -142,21 +256,25 @@
                             </tr>
                             <tr>
                                 <td>主要特色</td>
-                                <td>小说 / 漫画 / 自适应 / 弹幕 / 采集</td>
+                                <td>Spring Boot 3 / Vue 3 / 项目实战 / 保姆级教程</td>
                             </tr>
                             <tr>
                                 <td>下载地址</td>
                                 <td>
-                                   <a href="https://gitee.com/novel_dev_team/fiction_house" target="_blank">Gitee</a> /
-                                    <a href="https://github.com/201206030/fiction_house" target="_blank">Github</a>
+                                    <a href="https://gitee.com/novel_dev_team/novel" target="_blank">Gitee</a> /
+                                    <a href="https://github.com/201206030/novel" target="_blank">Github</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Gitee</td>
                                 <td style="padding-bottom: 0;">
                                     <div class="layui-btn-container">
-                                        <a href='https://gitee.com/novel_dev_team/fiction_house/stargazers'><img src='https://gitee.com/novel_dev_team/fiction_house/badge/star.svg?theme=dark' alt='star'></img></a>
-                                        <a href='https://gitee.com/novel_dev_team/fiction_house/members'><img src='https://gitee.com/novel_dev_team/fiction_house/badge/fork.svg?theme=dark' alt='fork'></img></a>
+                                        <a href='https://gitee.com/novel_dev_team/novel/stargazers'><img
+                                                src='https://gitee.com/novel_dev_team/novel/badge/star.svg?theme=dark'
+                                                alt='star'></img></a>
+                                        <a href='https://gitee.com/novel_dev_team/novel/members'><img
+                                                src='https://gitee.com/novel_dev_team/novel/badge/fork.svg?theme=dark'
+                                                alt='fork'></img></a>
                                     </div>
                                 </td>
                             </tr>
@@ -164,8 +282,10 @@
                                 <td>Github</td>
                                 <td style="padding-bottom: 0;">
                                     <div class="layui-btn-container">
-                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=fiction_house&type=star&count=true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
-                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=fiction_house&type=fork&count=true" frameborder="0" scrolling="0" width="101px" height="20px"></iframe>
+                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel&type=star&count=true"
+                                                frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel&type=fork&count=true"
+                                                frameborder="0" scrolling="0" width="101px" height="20px"></iframe>
                                     </div>
                                 </td>
                             </tr>
@@ -186,7 +306,7 @@
                             <tr>
                                 <td>项目名称</td>
                                 <td>
-                                    小说精品屋-plus
+                                    novel-plus
                                 </td>
                             </tr>
                             <tr>
@@ -208,8 +328,12 @@
                                 <td>Gitee</td>
                                 <td style="padding-bottom: 0;">
                                     <div class="layui-btn-container">
-                                        <a href='https://gitee.com/novel_dev_team/novel-plus/stargazers'><img src='https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=dark' alt='star'></img></a>
-                                        <a href='https://gitee.com/novel_dev_team/novel-plus/members'><img src='https://gitee.com/novel_dev_team/novel-plus/badge/fork.svg?theme=dark' alt='fork'></img></a>
+                                        <a href='https://gitee.com/novel_dev_team/novel-plus/stargazers'><img
+                                                src='https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=dark'
+                                                alt='star'></img></a>
+                                        <a href='https://gitee.com/novel_dev_team/novel-plus/members'><img
+                                                src='https://gitee.com/novel_dev_team/novel-plus/badge/fork.svg?theme=dark'
+                                                alt='fork'></img></a>
                                     </div>
                                 </td>
                             </tr>
@@ -217,8 +341,10 @@
                                 <td>Github</td>
                                 <td style="padding-bottom: 0;">
                                     <div class="layui-btn-container">
-                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-plus&type=star&count=true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
-                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-plus&type=fork&count=true" frameborder="0" scrolling="0" width="101px" height="20px"></iframe>
+                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-plus&type=star&count=true"
+                                                frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-plus&type=fork&count=true"
+                                                frameborder="0" scrolling="0" width="101px" height="20px"></iframe>
                                     </div>
                                 </td>
                             </tr>
@@ -239,7 +365,7 @@
                             <tr>
                                 <td>项目名称</td>
                                 <td>
-                                    小说精品屋-微服务版
+                                    novel-cloud
                                 </td>
                             </tr>
                             <tr>
@@ -248,7 +374,7 @@
                             </tr>
                             <tr>
                                 <td>主要特色</td>
-                                <td>SpringCloudAlibaba / Redis / RabbitMq / ElasticSearch / Sharding-Jdbc / Docker</td>
+                                <td>微服务 / Spring Cloud 2022 / Spring Cloud Alibaba 2022</td>
                             </tr>
                             <tr>
                                 <td>下载地址</td>
@@ -261,8 +387,12 @@
                                 <td>Gitee</td>
                                 <td style="padding-bottom: 0;">
                                     <div class="layui-btn-container">
-                                        <a href='https://gitee.com/novel_dev_team/novel-cloud/stargazers'><img src='https://gitee.com/novel_dev_team/novel-cloud/badge/star.svg?theme=dark' alt='star'></img></a>
-                                        <a href='https://gitee.com/novel_dev_team/novel-cloud/members'><img src='https://gitee.com/novel_dev_team/novel-cloud/badge/fork.svg?theme=dark' alt='fork'></img></a>
+                                        <a href='https://gitee.com/novel_dev_team/novel-cloud/stargazers'><img
+                                                src='https://gitee.com/novel_dev_team/novel-cloud/badge/star.svg?theme=dark'
+                                                alt='star'></img></a>
+                                        <a href='https://gitee.com/novel_dev_team/novel-cloud/members'><img
+                                                src='https://gitee.com/novel_dev_team/novel-cloud/badge/fork.svg?theme=dark'
+                                                alt='fork'></img></a>
                                     </div>
                                 </td>
                             </tr>
@@ -270,8 +400,10 @@
                                 <td>Github</td>
                                 <td style="padding-bottom: 0;">
                                     <div class="layui-btn-container">
-                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-cloud&type=star&count=true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
-                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-cloud&type=fork&count=true" frameborder="0" scrolling="0" width="101px" height="20px"></iframe>
+                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-cloud&type=star&count=true"
+                                                frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+                                        <iframe src="https://ghbtns.com/github-btn.html?user=201206030&repo=novel-cloud&type=fork&count=true"
+                                                frameborder="0" scrolling="0" width="101px" height="20px"></iframe>
                                     </div>
                                 </td>
                             </tr>
@@ -303,7 +435,7 @@
         },
     });
 
-    layui.use(['layer', 'layuimini','echarts'], function () {
+    layui.use(['layer', 'layuimini', 'echarts'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
             layuimini = layui.layuimini,
@@ -322,14 +454,14 @@
                 '</div>\n';
             parent.layer.open({
                 type: 1,
-                title: '系统公告'+'<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">'+noticeTime+'</span>',
+                title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">' + noticeTime + '</span>',
                 area: '300px;',
                 shade: 0.8,
                 id: 'layuimini-notice',
                 btn: ['查看', '取消'],
                 btnAlign: 'c',
                 moveType: 1,
-                content:html,
+                content: html,
                 success: function (layero) {
                     var btn = layero.find('.layui-layer-btn');
                     btn.find('.layui-layer-btn0').attr({
@@ -349,43 +481,42 @@
             data: {},
             success: function (r) {
                 if (r.code == 0) {
-                    var legendData = ['会员新增','作家新增','作品新增','交易新增'];
+                    var legendData = ['会员新增', '作家新增', '作品新增', '交易新增'];
                     var userSeries = [
                         {
-                            name:'会员新增',
-                            type:'line',
-                            data:[]
-                        },{
-                            name:'作家新增',
-                            type:'line',
-                            data:[]
-                        },{
-                            name:'作品新增',
-                            type:'line',
-                            data:[]
-                        },{
-                            name:'交易新增',
-                            type:'line',
-                            data:[]
+                            name: '会员新增',
+                            type: 'line',
+                            data: []
+                        }, {
+                            name: '作家新增',
+                            type: 'line',
+                            data: []
+                        }, {
+                            name: '作品新增',
+                            type: 'line',
+                            data: []
+                        }, {
+                            name: '交易新增',
+                            type: 'line',
+                            data: []
                         }];
                     var xAxisData = r.dateList;
                     var userTableSta = r.userTableSta;
-                    for(var i = 0 ; i < xAxisData.length ; i++){
+                    for (var i = 0; i < xAxisData.length; i++) {
                         userSeries[0].data[i] = userTableSta[xAxisData[i]] ? userTableSta[xAxisData[i]] : 0;
                     }
                     var authorTableSta = r.authorTableSta;
-                    for(var i = 0 ; i < xAxisData.length ; i++){
+                    for (var i = 0; i < xAxisData.length; i++) {
                         userSeries[1].data[i] = authorTableSta[xAxisData[i]] ? authorTableSta[xAxisData[i]] : 0;
                     }
                     var bookTableSta = r.bookTableSta;
-                    for(var i = 0 ; i < xAxisData.length ; i++){
+                    for (var i = 0; i < xAxisData.length; i++) {
                         userSeries[2].data[i] = bookTableSta[xAxisData[i]] ? bookTableSta[xAxisData[i]] : 0;
                     }
                     var orderTableSta = r.orderTableSta;
-                    for(var i = 0 ; i < xAxisData.length ; i++){
+                    for (var i = 0; i < xAxisData.length; i++) {
                         userSeries[3].data[i] = orderTableSta[xAxisData[i]] ? orderTableSta[xAxisData[i]] : 0;
                     }
-
 
 
                     var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
@@ -394,7 +525,7 @@
                             trigger: 'axis'
                         },
                         legend: {
-                            data:legendData
+                            data: legendData
                         },
                         grid: {
                             left: '3%',
@@ -420,7 +551,7 @@
                     echartsRecords.setOption(optionRecords);
 
                     // echarts 窗口缩放自适应
-                    window.onresize = function(){
+                    window.onresize = function () {
                         echartsRecords.resize();
                     }
 
