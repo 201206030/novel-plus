@@ -32,12 +32,6 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-        <!--ehcache-->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-        </dependency>
-
         <!--集成redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

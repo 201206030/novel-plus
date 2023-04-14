@@ -5,11 +5,8 @@ import com.java2nb.common.redis.shiro.RedisCacheManager;
 import com.java2nb.common.redis.shiro.RedisManager;
 import com.java2nb.common.redis.shiro.RedisSessionDAO;
 import com.java2nb.system.shiro.UserRealm;
-import net.sf.ehcache.CacheManager;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.SessionListener;
-import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -29,6 +26,7 @@ import java.util.LinkedHashMap;
  */
 @Configuration
 public class ShiroConfig {
+
     @Value("${spring.redis.host}")
     private String host;
     @Value("${spring.redis.password}")
@@ -37,9 +35,6 @@ public class ShiroConfig {
     private int port;
     @Value("${spring.redis.timeout}")
     private int timeout;
-
-    @Value("${spring.cache.type}")
-    private String cacheType ;
 
     @Value("${server.session-timeout}")
     private int tomcatTimeout;
@@ -67,8 +62,8 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSuccessUrl("/index");
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/login","anon");
-        filterChainDefinitionMap.put("/getVerify","anon");
+        filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/getVerify", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/fonts/**", "anon");
@@ -92,11 +87,7 @@ public class ShiroConfig {
         //设置realm.
         securityManager.setRealm(userRealm());
         // 自定义缓存实现 使用redis
-        if (Constant.CACHE_TYPE_REDIS.equals(cacheType)) {
-            securityManager.setCacheManager(rediscacheManager());
-        } else {
-            securityManager.setCacheManager(ehCacheManager());
-        }
+        securityManager.setCacheManager(rediscacheManager());
         securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
@@ -108,8 +99,7 @@ public class ShiroConfig {
     }
 
     /**
-     * 开启shiro aop注解支持.
-     * 使用代理方式;所以需要开启代码支持;
+     * 开启shiro aop注解支持. 使用代理方式;所以需要开启代码支持;
      *
      * @param securityManager
      * @return
@@ -138,8 +128,7 @@ public class ShiroConfig {
     }
 
     /**
-     * cacheManager 缓存 redis实现
-     * 使用的是shiro-redis开源插件
+     * cacheManager 缓存 redis实现 使用的是shiro-redis开源插件
      *
      * @return
      */
@@ -151,8 +140,7 @@ public class ShiroConfig {
 
 
     /**
-     * RedisSessionDAO shiro sessionDao层的实现 通过redis
-     * 使用的是shiro-redis开源插件
+     * RedisSessionDAO shiro sessionDao层的实现 通过redis 使用的是shiro-redis开源插件
      */
     @Bean
     public RedisSessionDAO redisSessionDAO() {
@@ -163,11 +151,7 @@ public class ShiroConfig {
 
     @Bean
     public SessionDAO sessionDAO() {
-        if (Constant.CACHE_TYPE_REDIS.equals(cacheType)) {
-            return redisSessionDAO();
-        } else {
-            return new MemorySessionDAO();
-        }
+        return redisSessionDAO();
     }
 
     /**
@@ -183,20 +167,5 @@ public class ShiroConfig {
         sessionManager.setSessionListeners(listeners);
         return sessionManager;
     }
-
-    @Bean
-    public EhCacheManager ehCacheManager() {
-        EhCacheManager em = new EhCacheManager();
-        em.setCacheManager(cacheManager());
-        return em;
-    }
-
-    @Bean("cacheManager2")
-    CacheManager cacheManager(){
-        return CacheManager.create();
-    }
-
-
-
 
 }

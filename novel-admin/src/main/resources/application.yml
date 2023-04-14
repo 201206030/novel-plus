@@ -1,8 +1,8 @@
 server:
   session-timeout: 18000
-#    tomcat:
-#        max-threads: 1000
-#        min-spare-threads: 30
+  #    tomcat:
+  #        max-threads: 1000
+  #        min-spare-threads: 30
   port: 80
 #    uri-encoding: utf-8
 #security:
@@ -15,7 +15,7 @@ spring:
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
-  profiles: 
+  profiles:
     active: dev
   servlet:
     multipart:
@@ -24,10 +24,7 @@ spring:
   devtools:
     restart:
       enabled: true
-  cache:
-    type: ehcache
-    ehcache:
-      config: classpath:ehcache.xml
+
 mybatis:
   configuration:
     #自动将数据库带下划线的表字段值映射到Java类的驼峰字段上
