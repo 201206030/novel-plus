@@ -1,6 +1,5 @@
-package com.java2nb.novel.page;
+package com.java2nb.novel.controller;
 
-import com.java2nb.novel.controller.BaseController;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;
@@ -12,15 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -33,9 +29,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @RequiredArgsConstructor
 @Controller
 public class PageController extends BaseController {
-
-    @Value("${content.save.path}")
-    private String fileSavePath;
 
     private final BookService bookService;
 
@@ -55,7 +48,8 @@ public class PageController extends BaseController {
     }
 
     @RequestMapping("{module}/{url}.html")
-    public String module2(@PathVariable("module") String module, @PathVariable("url") String url, HttpServletRequest request) {
+    public String module2(@PathVariable("module") String module, @PathVariable("url") String url,
+        HttpServletRequest request) {
 
         if (request.getRequestURI().startsWith("/author")) {
             //访问作者专区
@@ -75,7 +69,8 @@ public class PageController extends BaseController {
     }
 
     @RequestMapping("{module}/{classify}/{url}.html")
-    public String module3(@PathVariable("module") String module, @PathVariable("classify") String classify, @PathVariable("url") String url) {
+    public String module3(@PathVariable("module") String module, @PathVariable("classify") String classify,
+        @PathVariable("url") String url) {
         return module + "/" + classify + "/" + url;
     }
 
@@ -86,9 +81,11 @@ public class PageController extends BaseController {
     @RequestMapping(path = {"/", "/index", "/index.html"})
     public String index(Model model) {
         //加载小说首页小说基本信息线程
-        CompletableFuture<Map<Byte, List<BookSettingVO>>> bookCompletableFuture = CompletableFuture.supplyAsync(bookService::listBookSettingVO, threadPoolExecutor);
+        CompletableFuture<Map<Byte, List<BookSettingVO>>> bookCompletableFuture = CompletableFuture.supplyAsync(
+            bookService::listBookSettingVO, threadPoolExecutor);
         //加载首页新闻线程
-        CompletableFuture<List<News>> newsCompletableFuture = CompletableFuture.supplyAsync(newsService::listIndexNews, threadPoolExecutor);
+        CompletableFuture<List<News>> newsCompletableFuture = CompletableFuture.supplyAsync(newsService::listIndexNews,
+            threadPoolExecutor);
         model.addAttribute("bookMap", bookCompletableFuture.get());
         model.addAttribute("newsList", newsCompletableFuture.get());
         return ThreadLocalUtil.getTemplateDir() + "index";
@@ -126,11 +123,12 @@ public class PageController extends BaseController {
             return book;
         }, threadPoolExecutor);
         //加载小说评论列表线程
-        CompletableFuture<PageBean<BookCommentVO>> bookCommentPageBeanCompletableFuture = CompletableFuture.supplyAsync(() -> {
-            PageBean<BookCommentVO> bookCommentVOPageBean = bookService.listCommentByPage(null, bookId, 1, 5);
-            log.debug("加载小说评论列表线程结束");
-            return bookCommentVOPageBean;
-        }, threadPoolExecutor);
+        CompletableFuture<PageBean<BookCommentVO>> bookCommentPageBeanCompletableFuture = CompletableFuture.supplyAsync(
+            () -> {
+                PageBean<BookCommentVO> bookCommentVOPageBean = bookService.listCommentByPage(null, bookId, 1, 5);
+                log.debug("加载小说评论列表线程结束");
+                return bookCommentVOPageBean;
+            }, threadPoolExecutor);
         //加载小说首章信息线程，该线程在加载小说基本信息线程执行完毕后才执行
         CompletableFuture<Long> firstBookIndexIdCompletableFuture = bookCompletableFuture.thenApplyAsync((book) -> {
             if (book.getLastIndexId() != null) {
@@ -147,7 +145,6 @@ public class PageController extends BaseController {
             log.debug("加载随机推荐小说线程结束");
             return books;
         }, threadPoolExecutor);
-
 
         model.addAttribute("book", bookCompletableFuture.get());
         model.addAttribute("firstBookIndexId", firstBookIndexIdCompletableFuture.get());
@@ -176,7 +173,8 @@ public class PageController extends BaseController {
      */
     @SneakyThrows
     @RequestMapping("/book/{bookId}/{bookIndexId}.html")
-    public String bookContent(@PathVariable("bookId") Long bookId, @PathVariable("bookIndexId") Long bookIndexId, HttpServletRequest request, Model model) {
+    public String bookContent(@PathVariable("bookId") Long bookId, @PathVariable("bookIndexId") Long bookIndexId,
+        HttpServletRequest request, Model model) {
         //加载小说基本信息线程
         CompletableFuture<Book> bookCompletableFuture = CompletableFuture.supplyAsync(() -> {
             //查询书籍
@@ -194,29 +192,32 @@ public class PageController extends BaseController {
         }, threadPoolExecutor);
 
         //加载小说上一章节信息线程，该线程在加载小说章节信息线程执行完毕后才执行
-        CompletableFuture<Long> preBookIndexIdCompletableFuture = bookIndexCompletableFuture.thenApplyAsync((bookIndex) -> {
-            //查询上一章节目录ID
-            Long preBookIndexId = bookService.queryPreBookIndexId(bookId, bookIndex.getIndexNum());
-            log.debug("加载小说上一章节信息线程结束");
-            return preBookIndexId;
-        }, threadPoolExecutor);
+        CompletableFuture<Long> preBookIndexIdCompletableFuture = bookIndexCompletableFuture.thenApplyAsync(
+            (bookIndex) -> {
+                //查询上一章节目录ID
+                Long preBookIndexId = bookService.queryPreBookIndexId(bookId, bookIndex.getIndexNum());
+                log.debug("加载小说上一章节信息线程结束");
+                return preBookIndexId;
+            }, threadPoolExecutor);
 
         //加载小说下一章节信息线程，该线程在加载小说章节信息线程执行完毕后才执行
-        CompletableFuture<Long> nextBookIndexIdCompletableFuture = bookIndexCompletableFuture.thenApplyAsync((bookIndex) -> {
-            //查询下一章目录ID
-            Long nextBookIndexId = bookService.queryNextBookIndexId(bookId, bookIndex.getIndexNum());
-            log.debug("加载小说下一章节信息线程结束");
-            return nextBookIndexId;
-        }, threadPoolExecutor);
+        CompletableFuture<Long> nextBookIndexIdCompletableFuture = bookIndexCompletableFuture.thenApplyAsync(
+            (bookIndex) -> {
+                //查询下一章目录ID
+                Long nextBookIndexId = bookService.queryNextBookIndexId(bookId, bookIndex.getIndexNum());
+                log.debug("加载小说下一章节信息线程结束");
+                return nextBookIndexId;
+            }, threadPoolExecutor);
 
         //加载小说内容信息线程，该线程在加载小说章节信息线程执行完毕后才执行
-        CompletableFuture<BookContent> bookContentCompletableFuture = bookIndexCompletableFuture.thenApplyAsync((bookIndex) -> {
-            //查询内容
-            BookContent bookContent = bookContentServiceMap.get(bookIndex.getStorageType()).queryBookContent(bookId, bookIndexId);
-            log.debug("加载小说内容信息线程结束");
-            return bookContent;
-        }, threadPoolExecutor);
-
+        CompletableFuture<BookContent> bookContentCompletableFuture = bookIndexCompletableFuture.thenApplyAsync(
+            (bookIndex) -> {
+                //查询内容
+                BookContent bookContent = bookContentServiceMap.get(bookIndex.getStorageType())
+                    .queryBookContent(bookId, bookIndexId);
+                log.debug("加载小说内容信息线程结束");
+                return bookContent;
+            }, threadPoolExecutor);
 
         //判断用户是否需要购买线程，该线程在加载小说章节信息线程执行完毕后才执行
         CompletableFuture<Boolean> needBuyCompletableFuture = bookIndexCompletableFuture.thenApplyAsync((bookIndex) -> {
@@ -240,7 +241,6 @@ public class PageController extends BaseController {
             return false;
 
         }, threadPoolExecutor);
-
 
         model.addAttribute("book", bookCompletableFuture.get());
         model.addAttribute("bookIndex", bookIndexCompletableFuture.get());

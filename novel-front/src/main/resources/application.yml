@@ -6,31 +6,6 @@ spring:
     active: dev
     include: website,alipay,oss,fastdfs
 
-
-  rabbitmq:
-    enable: 0
-    host: 127.0.0.1
-    username: guest
-    password: guest
-    virtual-host: /novel-plus
-    template:
-      # 缺省的交换机名称，此处配置后，发送消息如果不指定交换机就会使用这个
-      exchange: novel.exchange
-    publisher-confirms: false
-
-
-  elasticsearch:
-    #是否开启搜索引擎，1：开启，0：不开启
-    enable: 0
-    jest:
-      uris: http://192.168.0.105:9200
-
-
-
-redisson:
-  singleServerConfig:
-    address: 127.0.0.1:6379
-
 jwt:
   secret: novel!#20191230
   expiration: 604800

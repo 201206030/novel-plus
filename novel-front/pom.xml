@@ -27,24 +27,6 @@
             <version>${jjwt.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>io.searchbox</groupId>
-            <artifactId>jest</artifactId>
-            <version>${jest.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>${elasticsearch.version}</version>
-        </dependency>
-
         <!--aliyunOSS-->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
@@ -68,14 +50,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
-
-
-        <!--引入redisson分布式锁-->
-        <!-- <dependency>
-             <groupId>org.redisson</groupId>
-             <artifactId>redisson-spring-boot-starter</artifactId>
-             <version>${redisson.version}</version>
-         </dependency>-->
 
 
         <dependency>

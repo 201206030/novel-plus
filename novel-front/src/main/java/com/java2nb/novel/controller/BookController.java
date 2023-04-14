@@ -7,18 +7,16 @@ import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.BookComment;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.service.BookContentService;
+import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.vo.BookSpVO;
-import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookVO;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import io.github.xxyopen.model.resp.RestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,13 +35,7 @@ public class BookController extends BaseController {
 
     private final BookService bookService;
 
-    private final RabbitTemplate rabbitTemplate;
-
     private final Map<String, BookContentService> bookContentServiceMap;
-
-    @Value("${spring.rabbitmq.enable}")
-    private Integer enableMq;
-
 
     /**
      * 查询首页小说设置列表数据
@@ -89,7 +81,8 @@ public class BookController extends BaseController {
      * 分页搜索
      */
     @GetMapping("searchByPage")
-    public RestResult<?> searchByPage(BookSpVO bookSP, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "20") int pageSize) {
+    public RestResult<?> searchByPage(BookSpVO bookSP, @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "20") int pageSize) {
         return RestResult.ok(bookService.searchByPage(bookSP, page, pageSize));
     }
 
@@ -106,7 +99,8 @@ public class BookController extends BaseController {
      * 查询小说排行信息
      */
     @GetMapping("listRank")
-    public RestResult<List<Book>> listRank(@RequestParam(value = "type", defaultValue = "0") Byte type, @RequestParam(value = "limit", defaultValue = "30") Integer limit) {
+    public RestResult<List<Book>> listRank(@RequestParam(value = "type", defaultValue = "0") Byte type,
+        @RequestParam(value = "limit", defaultValue = "30") Integer limit) {
         return RestResult.ok(bookService.listRank(type, limit));
     }
 
@@ -115,11 +109,7 @@ public class BookController extends BaseController {
      */
     @PostMapping("addVisitCount")
     public RestResult<Void> addVisitCount(Long bookId) {
-        if (enableMq == 1) {
-            rabbitTemplate.convertAndSend("ADD-BOOK-VISIT-EXCHANGE", null, bookId);
-        } else {
-            bookService.addVisitCount(bookId, 1);
-        }
+        bookService.addVisitCount(bookId, 1);
         return RestResult.ok();
     }
 
@@ -131,7 +121,8 @@ public class BookController extends BaseController {
         Map<String, Object> data = new HashMap<>(2);
         data.put("bookIndexCount", bookService.queryIndexCount(bookId));
         BookIndex bookIndex = bookService.queryBookIndex(lastBookIndexId);
-        String lastBookContent = bookContentServiceMap.get(bookIndex.getStorageType()).queryBookContent(bookId,lastBookIndexId).getContent();
+        String lastBookContent = bookContentServiceMap.get(bookIndex.getStorageType())
+            .queryBookContent(bookId, lastBookIndexId).getContent();
         if (lastBookContent.length() > 42) {
             lastBookContent = lastBookContent.substring(0, 42);
         }
@@ -152,7 +143,9 @@ public class BookController extends BaseController {
      * 分页查询书籍评论列表
      */
     @GetMapping("listCommentByPage")
-    public RestResult<PageBean<BookCommentVO>> listCommentByPage(@RequestParam("bookId") Long bookId, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize) {
+    public RestResult<PageBean<BookCommentVO>> listCommentByPage(@RequestParam("bookId") Long bookId,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "5") int pageSize) {
         return RestResult.ok(bookService.listCommentByPage(null, bookId, page, pageSize));
     }
 
@@ -181,7 +174,10 @@ public class BookController extends BaseController {
      * 目录页
      */
     @GetMapping("/queryIndexList")
-    public RestResult<PageBean<BookIndex>> indexList(Long bookId, @RequestParam(value = "curr", defaultValue = "1") int page, @RequestParam(value = "limit", defaultValue = "5") int pageSize, @RequestParam(value = "orderBy", defaultValue = "index_num desc") String orderBy) {
+    public RestResult<PageBean<BookIndex>> indexList(Long bookId,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "5") int pageSize,
+        @RequestParam(value = "orderBy", defaultValue = "index_num desc") String orderBy) {
         return RestResult.ok(PageBuilder.build(bookService.queryIndexList(bookId, orderBy, page, pageSize)));
     }
 
