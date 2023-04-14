@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${bookComment.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">小说ID：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookComment.bookId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">评价内容：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookComment.commentContent}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">回复数量：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookComment.replyCount}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">审核状态，0：待审核，1：审核通过，2：审核不通过：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookComment.auditStatus}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">评价时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookComment.createTime}==null?null:${#dates.format(bookComment.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">评价人：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${bookComment.createUserId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.BookCommentDao">
+
+	<select id="get" resultType="com.java2nb.novel.domain.BookCommentDO">
+		select `id`,`book_id`,`comment_content`,`reply_count`,`audit_status`,`create_time`,`create_user_id` from book_comment where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.java2nb.novel.domain.BookCommentDO">
+		select `id`,`book_id`,`comment_content`,`reply_count`,`audit_status`,`create_time`,`create_user_id` from book_comment
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="bookId != null and bookId != ''"> and book_id = #{bookId} </if>
+		  		  <if test="commentContent != null and commentContent != ''"> and comment_content = #{commentContent} </if>
+		  		  <if test="replyCount != null and replyCount != ''"> and reply_count = #{replyCount} </if>
+		  		  <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from book_comment
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="bookId != null and bookId != ''"> and book_id = #{bookId} </if>
+		  		  <if test="commentContent != null and commentContent != ''"> and comment_content = #{commentContent} </if>
+		  		  <if test="replyCount != null and replyCount != ''"> and reply_count = #{replyCount} </if>
+		  		  <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createUserId != null and createUserId != ''"> and create_user_id = #{createUserId} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.java2nb.novel.domain.BookCommentDO">
+		insert into book_comment
+		(
+			`id`, 
+			`book_id`, 
+			`comment_content`, 
+			`reply_count`, 
+			`audit_status`, 
+			`create_time`, 
+			`create_user_id`
+		)
+		values
+		(
+			#{id}, 
+			#{bookId}, 
+			#{commentContent}, 
+			#{replyCount}, 
+			#{auditStatus}, 
+			#{createTime}, 
+			#{createUserId}
+		)
+	</insert>
+
+	<insert id="saveSelective" parameterType="com.java2nb.novel.domain.BookCommentDO">
+		insert into book_comment
+		(
+					<if test="id != null"> `id`,  </if>
+					<if test="bookId != null"> `book_id`,  </if>
+					<if test="commentContent != null"> `comment_content`,  </if>
+					<if test="replyCount != null"> `reply_count`,  </if>
+					<if test="auditStatus != null"> `audit_status`,  </if>
+					<if test="createTime != null"> `create_time`,  </if>
+					<if test="createUserId != null"> `create_user_id` </if>
+				)
+		values
+		(
+					<if test="id != null"> #{id},  </if>
+					<if test="bookId != null"> #{bookId},  </if>
+					<if test="commentContent != null"> #{commentContent},  </if>
+					<if test="replyCount != null"> #{replyCount},  </if>
+					<if test="auditStatus != null"> #{auditStatus},  </if>
+					<if test="createTime != null"> #{createTime},  </if>
+					<if test="createUserId != null"> #{createUserId} </if>
+				)
+	</insert>
+	 
+	<update id="update" parameterType="com.java2nb.novel.domain.BookCommentDO">
+		update book_comment 
+		<set>
+			<if test="bookId != null">`book_id` = #{bookId}, </if>
+			<if test="commentContent != null">`comment_content` = #{commentContent}, </if>
+			<if test="replyCount != null">`reply_count` = #{replyCount}, </if>
+			<if test="auditStatus != null">`audit_status` = #{auditStatus}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from book_comment where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from book_comment where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

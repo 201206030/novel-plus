@@ -62,19 +62,19 @@ spring:
 sharding:
   jdbc:
     datasource:
-      names: ds0 #,ds1
+      names: ds0,ds1
       ds0:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
         jdbc-url: jdbc:mysql://localhost:3306/novel_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
         username: root
         password: test123456
-    #      ds1:
-    #        type: com.alibaba.druid.pool.DruidDataSource
-    #        driver-class-name: com.mysql.jdbc.Driver
-    #        url: jdbc:mysql://localhost:3306/novel_plus2
-    #        username: root
-    #        password: test123456
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: test123456
     config:
       sharding:
         props:
@@ -91,3 +91,8 @@ sharding:
               inline:
                 shardingColumn: index_id
                 algorithm-expression: book_content${index_id % 10}
+          tables:
+            actual-data-nodes: ds${1}.tables
+          columns:
+            actual-data-nodes: ds${1}.columns
+        default-data-source-name: ds0
