@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">链接名：</label>
+                            <div class="col-sm-8">
+                                <input id="linkName" name="linkName"
+                                       class="form-control"
+                                       type="text" required>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">链接url：</label>
+                            <div class="col-sm-8">
+                                <input id="linkUrl" name="linkUrl"
+                                       class="form-control"
+                                       type="text" required>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">排序号：</label>
+                            <div class="col-sm-8">
+                                <input id="sort" name="sort"
+                                       class="form-control"
+                                       type="number" required>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">是否开启：</label>
+                            <div class="col-sm-8">
+
+                                <select data-placeholder="--选择--" id="isOpen"
+                                        name="isOpen"
+                                        class="form-control chosen-select" tabindex="2"
+                                        dict-type="yes_no" required>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/wangEditor/release/wangEditor.js"></script>
+<script type="text/javascript" src="/js/appjs/novel/friendLink/add.js">
+</script>
+</body>
+</html>

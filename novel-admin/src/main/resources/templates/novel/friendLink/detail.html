@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            <div class="ibox-content">
+            <form class="form-horizontal m-t" id="signupForm">
+                <input id="id" name="id" th:value="${friendLink.id}"
+                       type="hidden">
+                                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">链接名：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.linkName}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">链接url：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.linkUrl}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">排序号：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.sort}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">是否开启，0：不开启，1：开启：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8 dict-type" dict-type="yes_no"
+                                 th:attr="dict-value=${friendLink.isOpen}">
+                            </div>
+
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建人id：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.createUserId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">创建时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.createTime}==null?null:${#dates.format(friendLink.createTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">更新者用户id：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.updateUserId}">
+                            </div>
+                        
+                        
+
+                    </div>
+                                                                            <div class="form-group">
+                        <label class="col-sm-3 control-label">更新时间：</label>
+
+                                                    <div style="padding-top:8px" class="col-sm-8"
+                                 th:text="${friendLink.updateTime}==null?null:${#dates.format(friendLink.updateTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </div>
+                        
+
+                    </div>
+                                                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

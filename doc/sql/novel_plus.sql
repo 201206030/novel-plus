@@ -2867,3 +2867,32 @@ INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 300);
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 301);
+
+
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (310, 300, '友情链接', 'novel/friendLink', 'novel:friendLink:friendLink', '1', 'fa', '16');
+
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (311, 310, '查看', null, 'novel:friendLink:detail', '2', null, '6');
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (312, 310, '新增', null, 'novel:friendLink:add', '2', null, '6');
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (313, 310, '修改', null, 'novel:friendLink:edit', '2', null, '6');
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (314, 310, '删除', null, 'novel:friendLink:remove', '2', null, '6');
+INSERT INTO `sys_menu` (menu_id, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (315, 310, '批量删除', null, 'novel:friendLink:batchRemove', '2', null, '6');
+
+
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 310);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 311);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 312);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 313);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 314);
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 315);
