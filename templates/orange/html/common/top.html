@@ -21,7 +21,8 @@
     </div>
     <div class="topMain">
         <div class="box_center cf">
-            <a href="/?m=2" class="logo fl"><img src="/images/logo.png" th:alt="${application.website.name}"/></a>
+            <a href="/?m=2" class="logo fl"><img th:src="${application.website.logo}"
+                                                 th:alt="${application.website.name}"/></a>
             <div class="searchBar fl">
                 <div class="search cf">
                     <input type="text" placeholder="书名、作者、关键字" class="s_int" name="searchKey" id="searchKey"/>
@@ -36,7 +37,7 @@
         </div>
     </div>
     <div class="mainNav" id="mainNav" th:style="${navType} == 10?'display:none':''">
-        <div class="box_center cf" >
+        <div class="box_center cf">
             <ul class="nav" id="navModule">
 
                 <li th:class="${navType}==0?'on':''"><a href="/">首页</a></li>
