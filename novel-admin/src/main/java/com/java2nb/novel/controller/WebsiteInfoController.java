@@ -28,7 +28,7 @@ public class WebsiteInfoController {
     private WebsiteInfoService websiteInfoService;
 
     @GetMapping()
-    @RequiresPermissions("novel:websiteInfo:detail")
+    @RequiresPermissions("novel:websiteInfo:websiteInfo")
     String detail(Model model) {
         WebsiteInfoDO websiteInfo = websiteInfoService.get(1L);
         model.addAttribute("websiteInfo", websiteInfo);
