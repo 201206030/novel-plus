@@ -1,26 +1,21 @@
 package com.java2nb.novel.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import io.swagger.annotations.ApiOperation;
-
-
-import com.java2nb.novel.domain.NewsDO;
-import com.java2nb.novel.service.NewsService;
+import com.java2nb.common.config.CacheKey;
 import com.java2nb.common.utils.PageBean;
 import com.java2nb.common.utils.Query;
 import com.java2nb.common.utils.R;
+import com.java2nb.novel.domain.NewsDO;
+import com.java2nb.novel.service.NewsService;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 新闻表
@@ -33,8 +28,11 @@ import com.java2nb.common.utils.R;
 @Controller
 @RequestMapping("/novel/news")
 public class NewsController {
+
     @Autowired
     private NewsService newsService;
+    @Autowired
+    private RedisTemplate<Object, Object> redisTemplate;
 
     @GetMapping()
     @RequiresPermissions("novel:news:news")
@@ -66,7 +64,7 @@ public class NewsController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("novel:news:edit")
     String edit(@PathVariable("id") Long id, Model model) {
-            NewsDO news = newsService.get(id);
+        NewsDO news = newsService.get(id);
         model.addAttribute("news", news);
         return "novel/news/edit";
     }
@@ -75,7 +73,7 @@ public class NewsController {
     @GetMapping("/detail/{id}")
     @RequiresPermissions("novel:news:detail")
     String detail(@PathVariable("id") Long id, Model model) {
-			NewsDO news = newsService.get(id);
+        NewsDO news = newsService.get(id);
         model.addAttribute("news", news);
         return "novel/news/detail";
     }
@@ -87,8 +85,9 @@ public class NewsController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("novel:news:add")
-    public R save( NewsDO news) {
+    public R save(NewsDO news) {
         if (newsService.save(news) > 0) {
+            redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
             return R.ok();
         }
         return R.error();
@@ -101,8 +100,9 @@ public class NewsController {
     @ResponseBody
     @RequestMapping("/update")
     @RequiresPermissions("novel:news:edit")
-    public R update( NewsDO news) {
-            newsService.update(news);
+    public R update(NewsDO news) {
+        newsService.update(news);
+        redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
         return R.ok();
     }
 
@@ -113,8 +113,9 @@ public class NewsController {
     @PostMapping("/remove")
     @ResponseBody
     @RequiresPermissions("novel:news:remove")
-    public R remove( Long id) {
+    public R remove(Long id) {
         if (newsService.remove(id) > 0) {
+            redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
             return R.ok();
         }
         return R.error();
@@ -128,7 +129,8 @@ public class NewsController {
     @ResponseBody
     @RequiresPermissions("novel:news:batchRemove")
     public R remove(@RequestParam("ids[]") Long[] ids) {
-            newsService.batchRemove(ids);
+        newsService.batchRemove(ids);
+        redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
         return R.ok();
     }
 
