@@ -5,6 +5,7 @@ import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.Constants;
 import com.java2nb.novel.core.utils.FileUtil;
+import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
 import io.github.xxyopen.model.resp.RestResult;
 import io.github.xxyopen.util.UUIDUtil;
@@ -41,24 +42,25 @@ public class FileController {
      * 生成验证码
      */
     @GetMapping(value = "getVerify")
+    @SneakyThrows
     public void getVerify(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            //设置相应类型,告诉浏览器输出的内容为图片
-            response.setContentType("image/jpeg");
-            //设置响应头信息，告诉浏览器不要缓存此内容
-            response.setHeader("Pragma", "No-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expire", 0);
-            RandomValidateCodeUtil randomValidateCode = new RandomValidateCodeUtil();
-            //输出验证码图片方法
-            randomValidateCode.getRandcode(cacheService, response);
-        } catch (Exception e) {
-            log.error("获取验证码失败>>>> ", e);
-        }
+        //设置相应类型,告诉浏览器输出的内容为图片
+        response.setContentType("image/jpeg");
+        //设置响应头信息，告诉浏览器不要缓存此内容
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expire", 0);
+        RandomValidateCodeUtil randomValidateCode = new RandomValidateCodeUtil();
+        //输出验证码图片方法
+        String randomString = randomValidateCode.genRandCodeImage(response.getOutputStream());
+        //将生成的随机字符串保存到缓存中
+        cacheService.set(RandomValidateCodeUtil.RANDOM_CODE_KEY + ":" + IpUtil.getRealIp(request), randomString,
+            60 * 5);
     }
 
     /**
      * 图片上传
+     *
      * @return
      */
     @SneakyThrows
@@ -67,25 +69,26 @@ public class FileController {
     RestResult<String> upload(@RequestParam("file") MultipartFile file) {
         Date currentDate = new Date();
         String savePath =
-                Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +
-                        DateUtils.formatDate(currentDate, "MM") + "/" +
-                        DateUtils.formatDate(currentDate, "dd");
+            Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +
+                DateUtils.formatDate(currentDate, "MM") + "/" +
+                DateUtils.formatDate(currentDate, "dd");
         String oriName = file.getOriginalFilename();
         assert oriName != null;
         String saveFileName = UUIDUtil.getUUID32() + oriName.substring(oriName.lastIndexOf("."));
         File saveFile = new File(picSavePath + savePath, saveFileName);
         if (!saveFile.getParentFile().exists()) {
             boolean isSuccess = saveFile.getParentFile().mkdirs();
-            if(!isSuccess){
+            if (!isSuccess) {
                 throw new BusinessException(ResponseStatus.FILE_DIR_MAKE_FAIL);
             }
         }
         file.transferTo(saveFile);
-        if(!FileUtil.isImage(saveFile)){
+        if (!FileUtil.isImage(saveFile)) {
             //上传的文件不是图片
             saveFile.delete();
             throw new BusinessException(ResponseStatus.FILE_NOT_IMAGE);
-        };
+        }
+        ;
         return RestResult.ok(savePath + "/" + saveFileName);
 
     }
