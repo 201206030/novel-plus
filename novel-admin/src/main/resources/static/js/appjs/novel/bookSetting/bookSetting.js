@@ -1,4 +1,4 @@
-var prefix = "/novel/book"
+var prefix = "/novel/bookSetting"
 $(function () {
     load();
 });
@@ -56,86 +56,24 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
-
                     {
-                        field: 'id',
+                        field: 'bookId',
                         title: '小说ID'
                     },
-
-                    {
-                        field: 'workDirection',
-                        title: '作品方向',
-                        formatter: function (value, row, index) {
-                            return value === 0 ? '男频' : '女频';
-                        }
-                    },
-
-                    {
-                        field: 'catName',
-                        title: '分类名'
-                    },
-
                     {
                         field: 'bookName',
                         title: '小说名'
                     },
-
                     {
-                        field: 'authorName',
-                        title: '作者名'
-                    },
-
-                    {
-                        field: 'bookStatus',
-                        title: '书籍状态',
+                        field: 'type',
+                        title: '推荐类型',
                         formatter: function (value, row, index) {
-                            return value === 0 ? '连载中' : '已完结';
+                            return formatDict("book_rec_type", value);
                         }
                     },
-
                     {
-                        field: 'visitCount',
-                        title: '点击量'
-                    },
-
-                    {
-                        field: 'wordCount',
-                        title: '总字数'
-                    },
-
-                    {
-                        field: 'commentCount',
-                        title: '评论数'
-                    },
-
-                    {
-                        field: 'yesterdayBuy',
-                        title: '昨日订阅数'
-                    },
-
-                    {
-                        field: 'lastIndexName',
-                        title: '最新章节'
-                    },
-
-
-                    {
-                        field: 'lastIndexUpdateTime',
-                        title: '最新章节更新时间'
-                    },
-
-
-                    {
-                        field: 'isVip',
-                        title: '是否收费',
-                        formatter: function (value, row, index) {
-                            return value === 1 ? '收费' : '免费';
-                        }
-                    },
-
-                    {
-                        field: 'createTime',
-                        title: '入库时间'
+                        field: 'sort',
+                        title: '排序号'
                     },
 
                     {
@@ -143,14 +81,15 @@ function load() {
                         field: 'id',
                         align: 'center',
                         formatter: function (value, row, index) {
-                            var r = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
+                            var d = '<a class="btn btn-primary btn-sm ' + s_detail_h + '" href="#" mce_href="#" title="详情" onclick="detail(\''
                                 + row.id
-                                + '\')"><i class="fa fa-remove"></i></a> ';
-                            return r;
+                                + '\')"><i class="fa fa-file"></i></a> ';
+                            var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
+                                + row.id
+                                + '\')"><i class="fa fa-edit"></i></a> ';
+                            return d + e;
                         }
-                    }
-
-                ]
+                    }]
             });
 }
 

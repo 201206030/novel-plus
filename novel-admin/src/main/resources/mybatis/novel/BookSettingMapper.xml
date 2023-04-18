@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.dao.BookSettingDao">
+
+    <select id="get" resultType="com.java2nb.novel.domain.BookSettingDO">
+        select `id`,
+               `book_id`,
+               `sort`,
+               `type`,
+               `create_time`,
+               `create_user_id`,
+               `update_time`,
+               `update_user_id`
+        from book_setting
+        where id = #{value}
+    </select>
+
+    <select id="list" resultType="com.java2nb.novel.domain.BookSettingDO">
+        select `id`,`book_id`,`sort`,`type`,`create_time`,`create_user_id`,`update_time`,`update_user_id` from
+        book_setting
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="bookId != null and bookId != ''">and book_id = #{bookId}</if>
+            <if test="sort != null and sort != ''">and sort = #{sort}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+            <if test="createUserId != null and createUserId != ''">and create_user_id = #{createUserId}</if>
+            <if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+            <if test="updateUserId != null and updateUserId != ''">and update_user_id = #{updateUserId}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from book_setting t1 inner join book t2 on t1.book_id = t2.id
+        <where>
+            <if test="id != null and id != ''">and t1.id = #{id}</if>
+            <if test="bookId != null and bookId != ''">and t1.book_id = #{bookId}</if>
+            <if test="sort != null and sort != ''">and t1.sort = #{sort}</if>
+            <if test="type != null and type != ''">and t1.type = #{type}</if>
+            <if test="createTime != null and createTime != ''">and t1.create_time = #{createTime}</if>
+            <if test="createUserId != null and createUserId != ''">and t1.create_user_id = #{createUserId}</if>
+            <if test="updateTime != null and updateTime != ''">and t1.update_time = #{updateTime}</if>
+            <if test="updateUserId != null and updateUserId != ''">and t1.update_user_id = #{updateUserId}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.java2nb.novel.domain.BookSettingDO">
+        insert into book_setting
+        (`id`,
+         `book_id`,
+         `sort`,
+         `type`,
+         `create_time`,
+         `create_user_id`,
+         `update_time`,
+         `update_user_id`)
+        values (#{id},
+                #{bookId},
+                #{sort},
+                #{type},
+                #{createTime},
+                #{createUserId},
+                #{updateTime},
+                #{updateUserId})
+    </insert>
+
+    <insert id="saveSelective" parameterType="com.java2nb.novel.domain.BookSettingDO">
+        insert into book_setting
+        (
+        <if test="id != null">`id`,</if>
+        <if test="bookId != null">`book_id`,</if>
+        <if test="sort != null">`sort`,</if>
+        <if test="type != null">`type`,</if>
+        <if test="createTime != null">`create_time`,</if>
+        <if test="createUserId != null">`create_user_id`,</if>
+        <if test="updateTime != null">`update_time`,</if>
+        <if test="updateUserId != null">`update_user_id`</if>
+        )
+        values
+        (
+        <if test="id != null">#{id},</if>
+        <if test="bookId != null">#{bookId},</if>
+        <if test="sort != null">#{sort},</if>
+        <if test="type != null">#{type},</if>
+        <if test="createTime != null">#{createTime},</if>
+        <if test="createUserId != null">#{createUserId},</if>
+        <if test="updateTime != null">#{updateTime},</if>
+        <if test="updateUserId != null">#{updateUserId}</if>
+        )
+    </insert>
+
+    <update id="update" parameterType="com.java2nb.novel.domain.BookSettingDO">
+        update book_setting
+        <set>
+            <if test="bookId != null">`book_id` = #{bookId},</if>
+            <if test="sort != null">`sort` = #{sort},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="createUserId != null">`create_user_id` = #{createUserId},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="updateUserId != null">`update_user_id` = #{updateUserId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete
+        from book_setting
+        where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from book_setting where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -51,9 +51,6 @@ function load() {
                 },
                 columns: [
                     {
-                        checkbox: true
-                    },
-                    {
                         title: '序号',
                         formatter: function () {
                             return arguments[2] + 1;
