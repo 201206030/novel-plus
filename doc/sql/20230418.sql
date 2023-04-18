@@ -42,3 +42,10 @@ INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 324);
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 325);
+
+
+INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES (410, '400', '会员反馈', 'novel/userFeedback', 'novel:userFeedback:userFeedback', '1', 'fa', '16');
+
+INSERT INTO sys_role_menu (role_id, menu_id)
+VALUES (1, 410);
