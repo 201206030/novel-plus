@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+    <title th:text="${application.website.name}"></title>
+
+    <meta name="keywords" th:content="${application.website.keyword}"/>
+    <meta name="description"
+          th:content="${application.website.description}"/>
+
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+
+        .line-limit-length {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+        }
+
+        .layui-nav .layui-nav-item {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 50px;
+        }
+
+        body ul.layui-nav li.layui-nav-item a {
+            display: block;
+            transition: all .3s;
+            -webkit-transition: all .3s;
+        }
+
+        .user_link{
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 50px;
+            padding: 0 20px;
+            color: #fff;
+            float: right;
+        }
+        .user_link a{
+
+            color: #fff;
+        }
+        .user_big_head {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+    </style>
+
+
+</head>
+<body>
+<div id="body">
+
+<!-- 你的HTML代码 -->
+<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+
+    <div style="width:10%;float: left;margin-left: 10px">
+        <a href="javascript:history.go(-1)">
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+    </div>
+    <b class="layui-icon">用户中心</b>
+    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
+        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
+    </a>
+    </div>
+</div>
+
+    <div class="layui-colla-item">
+
+        <div class="layui-container" style="padding: 50px;text-align: center">
+            <img id="imgLogo" class="user_big_head" src="/images/man.png">
+            <div id="my_name" style="padding: 10px;font-size: 18px">梦入神机</div>
+            <div style="padding: 5px;">账户余额：<span id="accountBalance" style="color: #f80">3000</span> 屋币</div>
+
+        </div>
+    </div>
+
+
+
+<div style="clear: both"></div>
+<a
+        href="/pay/index.html">
+
+    <blockquote class="layui-elem-quote" style="border-left:0px;margin-bottom: 0px;text-align: left;padding:15px 10px;color: #000;font-size: 18px">
+        <i style="font-size: 25px;padding-right: 20px;color:#f80"
+           class="layui-icon">&#xe659;</i>
+        充值
+        <div style="float: right; margin-right: 20px"><i style="font-size: 14px;color:#666"
+                                                         class="layui-icon">&#xe602;</i>
+        </div>
+    </blockquote>
+</a>
+
+<a
+        href="/user/favorites.html">
+
+    <blockquote class="layui-elem-quote" style="border-left:0px;margin-bottom: 0px;text-align: left;padding:15px 10px;color: #000;font-size: 18px">
+        <i style="font-size: 25px;padding-right: 20px;color:#f80"
+           class="layui-icon">&#xe705;
+        </i>
+        我的书架
+        <div style="float: right; margin-right: 20px"><i style="font-size: 14px;color:#666"
+                                                         class="layui-icon">&#xe602;</i>
+        </div>
+    </blockquote>
+</a>
+
+<a
+        href="/user/comment.html">
+
+    <blockquote class="layui-elem-quote" style="border-left:0px;margin-bottom: 0px;text-align: left;padding:15px 10px;color: #000;font-size: 18px">
+        <i style="font-size: 25px;padding-right: 20px;color:#f80"
+           class="layui-icon">&#xe611;
+        </i>
+        我的书评
+        <div style="float: right; margin-right: 20px"><i style="font-size: 14px;color:#666"
+                                                         class="layui-icon">&#xe602;</i>
+        </div>
+    </blockquote>
+</a>
+
+
+<a
+        href="/user/setup.html">
+
+    <blockquote class="layui-elem-quote" style="border-left:0px;margin-bottom: 0px;text-align: left;padding:15px 10px;color: #000;font-size: 18px">
+        <i style="font-size: 25px;padding-right: 20px;color:#f80"
+           class="layui-icon">&#xe716;
+        </i>
+        账户设置
+        <div style="float: right; margin-right: 20px"><i style="font-size: 14px;color:#666"
+                                                         class="layui-icon">&#xe602;</i>
+        </div>
+    </blockquote>
+</a>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div></body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+
+
+<script>
+    $("#body").css("height",($(window).height() - 50)+"px")
+
+    //查询用户信息
+    $.ajax({
+        type: "get",
+        url: "/user/userInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if(data.data.userPhoto){
+                    $("#imgLogo").attr("src",data.data.userPhoto);
+                }
+                if(data.data.nickName){
+                    $("#my_name").html(data.data.nickName);
+                }else{
+                    $("#my_name").html(data.data.username);
+                }
+
+                $("#accountBalance").html(data.data.accountBalance);
+
+            } else if (data.code == 1001) {
+                //未登录
+                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+
+    function moreNewBooks(event) {
+        window.location.href = "/book/book_ranking.html?sortBy=last_index_update_time";
+    }
+
+    function searchBooks() {
+        var keywords = $("#title").val();
+        window.location.href = "/book/book_ranking.html?keyword=" + encodeURI(keywords);
+    }
+
+    function toMyCollect() {
+        var token = localStorage.getItem("token");
+        if (token) {
+            window.location.href = "/book/book_ranking.html?token=" + token;
+        } else {
+            window.location.href = "/user/login.html";
+        }
+    }
+
+</script>
+
+
+</body>
+</html>

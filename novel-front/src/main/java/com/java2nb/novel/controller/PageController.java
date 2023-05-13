@@ -108,6 +108,14 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 用户中心页
+     */
+    @RequestMapping("user/userinfo.html")
+    public String userinfo() {
+        return ThreadLocalUtil.getTemplateDir() + "user/userinfo";
+    }
+
+    /**
      * 作品页
      */
     @RequestMapping("book/bookclass.html")
