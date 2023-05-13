@@ -1847,7 +1847,7 @@ a cite {
 }
 
 .layui-btn-primary:hover {
-    border-color: #009688;
+    border-color: #f80;
     color: #333
 }
 
@@ -2230,11 +2230,11 @@ a cite {
 }
 
 .layui-form-checked span, .layui-form-checked:hover span {
-    background-color: #5FB878
+    background-color: #f80
 }
 
 .layui-form-checked i, .layui-form-checked:hover i {
-    color: #5FB878
+    color: #f80
 }
 
 .layui-form-item .layui-form-checkbox {

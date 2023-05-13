@@ -92,6 +92,14 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 登录页
+     */
+    @RequestMapping("user/login.html")
+    public String login() {
+        return ThreadLocalUtil.getTemplateDir() + "user/login";
+    }
+
+    /**
      * 作品页
      */
     @RequestMapping("book/bookclass.html")
