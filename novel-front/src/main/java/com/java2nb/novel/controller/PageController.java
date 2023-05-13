@@ -100,6 +100,14 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 注册页
+     */
+    @RequestMapping("user/register.html")
+    public String register() {
+        return ThreadLocalUtil.getTemplateDir() + "user/register";
+    }
+
+    /**
      * 作品页
      */
     @RequestMapping("book/bookclass.html")

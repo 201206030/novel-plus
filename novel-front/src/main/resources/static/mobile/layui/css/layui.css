@@ -2276,13 +2276,13 @@ a cite {
 }
 
 .layui-form-checkbox[lay-skin=primary]:hover i {
-    border-color: #5FB878;
+    border-color: #f80;
     color: #fff
 }
 
 .layui-form-checked[lay-skin=primary] i {
-    border-color: #5FB878;
-    background-color: #5FB878;
+    border-color: #f80;
+    background-color: #f80;
     color: #fff
 }
 
