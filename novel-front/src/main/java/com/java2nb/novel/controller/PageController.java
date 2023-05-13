@@ -124,6 +124,15 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 充值页
+     */
+    @RequestMapping("pay/index.html")
+    public String pay() {
+        return ThreadLocalUtil.getTemplateDir() + "pay/index.html";
+    }
+
+
+    /**
      * 作品页
      */
     @RequestMapping("book/bookclass.html")
