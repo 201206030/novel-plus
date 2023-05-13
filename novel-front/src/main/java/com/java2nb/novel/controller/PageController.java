@@ -116,6 +116,14 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 我的书架页
+     */
+    @RequestMapping("user/favorites.html")
+    public String favorites() {
+        return ThreadLocalUtil.getTemplateDir() + "user/favorites";
+    }
+
+    /**
      * 作品页
      */
     @RequestMapping("book/bookclass.html")
