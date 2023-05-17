@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @author 11797
  */
 @Slf4j
-@ControllerAdvice(basePackages = "com.java2nb.novel.page")
+@ControllerAdvice(basePackages = "com.java2nb.novel.controller.page")
 public class PageExceptionHandler {
 
 

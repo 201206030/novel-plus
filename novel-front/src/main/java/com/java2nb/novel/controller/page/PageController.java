@@ -1,5 +1,6 @@
-package com.java2nb.novel.controller;
+package com.java2nb.novel.controller.page;
 
+import com.java2nb.novel.controller.BaseController;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;

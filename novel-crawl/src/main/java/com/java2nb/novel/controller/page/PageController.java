@@ -1,4 +1,4 @@
-package com.java2nb.novel.controller;
+package com.java2nb.novel.controller.page;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PageController {
 
 
-
     @RequestMapping("{url}.html")
     public String module(@PathVariable("url") String url) {
         return url;
@@ -27,13 +26,14 @@ public class PageController {
     }
 
     @RequestMapping("{module}/{classify}/{url}.html")
-    public String module3(@PathVariable("module") String module, @PathVariable("classify") String classify, @PathVariable("url") String url) {
+    public String module3(@PathVariable("module") String module, @PathVariable("classify") String classify,
+        @PathVariable("url") String url) {
         return module + "/" + classify + "/" + url;
     }
 
     /**
      * 首页
-     * */
+     */
     @RequestMapping(path = {"/", "/index", "/index.html"})
     public String index() {
         return "crawl/crawlSource_list";
