@@ -24,7 +24,8 @@
         <java.version>1.8</java.version>
         <velocity.version>1.7</velocity.version>
         <activiti.version>5.22.0</activiti.version>
-        <sharding.jdbc.version>3.1.0</sharding.jdbc.version>
+        <sharding.jdbc.version>3.0.0</sharding.jdbc.version>
+        <jackson.version>2.15.1</jackson.version>
     </properties>
 
     <dependencies>
@@ -206,6 +207,12 @@
             <groupId>io.shardingsphere</groupId>
             <artifactId>sharding-jdbc-spring-namespace</artifactId>
             <version>${sharding.jdbc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!--war包部署需要-->

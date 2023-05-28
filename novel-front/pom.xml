@@ -49,6 +49,12 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay-sdk-java.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
