@@ -44,7 +44,6 @@
         <sharding.jdbc.version>3.1.0</sharding.jdbc.version>
         <aliyun-sdk-oss.version>3.15.2</aliyun-sdk-oss.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
-        <fastdfs-client.version>1.27.2</fastdfs-client.version>
         <alipay-sdk-java.version>4.35.139.ALL</alipay-sdk-java.version>
         <xxyopen.version>1.0.0</xxyopen.version>
     </properties>

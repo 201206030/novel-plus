@@ -1,6 +1,5 @@
 package com.java2nb.novel;
 
-import com.github.tobato.fastdfs.FdfsClientConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
@@ -10,7 +9,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -27,7 +25,6 @@ import java.net.InetAddress;
 @EnableCaching
 @ServletComponentScan
 @MapperScan(basePackages = {"com.java2nb.novel.mapper"})
-@Import(FdfsClientConfig.class)
 @Slf4j
 public class FrontNovelApplication {
 
@@ -38,7 +35,9 @@ public class FrontNovelApplication {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-            log.info("项目启动啦，访问路径：{}", "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + ctx.getEnvironment().getProperty("server.port"));
+            log.info("项目启动啦，访问路径：{}",
+                "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + ctx.getEnvironment()
+                    .getProperty("server.port"));
         };
     }
 

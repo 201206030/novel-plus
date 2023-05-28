@@ -39,18 +39,10 @@
             <version>${commons-fileupload.version}</version>
         </dependency>
 
-        <!--FastDfs-->
-        <dependency>
-            <groupId>com.github.tobato</groupId>
-            <artifactId>fastdfs-client</artifactId>
-            <version>${fastdfs-client.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>com.alipay.sdk</groupId>

@@ -164,12 +164,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.10.5</version>
+            <version>2.6.1</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.10.5</version>
+            <version>2.6.1</version>
         </dependency>
 
         <!-- 添加redis支持-->

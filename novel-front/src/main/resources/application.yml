@@ -4,7 +4,7 @@ server:
 spring:
   profiles:
     active: dev
-    include: website,alipay,oss,fastdfs
+    include: website,alipay,oss
 
 jwt:
   secret: novel!#20191230

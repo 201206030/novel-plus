@@ -50,8 +50,7 @@ novel-plus -- 父工程
 | Spring Security      | 安全框架
 | Apache Shiro               | 安全框架
 | Redis               | 缓存方案
-| Aliyun OSS          | 阿里云对象存储服务(图片存储方式之一，一行配置即可切换)
-| FastDFS             | 开源轻量级分布式文件系统(图片存储方式之一，一行配置即可切换)
+| Aliyun OSS          | 阿里云对象存储服务（图片存储备选方案）
 | Lombok              | 简化对象封装工具
 | Docker              | 应用容器引擎
 | MySQL               | 数据库服务
