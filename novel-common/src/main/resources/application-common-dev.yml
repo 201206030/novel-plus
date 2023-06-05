@@ -69,8 +69,8 @@ sharding:
 
 content:
   save:
-    storage: db #存储介质，db：数据库，file：txt文本
-    path: /Users/xiongxiaoyang/books  #txt小说文本保存路径
+    storage: db # 小说内容存储方式：db-数据库，txt-TXT文本
+    path: /Users/xiongxiaoyang/books  # 小说TXT文本保存路径
 
 # HTTP 代理配置
 http:
