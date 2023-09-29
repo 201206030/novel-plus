@@ -50,6 +50,7 @@ import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.bookContent;
 import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.content;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.*;
 import static com.java2nb.novel.mapper.BookIndexDynamicSqlSupport.bookIndex;
+import static com.java2nb.novel.mapper.BookSettingDynamicSqlSupport.bookSetting;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
@@ -147,6 +148,8 @@ public class BookServiceImpl implements BookService {
                 bookSettingVOList.add(bookSettingVO);
             }
 
+            bookSettingMapper.delete(deleteFrom(bookSetting).build()
+                .render(RenderingStrategies.MYBATIS3));
             bookSettingMapper.insertMultiple(bookSettingList);
 
             return bookSettingVOList;

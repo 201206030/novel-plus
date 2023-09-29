@@ -34,7 +34,6 @@ public class BookSettingServiceImpl implements BookSettingService {
             List<Long> bookIds = list.stream().map(BookSettingDO::getBookId).collect(Collectors.toList());
             Map<Long, String> bookNameMap = bookDao.batchGet(bookIds).stream()
                 .collect(Collectors.toMap(BookDO::getId, BookDO::getBookName));
-            list = list.stream().filter(v -> bookNameMap.containsKey(v.getBookId())).collect(Collectors.toList());
             list.forEach(v -> v.setBookName(bookNameMap.get(v.getBookId())));
         }
         return list;
