@@ -1,5 +1,5 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <head>
@@ -7,16 +7,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
-        <link rel="stylesheet" href="/css/user.css" />
+        <link rel="stylesheet" href="/css/user.css"/>
         <style type="text/css">
-            .redBtn{
+            .redBtn {
                 padding: 5px;
                 border-radius: 20px;
                 border: 1px solid #f80;
                 background: #f80;
                 color: #fff;
             }
-            a.redBtn:hover{
+
+            a.redBtn:hover {
 
                 color: #fff;
             }
@@ -27,7 +28,8 @@
 
 <div class="header">
     <div class="mainNav" id="mainNav">
-        <div class="box_center cf" style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+        <div class="box_center cf"
+             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
 
             小说精品屋作家管理
 
@@ -48,7 +50,7 @@
 
         </div>
         <div class="my_r">
-            <div id="noContentDiv"  >
+            <div id="noContentDiv">
                 <div class="tc" style="margin-top: 200px"><a href="/author/book_add.html" class="btn_red">创建作品</a></div>
 
             </div>
@@ -86,7 +88,6 @@
                         </tr>
                         </thead>
                         <tbody id="bookList">
-
 
 
                         </tbody>
@@ -148,52 +149,52 @@
         $.ajax({
             type: "get",
             url: "/author/listBookByPage",
-            data: {'curr':curr,'limit':limit},
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     var bookList = data.data.list;
                     if (bookList.length > 0) {
-                        $("#hasContentDiv").css("display","block");
-                        $("#noContentDiv").css("display","none");
+                        $("#hasContentDiv").css("display", "block");
+                        $("#noContentDiv").css("display", "none");
                         var bookListHtml = "";
-                        for(var i=0;i<bookList.length;i++){
+                        for (var i = 0; i < bookList.length; i++) {
                             var book = bookList[i];
-                            bookListHtml+=(" <tr class=\"book_list\" vals=\"291\">\n" +
+                            bookListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
                                 /* "                            <td class=\"style bookclass\">\n" +
                                  "                                ["+(i+1)+"]\n" +
                                  "                            </td>\n" +*/
 
                                 "                            <td style=\"position: relative\" class=\"goread\">\n" +
-                                "<input class=\"opacity\" onchange=\"picChange('"+book.id+"')\"\n" +
-                                "                                           type=\"file\" id=\"file0\" name=\"file\"\n" +
+                                "<input class=\"opacity\" onchange=\"picChange('" + book.id + "'," + i + ")\"\n" +
+                                "                                           type=\"file\" id=\"file" + i + "\" name=\"file\"\n" +
                                 "                                           title=\"点击上传图片\"\n" +
                                 "                                           style=\"z-index: 100;cursor: pointer;left: 30px; top: 0px; width: 60px; height: 80px; opacity: 0; position: absolute;  \"\n" +
                                 "                                    />" +
-                                "<img width='50' height='70' src='"+book.picUrl+"'/><br/>" +
-                                "                                "+book.bookName+"</td>\n" +
+                                "<img width='50' height='70' src='" + book.picUrl + "'/><br/>" +
+                                "                                " + book.bookName + "</td>\n" +
 
 
                                 "                            <td class=\"goread\" >"
-                                +book.catName+"</td>\n" +
+                                + book.catName + "</td>\n" +
 
                                 "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                +book.visitCount+"</td>\n" +
+                                + book.visitCount + "</td>\n" +
 
                                 "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                +book.yesterdayBuy+"</td>\n" +
+                                + book.yesterdayBuy + "</td>\n" +
 
                                 "                            <td class=\"goread\">\n" +
-                                "                                "+new Date(Date.parse(book.lastIndexUpdateTime?book.lastIndexUpdateTime:book.updateTime)).Format("yyyy-MM-dd hh:mm")+"更新\n" +
+                                "                                " + new Date(Date.parse(book.lastIndexUpdateTime ? book.lastIndexUpdateTime : book.updateTime)).Format("yyyy-MM-dd hh:mm") + "更新\n" +
                                 "                            </td>\n" +
 
                                 "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                +book.wordCount+"</td>\n" +
+                                + book.wordCount + "</td>\n" +
 
-                                " <td class=\"goread\" id='opt"+book.id+"'>" +
-                                "<a target='_blank' class='redBtn' href='/author/index_list.html?bookId="+book.id+"'>章节管理  </a><br/>" +
-                                "<a target='_blank' href='/author/author_income_detail.html?bookId="+book.id+"'>薪酬查询  </a><br/>"+
-                                "<a target='_blank' href='/book/"+book.id+".html'>作品信息</a>"+
+                                " <td class=\"goread\" id='opt" + book.id + "'>" +
+                                "<a target='_blank' class='redBtn' href='/author/index_list.html?bookId=" + book.id + "'>章节管理  </a><br/>" +
+                                "<a target='_blank' href='/author/author_income_detail.html?bookId=" + book.id + "'>薪酬查询  </a><br/>" +
+                                "<a target='_blank' href='/book/" + book.id + ".html'>作品信息</a>" +
                                 "</td>                     </tr>");
                         }
                         $("#bookList").html(bookListHtml);
@@ -232,7 +233,7 @@
                     //未登录
                     location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -245,12 +246,12 @@
     }
 
 
-    function updateBookStatus(bookId,status) {
+    function updateBookStatus(bookId, status) {
 
         $.ajax({
             type: "POST",
             url: "/author/updateBookStatus",
-            data: {'bookId':bookId,'status':status==0?1:0},
+            data: {'bookId': bookId, 'status': status == 0 ? 1 : 0},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -262,7 +263,7 @@
                     //未登录
                     location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -273,21 +274,18 @@
         })
 
 
-
-
-
     }
 
 
-    function picChange(bookId) {
-        var file = $("#file0").val(); //文件名称
+    function picChange(bookId, i) {
+        var file = $("#file" + i).val(); //文件名称
         if (file != "") {
-            if(checkPicUpload($("#file0")[0])) {
+            if (checkPicUpload($("#file" + i)[0])) {
 
                 $.ajaxFileUpload({
                     url: "/file/picUpload", //用于文件上传的服务器端请求地址
                     secureuri: false, //是否需要安全协议，一般设置为false
-                    fileElementId: "file0", //文件上传域的ID
+                    fileElementId: "file" + i, //文件上传域的ID
                     dataType: "json", //返回值类型 一般设置为json
                     type: "post",
                     success: function (data) { //服务器成功响应处理函数
@@ -325,7 +323,6 @@
         } else {
             alert("请选择上传文件！");
         }
-
 
 
     }
