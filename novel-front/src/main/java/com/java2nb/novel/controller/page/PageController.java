@@ -125,6 +125,14 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 阅读历史页
+     */
+    @RequestMapping("user/read_history.html")
+    public String readHistory() {
+        return ThreadLocalUtil.getTemplateDir() + "user/read_history";
+    }
+
+    /**
      * 充值页
      */
     @RequestMapping("pay/index.html")

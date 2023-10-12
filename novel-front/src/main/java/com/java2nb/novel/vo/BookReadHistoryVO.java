@@ -19,8 +19,18 @@ public class BookReadHistoryVO extends UserReadHistory {
     private String lastIndexName;
     private String bookName;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "MM/dd HH:mm:ss")
+    private String picUrl;
+
+    private Long authorId;
+
+    private String authorName;
+
+    private String bookDesc;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "MM/dd HH:mm")
     private Date lastIndexUpdateTime;
+
+    private Byte bookStatus;
 
 
     @Override
