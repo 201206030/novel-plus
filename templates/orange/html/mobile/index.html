@@ -40,6 +40,21 @@
             -webkit-transition: all .3s;
         }
 
+        .user_link {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 50px;
+            padding: 0 5px;
+            color: #fff;
+            float: right;
+        }
+
+        .user_link a {
+
+            color: #fff;
+        }
+
     </style>
 
 
@@ -85,7 +100,7 @@
             <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=7">女频小说</a></dd>
         </dl>
     </li>
-    <li class="layui-nav-item"><a href="/user/favorites.html">书架</a></li>
+    <li class="user_link"></li>
 
 </ul>
 <ul class="layui-nav pc" lay-filter="" style="padding:0 36px;text-align: center">
@@ -120,8 +135,11 @@
             <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=7">女频小说</a></dd>
         </dl>
     </li>
+    <li class="user_link"></li>
+
 
 </ul>
+
 
 <div class="layui-container">
     <div class="layui-row">
@@ -170,7 +188,8 @@
 
         <div class="layui-container">
             <div class="layui-row" id="hotRecBooks" th:if="${bookMap['3']}">
-                <div th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}" style="margin-bottom: 5px" class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                <div th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}" style="margin-bottom: 5px"
+                     class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4">
                     <a th:href="'/book/'+${book.bookId}+'.html'">
                         <div class="layui-col-xs5 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <img style=" width:100px; height:125px;" th:src="${book.picUrl}">
@@ -178,11 +197,15 @@
                         </div>
                         <div class="layui-col-xs5 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <ul>
-                                <li style="padding-bottom: 2px" class="line-limit-length" th:text="${book.bookName}"></li>
+                                <li style="padding-bottom: 2px" class="line-limit-length"
+                                    th:text="${book.bookName}"></li>
                                 <li style="padding-bottom: 2px;color: #a6a6a6" th:text="'作者：'+${book.authorName}"></li>
-                                <li style="color: #a6a6a6;width: 180px;height:60px;overflow: hidden" th:utext="${book.bookDesc}">                                </li></ul>
+                                <li style="color: #a6a6a6;width: 180px;height:60px;overflow: hidden"
+                                    th:utext="${book.bookDesc}"></li>
+                            </ul>
                         </div>
-                        <div style="font-style: italic;color: red" class="layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2"></div>
+                        <div style="font-style: italic;color: red"
+                             class="layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2"></div>
                     </a>
                 </div>
 
