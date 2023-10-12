@@ -93,6 +93,47 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 登录页
+     */
+    @RequestMapping("user/login.html")
+    public String login() {
+        return ThreadLocalUtil.getTemplateDir() + "user/login";
+    }
+
+    /**
+     * 注册页
+     */
+    @RequestMapping("user/register.html")
+    public String register() {
+        return ThreadLocalUtil.getTemplateDir() + "user/register";
+    }
+
+    /**
+     * 用户中心页
+     */
+    @RequestMapping("user/userinfo.html")
+    public String userinfo() {
+        return ThreadLocalUtil.getTemplateDir() + "user/userinfo";
+    }
+
+    /**
+     * 我的书架页
+     */
+    @RequestMapping("user/favorites.html")
+    public String favorites() {
+        return ThreadLocalUtil.getTemplateDir() + "user/favorites";
+    }
+
+    /**
+     * 充值页
+     */
+    @RequestMapping("pay/index.html")
+    public String pay() {
+        return ThreadLocalUtil.getTemplateDir() + "pay/index.html";
+    }
+
+
+    /**
      * 作品页
      */
     @RequestMapping("book/bookclass.html")
