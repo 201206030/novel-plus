@@ -1,10 +1,11 @@
-var needLoginPath = ['/user/favorites.html','/user/comment.html','/user/feedback.html',
-    '/user/feedback_list.html','/user/read_history.html','/user/set_name.html',
-    '/user/set_password.html','/user/set_sex.html','/user/setup.html','/user/userinfo.html',
+var needLoginPath = ['/user/favorites.html', '/user/comment.html', '/user/feedback.html',
+    '/user/feedback_list.html', '/user/read_history.html', '/user/set_name.html',
+    '/user/set_password.html', '/user/set_sex.html', '/user/setup.html', '/user/userinfo.html',
     "/pay/index.html," +
-    "/author/register.html","/author/index.html"];
+    "/author/register.html", "/author/index.html"];
 var isLogin = false;
 var url = window.location.search;
+
 //key(需要检索的键）
 function getSearchString(key) {
     var str = url;
@@ -14,26 +15,28 @@ function getSearchString(key) {
 
     for (var i = 0; i < arr.length; i++) {
         var tmp_arr = arr[i].split("=");
-        if(tmp_arr[0] == key){
+        if (tmp_arr[0] == key) {
             return decodeURIComponent(tmp_arr[1]);
         }
     }
     return undefined;
 }
+
 var keyword = getSearchString("k");
-if(keyword != undefined) {
+if (keyword != undefined) {
     $("#searchKey").val(keyword);
     $("#workDirection").remove();
     $("#idGirl").remove();
 }
 
-function searchByK(k){
-    if(!k){
-        window.location.href='/book/bookclass.html?k='+encodeURIComponent(document.getElementById("searchKey").value)
-    }else{
-        window.location.href='/book/bookclass.html?k='+encodeURIComponent(k)
+function searchByK(k) {
+    if (!k) {
+        window.location.href = '/book/bookclass.html?k=' + encodeURIComponent(document.getElementById("searchKey").value)
+    } else {
+        window.location.href = '/book/bookclass.html?k=' + encodeURIComponent(k)
     }
 }
+
 $("#searchKey").keypress(function (even) {
     if (even.which == 13) {
         even.stopPropagation();
@@ -101,35 +104,37 @@ Array.prototype.remove = function (val) {
 };
 
 var token = $.cookie('Authorization');
-if(!token){
-    if(needLoginPath.indexOf(window.location.pathname) != -1){
-        location.href = '/user/login.html?originUrl='+decodeURIComponent(location.href);
+if (!token) {
+    if (needLoginPath.indexOf(window.location.pathname) != -1) {
+        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
     }
 
     $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");
-}else{
+} else {
     $.ajax({
         type: "POST",
         url: "/user/refreshToken",
         data: {},
         dataType: "json",
-        success: function(data){
-            if(data.code == 200){
-                $(".user_link").html("<a href=\"/user/userinfo.html\">"+(data.data.nickName.substring(0,3))+"...</a>&nbsp;&nbsp;<a href=\"javascript:logout()\">退出</a>");
-                ;
-                if("/user/login.html" == window.location.pathname){
+        success: function (data) {
+            if (data.code == 200) {
+                $(".user_link").html("<a href=\"/user/userinfo.html\"><i style=\"font-size: 20px;\" class=\"layui-icon \n" +
+                    "\">&#xe66f;" +
+                    "\n" +
+                    "</i></a>");
+                if ("/user/login.html" == window.location.pathname) {
                     var orginUrl = getSearchString("originUrl");
                     window.location.href = orginUrl == undefined || orginUrl.isBlank() ? "/" : orginUrl;
                     return;
                 }
                 isLogin = true;
-                if(localStorage.getItem("autoLogin") == 1){
-                    $.cookie('Authorization', data.data.token, { expires: 7 ,path: '/'  });
-                }else {
-                    $.cookie('Authorization', data.data.token,{ path: '/'  });
+                if (localStorage.getItem("autoLogin") == 1) {
+                    $.cookie('Authorization', data.data.token, {expires: 7, path: '/'});
+                } else {
+                    $.cookie('Authorization', data.data.token, {path: '/'});
                 }
-            }else{
-                if(needLoginPath.indexOf(window.location.pathname) != -1){
+            } else {
+                if (needLoginPath.indexOf(window.location.pathname) != -1) {
                     location.href = '/user/login.html';
                 }
                 $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");
@@ -143,10 +148,9 @@ if(!token){
 }
 
 function logout() {
-    $.cookie('Authorization', null,{ path: '/'  });
+    $.cookie('Authorization', null, {path: '/'});
     location.reload();
 }
-
 
 
 function readHistory() {
@@ -181,7 +185,7 @@ String.prototype.isPhone = function () {
 };
 
 String.prototype.isBlank = function () {
-    if(this == null || $.trim(this) == ""){
+    if (this == null || $.trim(this) == "") {
         return true;
     }
     return false;

@@ -87,7 +87,22 @@
 
         <div class="layui-container" style="padding: 50px;text-align: center">
             <img id="imgLogo" class="user_big_head" src="/images/man.png">
-            <div id="my_name" style="padding: 10px;font-size: 18px">梦入神机</div>
+            <div style="padding: 10px;font-size: 18px"><span id="my_name">梦入神机</span>
+                <svg id="boyIcon" style="display: none" t="1693635090733" class="icon" viewBox="0 0 1024 1024"
+                     version="1.1"
+                     xmlns="http://www.w3.org/2000/svg"
+                     p-id="8815" width="15" height="15">
+                    <path d="M872.335 421.516V151.71H602.528L702.949 252.13 601.4 353.68c-46.47-32.81-103.174-52.091-164.385-52.091-157.595 0-285.351 127.756-285.351 285.35S279.421 872.29 437.014 872.29s285.352-127.755 285.352-285.35c0-57.78-17.19-111.537-46.711-156.47l102.818-102.814 93.862 93.861zM437.015 782.18c-107.827 0-195.24-87.413-195.24-195.24s87.413-195.24 195.24-195.24 195.24 87.413 195.24 195.24-87.413 195.24-195.24 195.24z"
+                          fill="#1296DB" p-id="8816"></path>
+                </svg>
+                <svg id="girlIcon" style="display: none" t="1693635698738" class="icon" viewBox="0 0 1024 1024"
+                     version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3685" width="15" height="15">
+                    <path d="M513 636.1c-76.4 0-148.2-29.7-202.2-83.8-54-54-83.8-125.8-83.8-202.2s29.7-148.2 83.8-202.2c54-54 125.8-83.8 202.2-83.8s148.2 29.7 202.2 83.8c54 54 83.8 125.8 83.8 202.2s-29.7 148.2-83.8 202.2c-54 54.1-125.8 83.8-202.2 83.8z m0-515.9c-61.4 0-119.2 23.9-162.6 67.4C307 231 283 288.7 283 350.1s23.9 119.2 67.4 162.6 101.2 67.4 162.6 67.4 119.2-23.9 162.6-67.4S743 411.6 743 350.1 719 231 675.6 187.5c-43.4-43.4-101.2-67.3-162.6-67.3z"
+                          fill="#d4237a" p-id="3686"></path>
+                    <path d="M671.4 712.1H544.7v-104h-56v104H362c-15.5 0-28 12.5-28 28s12.5 28 28 28h126.7v163.3c0 15.5 12.5 28 28 28s28-12.5 28-28V768.1h126.7c15.5 0 28-12.5 28-28s-12.5-28-28-28z"
+                          fill="#d4237a" p-id="3687"></path>
+                </svg>
+            </div>
             <div style="padding: 5px;">账户余额：<span id="accountBalance" style="color: #f80">3000</span> 屋币</div>
 
         </div>
@@ -215,6 +230,14 @@
                     $("#my_name").html(data.data.nickName);
                 } else {
                     $("#my_name").html(data.data.username);
+                }
+
+                if (data.data.userSex === '0') {
+                    $("#boyIcon").css("display", "inline")
+                }
+
+                if (data.data.userSex === '1') {
+                    $("#girlIcon").css("display", "inline")
                 }
 
                 $("#accountBalance").html(data.data.accountBalance);

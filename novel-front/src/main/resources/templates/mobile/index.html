@@ -40,16 +40,17 @@
             -webkit-transition: all .3s;
         }
 
-        .user_link{
+        .user_link {
             position: relative;
             display: inline-block;
             vertical-align: middle;
             line-height: 50px;
-            padding: 0 20px;
+            padding: 0 5px;
             color: #fff;
             float: right;
         }
-        .user_link a{
+
+        .user_link a {
 
             color: #fff;
         }
@@ -187,7 +188,8 @@
 
         <div class="layui-container">
             <div class="layui-row" id="hotRecBooks" th:if="${bookMap['3']}">
-                <div th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}" style="margin-bottom: 5px" class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                <div th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}" style="margin-bottom: 5px"
+                     class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4">
                     <a th:href="'/book/'+${book.bookId}+'.html'">
                         <div class="layui-col-xs5 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <img style=" width:100px; height:125px;" th:src="${book.picUrl}">
@@ -195,11 +197,15 @@
                         </div>
                         <div class="layui-col-xs5 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <ul>
-                                <li style="padding-bottom: 2px" class="line-limit-length" th:text="${book.bookName}"></li>
+                                <li style="padding-bottom: 2px" class="line-limit-length"
+                                    th:text="${book.bookName}"></li>
                                 <li style="padding-bottom: 2px;color: #a6a6a6" th:text="'作者：'+${book.authorName}"></li>
-                                <li style="color: #a6a6a6;width: 180px;height:60px;overflow: hidden" th:utext="${book.bookDesc}">                                </li></ul>
+                                <li style="color: #a6a6a6;width: 180px;height:60px;overflow: hidden"
+                                    th:utext="${book.bookDesc}"></li>
+                            </ul>
                         </div>
-                        <div style="font-style: italic;color: red" class="layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2"></div>
+                        <div style="font-style: italic;color: red"
+                             class="layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2"></div>
                     </a>
                 </div>
 
