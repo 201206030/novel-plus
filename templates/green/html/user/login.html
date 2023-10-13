@@ -1,0 +1,103 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'会员登录_'+${application.website.name}"></title>
+    <meta name="keywords" th:content="'会员登录,个人中心,'+${application.website.name}+'小说,'+${application.website.name}" />
+    <meta name="description"  th:content="${application.website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'小说！'" />
+    <link rel="stylesheet" href="/css/user.css" />
+</head>
+<body class="">
+
+<div th:replace="common/top :: top('')">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="user_l">
+            <form method="post" action="./login.html" id="form1">
+                <h3 th:text="'登陆'+${application.website.name}"></h3>
+                <ul class="log_list">
+                    <li><span id="LabErr"></span></li>
+                    <li><input name="txtUName" type="text" id="txtUName" placeholder="手机号码" class="s_input icon_name" /></li>
+                    <li><input name="txtPassword" type="password" id="txtPassword" placeholder="密码" class="s_input icon_key" /></li>
+                    <li class="autologin cf"><label class="fl"><input id="autoLogin" type="checkbox"  /><em>下次自动登录</em></label></li>
+                    <li><input type="button" name="btnLogin" value="登录" id="btnLogin" class="btn_red" /></li>
+                </ul>
+            </form>
+        </div>
+        <div class="user_r">
+            <p class="tit">还没有注册账号？</p>
+            <a href="/user/register.html" class="btn_ora_white">立即注册</a>
+            <div class="fast_login" style="display:none;">
+                <div class="fast_tit">
+                    <p class="lines"></p>
+                    <span class="title">其他登录方式</span>
+                </div>
+                <ul class="fast_list">
+                    <li class="login_wb"><a href="/"><img src="/images/login_weibo.png" alt="微博登录" class="img" /><span>微博登录</span></a></li>
+                    <li class="login_qq"><a href="/"><img src="/images/login_qq.png" alt="QQ登录" class="img" /><span>QQ登录</span></a></li>
+                    <li class="login_wx"><a href="/"><img src="/images/login_weixin.png" alt="微信登录" class="img" /><span>微信登录</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+
+
+</body>
+<div th:replace="common/js :: js"></div>
+<script type="text/javascript">
+    if(localStorage.getItem("autoLogin")==1){
+        $("#autoLogin").attr("checked",'true');
+    }else{
+        $("#autoLogin").removeAttr("checked");
+    }
+    $("#btnLogin").click(function () {
+        var username = $("#txtUName").val();
+        if(username.isBlank()){
+            $("#LabErr").html("手机号不能为空！");
+            return;
+        }
+        if(!username.isPhone()){
+            $("#LabErr").html("手机号格式不正确！");
+            return;
+        }
+        var password = $("#txtPassword").val();
+        if(password.isBlank()){
+            $("#LabErr").html("密码不能为空！");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/user/login",
+            data: {"username": username, "password": password},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    if($("#autoLogin").is(':checked')){
+                        $.cookie('Authorization', data.data.token, { expires: 7 ,path: '/'  });
+                        localStorage.setItem("autoLogin","1");
+                    }else {
+                        $.cookie('Authorization', data.data.token,{ path: '/'  });
+                        localStorage.setItem("autoLogin","0");
+                    }
+                    var orginUrl = getSearchString("originUrl");
+                    window.location.href = orginUrl == undefined || orginUrl.isBlank() ? "/" : orginUrl;
+                } else {
+                    $("#LabErr").html(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    })
+</script>
+</html>

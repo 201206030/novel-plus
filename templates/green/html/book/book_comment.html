@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="${book.bookName}+'作品评论区_'+${application.website.name}"></title>
+    <meta name="keywords" th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节,'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'" />
+    <meta name="description" th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+${application.website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+${application.website.name}+'。'" />
+    <link href="/css/main.css" rel="stylesheet" />
+    <link href="/css/book.css" rel="stylesheet" />
+</head>
+<body>
+
+<input type="hidden" id="bookId" th:value="${book.id}"/>
+
+<div th:replace="common/top :: top('')">
+</div>
+
+<div class="main box_center cf mb50">
+    <div class="channelBookContent cf">
+        <!--left start-->
+        <div class="wrap_left fl">
+            <div class="wrap_bg">
+                <div class="pad20">
+
+                    <div class="bookComment">
+                        <div class="book_tit">
+                            <div class="fl">
+                                <h3>作品评论区</h3><span id="bookCommentTotal">(0条)</span>
+                            </div>
+                            <a class="fr" href="#txtComment">发表评论</a>
+                        </div>
+                        <div class="no_comment" id="noCommentPanel" style="display: none;">
+                            <img src="/images/no_comment.png" alt="" />
+                            <span class="block">暂无评论</span>
+                        </div>
+                        <div class="commentBar" id="commentPanel">
+
+                        </div>
+                        <div class="pageBox cf mt15 mr10" id="commentPage">
+                        </div>
+
+                        <div class="reply_bar" id="reply_bar">
+                            <div class="tit">
+                                <span class="fl font16">发表评论</span>
+                                <!--未登录状态下不可发表评论，显示以下链接-->
+                                <span class="fr black9" style="display:none; ">请先 <a class="orange" href="/user/login.html">登录</a><em class="ml10 mr10">|</em><a class="orange" href="/user/register.html">注册</a></span>
+                            </div>
+                            <textarea name="txtComment" rows="2" cols="20" id="txtComment" class="replay_text" placeholder="我来说两句..."></textarea>
+                            <div class="reply_btn">
+                                <span class="fl black9"><em class="ml5" id="emCommentNum">0/1000</em> 字</span>
+                                <span class="fr"><a class="btn_ora" href="javascript:void(0);" onclick="javascript:BookDetail.SaveComment(37,0,$('#txtComment').val());">发表</a></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--left end-->
+
+        <!--right start-->
+        <div class="wrap_right fr">
+
+
+
+            <div class="wrap_inner author_info mb20">
+
+                <div class="author_head cf">
+                    <a href="javascript:void(0);" class="head"><img src="/images/author_head.png" alt="作者头像"
+                                                                    id="authorLogoImg"/></a>
+                    <div class="msg">
+                        <span class="icon_qyzz">签约作家</span>
+                        <h4><a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'"
+                               th:text="${book.authorName}"></a></h4>
+                    </div>
+                </div>
+                <div class="author_intro cf">
+                    <h4>作者有话说</h4>
+                    <div class="intro_txt" id="authorNote">
+                        亲亲们，你们的支持是我最大的动力！求点击、求推荐、求书评哦！
+                    </div>
+                </div>
+                <!--如果作者没有其他作品就下方代码整个不显示-->
+
+
+            </div>
+            <!--作者专栏e-->
+            <script type="text/javascript">
+                var authorUId=8;
+                if(authorUId==0)
+                {$("#authorPanel").hide();}
+                else
+                {
+                }
+            </script>
+
+
+
+        </div>
+        <!--right end-->
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $('#txtComment').on('input propertychange', function () {
+        var count = $(this).val().length;
+        $('#emCommentNum').html(count + "/1000");
+        if (count > 1000) {
+            $('#txtComment').val($('#txtComment').val().substring(0, 1000));
+        }
+    });
+    searchComments(1, 20);
+
+    function searchComments(curr, limit) {
+
+        $.ajax({
+            type: "get",
+            url: "/book/listCommentByPage",
+            data: {'bookId': $("#bookId").val(),'curr':curr,'limit':limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var commentList = data.data.list;
+                    if (commentList.length > 0) {
+                        $("#bookCommentTotal").html("("+data.data.total+"条)");
+                        var commentListHtml = "";
+                        for (var i = 0; i < commentList.length; i++) {
+                            var comment = commentList[i];
+                            commentListHtml += ("<div class=\"comment_list cf\">" +
+                                "<div class=\"user_heads fl\" vals=\"389\">" +
+                                "<img src=\""+(comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png')+"\" class=\"user_head\" alt=\"\">" +
+                                "<span class=\"user_level1\" style=\"display: none;\">见习</span></div>" +
+                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">"+(comment.createUserName.substr(0, 4) + "****" + comment.createUserName.substr(comment.createUserName.length - 3, 3))+"</li><li class=\"dec\">" +
+                                comment.commentContent+
+                                "</li><li class=\"other cf\">" +
+                                "<span class=\"time fl\">"+comment.createTime+"</span>" +
+                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:BookDetail.AddAgreeTotal(77,this);\" class=\"zan\" style=\"display: none;\">赞<i class=\"num\">(0)</i></a>" +
+                                "</span></li>\t\t</ul>\t</div>");
+                        }
+                        $("#commentPanel").html(commentListHtml);
+
+                        layui.use('laypage', function () {
+                            var laypage = layui.laypage;
+
+                            //执行一个laypage实例
+                            laypage.render({
+                                elem: 'commentPage' //注意，这里的 test1 是 ID，不用加 # 号
+                                , count: data.data.total //数据总数，从服务端得到,
+                                , curr: data.data.pageNum
+                                , limit: data.data.pageSize
+                                , jump: function (obj, first) {
+
+
+                                    //obj包含了当前分页的所有参数，比如：
+                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                    console.log(obj.limit); //得到每页显示的条数
+
+
+                                    //首次不执行
+                                    if (!first) {
+                                        searchComments(obj.curr, obj.limit);
+                                    } else {
+
+                                    }
+                                }
+                            });
+                        });
+
+                    }
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

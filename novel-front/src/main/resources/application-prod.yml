@@ -12,7 +12,7 @@ spring:
 
 #模版配置
 templates:
-  name: orange
+  name: green
 
 
 pic:

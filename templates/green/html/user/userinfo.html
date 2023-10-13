@@ -1,0 +1,161 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+    <title th:text="'个人中心_'+${application.website.name}"></title>
+    <link rel="stylesheet" href="/css/user.css"/>
+</head>
+<body class="">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_1 on" href="/user/userinfo.html">个人中心</a></li>
+                <li><a class="link_4" href="/user/favorites.html">我的书架</a></li>
+                <li><a class="link_6" href="/user/comment.html">我的书评</a></li>
+                <li><a class="link_7 " href="/user/feedback_list.html">我的反馈</a></li>
+                <li><a class="link_8 " href="/user/setup.html">账号设置</a></li>
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_info cf">
+                <img id="imgLogo" class="user_big_head" src="/images/man.png" />
+                <div class="my_info_txt">
+                    <p class="my_name" id="my_name">
+                        </p>
+                    <ul class="my_list">
+                        <li class="my_gold"><i>账户余额：</i><em class="red" id="accountBalance">0</em>屋币<!--<em class="red">+</em><em class="red">0</em>代金券--><a href="/pay/index.html" class="btn_link">立即充值</a></li>
+                        <li class="my_baonian"></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="my_bookshelf">
+                <div class="title cf">
+                    <h4 class="fl">
+                        我的书架</h4>
+                    <a href="/user/favorites.html" class="fr">全部收藏 &gt;</a>
+                </div>
+                <div class="updateTable">
+                    <table cellpadding="0" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th class="style">
+                                类别
+                            </th>
+                            <th class="name">
+                                书名
+                            </th>
+                            <th class="chapter">
+                                最新章节
+                            </th>
+                            <th class="time">
+                                更新时间
+                            </th>
+                            <th class="goread">
+                                书签
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="bookShelfList">
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script type="text/javascript" src="/javascript/user.js"></script>
+<script type="text/javascript">
+    //查询用户信息
+    $.ajax({
+        type: "get",
+        url: "/user/userInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if(data.data.userPhoto){
+                    $("#imgLogo").attr("src",data.data.userPhoto);
+                }
+                if(data.data.nickName){
+                    $("#my_name").html(data.data.nickName);
+                }else{
+                    $("#my_name").html(data.data.username);
+                }
+
+                $("#accountBalance").html(data.data.accountBalance);
+
+            } else if (data.code == 1001) {
+                //未登录
+                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+    //查询书架列表
+    $.ajax({
+        type: "get",
+        url: "/user/listBookShelfByPage",
+        data: {'limit':2},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                var bookShelfList = data.data.list;
+                if (bookShelfList.length > 0) {
+                    var bookShelfListHtml = "";
+                    for (var i = 0; i < bookShelfList.length; i++) {
+                        var book = bookShelfList[i];
+                        bookShelfListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
+                            "                            <td class=\"style bookclass\">\n" +
+                            "                                <a href=\"/book/bookclass.html?c="+book.catId+"\" >[" + book.catName + "]</a>\n" +
+                            "                            </td>\n" +
+                            "                            <td class=\"name\">\n" +
+                            "                                <a href=\"/book/" + book.bookId + ".html\">\n" +
+                            "                                    " + book.bookName + "</a>\n" +
+                            "                            </td>\n" +
+                            "                            <td class=\"chapter\" valsc=\"291|2037554|1\">\n" +
+                            "<a href='/book/" + book.bookId + "/" + book.lastIndexId + ".html'>" + book.lastIndexName + "</a>" +
+                            "                            </td>\n" +
+                            "                            <td class=\"time\">\n" +
+                            "                                " + book.lastIndexUpdateTime + "\n" +
+                            "                            </td>\n" +
+                            "                            <td class=\"goread\">\n" +
+                            "<a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>继续阅读</a>" +
+                            "                            </td>\n" +
+                            "                        </tr>");
+                    }
+                    $("#bookShelfList").html(bookShelfListHtml);
+                }
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+</script>
+</body>
+</html>

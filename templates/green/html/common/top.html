@@ -1,0 +1,52 @@
+<div th:fragment="top(navType)" class="header">
+    <div class="topBar" style="display: none">
+        <div class="box_center cf">
+            <div class="top_l">
+                <a href="/" class="on" th:text="${application.website.name}"></a><i class="line">|</i><a
+                    href="/?m=2">手机女生版</a><i class="line">|</i><a
+                    href="/?m=1">手机男生版</a><i class="line">|</i><a
+                    href="/">客户端下载</a>
+            </div>
+            <div class="top_r">
+                <div class="top_nearread">
+                    <a href="javascript:void(0);" class="nearread" id="headerUserHistoryBtn">最近阅读<i
+                            class="icon_down"></i></a>
+                    <div class="book_record" style="display:none" id="headerUserHistory">
+                    </div>
+                </div>
+                <span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="topMain">
+        <div class="box_center cf">
+            <a href="/?m=2" class="logo fl"><img th:src="${application.website.logo}"
+                                                 th:alt="${application.website.name}"/></a>
+            <div class="searchBar fl">
+                <div class="search cf">
+                    <input type="text" placeholder="书名、作者、关键字" class="s_int" name="searchKey" id="searchKey"/>
+                    <label class="search_btn" id="btnSearch" onclick="searchByK()"><i class="icon"></i></label>
+                </div>
+            </div>
+            <div class="bookShelf fr" id="headerUserInfo">
+                <a class="sj_link" href="/user/favorites.html">我的书架</a>
+                <span class="user_link"><i class="line mr20">|</i><a href="/user/login.html" class="mr15">登录</a><a
+                        href="/user/register.html">注册</a></span>
+            </div>
+        </div>
+    </div>
+    <div class="mainNav" id="mainNav" th:style="${navType} == 10?'display:none':''">
+        <div class="box_center cf">
+            <ul class="nav" id="navModule">
+
+                <li th:class="${navType}==0?'on':''"><a href="/">首页</a></li>
+                <li th:class="${navType}==1?'on':''"><a href="/book/bookclass.html">全部作品</a></li>
+                <li th:class="${navType}==2?'on':''"><a href="/book/book_ranking.html">排行榜</a></li>
+                <li class=""><a href="/pay/index.html">充值</a></li>
+                <li><a href="/author/index.html" target="_blank">作家专区</a></li>
+
+            </ul>
+        </div>
+    </div>
+</div>

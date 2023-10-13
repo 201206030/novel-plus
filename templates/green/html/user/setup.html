@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+    <title th:text="'账号设置_'+${application.website.name}"></title>
+    <link rel="stylesheet" href="/css/user.css"/>
+</head>
+<body class="">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_1 " href="/user/userinfo.html">个人中心</a></li>
+                <li><a class="link_4" href="/user/favorites.html">我的书架</a></li>
+                <li><a class="link_6" href="/user/comment.html">我的书评</a></li>
+                <li><a class="link_7 " href="/user/feedback_list.html">我的反馈</a></li>
+                <li><a class="link_8 on" href="/user/setup.html">账号设置</a></li>
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_info cf">
+                <div class="my_info_txt">
+                    <ul class="mytab_list">
+                        <li ><i class="tit">我的头像</i>
+                            <a style="position: relative" >
+                                <img id="imgLogo" class="user_img" alt="我的头像" src="/images/man.png" />
+                                <input class="opacity" onchange="picChange()" type="file" id="file0" name="file" title="点击上传图片" style="z-index: 100;cursor: pointer;left: 0px; top: -25px; width: 60px; height: 80px; opacity: 0; position: absolute;  "/>
+
+                            </a>
+
+                        </li>
+                        <li><i class="tit">我的昵称</i><a href="/user/set_name.html" id="my_name"></a></li>
+                        <li style="display:none"><i class="tit">电子邮箱</i><a href="javascript:void(0);"></a></li>
+                        <li><i class="tit">我的性别</i><a href="/user/set_sex.html" id="my_sex"></a></li>
+                        <li><i class="tit">我的密码</i><a href="/user/set_password.html">修改密码</a></li>
+                        <li><i class="tit">当前状态</i><a href="javascript:logout()">退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script src="/javascript/ajaxfileupload.js" type="text/javascript"></script>
+<script type="text/javascript">
+    //查询用户信息
+    $.ajax({
+        type: "get",
+        url: "/user/userInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if(data.data.userPhoto){
+                    $("#imgLogo").attr("src",data.data.userPhoto);
+                }
+                if(data.data.nickName){
+                    $("#my_name").html(data.data.nickName+"<em class=\"ml10\">[修改]</em>");
+                }else{
+                    $("#my_name").html(data.data.username+"<em class=\"ml10\">[修改]</em>");
+                }
+                if(data.data.userSex === '0'){
+                    $("#my_sex").html("男<em class=\"ml10\">[修改]</em>");
+                }else if(data.data.userSex === '1'){
+                    $("#my_sex").html("女<em class=\"ml10\">[修改]</em>");
+                }else{
+                    $("#my_sex").html("请选择");
+                }
+
+
+
+            } else if (data.code == 1001) {
+                //未登录
+                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+
+    function picChange() {
+        var file = $("#file0").val(); //文件名称
+        if (file != "") {
+
+            if(checkPicUpload($("#file0")[0])) {
+
+                $.ajaxFileUpload({
+                    url: "/file/picUpload", //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: "file0", //文件上传域的ID
+                    dataType: "json", //返回值类型 一般设置为json
+                    type: "post",
+                    success: function (data) { //服务器成功响应处理函数
+                        if (data.code == 200) {
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/updateUserInfo",
+                                data: {'userPhoto': data.data},
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        window.location.href = '/user/setup.html';
+
+                                    } else if (data.code == 1001) {
+                                        //未登录
+                                        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                                    } else {
+                                        layer.alert(data.msg);
+                                    }
+
+                                },
+                                error: function () {
+                                    layer.alert('网络异常');
+                                }
+                            })
+
+                        } else {
+                            layer.alert(data.msg);
+                        }
+
+                    }
+
+                });
+            }
+        } else {
+            alert("请选择上传文件！");
+        }
+
+
+
+    }
+</script>
+</body>
+</html>

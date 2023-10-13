@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:utext="${book.bookName}+'_'+${book.authorName}+'_'+${book.bookName}+'txt下载'+'_'+${book.bookName}+'无弹窗_'+${application.website.name}"></title>
+    <meta name="keywords"
+          th:content="${book.bookName}+'官方首发,'+${book.bookName}+'小说,'+${book.bookName}+'最新章节'+${book.bookName}+'txt下载,'+${book.bookName}+'无弹窗,'+${book.bookName}+'吧,'+${book.bookName}+'离线完本'"/>
+    <meta name="description"
+          th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+${book.bookName}+'由作家'+${book.authorName}+'创作,'+${application.website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+${application.website.name}+'。'"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link href="/css/book.css?v=2019" rel="stylesheet"/>
+</head>
+<body>
+
+<input type="hidden" id="lastBookIndexId" th:value="${book.lastIndexId}"/>
+<input type="hidden" id="bookCatId" th:value="${book.catId}"/>
+<input type="hidden" id="bookId" th:value="${book.id}"/>
+<input type="hidden" id="preContentId" th:value="${firstBookIndexId}"/>
+
+<div th:replace="common/top :: top('')">
+</div>
+
+<div class="main box_center cf mb50">
+    <div class="nav_sub">
+        <a href="/" th:text="${application.website.name}"></a>&gt;<a th:href="'/book/bookclass.html?c='+${book.catId}" th:text="${book.catName}"></a>&gt;<a
+            th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookName}"></a>
+    </div>
+    <div class="channelWrap channelBookInfo cf">
+        <div class="bookCover cf">
+            <a th:href="${book.picUrl}" class="book_cover"><img class="cover" th:src="${book.picUrl}"
+                                                      th:attr="alt=${book.bookName}"/></a>
+            <div class="book_info">
+                <div class="tit">
+                    <h1 th:utext="${book.bookName}"></h1><!--<i class="vip_b">VIP</i>--><a class="author"
+                                                                                          th:utext="${book.authorName}+' 著'"></a>
+                </div>
+                <ul class="list">
+                    <li><span class="item">类别：<em th:text="${book.catName}"></em></span>
+                        <span class="item" th:switch="${book.bookStatus}">状态：<em th:case="'0'">连载中</em><em th:case="*">已完结</em></span>
+                        <span class="item">总点击：<em id="cTotal" th:text="${book.visitCount}"></em></span>
+                        <span class="item">总字数：<em th:text="${book.wordCount}"></em></span></li>
+                </ul>
+                <div class="intro_txt">
+                    <p th:utext="${book.bookDesc}"></p>
+                    <a class="icon_hide" href="javascript:void(0)" onclick=""><i></i>收起</a>
+                    <a class="icon_show" href="javascript:void(0)" onclick=""><i></i>展开</a>
+                </div>
+                <div class="btns" id="optBtn">
+                    <a th:href="'/book/'+${book.id}+'/'+${firstBookIndexId}+'.html'" class="btn_ora">点击阅读</a>
+                    <span id="cFavs"><a href="javascript:void(0);" class="btn_ora_white btn_addsj"
+                                        onclick="javascript:BookDetail.AddFavorites(37,0,0);">加入书架</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="channelBookContent cf">
+        <!--left start-->
+        <div class="wrap_left fl">
+            <div class="wrap_bg">
+
+                <!--章节目录 start-->
+                <div class="pad20_nobt">
+                    <div class="bookChapter">
+                        <div class="book_tit">
+                            <div class="fl">
+                                <h3>最新章节</h3><span id="bookIndexCount">(0章)</span></div>
+                            <a class="fr" th:href="'/book/indexList-'+${book.id}+'.html'">全部目录</a>
+                        </div>
+                        <ul class="list cf">
+                            <li>
+                                <span class="fl font16"> <a th:href="'/book/'+${book.id}+'/'+${book.lastIndexId}+'.html'" th:utext="${book.lastIndexName}"><!--<i class="vip">VIP</i>--></a></span>
+                                <span class="black9 fr"
+                                      th:text="'更新时间：'+${#dates.format(book.lastIndexUpdateTime, 'yy/MM/dd HH:mm:ss')}"></span>
+                            </li>
+                            <li class="zj_yl" id="lastBookContent"> 　</li>
+                            <!--此处是该章节预览，截取最前面的42个字-->
+                        </ul>
+                    </div>
+                </div>
+                <!--章节目录 end-->
+
+                <!--作品评论区 start-->
+                <div class="pad20">
+                    <div class="bookComment">
+                        <div class="book_tit">
+                            <div class="fl">
+                                <h3>作品评论区</h3><span id="bookCommentTotal" th:text="'('+${bookCommentPageBean.total}+'条)'"></span>
+                            </div>
+                            <a class="fr" href="#txtComment">发表评论</a>
+                        </div>
+                        <div class="no_comment" id="noCommentPanel" th:style="${bookCommentPageBean.total > 0}? 'display:none'" >
+                            <img src="/images/no_comment.png" alt=""/>
+                            <span class="block">暂无评论</span>
+                        </div>
+                        <div class="commentBar" id="commentPanel" th:style="${bookCommentPageBean.total == 0}? 'display:none'">
+                            <div th:each="comment: ${bookCommentPageBean.list}" class="comment_list cf"><div class="user_heads fl" vals="389"><img th:src="${comment.createUserPhoto}?${comment.createUserPhoto}:'/images/man.png'" class="user_head" alt=""><span class="user_level1" style="display: none;">见习</span></div><ul class="pl_bar fr">			<li class="name" th:text="${#strings.substring(comment.createUserName,0,4)}+'****'+${#strings.substring(comment.createUserName,#strings.length(comment.createUserName)-3,#strings.length(comment.createUserName))}"></li><li class="dec" th:utext="${comment.commentContent}"></li><li class="other cf"><span class="time fl" th:text="${#calendars.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span><span class="fr"><a href="javascript:void(0);" onclick="javascript:BookDetail.AddAgreeTotal(77,this);" class="zan" style="display: none;">赞<i class="num">(0)</i></a></span></li>		</ul>	</div>
+
+                        </div>
+
+                        <!--无评论时此处隐藏-->
+                        <div class="more_bar" id="moreCommentPanel" th:style="${bookCommentPageBean.total == 0}? 'display:none'">
+                            <a th:href="'/book/comment-'+${book.id}+'.html'">查看全部评论&gt;</a>
+                        </div>
+
+                        <div class="reply_bar" id="reply_bar">
+                            <div class="tit">
+                                <span class="fl font16">发表评论</span>
+                                <!--未登录状态下不可发表评论，显示以下链接-->
+                                <span class="fr black9" style="display:none; ">请先 <a class="orange"
+                                                                                     href="/user/login.html">登录</a><em
+                                        class="ml10 mr10">|</em><a class="orange"
+                                                                   href="/user/register.html">注册</a></span>
+                            </div>
+                            <textarea name="txtComment" rows="2" cols="20" id="txtComment" class="replay_text"
+                                      placeholder="我来说两句..."></textarea>
+                            <div class="reply_btn">
+                                <span class="fl black9"><em class="ml5" id="emCommentNum">0/1000</em> 字</span>
+                                <span class="fr"><a class="btn_ora" href="javascript:void(0);"
+                                                    onclick="javascript:BookDetail.SaveComment(37,0,$('#txtComment').val());">发表</a></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--作品评论区 end-->
+
+            </div>
+        </div>
+        <!--left end-->
+
+        <!--right start-->
+        <div class="wrap_right fr">
+
+
+            <script src="/javascript/authorinfo.js?uid=8" type="text/javascript"></script>
+            <!--作者专栏s-->
+            <div class="wrap_inner author_info mb20">
+
+                <div class="author_head cf">
+                    <a href="javascript:void(0);" class="head"><img src="/images/author_head.png" alt="作者头像"
+                                                                    id="authorLogoImg"/></a>
+                    <div class="msg">
+                        <span class="icon_qyzz">签约作家</span>
+                        <h4><a th:href="'javascript:searchByK(\''+${book.authorName}+'\')'"
+                               th:utext="${book.authorName}"></a></h4>
+                    </div>
+                </div>
+                <div class="author_intro cf">
+                    <h4>作者有话说</h4>
+                    <div class="intro_txt" id="authorNote">
+                        亲亲们，你们的支持是我最大的动力！求点击、求推荐、求书评哦！
+                    </div>
+                </div>
+                <!--如果作者没有其他作品就下方代码整个不显示-->
+
+
+            </div>
+            <!--作者专栏e-->
+            <script type="text/javascript">
+                var authorUId = 8;
+                if (authorUId == 0) {
+                    $("#authorPanel").hide();
+                } else {
+                }
+            </script>
+
+            <div id="RelateBookOther" class="wrap_inner wrap_right_cont mb20">
+                <div class="title cf">
+                    <h3 class="on">同类推荐</h3>
+                </div>
+                <div class="tj_bar">
+                    <ul id="recBookList">
+                        <li th:each="book : ${recBooks}">
+                            <div class="book_intro">
+                                <div class="cover">
+                                    <a th:href="'/book/'+${book.id}+'.html'"><img th:src="${book.picUrl}" th:alt="${book.bookName}"></a>
+                                </div>
+                                <div class="dec">
+                                    <a class="book_name" th:href="'/book/'+${book.id}+'.html'" th:text="${book.bookName}"></a>
+                                    <a class="txt" th:href="'/book/'+${book.id}+'.html'" th:utext="${book.bookDesc}">
+
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--right end-->
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js?v=1.1" type="text/javascript"></script>
+<script src="/javascript/ufans.js?v=1" type="text/javascript"></script>
+
+
+<div class="maskBox" style="display:none" onclick="javascript:uFans.closeBox();"></div>
+<div class="readPopup pcBox" style="display:none" id="showPC"></div>
+<div class="readPopup flowerBox" style="display:none" id="showFlower"></div>
+<div class="readPopup newsTipBox" style="display:none;" id="showNote"></div>
+<script type="text/javascript">
+    var pathname = window.location.pathname;
+    var bookId = pathname.substring(pathname.lastIndexOf("/") + 1, pathname.lastIndexOf("."))
+    //查询章节信息
+    var lastBookIndexId = $("#lastBookIndexId").val();
+    if(lastBookIndexId){
+        $.ajax({
+            type: "get",
+            url: "/book/queryBookIndexAbout",
+            data: {'bookId': bookId, 'lastBookIndexId': lastBookIndexId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookIndexData = data.data;
+                    $("#bookIndexCount").html("(" + bookIndexData.bookIndexCount + "章)");
+                    $("#lastBookContent").html(bookIndexData.lastBookContent + "...");
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+    }else{
+        $("#optBtn").remove();
+    }
+</script>
+<script language="javascript" type="text/javascript">
+    //查询是否在书架
+    $.ajax({
+        type: "get",
+        url: "/user/queryIsInShelf",
+        data: {'bookId': $("#bookId").val()},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if (data.data) {
+                    $("#cFavs").html("<a class=\"btn_ora_white btn_addsj\" href=\"javascript:void(0);\">已在书架</a>");
+                }
+
+
+            } else if (data.code == 1001) {
+                //未登录
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+
+
+
+
+    var currentBId = 37, spmymoney = 0;
+    var relationStep = 0;
+    var authorUId = 8;
+    $(function () {
+        $(".icon_show").click(function () {
+            $(this).hide();
+            $(".icon_hide").show();
+            $(".intro_txt").innerHeight("auto");
+        });
+        $(".icon_hide").click(function () {
+            $(this).hide();
+            $(".icon_show").show();
+            $(".intro_txt").innerHeight("");
+        });
+
+
+
+        $("#AuthorOtherNovel li").unbind("mouseover");
+
+        $('#txtComment').on('input propertychange', function () {
+            var count = $(this).val().length;
+            $('#emCommentNum').html(count + "/1000");
+            if (count > 1000) {
+                $('#txtComment').val($('#txtComment').val().substring(0, 1000));
+            }
+        });
+
+    });
+
+
+    $.post("/book/addVisitCount", {"bookId": bookId}, function () {
+    });
+
+
+    function loadCommentList(){
+        $.ajax({
+            type: "get",
+            url: "/book/listCommentByPage",
+            data: {'bookId': $("#bookId").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var commentList = data.data.list;
+                    if (commentList.length > 0) {
+                        $("#bookCommentTotal").html("("+data.data.total+"条)");
+                        var commentListHtml = "";
+                        for (var i = 0; i < commentList.length; i++) {
+                            var comment = commentList[i];
+                            commentListHtml += ("<div class=\"comment_list cf\">" +
+                                "<div class=\"user_heads fl\" vals=\"389\">" +
+                                "<img src=\""+(comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png')+"\" class=\"user_head\" alt=\"\">" +
+                                "<span class=\"user_level1\" style=\"display: none;\">见习</span></div>" +
+                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">"+(comment.createUserName)+"</li><li class=\"dec\">" +
+                                comment.commentContent+
+                                "</li><li class=\"other cf\">" +
+                                "<span class=\"time fl\">"+comment.createTime+"</span>" +
+                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:BookDetail.AddAgreeTotal(77,this);\" class=\"zan\" style=\"display: none;\">赞<i class=\"num\">(0)</i></a>" +
+                                "</span></li>\t\t</ul>\t</div>");
+                        }
+                        $("#commentPanel").html(commentListHtml);
+                        $("#noCommentPanel").hide();
+                        $("#commentPanel").show();
+                        $("#moreCommentPanel").show();
+
+                    } else {
+                        $("#commentPanel").hide();
+                        $("#moreCommentPanel").hide();
+                        $("#noCommentPanel").show();
+                    }
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+    }
+</script>
+</body>
+</html>

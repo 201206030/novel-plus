@@ -3006,3 +3006,9 @@ INSERT INTO `sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, 
 VALUES (305, '301', '修改', null, 'novel:websiteInfo:edit', '2', null, '6');
 INSERT INTO sys_role_menu (role_id, menu_id)
 VALUES (1, 305);
+
+
+update website_info
+set logo     = 'https://youdoc.gitee.io/resource/images/logo%20(1).png',
+    logo_dark='https://youdoc.gitee.io/resource/images/logo%20(1).png'
+where id = 1;

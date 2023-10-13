@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+    <title th:text="'最近阅读_'+${application.website.name}"></title>
+    <link rel="stylesheet" href="/css/user.css"/>
+</head>
+<body class="">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="viewhistoryBox">
+            <div class="my_bookshelf">
+                <div class="title cf">
+                    <h2 class="fl ml10"><a href="javascript:void(0);" class="red">最近阅读</a></h2><i class="fl ml20 mr20 font16">|</i><h2 class="fl"><a href="/user/favorites.html">我的书架</a></h2>
+                </div>
+                <div id="divData" class="updateTable">
+                    <table cellpadding="0" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th class="style">
+                                类别
+                            </th>
+                            <th class="name">
+                                书名
+                            </th>
+                            <th class="chapter">
+                                最新章节
+                            </th>
+                            <th class="time">
+                                更新时间
+                            </th>
+                            <th class="goread">
+                                书签
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="bookHistoryList">
+
+                        <!--<tr class="book_list" vals="234">
+                            <td class="style bookclass"></td>
+                            <td class="name">
+                                <a href="/book/234.html"></td>
+                            <td class="chapter" valsc="234|2005456|1"></td>
+                            <td class="time"></td>
+                            <td class="goread"></td>
+                        </tr>-->
+
+                        </tbody>
+                    </table>
+                    <div class="pageBox cf" id="historyPage">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script type="text/javascript">
+    search(1, 10);
+
+    function search(curr, limit) {
+
+        $.ajax({
+            type: "get",
+            url: "/user/listReadHistoryByPage",
+            data: {'curr':curr,'limit':limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookHistoryList = data.data.list;
+                    if (bookHistoryList.length > 0) {
+                        var bookHistoryListHtml = "";
+                        for(var i=0;i<bookHistoryList.length;i++){
+                            var book = bookHistoryList[i];
+                            bookHistoryListHtml+=(" <tr class=\"book_list\" vals=\"291\">\n" +
+                                "                            <td class=\"style bookclass\">\n" +
+                                "                                <a href=\"/book/bookclass.html?c="+book.catId+"\" >["+book.catName+"]</a>\n" +
+                                "                            </td>\n" +
+                                "                            <td class=\"name\">\n" +
+                                "                                <a href=\"/book/"+book.bookId+".html\">\n" +
+                                "                                    "+book.bookName+"</a>\n" +
+                                "                            </td>\n" +
+                                "                            <td class=\"chapter\" valsc=\"291|2037554|1\">\n" +
+                                "<a href='/book/"+book.bookId+"/"+book.lastIndexId+".html'>"+book.lastIndexName+"</a>"+
+                                "                            </td>\n" +
+                                "                            <td class=\"time\">\n" +
+                                "                                "+book.lastIndexUpdateTime+"\n" +
+                                "                            </td>\n" +
+                                "                            <td class=\"goread\">\n" +
+                                "<a href='/book/"+book.bookId+"/"+book.preContentId+".html'>继续阅读</a>"+
+                                "                            </td>\n" +
+                                "                        </tr>");
+                        }
+                        $("#bookHistoryList").html(bookHistoryListHtml);
+
+                        layui.use('laypage', function () {
+                            var laypage = layui.laypage;
+
+                            //执行一个laypage实例
+                            laypage.render({
+                                elem: 'historyPage' //注意，这里的 test1 是 ID，不用加 # 号
+                                , count: data.data.total //数据总数，从服务端得到,
+                                , curr: data.data.pageNum
+                                , limit: data.data.pageSize
+                                , jump: function (obj, first) {
+
+
+                                    //obj包含了当前分页的所有参数，比如：
+                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                    console.log(obj.limit); //得到每页显示的条数
+
+
+                                    //首次不执行
+                                    if (!first) {
+                                        search(obj.curr, obj.limit);
+                                    } else {
+
+                                    }
+                                }
+                            });
+                        });
+
+                    }
+
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                }else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

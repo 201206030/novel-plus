@@ -1,0 +1,14 @@
+<div th:fragment="footer" class="footer">
+    <div class="box_center cf">
+        <div class="copyright">
+            <ul>
+                <li class="menu"><a href="/?to=mobile">手机站</a><i class="line">|</i><a href="/">网站首页</a><i
+                        class="line">|</i><a href="/user/feedback.html">反馈留言</a><i class="line">|</i><a
+                        href="/author/index.html">作家专区</a><i class="line">|</i><a
+                        href="/mobile/fiction_house.apk">客户端</a></li>
+                <li th:text="'Copyright (C) '+${application.website.domain}+' All rights reserved&nbsp;&nbsp;'+${application.website.name}+'版权所有'"></li>
+
+            </ul>
+        </div>
+    </div>
+</div>

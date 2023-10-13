@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>注册</title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+
+</head>
+<body id="read">
+
+<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+
+    <div style="width:10%;float: left;margin-left: 10px">
+        <a href="javascript:history.go(-1)">
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+    </div>
+    <b class="layui-icon">注册</b>
+    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
+        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
+    </a>
+    </div>
+</div>
+<form lay-filter="loginForm" id="form1" style="height: 500px;padding-top:30px;padding-right: 20px" class="layui-form" action="">
+    <input type="hidden" id="bookIdHidden" name="bookId" th:value="${bookId}"/>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码</label>
+        <div class="layui-input-inline">
+            <input name="txtUName" type="text" id="txtUName"  placeholder="请输入手机号"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input name="txtPassword" type="password" id="txtPassword"  placeholder="请输入密码"
+                   autocomplete="off" class="layui-input">
+        </div>
+
+    </div>
+    <div class="layui-form-item ">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-inline">
+            <input name="txtUName" type="text" id="TxtChkCode"  placeholder="请输入验证码"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline"><img
+                style="border: 1px solid #eee" class="code_pic" src="" id="chkd"
+                onclick="getVerify(this);"/></div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="button" value="注册" id="btnRegister" class="layui-btn" />
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+<div th:replace="mobile/common/js :: js">
+</div>
+<script type="text/javascript">
+    $("#form1").css("min-height",($(window).height() - 140)+"px")
+    $("#chkd").click();
+   
+    $("#btnRegister").click(function () {
+        var username = $("#txtUName").val();
+        if (username.isBlank()) {
+            layer.alert("手机号不能为空！");
+            return;
+        }
+        if (!username.isPhone()) {
+            layer.alert("手机号格式不正确！");
+            return;
+        }
+        var password = $("#txtPassword").val();
+        if (password.isBlank()) {
+            layer.alert("密码不能为空！");
+            return;
+        }
+        var velCode = $("#TxtChkCode").val();
+        if (velCode.isBlank()) {
+            layer.alert("验证码不能为空！");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/user/register",
+            data: {"username": username, "password": password,"velCode":velCode},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $.cookie('Authorization', data.data.token, {path: '/'});
+                    window.location.href="/";
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    })
+    //获取验证码
+    function getVerify(obj) {
+        obj.src = "/file/getVerify?" + Math.random();
+    }
+</script>
+
+
+
+</html>

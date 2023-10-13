@@ -1,0 +1,150 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'小说排行榜_'+${application.website.name}"></title>
+    <meta name="keywords" content="小说排行榜,热门小说榜,小说排行榜完结版,完结小说排行榜,完本小说排行榜,最新小说排行榜,网络小说排行榜,排行榜,点击榜,新书榜,推荐榜" />
+    <meta name="description" th:content="'最新热门网络小说排行榜,包含各类热门小说榜,小说排行榜上都是受用户喜爱的小说作品,精彩尽在'+${application.website.name}+'。'" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/book.css" />
+</head>
+<body>
+
+<div th:replace="common/top :: top('2')">
+</div>
+<div class="main box_center cf mb50">
+    <div class="channelRankingContent cf">
+        <div class="wrap_left fl">
+            <div class="wrap_bg">
+                <!--榜单详情 start-->
+                <div class="pad20">
+
+                    <div class="book_tit">
+                        <div class="fl">
+                            <h3 class="font26 mt5 mb5" id="rankName">点击榜</h3>
+                        </div>
+                        <a class="fr"></a>
+                    </div>
+                    <div class="updateTable rankTable">
+                        <table cellpadding="0" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th class="rank">排名</th>
+                                <th class="style">类别</th>
+                                <th class="name">书名</th>
+                                <th class="chapter">最新章节</th>
+                                <th class="author">作者</th>
+                                <th class="word">字数</th>
+                            </tr>
+                            </thead>
+                            <tbody id="bookRankList">
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--榜单详情 end-->
+
+            </div>
+        </div>
+
+        <div class="wrap_right fr">
+            <div class="wrap_inner wrap_right_cont mb20">
+                <div class="title cf noborder">
+                    <h3 class="on">排行榜</h3>
+                </div>
+                <div class="rightList2">
+                    <ul id="rankType">
+                        <li><a class="on" href="javascript:listRank(0)">点击榜</a></li>
+                        <li><a href="javascript:listRank(1)">新书榜</a></li>
+                        <li><a href="javascript:listRank(2)">更新榜</a></li>
+                        <li><a href="javascript:listRank(3)">评论榜</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+
+<script type="text/javascript">
+    $("#rankType a").click(function () {
+        $("#rankType .on").removeClass("on");
+        $(this).addClass("on");
+    })
+
+    var rankType = getSearchString("type");
+    if(rankType==undefined){
+        rankType=0;
+    }else{
+        $("#rankType a").eq(rankType).click();
+    }
+    listRank(rankType);
+
+    function listRank(rankType){
+        $.ajax({
+            type: "get",
+            url: "/book/listRank",
+            data: {'type':rankType,'limit':30},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookRankList = data.data;
+                    var bookRankListHtml = "";
+                    for(var i=0;i<bookRankList.length;i++){
+                        var book = bookRankList[i];
+                        var classHtml = "";
+                        if(i<3){
+                            classHtml="num"+(i+1);
+                        }
+                        bookRankListHtml+=("<tr>\n" +
+                            "                                <td class=\"rank\"><i class=\""+classHtml+"\">"+(i+1)+"</i></td>\n" +
+                            "                                <td class=\"style\"><a href=\"/book/bookclass.html?c="+book.catId+"\" >["+book.catName+"]</a></td>\n" +
+                            "                                <td class=\"name\"><a href=\"/book/"+book.id+".html\" >"+book.bookName+"</a></td>\n" +
+                            "                                <td class=\"chapter\"><a href=\"/book/"+book.id+".html\" >"+book.lastIndexName+"</a>\n" +
+                            "                                </td>\n" +
+                            "                                <td class=\"author\"><a href=\"javascript:void(0)\">"+book.authorName+"</a></td>\n" +
+                            "                                <td class=\"word\">"+(book.wordCount / 10000).toFixed(2)+"万</td>\n" +
+                            "                            </tr>");
+                    }
+                    $("#bookRankList").html(bookRankListHtml);
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+        switch (rankType) {
+            case 0 : {
+                $("#rankName").html("点击榜");
+                break;
+            }
+            case 1 : {
+                $("#rankName").html("新书榜");
+                break;
+            }
+            case 2 : {
+                $("#rankName").html("更新榜");
+                break;
+            }
+            case 3 : {
+                $("#rankName").html("评论榜");
+                break;
+            }
+
+        }
+
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+    <title th:text="'我的书评_'+${application.website.name}"></title>
+    <link rel="stylesheet" href="/css/user.css"/>
+</head>
+<body class="">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_1 " href="/user/userinfo.html">个人中心</a></li>
+                <li><a class="link_4" href="/user/favorites.html">我的书架</a></li>
+                <li><a class="link_6 on" href="/user/comment.html">我的书评</a></li>
+                <li><a class="link_7 " href="/user/feedback_list.html">我的反馈</a></li>
+                <li><a class="link_8 " href="/user/setup.html">账号设置</a></li>
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div class="title cf">
+                    <h2 class="fl">我的书评</h2>
+                    <div class="fr"></div>
+                </div>
+                <div class="bookComment">
+                    <div class="no_contet no_comment" style="display:none">
+                        您还没有发表过评论！
+                    </div>
+                    <div class="commentBar" id="commentBar">
+
+
+                    </div>
+                </div>
+                <div class="pageBox cf" id="commentPage">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script language="javascript" type="text/javascript">
+    search(1, 5);
+
+    function search(curr, limit) {
+
+        $.ajax({
+            type: "get",
+            url: "/user/listCommentByPage",
+            data: {'curr':curr,'limit':limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var commentList = data.data.list;
+                    if (commentList.length > 0) {
+                        $("#bookCommentTotal").html("("+data.data.total+"条)");
+                        var commentListHtml = "";
+                        for (var i = 0; i < commentList.length; i++) {
+                            var comment = commentList[i];
+                            commentListHtml += ("<div class=\"comment_list cf\">" +
+                                "<div class=\"user_heads fl\" vals=\"389\">" +
+                                "<img src=\""+(comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png')+"\" class=\"user_head\" alt=\"\">" +
+                                "<span class=\"user_level1\" style=\"display: none;\">见习</span></div>" +
+                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">"+(comment.createUserName.substr(0, 4) + "****" + comment.createUserName.substr(comment.createUserName.length - 3, 3))+"</li><li class=\"dec\">" +
+                                comment.commentContent+
+                                "</li><li class=\"other cf\">" +
+                                "<span class=\"time fl\">"+comment.createTime+"</span>" +
+                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:BookDetail.AddAgreeTotal(77,this);\" class=\"zan\" style=\"display: none;\">赞<i class=\"num\">(0)</i></a>" +
+                                "</span></li>\t\t</ul>\t</div>");
+                        }
+                        $("#commentBar").html(commentListHtml);
+
+                        layui.use('laypage', function () {
+                            var laypage = layui.laypage;
+
+                            //执行一个laypage实例
+                            laypage.render({
+                                elem: 'commentPage' //注意，这里的 test1 是 ID，不用加 # 号
+                                , count: data.data.total //数据总数，从服务端得到,
+                                , curr: data.data.pageNum
+                                , limit: data.data.pageSize
+                                , jump: function (obj, first) {
+
+
+                                    //obj包含了当前分页的所有参数，比如：
+                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                    console.log(obj.limit); //得到每页显示的条数
+
+
+                                    //首次不执行
+                                    if (!first) {
+                                        search(obj.curr, obj.limit);
+                                    } else {
+
+                                    }
+                                }
+                            });
+                        });
+
+                    }
+
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                }else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

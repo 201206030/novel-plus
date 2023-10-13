@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>作家管理系统-小说精品屋</title>
+        <link rel="stylesheet" href="/css/base.css?v=1"/>
+        <link rel="stylesheet" href="/css/user.css"/>
+    </head>
+</head>
+<body class="">
+
+<div class="header">
+    <div class="mainNav" id="mainNav">
+        <div class="box_center cf"
+             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+
+            小说精品屋作家管理
+
+        </div>
+    </div>
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_4 on" href="/author/index.html">作品管理</a></li>
+                <li><a class="link_2 " href="/author/author_income_detail.html">稿费收入</a></li>
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+
+                <div class="userBox cf">
+                    <form method="post" action="./register.html" id="form2">
+                        <div class="user_l">
+                            <div></div>
+                            <h3>小说章节内容填写</h3>
+                            <ul class="log_list">
+                                <li><span id="LabErr"></span></li>
+                                <b>章节名：</b>
+                                <li><input type="text" id="bookIndex" name="bookIndex" class="s_input" ></li>
+                                <b>章节内容：</b>
+                                <li id="contentLi">
+                                <textarea  name="bookContent" rows="30" cols="80" id="bookContent"
+                                          class="textarea"></textarea>
+                                </li>
+                                <li style="margin-top: 10px"><input type="button" onclick="addBookContent()" name="btnRegister" value="提交"
+                                           id="btnRegister" class="btn_red">
+
+
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <!--<div id="divData" class="updateTable">
+                    <table cellpadding="0" cellspacing="0">
+                        <thead>
+                        <tr>
+
+                            <th class="name">
+                                爬虫源（已开启的爬虫源）
+                            </th>
+                            <th class="chapter">
+                                成功爬取数量（websocket实现）
+                            </th>
+                            <th class="time">
+                            目标爬取数量
+                            </th>
+                            <th class="goread">
+                                状态（正在运行，已停止）（一次只能运行一个爬虫源）
+                            </th>
+                            <th class="goread">
+                                操作（启动，停止）
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="bookShelfList">
+
+
+
+                        </tbody>
+                    </table>
+                    <div class="pageBox cf" id="shellPage">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/header.js" type="text/javascript"></script>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script src="/javascript/common.js" type="text/javascript"></script>
+
+<script language="javascript" type="text/javascript">
+
+    var bookId = getSearchString("bookId");
+    var indexId = getSearchString("indexId");
+    var indexName = decodeURI(decodeURI(getSearchString("indexName")));
+    var isVip = getSearchString("isVip");
+
+    $("#bookIndex").val(indexName);
+    if(isVip == 1){
+        $("#contentLi").after("<b>是否收费：</b>\n" +
+            "                                <li><input type=\"radio\" disabled name=\"isVip\" value=\"0\"   >免费\n" +
+            "                                    <input type=\"radio\" disabled name=\"isVip\" value=\"1\"  checked >收费</li><br/>");
+    }else{
+        $("#contentLi").after("<b>是否收费：</b>\n" +
+            "                                <li><input type=\"radio\" disabled name=\"isVip\" value=\"0\"  checked >免费\n" +
+            "                                    <input type=\"radio\" disabled name=\"isVip\" value=\"1\"   >收费</li><br/>");
+
+    }
+
+    $.ajax({
+        type: "get",
+        url: "/author/queryIndexContent/"+indexId,
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+
+                $("#bookContent").html(data.data);
+
+
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            lock = false;
+            layer.alert('网络异常');
+        }
+    })
+
+
+
+
+
+
+    var lock = false;
+    function addBookContent() {
+
+        if(lock){
+            return;
+        }
+        lock = true;
+
+
+
+
+
+        var indexName = $("#bookIndex").val();
+        if(!indexName){
+            $("#LabErr").html("章节名不能为空！");
+            lock = false;
+            return;
+        }
+
+        var content = $("#bookContent").val();
+        if(!content){
+            $("#LabErr").html("章节内容不能为空！");
+            lock = false;
+            return;
+        }
+
+
+
+
+
+        $.ajax({
+            type: "POST",
+            url: "/author/updateBookContent",
+            data: {'indexId':indexId,'indexName':indexName,'content':content},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+
+                    window.location.href = '/author/index_list.html?bookId='+bookId;
+
+
+                } else {
+                    lock = false;
+                    $("#LabErr").html(data.msg);
+                }
+
+            },
+            error: function () {
+                lock = false;
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+</script>
+</html>

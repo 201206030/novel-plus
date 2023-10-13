@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+    <title th:text="'反馈留言_'+${application.website.name}"></title>
+    <link rel="stylesheet" href="/css/user.css"/>
+</head>
+<body class="">
+
+<div th:replace="common/top :: top('')">
+</div>
+<div class="main box_center cf">
+    <div class="channelWrap channelFeedback cf">
+
+        <div class="userBox cf">
+            <div class="viewhistoryBox">
+                <div class="my_bookshelf">
+                    <div class="title cf">
+                        <h2 class="fl ml10">
+                            <a href="javascript:void(0);">反馈留言</a></h2>
+                    </div>
+                    <div class="feedbackBox">
+
+                        <form method="post" action="/" id="Form1"
+                              onsubmit="javascript:return checkForm();">
+                            <ul class="reg_list">
+                                <li>
+                                    <textarea name="txtDescription" rows="2" cols="20" id="txtDescription"
+                                              class="textarea" placeholder="请说明情况，并留下联系方式，你可以在个人中心【我的反馈】里查看回复~">
+</textarea></li>
+                                <li class="mb20">
+                                    <input type="submit" name="btnSave" value="提交" id="btnSave"
+                                           class="btn_red btn_big"/></li>
+                                <li>
+                                    <span id="LabErr"></span></li>
+                            </ul>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+
+<script language="javascript" type="text/javascript">
+    function checkForm() {
+        var des = $("#txtDescription").val();
+        des = $.trim(des);
+        var errStr = '';
+        if (des == "") {
+            errStr = '反馈内容必须填写';
+        } else if (des.length < 5) {
+            errStr = '反馈内容不能少于5个字';
+        }
+        if (errStr != '') {
+            layer.alert(errStr);
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/user/addFeedBack",
+            data: {'content': $("#txtDescription").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    location.href = '/user/feedback_list.html'
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+        return false;
+    }
+</script>
+</body>
+</html>

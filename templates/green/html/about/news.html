@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'新闻公共_'+${application.website.name}"></title>
+    <meta name="keywords" content="新闻公告,小说,小说网,言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,原创网络文学"/>
+    <meta name="description"
+          th:content="${application.website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'小说！'"/>
+    <link rel="stylesheet" href="/css/about.css"/>
+</head>
+<body class="body">
+
+<div th:replace="common/top :: top('')">
+</div>
+<!--主体 start-->
+<div class="main box_center cf">
+
+
+    <div class="my_r" style="width: 960px">
+        <div class="newsBox">
+            <ul class="news_list" id="newsList">
+
+
+            </ul>
+
+
+        </div>
+        <div class="pageBox cf" id="newsPage">
+
+        </div>
+    </div>
+
+
+</div>
+<!--主体 end-->
+
+<div th:replace="common/footer :: footer">
+</div>
+v
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    search(1, 5);
+
+    function search(curr, limit) {
+
+        $.ajax({
+            type: "get",
+            url: "/news/listByPage",
+            data: {'curr': curr, 'limit': limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var newsList = data.data.list;
+                    if (newsList.length > 0) {
+                        var newsListHtml = "";
+                        for (var i = 0; i < newsList.length; i++) {
+                            var news = newsList[i];
+                            newsListHtml += (" <li>\n" +
+                                "                        <h5><i class=\"dot\"></i><a href=\"newsInfo-" + news.id + ".html\" >" + news.title + "</a></h5>\n" +
+                                "                        <p>" + news.createTime + "</p>\n" +
+                                "                    </li>");
+                        }
+                        $("#newsList").html(newsListHtml);
+
+                        layui.use('laypage', function () {
+                            var laypage = layui.laypage;
+
+                            //执行一个laypage实例
+                            laypage.render({
+                                elem: 'newsPage' //注意，这里的 test1 是 ID，不用加 # 号
+                                , count: data.data.total //数据总数，从服务端得到,
+                                , curr: data.data.pageNum
+                                , limit: data.data.pageSize
+                                , jump: function (obj, first) {
+
+
+                                    //obj包含了当前分页的所有参数，比如：
+                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                    console.log(obj.limit); //得到每页显示的条数
+
+
+                                    //首次不执行
+                                    if (!first) {
+                                        search(obj.curr, obj.limit);
+                                    } else {
+
+                                    }
+                                }
+                            });
+                        });
+
+                    }
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+</script>
+</body>
+</html>
+
+
+

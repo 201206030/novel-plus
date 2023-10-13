@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
+    <title th:text="'全部作品_'+${application.website.name}"></title>
+    <meta name="keywords" th:content="${application.website.name}+',小说,小说网,言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,原创网络文学'"/>
+    <meta name="description"
+          th:content="${application.website.name}+'每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'。'"/>
+    <link href="favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+    <link href="favicon.ico" type="image/x-icon" rel="Bookmark"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+</head>
+<body>
+
+<div th:replace="common/top :: top('1')">
+</div>
+
+<div class="main box_center cf">
+    <div class="channelWrap classTable cf">
+        <div class="so_tag">
+            <ul class="list">
+                <li class="so_pd" id="workDirection">
+                    <span class="tit">作品频道：</span>
+                    <a filter-value="0" href="javascript:listBookCategory();search(1,20)" class="on">男频</a>
+                    <a filter-value="1" href="javascript:listBookCategory();search(1,20)">女频</a>
+                </li>
+                <li id="idGirl" class="so_class">
+                    <span class="tit">作品分类：</span>
+                    <span class="so_girl" id="girlCategoryList" style="display: none;">
+                        </span>
+                    <span class="so_boy" id="boyCategoryList">
+                        </span>
+                </li>
+               <!-- <li class="so_free">
+                    <span class="tit">是否免费：</span>
+                    <a href="?b=0&s=0&wb=0&wd=0&up=0&fr=0&so=0&ms=2" class="on">不限</a>
+                    <a href="?b=0&s=0&wb=0&wd=0&up=0&fr=1&so=0&ms=2" class="">免费作品</a>
+                    <a href="?b=0&s=0&wb=0&wd=0&up=0&fr=2&so=0&ms=2" class="">收费作品</a>
+                </li>-->
+                <li class="so_progress">
+                    <span class="tit">是否完结：</span>
+                    <a  href="javascript:search(1,20)" class="on">不限</a>
+                    <a filter-value="0" href="javascript:search(1,20)" class="">连载中</a>
+                    <a filter-value="1" href="javascript:search(1,20)" class="">已完结</a>
+                </li>
+                <li class="so_words">
+                    <span class="tit">作品字数：</span>
+                    <a href="javascript:search(1,20)" class="on">不限</a>
+                    <a filter-value-max="300000" href="javascript:search(1,20)" class="">30万字以下</a>
+                    <a filter-value-min="300000" filter-value-max="500000" href="javascript:search(1,20)" class="">30-50万字</a>
+                    <a filter-value-min="500000" filter-value-max="1000000" href="javascript:search(1,20)" class="">50-100万字</a>
+                    <a filter-value-min="1000000" href="javascript:search(1,20)" class="">100万字以上</a>
+                </li>
+                <li class="so_update">
+                    <span class="tit">更新时间：</span>
+                    <a href="javascript:search(1,20)" class="on">不限</a>
+                    <a filter-value="3" href="javascript:search(1,20)" class="">三日内</a>
+                    <a filter-value="7" href="javascript:search(1,20)" class="">七日内</a>
+                    <a filter-value="15" href="javascript:search(1,20)" class="">半月内</a>
+                    <a filter-value="30" href="javascript:search(1,20)" class="">一月内</a>
+                </li>
+                <li class="so_sort">
+                    <span class="tit">排序方式：</span>
+                    <a href="javascript:search(1,20)" class="on">不限</a>
+                    <a filter-value="last_index_update_time" href="javascript:search(1,20)" class="">更新时间</a>
+                    <a filter-value="word_count" href="javascript:search(1,20)" class="">总字数</a>
+                    <a filter-value="visit_count" href="javascript:search(1,20)" class="">点击量</a>
+                </li>
+            </ul>
+        </div>
+
+
+    </div>
+
+    <div class="channelWrap channelClassContent cf">
+        <div class="updateTable rankTable">
+            <table cellpadding="0" cellspacing="0">
+                <thead>
+                <tr>
+                    <th class="rank">序号</th>
+                    <th class="style">类别</th>
+                    <th class="name">书名</th>
+                    <th class="chapter">最新章节</th>
+                    <th class="author">作者</th>
+                    <th class="word">字数</th>
+                </tr>
+                </thead>
+                <tbody id="bookList">
+
+
+                </tbody>
+            </table>
+
+            <div class="pageBox cf" id="books">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookclass.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    var workDirection;
+    var catId = getSearchString('c');
+
+    listBookCategory(catId);
+
+    if(!catId){
+        search(1, 20);
+    }
+
+    function search(curr, limit) {
+        var searchData = {};
+        searchData.curr = curr;
+        searchData.limit = limit;
+
+        searchData.keyword = $("#searchKey").val();
+        var workDirection = $(".so_pd>.on").attr("filter-value");
+        if(workDirection != undefined){
+            searchData.workDirection = workDirection;
+        }
+
+        if(workDirection == 1){
+            var catId = $(".so_girl>.on").attr("filter-value");
+        }else{
+            var catId = $(".so_boy>.on").attr("filter-value");
+        }
+
+        if(catId != undefined){
+            searchData.catId = catId;
+        }
+
+        var bookStatus = $(".so_progress>.on").attr("filter-value");
+        if(bookStatus != undefined){
+            searchData.bookStatus = bookStatus;
+        }
+
+        var wordCountMin = $(".so_words>.on").attr("filter-value-min");
+        if(wordCountMin != undefined){
+            searchData.wordCountMin = wordCountMin;
+        }
+
+        var wordCountMax = $(".so_words>.on").attr("filter-value-max");
+        if(wordCountMax != undefined){
+            searchData.wordCountMax = wordCountMax;
+        }
+
+        var updatePeriod = $(".so_update>.on").attr("filter-value");
+        if(updatePeriod != undefined){
+            searchData.updatePeriod = updatePeriod;
+        }
+
+        var sort = $(".so_sort>.on").attr("filter-value");
+        if(sort != undefined){
+            searchData.sort = sort;
+        }
+
+
+
+
+        $.ajax({
+            type: "get",
+            url: "/book/searchByPage",
+            data: searchData,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookList = data.data.list;
+                    var bookListHtml = "";
+                    for (var i = 0; i < bookList.length; i++) {
+                        var book = bookList[i];
+                        var wordCount = (book.wordCount / 10000).toFixed(2);
+                        bookListHtml += (" <tr>\n" +
+                            "                    <td class=\"rank\"><i>" + (i + 1) + "</i></td>\n" +
+                            "                    <td class=\"style\"><a href=\"/book/bookclass.html?c="+book.catId+"\"  cls=\"13\">[" + book.catName + "]</a></td>\n" +
+                            "                    <td class=\"name\"><a href=\"/book/"+book.id+".html\" >" + book.bookName + "</a></td>\n" +
+                            "                    <td class=\"chapter\"><a href=\"/book/"+book.id+".html\" >" + book.lastIndexName + "</a>\n" +
+                            "                    </td>\n" +
+                            "                    <td class=\"author\"><a href=\"javascript:void(0)\">" + book.authorName + "</a></td>\n" +
+                            "                    <td class=\"word\">" + wordCount + "万</td>\n" +
+                            "                </tr>");
+                    }
+                    $("#bookList").html(bookListHtml);
+
+                    layui.use('laypage', function () {
+                        var laypage = layui.laypage;
+
+                        //执行一个laypage实例
+                        laypage.render({
+                            elem: 'books' //注意，这里的 test1 是 ID，不用加 # 号
+                            , count: data.data.total //数据总数，从服务端得到,
+                            , curr: data.data.pageNum
+                            , limit: data.data.pageSize
+                            , jump: function (obj, first) {
+
+
+                                //obj包含了当前分页的所有参数，比如：
+                                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                console.log(obj.limit); //得到每页显示的条数
+
+
+                                //首次不执行
+                                if (!first) {
+                                    search(obj.curr, obj.limit);
+                                } else {
+
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+
+    function listBookCategory(c) {
+        $.ajax({
+            type: "get",
+            url: "/book/listBookCategory",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var categoryList = data.data;
+                    var boyCategoryListHtml = "";
+                    boyCategoryListHtml += " <a href=\"javascript:search(1,20)\" class=\"on\">不限</a>";
+                    var girlCategoryListHtml = "";
+                    girlCategoryListHtml += " <a href=\"javascript:search(1,20)\" class=\"on\">不限</a>";
+                    for (var i = 0; i < categoryList.length; i++) {
+                        var category = categoryList[i];
+                        if (category.workDirection == 1) {
+                            if(category.id==c){
+                                workDirection = 1;
+                            }
+                            girlCategoryListHtml += (" <a filter-value='"+category.id+"' href=\"javascript:search(1,20)\">" + category.name + "</a>");
+                        } else {
+                            if(category.id==c){
+                                workDirection = 0;
+                            }
+                            boyCategoryListHtml += (" <a filter-value='"+category.id+"' href=\"javascript:search(1,20)\">" + category.name + "</a>");
+                        }
+                    }
+                    $("#boyCategoryList").html(boyCategoryListHtml);
+                    $("#girlCategoryList").html(girlCategoryListHtml);
+                    $(".so_girl a").click(function () {
+                        var index = $(this).index();
+                        console.log(index);
+                        $(".so_girl>.on").removeClass("on");
+                        $(".so_girl a").eq(index).addClass("on");
+                    })
+                    $(".so_boy a").click(function () {
+                        var index = $(this).index();
+                        console.log(index);
+                        $(".so_boy>.on").removeClass("on");
+                        $(".so_boy>.on").removeClass("on");
+                        $(".so_boy a").eq(index).addClass("on");
+                    })
+                    if(c) {
+                        if (workDirection === 1) {
+                            $(".so_pd a").eq(1).click();
+                            $("#girlCategoryList a[filter-value=" + c + "]").click();
+                        } else {
+                            $("#boyCategoryList a[filter-value=" + c + "]").click();
+                        }
+                        search(1, 20);
+                    }
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+</script>
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $(".so_pd a").click(function () {
+            var index = $(this).index();
+            console.log(index);
+            $(".so_pd>.on").removeClass("on");
+            if (index == 2) {
+                $(".so_pd a").eq(1).addClass("on");
+                $(".so_girl").show();
+                $(".so_boy").hide();
+            } else {
+                $(".so_pd a").eq(0).addClass("on");
+                $(".so_girl").hide();
+                $(".so_boy").show();
+            }
+        })
+        $(".so_progress a").click(function () {
+            var index = $(this).index();
+            console.log(index);
+            $(".so_progress>.on").removeClass("on");
+            $(".so_progress>.on").removeClass("on");
+            $(".so_progress a").eq(index-1).addClass("on");
+        })
+        $(".so_words a").click(function () {
+            var index = $(this).index();
+            console.log(index);
+            $(".so_words>.on").removeClass("on");
+            $(".so_words>.on").removeClass("on");
+            $(".so_words a").eq(index-1).addClass("on");
+        })
+        $(".so_update a").click(function () {
+            var index = $(this).index();
+            console.log(index);
+            $(".so_update>.on").removeClass("on");
+            $(".so_update>.on").removeClass("on");
+            $(".so_update a").eq(index-1).addClass("on");
+        })
+        $(".so_sort a").click(function () {
+            var index = $(this).index();
+            console.log(index);
+            $(".so_sort>.on").removeClass("on");
+            $(".so_sort>.on").removeClass("on");
+            $(".so_sort a").eq(index-1).addClass("on");
+        })
+
+
+        $(".style a").each(function () {
+            var bId = $(this).attr("cls");
+            if (bId > 0) {
+                $(this).html("[" + getBName(bId) + "]");
+            }
+        });
+
+        if (2 == 1) {
+            $(".so_pd>.on").removeClass("on");
+            $(".so_pd a").eq(1).addClass("on");
+            $(".so_girl").hide();
+            $(".so_boy").show();
+        }
+    });
+
+    function getBName(bId) {
+        for (var i = 0; i < bClass.rows.length; i++) {
+            if (bId == bClass.rows[i].BId) {
+                return bClass.rows[i].Name;
+            }
+        }
+        return "";
+    }
+</script>
+</body>
+</html>

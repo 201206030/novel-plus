@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title th:text="${application.website.name}+'列表'"></title>
+
+    <meta name="keywords"
+          th:content="${application.website.name}+',精品小说,弹幕网站,弹幕,弹幕小说网站,免费小说,小说阅读,小说排行,轻小说,txt小说下载,电子书下载,动漫轻小说,日本轻小说'">
+
+    <meta name="description"
+          th:content="${application.website.name}+'是国内优秀的小说弹幕网站,'+${application.website.name}+'提供海量热门网络小说,日本轻小说,国产轻小说,动漫小说,轻小说在线阅读和TXT小说下载,致力于网络精品小说的收集,智能计算小说评分,打造小说精品排行榜,致力于无广告无弹窗的小说阅读环境。'">
+
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    </div>
+
+    <style type="text/css">
+
+
+        .line-limit-length {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+        }
+
+        .indexP p a {
+            color: #4c6978;
+        }
+
+        .Readarea {
+            font-size: 18px;
+            line-height: 35px;
+            padding: 10px;
+            color: #333;
+        }
+
+        div, p {
+            wrap-work: break-word;
+            word-break: break-all;
+            word-wrap: break-word;
+            word-break: normal;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            -ms-box-sizing: border-box;
+        }
+
+        .indexDiv a {
+            margin-left: 20px;
+        }
+
+        img {
+            width: 130px;
+            height: 180px;
+        }
+    </style>
+</head>
+<body>
+
+
+<input type="hidden" id="limit" th:value="${limit}"/>
+<input type="hidden" id="curr" th:value="${curr}"/>
+<input type="hidden" id="total" th:value="${total}"/>
+<input type="hidden" id="ids" th:value="${ids}"/>
+<input type="hidden" id="bookStatus" th:value="${bookStatus}"/>
+<input type="hidden" id="token" th:value="${token}"/>
+<input type="hidden" id="keyword" th:value="${keyword}"/>
+<input type="hidden" id="catId" th:value="${catId}"/>
+<input type="hidden" id="sortBy" th:value="${sortBy}"/>
+<input type="hidden" id="sort" th:value="${sort}"/>
+
+<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+
+    <div style="float: left;margin-left: 10px">
+        <a href="javascript:history.go(-1)">
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+    </div>
+    <b class="layui-icon">小说列表</b>
+    <div style="float: right;margin-right: 10px">
+        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
+    </div>
+</div>
+
+<div class="layui-container">
+    <div class="layui-row">
+
+        <div class="layui-col-xs10 layui-col-sm10 layui-col-md11 layui-col-lg11" style="padding-top:1%">
+            <input id="title" type="text" name="title" required lay-verify="required" placeholder="请输入书名·作者"
+                   autocomplete="off"
+                   class="layui-input" th:value="${keyword}">
+        </div>
+        <div class="layui-col-xs1" style="padding: 1%">
+            <button onclick="search(1,20)" class="layui-btn" lay-submit lay-filter="formDemo">搜索</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="bookList">
+
+
+</div>
+
+
+<div id="books" style="text-align: center"></div>
+
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+
+<a name="buttom"></a>
+</body>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+
+    var catId = getQueryVariable("catId");
+    var bookStatus = getQueryVariable("bookStatus");
+    var sortBy = getQueryVariable("sortBy");
+    var keyword = getQueryVariable("keyword");
+
+    if(keyword != false){
+        $("#title").val(decodeURI(keyword));
+    }else{
+        keyword = "";
+    }
+
+
+
+    search(1,20);
+
+    function search(curr,limit) {
+
+
+
+        var searchData = {};
+
+        searchData.curr = curr;
+        searchData.limit = limit;
+
+        keyword = $("#title").val();
+
+        if(catId != false){
+            searchData.catId = catId;
+        }
+
+        if(bookStatus != false){
+            searchData.bookStatus = bookStatus;
+        }
+
+        if(sortBy != false){
+            searchData.sort = sortBy;
+        }else if(!keyword){
+            sortBy = "last_index_update_time";
+        }
+
+        if(keyword){
+            searchData.keyword = keyword;
+        }
+
+        $.ajax({
+            type: "get",
+            url: "/book/searchByPage",
+            data: searchData,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookList = data.data.list;
+                    var bookListHtml = "";
+                    for (var i = 0; i < bookList.length; i++) {
+                        var book = bookList[i];
+
+                        /*var end = book.bookDesc.indexOf("<");
+                        if(end != -1) {
+                            book.bookDesc = book.bookDesc.substring(0,end);
+                        }*/
+
+                        if(book.bookDesc){
+                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"").replace(/&nbsp;/g,"");
+                        }
+
+                        bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
+                            "        <a href=\"/book/"+book.id+".html\">\n" +
+                            "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
+                            "                <img style='width: 130px;height: 180px' align=\"center\"\n" +
+                            "                     src=\""+book.picUrl+"\"/>\n" +
+                            "\n" +
+                            "            </div>\n" +
+                            "        </a>\n" +
+                            "        <div style=\"padding: 10px\" class=\"layui-col-xs6 layui-col-sm8 layui-col-md8 layui-col-lg8\">\n" +
+                            "            <a href=\"/book/"+book.id+".html\">\n" +
+                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">"+book.bookName+"</div>\n" +
+                            "            </a>\n" +
+                            "            <div style=\";color: #4c6978;float: right;\"><i style=\"color: red\"></i></div>\n" +
+                            "            <a href=\"/book/book_ranking.html?keyword="+encodeURI(book.authorName)+"\">\n" +
+                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者："+book.authorName+"</div>\n" +
+                            "            </a>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别："+book.catName+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态："+(book.bookStatus==0?'连载':'完结')+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>"+book.lastIndexUpdateTime.substr(0,11)+"</i>\n" +
+                            "            </div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">简介："+(book.bookDesc?(book.bookDesc.length>15?(book.bookDesc.substr(0,15)+"..."):book.bookDesc):book.bookDesc)+"</div>\n" +
+                            "\n" +
+                            "\n" +
+                            "        </div>\n" +
+                            "\n" +
+                            "    </div>");
+                    }
+                    $("#bookList").html(bookListHtml);
+
+                    layui.use('laypage', function () {
+                        var laypage = layui.laypage;
+
+                        //执行一个laypage实例
+                        laypage.render({
+                            elem: 'books' //注意，这里的 test1 是 ID，不用加 # 号
+                            , count: data.data.total //数据总数，从服务端得到,
+                            , curr: data.data.pageNum
+                            , limit: data.data.pageSize
+                            , jump: function (obj, first) {
+
+
+                                //obj包含了当前分页的所有参数，比如：
+                                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                console.log(obj.limit); //得到每页显示的条数
+
+
+                                //首次不执行
+                                if (!first) {
+                                    search(obj.curr, obj.limit);
+                                } else {
+
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+
+    function searchByAllCondition(curr, limit, newKeyword) {
+        var toUrl = "/book/search?curr=" + curr + "&limit=" + limit;
+        var ids = $("#ids").val();
+        if (ids) {
+            toUrl += ("&historyBookIds=" + ids);
+        }
+        var token = $("#token").val();
+        if (token) {
+            toUrl += ("&token=" + token);
+        }
+        var keyword = $("#keyword").val();
+        if (newKeyword) {
+            toUrl += encodeURI("&keyword=" + newKeyword);
+        } else if (keyword) {
+            toUrl += encodeURI("&keyword=" + keyword);
+        }
+        var bookStatus = $("#bookStatus").val();
+        if (bookStatus) {
+            toUrl += ("&bookStatus=" + bookStatus);
+        }
+        var catId = $("#catId").val();
+        if (catId) {
+            toUrl += ("&catId=" + catId);
+        }
+
+        var sortBy = $("#sortBy").val();
+        if (sortBy) {
+            toUrl += ("&sortBy=" + sortBy);
+        }
+
+        var sort = $("#sort").val();
+        if (sort) {
+            toUrl += ("&sort=" + sort);
+        }
+
+        window.location.href = toUrl;
+    }
+
+    function searchBooks() {
+        var keywords = $("#title").val();
+        $("#keyword").val("");
+        searchByAllCondition(1, 20, keywords);
+    }
+
+</script>
+<script>
+
+
+
+
+    function toMyCollect() {
+        var token = localStorage.getItem("token");
+        if (token) {
+            window.location.href = "/book/search?token=" + token;
+        } else {
+            window.location.href = "/user/login.html";
+        }
+    }
+</script>
+
+
+</html>
