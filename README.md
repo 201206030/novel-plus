@@ -57,11 +57,11 @@ novel-plus -- 父工程
 | Thymeleaf           | 模板引擎
 | Layui               | 前端 UI 框架
 
-## 演示图
+## 项目截图
 
 ### 绿色主题模版
 
-![](https://youdoc.gitee.io/resource/images/os/novel-plus/green.png)
+[![点击查看大图](https://youdoc.gitee.io/resource/images/os/novel-plus/green.png)](https://youdoc.gitee.io/resource/images/os/novel-plus/green.png)
 
 ## 演示视频
 
