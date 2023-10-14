@@ -61,6 +61,11 @@
             width: 130px;
             height: 180px;
         }
+
+        #footer {
+            padding-top: 10px;
+            line-height: 43px;
+        }
     </style>
 </head>
 <body>
@@ -90,13 +95,13 @@
     </div>
 </div>
 <div id="body">
-<div id="bookList">
+    <div id="bookList">
 
 
-</div>
+    </div>
 
 
-<div id="books" style="text-align: center;"></div>
+    <div id="books" style="text-align: center;"></div>
 
 </div>
 <div th:replace="mobile/common/footer :: footer">
@@ -108,17 +113,17 @@
 <div th:replace="mobile/common/js :: js"></div>
 
 <script>
-    $("#body").css("min-height",($(window).height() - 110)+"px")
+    $("#body").css("min-height", ($(window).height() - 110) + "px")
 
-    search(1,20);
+    search(1, 20);
 
-    function search(curr,limit) {
+    function search(curr, limit) {
 
 
         $.ajax({
             type: "get",
             url: "/user/listBookShelfByPage",
-            data: {'curr':curr,'limit':limit},
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -132,31 +137,31 @@
                             book.bookDesc = book.bookDesc.substring(0,end);
                         }*/
 
-                        if(book.bookDesc){
-                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g,"").replace(/\s+/g,"").replace(/&nbsp;/g,"");
+                        if (book.bookDesc) {
+                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "").replace(/&nbsp;/g, "");
                         }
 
                         bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
-                            "        <a href='/book/"+book.bookId+"/"+book.preContentId+".html'>\n" +
+                            "        <a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
                             "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
                             "                <img style='width: 130px;height: 180px' align=\"center\"\n" +
-                            "                     src=\""+book.picUrl+"\"/>\n" +
+                            "                     src=\"" + book.picUrl + "\"/>\n" +
                             "\n" +
                             "            </div>\n" +
                             "        </a>\n" +
                             "        <div style=\"padding: 10px\" class=\"layui-col-xs6 layui-col-sm8 layui-col-md8 layui-col-lg8\">\n" +
-                            "            <a href='/book/"+book.bookId+"/"+book.preContentId+".html'>\n" +
-                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">"+book.bookName+"</div>\n" +
+                            "            <a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
+                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">" + book.bookName + "</div>\n" +
                             "            </a>\n" +
                             "            <div style=\";color: #4c6978;float: right;\"><i style=\"color: red\"></i></div>\n" +
-                            "            <a href='/book/"+book.bookId+"/"+book.preContentId+".html'>\n" +
-                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者："+book.authorName+"</div>\n" +
+                            "            <a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
+                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者：" + book.authorName + "</div>\n" +
                             "            </a>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别："+book.catName+"</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态："+(book.bookStatus==0?'连载':'完结')+"</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>"+book.lastIndexUpdateTime.substr(0,11)+"</i>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别：" + book.catName + "</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态：" + (book.bookStatus == 0 ? '连载' : '完结') + "</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>" + book.lastIndexUpdateTime.substr(0, 11) + "</i>\n" +
                             "            </div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">简介："+(book.bookDesc?(book.bookDesc.length>15?(book.bookDesc.substr(0,15)+"..."):book.bookDesc):book.bookDesc)+"</div>\n" +
+                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">简介：" + (book.bookDesc ? (book.bookDesc.length > 15 ? (book.bookDesc.substr(0, 15) + "...") : book.bookDesc) : book.bookDesc) + "</div>\n" +
                             "\n" +
                             "\n" +
                             "        </div>\n" +
@@ -250,8 +255,6 @@
 
 </script>
 <script>
-
-
 
 
     function toMyCollect() {

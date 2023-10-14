@@ -12,18 +12,19 @@
           th:content="${book.bookName}+'最新更新章节免费在线阅读TXT下载'">
 
 
-
     <div th:include="mobile/common/css :: css"></div>
 
 
     <script type="text/javascript">
-        function reinitIframe(){
+        function reinitIframe() {
 
             var iframe = document.getElementById("frame_content");
-            try{
-                iframe.height =  iframe.contentWindow.document.documentElement.scrollHeight;
-            }catch (ex){}
+            try {
+                iframe.height = iframe.contentWindow.document.documentElement.scrollHeight;
+            } catch (ex) {
+            }
         }
+
         window.setInterval("reinitIframe()", 200);
     </script>
     <script th:fragment="js" src="/mobile/js/jquery-1.9.1.js"></script>
@@ -160,6 +161,11 @@
             text-align: center;
         }
 
+        #footer {
+            padding-top: 10px;
+            line-height: 43px;
+        }
+
 
     </style>
 </head>
@@ -167,88 +173,93 @@
 <div id="content">
 
 
-<input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
+    <input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
 
-<input type="hidden" id="bookNameHidden" th:value="${book.bookName}"/>
+    <input type="hidden" id="bookNameHidden" th:value="${book.bookName}"/>
 
-<input type="hidden" id="contentIdHidden" th:value="${bookIndex.id}"/>
+    <input type="hidden" id="contentIdHidden" th:value="${bookIndex.id}"/>
 
-<input type="hidden" id="indexNameHidden" th:value="${bookIndex.indexName}"/>
+    <input type="hidden" id="indexNameHidden" th:value="${bookIndex.indexName}"/>
 
-<input type="hidden" id="indexNumHidden" th:value="${bookIndex.indexNum}"/>
+    <input type="hidden" id="indexNumHidden" th:value="${bookIndex.indexNum}"/>
 
-<script>
-    var token = localStorage.getItem("token");
-</script>
+    <script>
+        var token = localStorage.getItem("token");
+    </script>
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+    <div style="height: 50px;line-height: 50px;text-align: center"
+         class="layui-header header header-doc  layui-bg-cyan">
 
-    <div style="width:10%;float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-    </div>
-    <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b style="padding-left: 5%;float: left;width: 69%" class="line-limit-length" th:utext="${bookIndex.indexName}+' '+${book.bookName}"></b></a>
-    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-    </a>
-    </div>
-</div>
-
-
-<p class="Readpage" style="background:#FFFFFF;padding:2px;">
-    <a id="lightdiv" class="button lightoff" onclick="nr_setbg('light')">关灯</a>
-    <a id="huyandiv" class="button huyanon" onclick="nr_setbg('huyan')">护眼</a>&nbsp;&nbsp;&nbsp;&nbsp;
-    字体：<a id="fontbig" class="sizebg" onclick="nr_setbg('big')">大</a> <a id="fontmiddle" class="button sizebgon"
-                                                                         onclick="nr_setbg('middle')">中</a> <a
-        id="fontsmall" class="sizebg" onclick="nr_setbg('small')">小</a>
-</p>
-<div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
-
-    <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
-    <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-    <a style="color: #333" th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
-</div>
-<!--<div id="screenInput" class="screen_toolbar" style="display: none">
-    <div style="height: 5px" class="layui-col-xs2 layui-col-sm3 layui-col-md3 layui-col-lg3"></div>
-    <div class="layui-col-xs6 layui-col-sm4 layui-col-md4 layui-col-lg4">
-        <input type="text" id="screenBulletText" required lay-verify="required" placeholder="请输入弹幕内容,右下角开关可控制弹幕是否开启" autocomplete="off"
-               class="layui-input">
-
-    </div>
-    <div class="layui-col-xs2 layui-col-sm1 layui-col-md1 layui-col-lg1">
-        <button class="layui-btn send">发送</button>
-    </div>
-</div>
-<form id="screenSwitch" class="layui-form">
-    <div class="layui-form-item" style="position: fixed;right: 0px;bottom: 100px" title="弹幕开关">
-        &lt;!&ndash; <label  class="layui-form-label" style="opacity:0.5;font-weight: bold;color: red;">弹幕</label>&ndash;&gt;
-        <div class="layui-input-block">
-            <input class="clear" type="checkbox" name="switch" lay-skin="switch">
+        <div style="width:10%;float: left;margin-left: 10px">
+            <a href="javascript:history.go(-1)">
+                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+        </div>
+        <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b
+                style="padding-left: 5%;float: left;width: 69%" class="line-limit-length"
+                th:utext="${bookIndex.indexName}+' '+${book.bookName}"></b></a>
+        <div style="width:10%;float: right;margin-right: 10px"><a href="/">
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
+        </a>
         </div>
     </div>
-</form>-->
-<div th:replace="mobile/common/js :: js">
-</div>
-<div id="chaptercontent" class="Readarea ReadAjax_content screen_container"
-     style="color: rgb(0, 0, 0); font-size: 20px;" th:if="${!needBuy}">
-    <p style="width:100%;text-alight:center; overflow: auto;-webkit-overflow-scrolling:touch;" >&nbsp;&nbsp;&nbsp;&nbsp;
-        <span
-                 th:utext="${bookContent.content}"></span></p>
-</div>
-<div  class="Readarea ReadAjax_content screen_container"
-     style="color: rgb(0, 0, 0); font-size: 20px;background-color: #fff" th:if="${needBuy}">
-    <h5>此章为VIP章节，需要订阅后才能继续阅读</h5>
-    价格：<span style="color: red" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span><br/>
-    <a href="javascript:buyBookIndex()"  type="button" class="layui-btn layui-btn-sm layui-btn-radius">购买</a>
 
-</div>
-<div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
-    <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
-    <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-    <a style="color: #333" th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
+    <p class="Readpage" style="background:#FFFFFF;padding:2px;">
+        <a id="lightdiv" class="button lightoff" onclick="nr_setbg('light')">关灯</a>
+        <a id="huyandiv" class="button huyanon" onclick="nr_setbg('huyan')">护眼</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        字体：<a id="fontbig" class="sizebg" onclick="nr_setbg('big')">大</a> <a id="fontmiddle" class="button sizebgon"
+                                                                             onclick="nr_setbg('middle')">中</a> <a
+            id="fontsmall" class="sizebg" onclick="nr_setbg('small')">小</a>
+    </p>
+    <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
-</div>
+        <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
+        <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
+        <a style="color: #333"
+           th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
+    </div>
+    <!--<div id="screenInput" class="screen_toolbar" style="display: none">
+        <div style="height: 5px" class="layui-col-xs2 layui-col-sm3 layui-col-md3 layui-col-lg3"></div>
+        <div class="layui-col-xs6 layui-col-sm4 layui-col-md4 layui-col-lg4">
+            <input type="text" id="screenBulletText" required lay-verify="required" placeholder="请输入弹幕内容,右下角开关可控制弹幕是否开启" autocomplete="off"
+                   class="layui-input">
+
+        </div>
+        <div class="layui-col-xs2 layui-col-sm1 layui-col-md1 layui-col-lg1">
+            <button class="layui-btn send">发送</button>
+        </div>
+    </div>
+    <form id="screenSwitch" class="layui-form">
+        <div class="layui-form-item" style="position: fixed;right: 0px;bottom: 100px" title="弹幕开关">
+            &lt;!&ndash; <label  class="layui-form-label" style="opacity:0.5;font-weight: bold;color: red;">弹幕</label>&ndash;&gt;
+            <div class="layui-input-block">
+                <input class="clear" type="checkbox" name="switch" lay-skin="switch">
+            </div>
+        </div>
+    </form>-->
+    <div th:replace="mobile/common/js :: js">
+    </div>
+    <div id="chaptercontent" class="Readarea ReadAjax_content screen_container"
+         style="color: rgb(0, 0, 0); font-size: 20px;" th:if="${!needBuy}">
+        <p style="width:100%;text-alight:center; overflow: auto;-webkit-overflow-scrolling:touch;">&nbsp;&nbsp;&nbsp;&nbsp;
+            <span
+                    th:utext="${bookContent.content}"></span></p>
+    </div>
+    <div class="Readarea ReadAjax_content screen_container"
+         style="color: rgb(0, 0, 0); font-size: 20px;background-color: #fff" th:if="${needBuy}">
+        <h5>此章为VIP章节，需要订阅后才能继续阅读</h5>
+        价格：<span style="color: red" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span><br/>
+        <a href="javascript:buyBookIndex()" type="button" class="layui-btn layui-btn-sm layui-btn-radius">购买</a>
+
+    </div>
+    <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
+
+        <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
+        <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
+        <a style="color: #333"
+           th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
+
+    </div>
 
 
 </div>
@@ -265,13 +276,11 @@
 
     var ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
 
-        isIphone =!ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+        isIphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
 
         isAndroid = ua.match(/(Android)\s+([\d.]+)/),
 
         isMobile = isIphone || isAndroid;
-
-
 
 
 </script>
@@ -291,7 +300,7 @@
             }
         })
 
-        $("#content").css("min-height",($(window).height()-60)+"px");
+        $("#content").css("min-height", ($(window).height() - 60) + "px");
 
 
     })();
@@ -327,24 +336,26 @@
         }
     }
 
-    function buyBookIndex(){
+    function buyBookIndex() {
         $.ajax({
             type: "POST",
             url: "/user/buyBookIndex",
-            data: {'bookId':$("#bookIdHidden").val(),"bookName":$("#bookNameHidden").val(),
-                "bookIndexId":$("#contentIdHidden").val(),"bookIndexName":$("#indexNameHidden").val()},
+            data: {
+                'bookId': $("#bookIdHidden").val(), "bookName": $("#bookNameHidden").val(),
+                "bookIndexId": $("#contentIdHidden").val(), "bookIndexName": $("#indexNameHidden").val()
+            },
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     location.reload();
 
 
-                } else if(data.code == 1001){
+                } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl='+decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -360,25 +371,25 @@
     });
 
 
-    function enterPreIndexPage(bookId,bookIndexId){
-        if(bookIndexId != 0){
-            window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
-        }else{
+    function enterPreIndexPage(bookId, bookIndexId) {
+        if (bookIndexId != 0) {
+            window.location.href = '/book/' + bookId + '/' + bookIndexId + ".html";
+        } else {
             window.location.href = '/book/indexList-' + bookId + '.html';
         }
 
     }
-    function enterNextIndexPage(bookId,bookIndexId){
-        if(bookIndexId != 0){
-            window.location.href = '/book/'+bookId+'/'+bookIndexId+".html";
-        }else{
+
+    function enterNextIndexPage(bookId, bookIndexId) {
+        if (bookIndexId != 0) {
+            window.location.href = '/book/' + bookId + '/' + bookIndexId + ".html";
+        } else {
             window.location.href = '/book/indexList-' + bookId + '.html';
         }
 
     }
 
 </script>
-
 
 
 </html>
