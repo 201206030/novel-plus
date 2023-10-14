@@ -6,6 +6,7 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.config.AlipayProperties;
@@ -79,8 +80,8 @@ public class PayController extends BaseController {
                 bizContent.put("product_code", "QUICK_WAP_WAY");
 
                 alipayRequest.setBizContent(bizContent.toString());
-                AlipayTradeWapPayResponse response = alipayClient.pageExecute(alipayRequest);
-                form = alipayClient.pageExecute(alipayRequest).getBody();
+                AlipayTradeWapPayResponse payResponse = alipayClient.pageExecute(alipayRequest);
+                form = payResponse.getBody();
             } else {
                 // 电脑站
                 //创建API对应的request
@@ -96,7 +97,8 @@ public class PayController extends BaseController {
                     "    \"subject\":\"小说精品屋-plus\"" +
                     "  }");
                 //调用SDK生成表单
-                form = alipayClient.pageExecute(alipayRequest).getBody();
+                AlipayTradePagePayResponse payResponse = alipayClient.pageExecute(alipayRequest);
+                form = payResponse.getBody();
 
             }
 
