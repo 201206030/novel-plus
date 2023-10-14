@@ -8,7 +8,7 @@ alipay:
   #填写您的支付类接口异步通知接收服务地址，例如：https://www:test:com/callback:
   notify-url: https://73837v3i42.goho.co/pay/aliPay/notify
   #支付成功跳转页面
-  return-url: http://127.0.0.1:8080/user/userinfo.html
+  return-url: http://127.0.0.1:8083/user/userinfo.html
   #签名方式
   sign-type: RSA2
   #编码
