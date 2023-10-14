@@ -59,6 +59,7 @@
             width: 130px;
             height: 180px;
         }
+
         .payHead {
             height: 36px;
             line-height: 36px;
@@ -68,6 +69,7 @@
             border-bottom: 1px solid #eaeaea;
             zoom: 1;
         }
+
         .pay_way li {
             text-align: center;
             cursor: pointer;
@@ -75,6 +77,11 @@
             margin: 20px 0px 3px 43px;
             padding-top: 20px;
             padding-bottom: 20px;
+        }
+
+        #footer {
+            padding-top: 10px;
+            line-height: 43px;
         }
 
     </style>
@@ -108,39 +115,40 @@
 <div id="body" class="layui-row">
     <div class="payHead cf">
         <div class="fl">
-            充值账号：<span class="user_name" id="my_name">13560421324</span>&nbsp;&nbsp;&nbsp;&nbsp;余额：<em style="color: #3eaf7c" id="accountBalance">10</em> 屋币<!--<em class="red">+0</em>代金券-->
+            充值账号：<span class="user_name" id="my_name">13560421324</span>&nbsp;&nbsp;&nbsp;&nbsp;余额：<em
+                style="color: #3eaf7c" id="accountBalance">10</em> 屋币<!--<em class="red">+0</em>代金券-->
         </div>
     </div>
     <div id="payAmount" class="pay_way layui-row layui-col-space15" style="text-align: center;padding-top: 20px;">
         <h5>选择充值金额</h5>
         <li vals="10" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
             <div class="layui-panel">
-                <div ><strong>10元</strong><br><span class="pay_mn">1000屋币</span></div>
+                <div><strong>10元</strong><br><span class="pay_mn">1000屋币</span></div>
             </div>
         </li>
-        <li vals="30"  class="layui-col-xs4 layui-col-sm3 layui-col-md2">
+        <li vals="30" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
             <div class="layui-panel">
-                <div ><strong>30元</strong><br><span class="pay_mn">3000屋币</span></div>
+                <div><strong>30元</strong><br><span class="pay_mn">3000屋币</span></div>
             </div>
         </li>
         <li vals="50" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
             <div class="layui-panel">
-                <div ><strong>50元</strong><br><span class="pay_mn">5000屋币</span></div>
+                <div><strong>50元</strong><br><span class="pay_mn">5000屋币</span></div>
             </div>
         </li>
         <li vals="100" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
             <div class="layui-panel">
-                <div ><strong>100元</strong><br><span class="pay_mn">10000屋币</span></div>
+                <div><strong>100元</strong><br><span class="pay_mn">10000屋币</span></div>
             </div>
         </li>
         <li vals="200" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
             <div class="layui-panel">
-                <div ><strong>200元</strong><br><span class="pay_mn">20000屋币</span></div>
+                <div><strong>200元</strong><br><span class="pay_mn">20000屋币</span></div>
             </div>
         </li>
         <li vals="500" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
             <div class="layui-panel">
-                <div ><strong>500元</strong><br><span class="pay_mn">50000屋币</span></div>
+                <div><strong>500元</strong><br><span class="pay_mn">50000屋币</span></div>
             </div>
         </li>
 
@@ -148,7 +156,7 @@
 
     <form action="/pay/aliPay" method="post" id="payform" name="payform">
 
-        <input type="hidden" id="pValue" name="payAmount"  />
+        <input type="hidden" id="pValue" name="payAmount"/>
     </form>
 
 
@@ -162,7 +170,7 @@
 <div th:replace="mobile/common/js :: js"></div>
 
 <script>
-    $("#body").css("min-height",($(window).height() - 100)+"px")
+    $("#body").css("min-height", ($(window).height() - 110) + "px")
 
     //查询用户信息
     $.ajax({
@@ -172,9 +180,9 @@
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                if(data.data.nickName){
+                if (data.data.nickName) {
                     $("#my_name").html(data.data.nickName);
-                }else{
+                } else {
                     $("#my_name").html(data.data.username);
                 }
 
@@ -201,12 +209,10 @@
         $("#payform").submit();
 
 
-
     });
 
 
 </script>
-
 
 
 </html>
