@@ -12,15 +12,7 @@
 </head>
 <body class="">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋爬虫管理
-
-        </div>
-    </div>
+<div th:replace="crawl/header :: header">
 </div>
 
 <div class="main box_center cf">
@@ -28,9 +20,9 @@
         <div class="my_l">
 
             <ul class="log_list">
-                <li><a class="link_1 on" href="/">爬虫源管理</a></li>
+                <li><a class="link_1" href="/">爬虫源管理</a></li>
                 <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
-                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank" >规则测试</a></li>
+                <li><a class="link_1  on" href="/crawl/crawlSource_test.html" target="_blank">规则测试</a></li>
                 <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
                 <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
@@ -64,10 +56,10 @@
                                 示例：<b>value=\"(\\d+)/\\d+\"</b>
                                 <li><input type="text" id="rule" class="s_input icon_name" placeholder="规则"></li>
                                 示例：<b>1强制刷新 空或0使用缓存</b>
-                                <li><input type="text" id="isRefresh" class="s_input icon_name" placeholder="是否强制刷新"></li>
+                                <li><input type="text" id="isRefresh" class="s_input icon_name" placeholder="是否强制刷新">
+                                </li>
 
                                 <li><textarea rows="20" cols="100" id="resultMap"></textarea></li>
-
 
 
                                 <li><input type="button" onclick="testCrawlSource()" name="btnRegister" value="测试"
@@ -120,11 +112,12 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
     function load() {
-       var testParseUrl= localStorage.getItem("testParseUrl");
-       $("#url").val(testParseUrl);
-        var testParseRule=localStorage.getItem("testParseRule");
+        var testParseUrl = localStorage.getItem("testParseUrl");
+        $("#url").val(testParseUrl);
+        var testParseRule = localStorage.getItem("testParseRule");
         $("#rule").val(testParseRule);
     }
+
     function testCrawlSource() {
 
         var data = {};
@@ -145,8 +138,8 @@
         }
         data.url = url;
 
-        localStorage.setItem("testParseUrl",url);
-        localStorage.setItem("testParseRule",rule);
+        localStorage.setItem("testParseUrl", url);
+        localStorage.setItem("testParseRule", rule);
         $.ajax({
             type: "POST",
             url: "/crawl/testParse",
