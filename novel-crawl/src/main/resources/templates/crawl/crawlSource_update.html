@@ -12,15 +12,7 @@
 </head>
 <body class="">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋爬虫管理
-
-        </div>
-    </div>
+<div th:replace="crawl/header :: header">
 </div>
 
 <div class="main box_center cf">
@@ -30,7 +22,7 @@
             <ul class="log_list">
                 <li><a class="link_1 on" href="/">爬虫源管理</a></li>
                 <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
-                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank" >规则测试</a></li>
+                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank">规则测试</a></li>
                 <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
                 <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
@@ -204,12 +196,12 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
 
-    function load(){
+    function load() {
         var crawlSourceId = localStorage.getItem("crawlSourceId")
-        if(crawlSourceId!=null){
+        if (crawlSourceId != null) {
             $.ajax({
                 type: "GET",
-                url: "/crawl/getCrawlSource/"+crawlSourceId,
+                url: "/crawl/getCrawlSource/" + crawlSourceId,
                 dataType: "json",
                 success: function (data) {
                     if (data.code == 200) {
@@ -218,7 +210,7 @@
                         //未登录
                         location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
-                    }else {
+                    } else {
                         layer.alert(data.msg);
                     }
 
@@ -229,20 +221,21 @@
             })
         }
     }
-    function loadPage(data){
+
+    function loadPage(data) {
         $("#sourceId").val(data.id);
         $("#sourceName").val(data.sourceName);
-        if(data.crawlRule){
+        if (data.crawlRule) {
 
 
-            var crawlRule= JSON.parse(data.crawlRule);
+            var crawlRule = JSON.parse(data.crawlRule);
             $("#bookListUrl").val(crawlRule.bookListUrl);
             var catIdRule = crawlRule.catIdRule;
-            try{
+            try {
                 for (var i = 1; i <= 7; i++) {
                     $("#catId" + i).val(catIdRule["catId" + i]);
                 }
-            }catch(e){
+            } catch (e) {
             }
             $("#bookIdPatten").val(crawlRule.bookIdPatten);
             $("#pagePatten").val(crawlRule.pagePatten);
@@ -253,14 +246,14 @@
             $("#picUrlPatten").val(crawlRule.picUrlPatten);
             $("#picUrlPrefix").val(crawlRule.picUrlPrefix);
             $("#statusPatten").val(crawlRule.statusPatten);
-            try{
+            try {
                 var bookStatusRule = crawlRule.bookStatusRule;
-                var i=0;
-                for(var key in bookStatusRule){
+                var i = 0;
+                for (var key in bookStatusRule) {
                     $("#bookStatus" + i).val(key);
                     i++;
                 }
-            }catch (e) {
+            } catch (e) {
 
             }
             $("#scorePatten").val(crawlRule.scorePatten);
@@ -279,12 +272,13 @@
 
         }
     }
+
     load();
 
     function updateCrawlSource() {
 
         var crawlRule = {};
-        var sourceId =$("#sourceId").val();
+        var sourceId = $("#sourceId").val();
 
         var sourceName = $("#sourceName").val();
         if (sourceName.length == 0) {
@@ -498,7 +492,7 @@
         $.ajax({
             type: "POST",
             url: "/crawl/updateCrawlSource",
-            data: {'id':sourceId,'sourceName': sourceName, 'crawlRule': JSON.stringify(crawlRule)},
+            data: {'id': sourceId, 'sourceName': sourceName, 'crawlRule': JSON.stringify(crawlRule)},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {

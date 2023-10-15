@@ -12,15 +12,7 @@
 </head>
 <body class="">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋爬虫管理
-
-        </div>
-    </div>
+<div th:replace="crawl/header :: header">
 </div>
 
 <div class="main box_center cf">
@@ -30,7 +22,7 @@
             <ul class="log_list">
                 <li><a class="link_1 on" href="/">爬虫源管理</a></li>
                 <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
-                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank" >规则测试</a></li>
+                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank">规则测试</a></li>
                 <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
                 <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>

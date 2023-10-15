@@ -12,15 +12,7 @@
 </head>
 <body class="">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋爬虫管理
-
-        </div>
-    </div>
+<div th:replace="crawl/header :: header">
 </div>
 
 <div class="main box_center cf">
@@ -30,7 +22,7 @@
             <ul class="log_list">
                 <li><a class="link_1" href="/">爬虫源管理</a></li>
                 <li><a class="link_1 on" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
-                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank" >规则测试</a></li>
+                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank">规则测试</a></li>
                 <!--<li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
                 <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
@@ -47,7 +39,7 @@
                             <h3>采集信息填写（示例均为笔趣阁：http://www.mcmssc.com）</h3>
                             <ul class="log_list">
                                 <li><span id="LabErr"></span></li>
-                                <input type="hidden" id="sourceName" class="s_input icon_name" >
+                                <input type="hidden" id="sourceName" class="s_input icon_name">
                                 <b>采集源:</b>
                                 <li><select id="sourceId" class="s_input icon_key">
                                 </select></li>
@@ -99,16 +91,16 @@
         $.ajax({
             type: "get",
             url: "/crawl/listCrawlByPage",
-            data: {'curr':1,'limit':100},
+            data: {'curr': 1, 'limit': 100},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     var crawlSourceList = data.data.list;
                     if (crawlSourceList.length > 0) {
                         var crawlSourceListHtml = "";
-                        for(var i=0;i<crawlSourceList.length;i++){
+                        for (var i = 0; i < crawlSourceList.length; i++) {
                             var crawlSource = crawlSourceList[i];
-                            crawlSourceListHtml+=("<option value=\""+crawlSource.id+"\">"+crawlSource.sourceName+"</option>");
+                            crawlSourceListHtml += ("<option value=\"" + crawlSource.id + "\">" + crawlSource.sourceName + "</option>");
                         }
                         $("#sourceId").html(crawlSourceListHtml);
 
@@ -120,7 +112,7 @@
                     //未登录
                     location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -143,21 +135,21 @@
 
         var sourceBookId = $("#sourceBookId").val();
 
-        if (!sourceBookId){
+        if (!sourceBookId) {
             layer.alert("采集的源站小说ID不能为空");
             return;
         }
 
         var bookName = $("#bookName").val();
 
-        if (!bookName){
+        if (!bookName) {
             layer.alert("采集的小说名不能为空");
             return;
         }
 
         var authorName = $("#authorName").val();
 
-        if (!authorName){
+        if (!authorName) {
             layer.alert("采集的小说作者名不能为空");
             return;
         }
@@ -165,7 +157,14 @@
         $.ajax({
             type: "POST",
             url: "/crawl/addCrawlSingleTask",
-            data: {'sourceId': sourceId, 'sourceName': sourceName,'catId':catId,'sourceBookId' : sourceBookId,'bookName':bookName,'authorName':authorName},
+            data: {
+                'sourceId': sourceId,
+                'sourceName': sourceName,
+                'catId': catId,
+                'sourceBookId': sourceBookId,
+                'bookName': bookName,
+                'authorName': authorName
+            },
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
