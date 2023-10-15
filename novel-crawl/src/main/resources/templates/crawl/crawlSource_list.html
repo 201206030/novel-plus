@@ -1,5 +1,5 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <head>
@@ -7,16 +7,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <title>爬虫管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
-        <link rel="stylesheet" href="/css/user.css" />
+        <link rel="stylesheet" href="/css/user.css"/>
     </head>
 </head>
 <body class="">
 
 <div class="header">
     <div class="mainNav" id="mainNav">
-        <div class="box_center cf" style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+        <div class="box_center cf"
+             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
 
-                小说精品屋爬虫管理
+            小说精品屋爬虫管理
 
         </div>
     </div>
@@ -29,9 +30,9 @@
             <ul class="log_list">
                 <li><a class="link_1 on" href="/">爬虫源管理</a></li>
                 <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
-                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank" >规则测试</a></li>
-               <!-- <li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
-                <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
+                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank">规则测试</a></li>
+                <!-- <li><a class="link_1 " href="/user/userinfo.html">批量小说爬取</a></li>
+                 <li><a class="link_4 " href="/user/favorites.html">单本小说爬取</a></li>-->
             </ul>
 
         </div>
@@ -40,6 +41,7 @@
                 <div class="title cf">
                     <h2 class="fl">爬虫源列表</h2>
                     <div class="fr"><a href="/crawl/crawlSource_add.html" class="btn_red">增加爬虫源</a>
+                    </div>
                 </div>
 
                 <div id="divData" class="updateTable">
@@ -67,7 +69,6 @@
                         </tr>
                         </thead>
                         <tbody id="crawlSourceList">
-
 
 
                         </tbody>
@@ -120,38 +121,39 @@
 <script language="javascript" type="text/javascript">
     search(1, 10);
 
-    var pageCrawlSourceList=null;
+    var pageCrawlSourceList = null;
+
     function search(curr, limit) {
 
         $.ajax({
             type: "get",
             url: "/crawl/listCrawlByPage",
-            data: {'curr':curr,'limit':limit},
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     var crawlSourceList = data.data.list;
-                    pageCrawlSourceList=data.data.list;
+                    pageCrawlSourceList = data.data.list;
                     if (crawlSourceList.length > 0) {
                         var crawlSourceListHtml = "";
-                        for(var i=0;i<crawlSourceList.length;i++){
+                        for (var i = 0; i < crawlSourceList.length; i++) {
                             var crawlSource = crawlSourceList[i];
-                            crawlSourceListHtml+=(" <tr class=\"book_list\" vals=\"291\">\n" +
+                            crawlSourceListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
                                 "                            <td class=\"style bookclass\">\n" +
-                                "                                ["+(i+1)+"]\n" +
+                                "                                [" + (i + 1) + "]\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"chapter\">\n" +
-                                "                                "+crawlSource.sourceName+"</td>\n" +
+                                "                                " + crawlSource.sourceName + "</td>\n" +
                                 "                            <td class=\"name\" valsc=\"291|2037554|1\">"
-                                +crawlSource.createTime+"</td>\n" +
+                                + crawlSource.createTime + "</td>\n" +
                                 "                            <td class=\"name\">\n" +
-                                "                                "+crawlSource.updateTime+"\n" +
+                                "                                " + crawlSource.updateTime + "\n" +
                                 "                            </td>\n" +
-                                "                            <td class=\"goread\" id='sourceStatus"+crawlSource.id+"'>"+(crawlSource.sourceStatus==0?'停止运行':'正在运行')+
+                                "                            <td class=\"goread\" id='sourceStatus" + crawlSource.id + "'>" + (crawlSource.sourceStatus == 0 ? '停止运行' : '正在运行') +
                                 "                            </td>\n" +
 
-                                " <td class=\"goread\" id='opt"+crawlSource.id+"'><a href='javascript:openOrStopCrawl("+crawlSource.id+","+crawlSource.sourceStatus+")'>"+(crawlSource.sourceStatus==0?'开启':'关闭')+"  </a>" +
-                                "<a href='javascript:updateCrawlSource("+crawlSource.id+")'>修改  </a>" +
+                                " <td class=\"goread\" id='opt" + crawlSource.id + "'><a href='javascript:openOrStopCrawl(" + crawlSource.id + "," + crawlSource.sourceStatus + ")'>" + (crawlSource.sourceStatus == 0 ? '开启' : '关闭') + "  </a>" +
+                                "<a href='javascript:updateCrawlSource(" + crawlSource.id + ")'>修改  </a>" +
                                 "</td>                     </tr>");
                         }
                         $("#crawlSourceList").html(crawlSourceListHtml);
@@ -190,7 +192,7 @@
                     //未登录
                     location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -201,31 +203,32 @@
         })
 
     }
-    function updateCrawlSource(crawlSourceId){
 
-        localStorage.setItem("crawlSourceId",crawlSourceId);
-        window.location.href="/crawl/crawlSource_update.html";
+    function updateCrawlSource(crawlSourceId) {
+
+        localStorage.setItem("crawlSourceId", crawlSourceId);
+        window.location.href = "/crawl/crawlSource_update.html";
 
     }
 
-    function openOrStopCrawl(sourceId,status) {
+    function openOrStopCrawl(sourceId, status) {
 
         $.ajax({
             type: "POST",
             url: "/crawl/openOrCloseCrawl",
-            data: {'sourceId':sourceId,'sourceStatus':status==0?1:0},
+            data: {'sourceId': sourceId, 'sourceStatus': status == 0 ? 1 : 0},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
 
-                    if(status == 0){
+                    if (status == 0) {
                         //开启
-                        $("#sourceStatus"+sourceId).html("正在运行");
-                        $("#opt"+sourceId).html("<a href='javascript:openOrStopCrawl("+sourceId+","+1+")'>关闭</a>");
-                    }else{
+                        $("#sourceStatus" + sourceId).html("正在运行");
+                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 1 + ")'>关闭</a>");
+                    } else {
                         //关闭
-                        $("#sourceStatus"+sourceId).html("停止运行");
-                        $("#opt"+sourceId).html("<a href='javascript:openOrStopCrawl("+sourceId+","+0+")'>开启</a>");
+                        $("#sourceStatus" + sourceId).html("停止运行");
+                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 0 + ")'>开启</a>");
                     }
 
 
@@ -233,7 +236,7 @@
                     //未登录
                     location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
@@ -242,9 +245,6 @@
                 layer.alert('网络异常');
             }
         })
-
-
-
 
 
     }
