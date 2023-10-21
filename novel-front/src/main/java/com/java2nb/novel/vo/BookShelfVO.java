@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.java2nb.novel.entity.UserBookshelf;
 import lombok.Data;
 
-import javax.annotation.Generated;
 import java.util.Date;
 
 /**
@@ -29,6 +28,7 @@ public class BookShelfVO extends UserBookshelf {
 
     private String bookDesc;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "MM/dd HH:mm")
     private Date lastIndexUpdateTime;
 
     private Byte bookStatus;
