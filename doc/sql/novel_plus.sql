@@ -1,20 +1,7 @@
-/*
-Navicat MySQL Data Transfer
+CREATE database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use `novel_plus`;
 
-Source Server         : localhost
-Source Server Version : 50725
-Source Host           : localhost:3306
-Source Database       : novel_plus
-
-Target Server Type    : MYSQL
-Target Server Version : 50725
-File Encoding         : 65001
-
-Date: 2020-05-18 13:59:04
-*/
-
-SET
-FOREIGN_KEY_CHECKS=0;
+SET NAMES utf8mb4;
 
 -- ----------------------------
 -- Table structure for author
