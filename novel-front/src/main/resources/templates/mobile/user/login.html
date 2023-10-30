@@ -25,19 +25,20 @@
     </a>
     </div>
 </div>
-<form lay-filter="loginForm" id="form1" style="height: 500px;padding-top:30px;padding-right: 20px" class="layui-form" action="">
+<form lay-filter="loginForm" id="form1" style="height: 500px;padding-top:30px;padding-right: 20px" class="layui-form"
+      action="">
     <input type="hidden" id="bookIdHidden" name="bookId" th:value="${bookId}"/>
     <div class="layui-form-item">
         <label class="layui-form-label">手机号码</label>
         <div class="layui-input-inline">
-            <input name="txtUName" type="text" id="txtUName"  placeholder="请输入手机号"
+            <input name="txtUName" type="text" id="txtUName" placeholder="请输入手机号"
                    autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">密码</label>
         <div class="layui-input-inline">
-            <input name="txtPassword" type="password" id="txtPassword"  placeholder="请输入密码"
+            <input name="txtPassword" type="password" id="txtPassword" placeholder="请输入密码"
                    autocomplete="off" class="layui-input">
         </div>
 
@@ -49,8 +50,8 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <input type="button" value="登录" id="btnLogin" class="layui-btn" />
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <input type="button" value="登录" id="btnLogin" class="layui-btn"/>
+            <a class="layui-btn layui-btn-primary" href="/user/register.html">注册</a>
         </div>
     </div>
 </form>
@@ -62,25 +63,25 @@
 <div th:replace="mobile/common/js :: js">
 </div>
 <script type="text/javascript">
-    $("#form1").css("min-height",($(window).height() - 140)+"px")
-    if(localStorage.getItem("autoLogin")==1){
-        $("#autoLogin").prop("checked",'true');
-        layui.form.render('checkbox','loginForm');
-    }else{
+    $("#form1").css("min-height", ($(window).height() - 140) + "px")
+    if (localStorage.getItem("autoLogin") == 1) {
+        $("#autoLogin").prop("checked", 'true');
+        layui.form.render('checkbox', 'loginForm');
+    } else {
         $("#autoLogin").removeAttr("checked");
     }
     $("#btnLogin").click(function () {
         var username = $("#txtUName").val();
-        if(username.isBlank()){
+        if (username.isBlank()) {
             layer.alert("手机号不能为空！");
             return;
         }
-        if(!username.isPhone()){
+        if (!username.isPhone()) {
             layer.alert("手机号格式不正确！");
             return;
         }
         var password = $("#txtPassword").val();
-        if(password.isBlank()){
+        if (password.isBlank()) {
             layer.alert("密码不能为空！");
             return;
         }
@@ -91,12 +92,12 @@
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    if($("#autoLogin").is(':checked')){
-                        $.cookie('Authorization', data.data.token, { expires: 7 ,path: '/'  });
-                        localStorage.setItem("autoLogin","1");
-                    }else {
-                        $.cookie('Authorization', data.data.token,{ path: '/'  });
-                        localStorage.setItem("autoLogin","0");
+                    if ($("#autoLogin").is(':checked')) {
+                        $.cookie('Authorization', data.data.token, {expires: 7, path: '/'});
+                        localStorage.setItem("autoLogin", "1");
+                    } else {
+                        $.cookie('Authorization', data.data.token, {path: '/'});
+                        localStorage.setItem("autoLogin", "0");
                     }
                     var orginUrl = getSearchString("originUrl");
                     window.location.href = orginUrl == undefined || orginUrl.isBlank() ? "/" : orginUrl;
@@ -112,7 +113,6 @@
 
     })
 </script>
-
 
 
 </html>
