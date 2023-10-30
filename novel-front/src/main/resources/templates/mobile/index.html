@@ -41,18 +41,16 @@
         }
 
         .user_link {
-            position: relative;
-            display: inline-block;
             vertical-align: middle;
-            line-height: 50px;
-            padding: 0 5px;
-            color: #fff;
+            line-height: 40px;
             float: right;
+            color: #3eaf7c;
+            padding: 11px 12px 0;
         }
 
         .user_link a {
 
-            color: #fff;
+            color: #3eaf7c;
         }
 
     </style>
@@ -64,92 +62,39 @@
 
 <!-- 你的HTML代码 -->
 <a name="top"></a>
-<ul class="layui-nav app" lay-filter="" style="display:none;padding:0 10px;text-align: center">
-    <li class="layui-nav-item"><a>分类</a>
-        <dl class="layui-nav-child">
-            <dd><a href="/book/book_ranking.html?catId=1&sort=last_index_update_time">玄幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?catId=2&sort=last_index_update_time">修真小说</a></dd>
-            <dd><a href="/book/book_ranking.html?catId=3&sort=last_index_update_time">都市小说</a></dd>
-            <dd><a href="/book/book_ranking.html?catId=4&sort=last_index_update_time">历史小说</a></dd>
-            <dd><a href="/book/book_ranking.html?catId=6&sort=last_index_update_time">网游小说</a></dd>
-            <dd><a href="/book/book_ranking.html?catId=5&sort=last_index_update_time">科幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?catId=7&sort=last_index_update_time">女频小说</a></dd>
-        </dl>
-    </li>
-    <li class="layui-nav-item"><a>全本</a>
-        <dl class="layui-nav-child">
-            <dd><a href="/book/book_ranking.html?bookStatus=1">全部小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=1">玄幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=2">修真小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=3">都市小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=4">历史小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=6">网游小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=5">科幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=7">女频小说</a></dd>
-        </dl>
-    </li>
-    <li class="layui-nav-item"><a>排行</a>
-        <dl class="layui-nav-child">
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count">全部小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=1">玄幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=2">修真小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=3">都市小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=4">历史小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=6">网游小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=5">科幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=7">女频小说</a></dd>
-        </dl>
-    </li>
-    <li class="user_link"></li>
+<div style="height: 40px;">
+    <div style="line-height: 50px;width: 120px;float:left;padding-left: 10px"><img style="width: 150px;"
+                                                                                   th:src="${application.website.logo}">
+    </div>
+    <div class="user_link">
+        <a style="padding-right: 3px" href="/user/favorites.html">
+            <svg t="1693622464904" class="icon" viewBox="0 0 1097 1024" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg" p-id="3653" width="23px" height="23px">
+                <path d="M998.58390632 852.14701166H126.84569332A41.51236 41.51236 0 0 0 85.33333332 893.65937166v62.26854a41.51236 41.51236 0 0 0 41.51236 41.51236h871.738213a41.51236 41.51236 0 0 0 41.51236-41.51236v-62.26854a41.51236 41.51236 0 0 0-41.51236-41.51236z m-29.293426 83.014048h-813.172704a8.537246 8.537246 0 0 1-8.537246-8.537246v-3.681687a8.537246 8.537246 0 0 1 8.537246-8.537247h813.172704a8.537246 8.537246 0 0 1 8.537246 8.537247v3.681687a8.537246 8.537246 0 0 1-8.537246 8.537246zM126.84569332 810.63465166h124.537079a41.51236 41.51236 0 0 0 41.51236-41.51236V229.47228566a41.51236 41.51236 0 0 0-41.51236-41.51236H126.84569332A41.51236 41.51236 0 0 0 85.33333332 229.47228566v539.650006a41.51236 41.51236 0 0 0 41.51236 41.51236zM156.72605532 246.49342066h64.883071a12.805869 12.805869 0 0 1 12.805869 12.805869v479.995998a12.805869 12.805869 0 0 1-12.805869 12.80587H156.72605532a12.805869 12.805869 0 0 1-12.80587-12.80587V259.29928966a12.805869 12.805869 0 0 1 12.80587-12.805869z m239.939305 564.141231h124.53708a41.51236 41.51236 0 0 0 41.51236-41.51236V278.62548066l291.653674 510.335237 0.266789 0.480221a41.619075 41.619075 0 0 0 56.826045 15.527116l107.932136-62.962191A42.600859 42.600859 0 0 0 1034.18422332 684.02729066L727.73976932 147.49337866l-0.266789-0.48022a41.619075 41.619075 0 0 0-56.826045-15.527116l-107.932135 62.962191V84.17902666A41.51236 41.51236 0 0 0 521.20244032 42.66666666h-124.53708a41.51236 41.51236 0 0 0-41.51236 41.51236v684.943265a41.51236 41.51236 0 0 0 41.51236 41.51236z m296.295802-597.938055a3.735045 3.735045 0 0 1 5.122348 1.376631l259.841761 454.608363a12.805869 12.805869 0 0 1-4.663471 17.415982l-56.271124 32.825712a12.805869 12.805869 0 0 1-17.544041-4.663471L624.11894332 267.59109066a12.805869 12.805869 0 0 1 4.663471-17.415983zM426.49236432 101.20016166h64.883072a12.805869 12.805869 0 0 1 12.805869 12.805869v625.289257a12.805869 12.805869 0 0 1-12.805869 12.80587h-64.883072a12.805869 12.805869 0 0 1-12.805869-12.80587V114.00603066a12.805869 12.805869 0 0 1 12.805869-12.805869z m0 0"
+                      p-id="3654" fill="#3eaf7c"></path>
+            </svg>
+        </a>
+        <a href="/user/userinfo.html">
+            <svg t="1698639187751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                 p-id="4190" width="23" height="23">
+                <path d="M704 329.152C704 209.365333 622.848 128 512 128s-192 81.365333-192 201.152C320 454.762667 407.146667 554.666667 512 554.666667s192-99.904 192-225.514667z m42.666667 0C746.666667 476.714667 642.176 597.333333 512 597.333333s-234.666667-120.618667-234.666667-268.181333C277.333333 181.546667 381.824 85.333333 512 85.333333s234.666667 96.213333 234.666667 243.818667zM512.106667 640c408.96 0 404.864 256.512 404.864 256.512 3.093333 23.274667-13.482667 42.154667-37.098667 42.154667H144.32c-23.573333 0-41.088-19.136-37.077333-42.154667 0 0-4.096-256.512 404.864-256.512zM149.909333 896l0.064 3.861333-0.704 3.968c0.682667-3.882667-2.837333-7.829333-4.949333-7.829333H879.872c-2.154667 0-5.504 3.818667-5.205333 6.144l-0.426667-3.157333 0.064-3.157334c0-0.853333-0.128-3.349333-0.533333-7.125333a161.813333 161.813333 0 0 0-4.266667-23.082667 192.96 192.96 0 0 0-35.242667-71.104C780.330667 725.461333 678.634667 682.666667 512.106667 682.666667c-166.549333 0-268.224 42.794667-322.176 111.850666a192.96 192.96 0 0 0-35.242667 71.104c-2.176 8.426667-3.541333 16.192-4.266667 23.082667a81.045333 81.045333 0 0 0-0.512 7.296z"
+                      fill="#3eaf7c" p-id="4191"></path>
+            </svg>
+        </a>
 
-</ul>
-<ul class="layui-nav pc" lay-filter="" style="padding:0 36px;text-align: center">
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=1&sort=last_index_update_time">玄幻小说</a></li>
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=2&sort=last_index_update_time">修真小说</a></li>
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=3&sort=last_index_update_time">都市小说</a></li>
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=4&sort=last_index_update_time">历史小说</a></li>
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=6&sort=last_index_update_time">网游小说</a></li>
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=5&sort=last_index_update_time">科幻小说</a></li>
-    <li class="layui-nav-item"><a href="/book/book_ranking.html?catId=7&sort=last_index_update_time">女频小说</a></li>
-    <li class="layui-nav-item"><a>完本小说</a>
-        <dl class="layui-nav-child"> <!-- 二级菜单 -->
-            <dd><a href="/book/book_ranking.html?bookStatus=1">全部小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=1">玄幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=2">修真小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=3">都市小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=4">历史小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=6">网游小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=5">科幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?bookStatus=1&catId=7">女频小说</a></dd>
-        </dl>
-    </li>
-    <li class="layui-nav-item"><a>小说排行</a>
-        <dl class="layui-nav-child"> <!-- 二级菜单 -->
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count">全部小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=1">玄幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=2">修真小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=3">都市小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=4">历史小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=6">网游小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=5">科幻小说</a></dd>
-            <dd><a href="/book/book_ranking.html?sortBy=visit_count&catId=7">女频小说</a></dd>
-        </dl>
-    </li>
-    <li class="user_link"></li>
+    </div>
+</div>
 
 
-</ul>
-
-
-<div class="layui-container">
+<div class="layui-container" style="padding-left: 2%">
     <div class="layui-row">
 
-        <div class="layui-col-xs10 layui-col-sm10 layui-col-md11 layui-col-lg11" style="padding-top:1%">
+        <div class="layui-col-xs10 layui-col-sm10 layui-col-md11 layui-col-lg11">
             <input id="title" type="text" name="title" required lay-verify="required" placeholder="请输入书名·作者"
                    autocomplete="off"
                    class="layui-input">
         </div>
-        <div class="layui-col-xs1" style="padding: 1%">
+        <div class="layui-col-xs1" style="padding: 0 1% 1%">
             <button onclick="searchBooks()" class="layui-btn" lay-submit lay-filter="formDemo">搜索</button>
         </div>
     </div>
