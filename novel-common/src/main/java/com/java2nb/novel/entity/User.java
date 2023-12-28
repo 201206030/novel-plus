@@ -27,7 +27,7 @@ public class User {
 
     @Null(groups = {AddGroup.class})
     @Pattern(groups = {
-        UpdateGroup.class}, regexp = "[\u4E00-\u9FA5A-Za-z0-9_]{1,20}", message = "昵称格式不正确！")
+        UpdateGroup.class}, regexp = "[\u4E00-\u9FA5A-Za-z0-9_]{1,11}", message = "昵称格式不正确！")
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String nickName;
 
