@@ -35,7 +35,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Long createPayOrder(Byte payChannel, Integer payAmount, Long userId) {
         Date currentDate = new Date();
-        Long outTradeNo = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(currentDate)+new Random().nextInt(10));
+        Long outTradeNo = Long.parseLong(
+            new SimpleDateFormat("yyyyMMddHHmmssSSS").format(currentDate) + new Random().nextInt(10));
         OrderPay orderPay = new OrderPay();
         orderPay.setOutTradeNo(outTradeNo);
         orderPay.setPayChannel(payChannel);
@@ -50,15 +51,17 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updatePayOrder(Long outTradeNo, String tradeNo, String tradeStatus) {
-        SelectStatementProvider selectStatement = select(OrderPayDynamicSqlSupport.id,OrderPayDynamicSqlSupport.payStatus,OrderPayDynamicSqlSupport.totalAmount,OrderPayDynamicSqlSupport.userId)
-                .from(OrderPayDynamicSqlSupport.orderPay)
-                .where(OrderPayDynamicSqlSupport.outTradeNo, isEqualTo(outTradeNo))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider selectStatement = select(OrderPayDynamicSqlSupport.id,
+            OrderPayDynamicSqlSupport.payStatus, OrderPayDynamicSqlSupport.totalAmount,
+            OrderPayDynamicSqlSupport.userId)
+            .from(OrderPayDynamicSqlSupport.orderPay)
+            .where(OrderPayDynamicSqlSupport.outTradeNo, isEqualTo(outTradeNo))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 
         OrderPay orderPay = orderPayMapper.selectMany(selectStatement).get(0);
 
-        if(orderPay.getPayStatus()!=1) {
+        if (orderPay.getPayStatus().intValue() != 1) {
             //此订单还未处理过
 
             if (tradeStatus.equals("TRADE_SUCCESS") || tradeStatus.equals("TRADE_FINISHED")) {
@@ -69,16 +72,11 @@ public class OrderServiceImpl implements OrderService {
                 orderPayMapper.updateByPrimaryKeySelective(orderPay);
 
                 //2.增加用户余额
-                userService.addAmount(orderPay.getUserId(),orderPay.getTotalAmount()*100);
-
-
-
-
+                userService.addAmount(orderPay.getUserId(), orderPay.getTotalAmount() * 100);
 
 
             }
         }
-
 
 
     }
