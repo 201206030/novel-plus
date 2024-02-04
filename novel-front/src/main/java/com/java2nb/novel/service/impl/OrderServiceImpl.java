@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.Random;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
 /**
@@ -50,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updatePayOrder(Long outTradeNo, String tradeNo, String tradeStatus) {
+    public void updatePayOrder(Long outTradeNo, String tradeNo, int payStatus) {
         SelectStatementProvider selectStatement = select(OrderPayDynamicSqlSupport.id,
             OrderPayDynamicSqlSupport.payStatus, OrderPayDynamicSqlSupport.totalAmount,
             OrderPayDynamicSqlSupport.userId)
@@ -59,25 +61,30 @@ public class OrderServiceImpl implements OrderService {
             .build()
             .render(RenderingStrategies.MYBATIS3);
 
-        OrderPay orderPay = orderPayMapper.selectMany(selectStatement).get(0);
+        OrderPay orderPay = orderPayMapper.selectOne(selectStatement).orElse(null);
 
-        if (orderPay.getPayStatus().intValue() != 1) {
-            //此订单还未处理过
-
-            if (tradeStatus.equals("TRADE_SUCCESS") || tradeStatus.equals("TRADE_FINISHED")) {
+        if (orderPay.getPayStatus().intValue() == 2) {
+            //待支付订单处理
+            if (payStatus == 1) {
                 //支付成功
                 //1.更新订单状态为成功
-                orderPay.setPayStatus((byte) 1);
-                orderPay.setUpdateTime(new Date());
-                orderPayMapper.updateByPrimaryKeySelective(orderPay);
-
-                //2.增加用户余额
-                userService.addAmount(orderPay.getUserId(), orderPay.getTotalAmount() * 100);
-
+                UpdateStatementProvider updateStatement = update(OrderPayDynamicSqlSupport.orderPay)
+                    .set(OrderPayDynamicSqlSupport.tradeNo).equalTo(tradeNo)
+                    .set(OrderPayDynamicSqlSupport.payStatus).equalTo((byte) 1)
+                    .set(OrderPayDynamicSqlSupport.updateTime).equalTo(new Date())
+                    .where(OrderPayDynamicSqlSupport.id, isEqualTo(orderPay.getId()))
+                    .and(OrderPayDynamicSqlSupport.payStatus, isEqualTo((byte) 2))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+                int updateRow = orderPayMapper.update(updateStatement);
+                if (updateRow > 0) {
+                    //更新成功
+                    //2.增加用户余额
+                    userService.addAmount(orderPay.getUserId(), orderPay.getTotalAmount() * 100);
+                }
 
             }
         }
-
 
     }
 }
