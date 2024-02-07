@@ -208,7 +208,7 @@
             if (data.code == 200) {
                 var updateRankBooks = data.data;
                 var updateRankBookHtml = "";
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < updateRankBooks.length; i++) {
 
                     var updateRankBook = updateRankBooks[i];
                     if (updateRankBook.bookDesc) {
