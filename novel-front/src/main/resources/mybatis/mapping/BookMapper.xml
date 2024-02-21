@@ -34,35 +34,41 @@
 
     </select>
 
-    <update id="addVisitCount" >
-        update book set visit_count = visit_count + ${visitCount}
+    <update id="addVisitCount">
+        update book
+        set visit_count = visit_count + ${visitCount}
         where id = #{bookId}
     </update>
 
     <select id="listRecBookByCatId" parameterType="int" resultType="com.java2nb.novel.entity.Book">
-        select id,pic_url,book_name,book_desc
+        select id, pic_url, book_name, book_desc
         from book
         where cat_id = #{catId}
+          and word_count > 0
         order by RAND() LIMIT 4
     </select>
 
 
     <update id="addCommentCount" parameterType="long">
-        update book set comment_count = comment_count+1
-        where  id = #{bookId}
+        update book
+        set comment_count = comment_count + 1
+        where id = #{bookId}
     </update>
 
     <select id="queryNetworkPicBooks" resultType="com.java2nb.novel.entity.Book">
-        select
-        id,pic_url from book
+        select id,
+               pic_url
+        from book
         where pic_url like 'http%'
-        and pic_url not like concat('%',#{localPicPrefix},'%')
-        limit #{limit}
+          and pic_url not like concat('%', #{localPicPrefix}, '%')
+            limit #{limit}
     </select>
 
     <select id="selectIdsByScoreAndRandom" parameterType="int" resultType="com.java2nb.novel.entity.Book">
 
-       select id,book_name,author_name,pic_url,book_desc,score from book ORDER BY score,RAND() LIMIT #{limit};
-   </select>
+        select id, book_name, author_name, pic_url, book_desc, score
+        from book
+        ORDER BY score, RAND() LIMIT #{limit};
+    </select>
 
 </mapper>
