@@ -213,7 +213,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);
@@ -300,7 +300,7 @@
             layer.close(index);
             $.ajax({
                 type: "delete",
-                url: "/author/deleteIndex/"+indexId,
+                url: "/author/deleteIndex/" + indexId,
                 data: {},
                 dataType: "json",
                 success: function (data) {
@@ -311,7 +311,7 @@
 
                     } else if (data.code == 1001) {
                         //未登录
-                        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                     } else {
                         layer.alert(data.msg);

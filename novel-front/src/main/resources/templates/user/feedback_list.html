@@ -1,6 +1,5 @@
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
     <title th:text="'我的反馈_'+${application.website.name}"></title>
@@ -34,8 +33,6 @@
                     <dd id="feedbackList">
 
 
-
-
                     </dd>
                 </dl>
                 <div class="cf">
@@ -61,7 +58,7 @@
         $.ajax({
             type: "get",
             url: "/user/listUserFeedBackByPage",
-            data: {'curr':curr,'limit':limit},
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -71,8 +68,8 @@
                         for (var i = 0; i < feedbackList.length; i++) {
                             var feedback = feedbackList[i];
                             feedbackListHtml += (" <div class=\"comment_list clear\" ><ul>\n" +
-                                "                                <li class=\"li_1\"><span class=\"user_name fl\"></span><span class=\"time fl\">"+feedback.createTime+"</span></li>\n" +
-                                "                                <li class=\"li_2\">"+feedback.content+"</li>\n" +
+                                "                                <li class=\"li_1\"><span class=\"user_name fl\"></span><span class=\"time fl\">" + feedback.createTime + "</span></li>\n" +
+                                "                                <li class=\"li_2\">" + feedback.content + "</li>\n" +
                                 "                            </ul></div>");
                         }
                         $("#feedbackList").html(feedbackListHtml);
@@ -109,9 +106,9 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
