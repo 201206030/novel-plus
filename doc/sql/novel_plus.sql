@@ -1,5 +1,7 @@
-CREATE database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
-use `novel_plus`;
+CREATE
+database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use
+`novel_plus`;
 
 SET NAMES utf8mb4;
 
@@ -2999,3 +3001,9 @@ update website_info
 set logo     = 'https://youdoc.gitee.io/resource/images/logo%20(1).png',
     logo_dark='https://youdoc.gitee.io/resource/images/logo%20(1).png'
 where id = 1;
+
+
+
+update crawl_source
+set crawl_rule = replace(crawl_rule, 'ibiquge.net', 'ibiquzw.org')
+where id = 16;
