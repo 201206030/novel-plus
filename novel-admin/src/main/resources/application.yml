@@ -18,11 +18,12 @@ spring:
   profiles:
     active: dev
   
-  #上传文件的最大值（10M）
+  #上传文件的最大值（100M）
   servlet:
     multipart:
-      max-file-size: 10485760
-        
+      max-file-size: 100MB
+      max-request-size: 100MB
+          
   devtools:
     restart:
       enabled: true

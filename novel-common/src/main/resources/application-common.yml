@@ -11,10 +11,11 @@ spring:
     generator:
       write-numbers-as-strings: true
 
-  #上传文件的最大值（1M）
+  #上传文件的最大值（100M）
   servlet:
     multipart:
-      max-file-size: 1048576
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 mybatis:
   configuration:
