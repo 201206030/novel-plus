@@ -62,10 +62,6 @@
             height: 180px;
         }
 
-        #footer {
-            padding-top: 10px;
-            line-height: 43px;
-        }
     </style>
 </head>
 <body>
@@ -113,7 +109,6 @@
 <div th:replace="mobile/common/js :: js"></div>
 
 <script>
-    $("#body").css("min-height", ($(window).height() - 110) + "px")
 
     search(1, 20);
 

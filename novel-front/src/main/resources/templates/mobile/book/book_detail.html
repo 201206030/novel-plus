@@ -289,8 +289,6 @@
     }
 
 
-    $("#content").css("min-height", ($(window).height() - 60) + "px");
-
     function downloadFile() {
         var fileUrl = '/book/download?bookId=' + $("#bookIdHidden").val() + '&bookName=' + $("#bookNamedHidden").val();
         window.location.href = fileUrl;

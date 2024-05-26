@@ -36,41 +36,43 @@
     </div>
 
 
-
 </head>
 <body>
 
 <div id="content">
-<input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+    <input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
+    <div style="height: 50px;line-height: 50px;text-align: center"
+         class="layui-header header header-doc  layui-bg-cyan">
 
-    <div style="float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+        <div style="float: left;margin-left: 10px">
+            <a href="javascript:history.go(-1)">
+                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+        </div>
+        <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b class="layui-icon"
+                                                                               th:utext="${book.bookName}"></b></a>
+        <div style="float: right;margin-right: 10px">
+            <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
+        </div>
     </div>
-    <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b class="layui-icon" th:utext="${book.bookName}"></b></a>
-    <div style="float: right;margin-right: 10px">
-        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
-    </div>
-</div>
 
 
-<p style="height: 30px;line-height: 30px;padding: 10px">
+    <p style="height: 30px;line-height: 30px;padding: 10px">
 
-    <a href="#buttom" style="color: red">&nbsp;&nbsp;↓直达页面底部</a>
-</p>
-
-
-<div class="layui-colla-content layui-show indexP layui-row">
-    <p class="line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2" style="padding-left:10px;height: 50px;line-height: 50px;" th:each="index : ${bookIndexList}">
-        <a style="color:#333;" th:href="'/book/'+${index.bookId}+'/'+${index.id}+'.html'" th:utext="${index.indexName}">
-
-        </a>
+        <a href="#buttom" style="color: red">&nbsp;&nbsp;↓直达页面底部</a>
     </p>
 
 
+    <div class="layui-colla-content layui-show indexP layui-row">
+        <p class="line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2"
+           style="padding-left:10px;height: 50px;line-height: 50px;" th:each="index : ${bookIndexList}">
+            <a style="color:#333;" th:href="'/book/'+${index.bookId}+'/'+${index.id}+'.html'"
+               th:utext="${index.indexName}">
 
-</div>
+            </a>
+        </p>
+
+
+    </div>
 </div>
 <div th:replace="mobile/common/footer :: footer">
 </div>
@@ -80,13 +82,14 @@
 <div th:replace="mobile/common/js :: js">
 </div>
 <script>
-    $("#content").css("min-height",($(window).height()-60)+"px");
-    $.get("/book/addVisit",{"bookId":$("#bookIdHidden").val()},function(){});
-    function toMyCollect(){
+    $.get("/book/addVisit", {"bookId": $("#bookIdHidden").val()}, function () {
+    });
+
+    function toMyCollect() {
         var token = localStorage.getItem("token");
-        if(token) {
+        if (token) {
             window.location.href = "/book/search?token=" + token;
-        }else{
+        } else {
             window.location.href = "/user/login.html";
         }
     }
