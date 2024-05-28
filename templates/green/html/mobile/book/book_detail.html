@@ -274,7 +274,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);
@@ -288,8 +288,6 @@
 
     }
 
-
-    $("#content").css("min-height", ($(window).height() - 60) + "px");
 
     function downloadFile() {
         var fileUrl = '/book/download?bookId=' + $("#bookIdHidden").val() + '&bookName=' + $("#bookNamedHidden").val();

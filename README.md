@@ -67,7 +67,7 @@ novel-plus -- 父工程
 
 ## 演示视频
 
-https://www.bilibili.com/video/BV1Zo4y187Mi
+https://www.bilibili.com/video/BV18e41197xs
 
 ## 增值服务
 

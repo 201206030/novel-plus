@@ -1,10 +1,11 @@
-var needLoginPath = ['/user/favorites.html','/user/comment.html','/user/feedback.html',
-    '/user/feedback_list.html','/user/read_history.html','/user/set_name.html',
-    '/user/set_password.html','/user/set_sex.html','/user/setup.html','/user/userinfo.html',
+var needLoginPath = ['/user/favorites.html', '/user/comment.html', '/user/feedback.html',
+    '/user/feedback_list.html', '/user/read_history.html', '/user/set_name.html',
+    '/user/set_password.html', '/user/set_sex.html', '/user/setup.html', '/user/userinfo.html',
     "/pay/index.html," +
-    "/author/register.html","/author/index.html"];
+    "/author/register.html", "/author/index.html"];
 var isLogin = false;
 var url = window.location.search;
+
 //key(需要检索的键）
 function getSearchString(key) {
     var str = url;
@@ -14,26 +15,28 @@ function getSearchString(key) {
 
     for (var i = 0; i < arr.length; i++) {
         var tmp_arr = arr[i].split("=");
-        if(tmp_arr[0] == key){
+        if (tmp_arr[0] == key) {
             return decodeURIComponent(tmp_arr[1]);
         }
     }
     return undefined;
 }
+
 var keyword = getSearchString("k");
-if(keyword != undefined) {
+if (keyword != undefined) {
     $("#searchKey").val(keyword);
     $("#workDirection").remove();
     $("#idGirl").remove();
 }
 
-function searchByK(k){
-    if(!k){
-        window.location.href='/book/bookclass.html?k='+encodeURIComponent(document.getElementById("searchKey").value)
-    }else{
-        window.location.href='/book/bookclass.html?k='+encodeURIComponent(k)
+function searchByK(k) {
+    if (!k) {
+        window.location.href = '/book/bookclass.html?k=' + encodeURIComponent(document.getElementById("searchKey").value)
+    } else {
+        window.location.href = '/book/bookclass.html?k=' + encodeURIComponent(k)
     }
 }
+
 $("#searchKey").keypress(function (even) {
     if (even.which == 13) {
         even.stopPropagation();
@@ -50,37 +53,37 @@ Array.prototype.indexOf = function (val) {
 
 
 var token = $.cookie('Authorization');
-if(!token){
-    if(needLoginPath.indexOf(window.location.pathname) != -1){
-        location.href = '/user/login.html?originUrl='+decodeURIComponent(location.href);
+if (!token) {
+    if (needLoginPath.indexOf(window.location.pathname) != -1) {
+        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
     }
 
     $(".user_link").html("<i class=\"line mr20\">|</i><a href=\"/user/login.html\"  class=\"mr15\">登录</a><a href=\"/user/register.html\" >注册</a>");
-}else{
+} else {
     $.ajax({
         type: "POST",
         url: "/user/refreshToken",
         data: {},
         dataType: "json",
-        success: function(data){
-            if(data.code == 200){
+        success: function (data) {
+            if (data.code == 200) {
                 $(".user_link").html("<i class=\"line mr20\">|</i>" +
-                    "<a href=\"/user/userinfo.html\"  class=\"mr15\">"+data.data.nickName+"</a>" +
+                    "<a href=\"/user/userinfo.html\"  class=\"mr15\">" + data.data.nickName + "</a>" +
                     "<a href=\"javascript:logout()\" >退出</a>");
                 ;
-                if("/user/login.html" == window.location.pathname){
+                if ("/user/login.html" == window.location.pathname) {
                     var orginUrl = getSearchString("originUrl");
                     window.location.href = orginUrl == undefined || orginUrl.isBlank() ? "/" : orginUrl;
                     return;
                 }
                 isLogin = true;
-                if(localStorage.getItem("autoLogin") == 1){
-                    $.cookie('Authorization', data.data.token, { expires: 7 ,path: '/'  });
-                }else {
-                    $.cookie('Authorization', data.data.token,{ path: '/'  });
+                if (localStorage.getItem("autoLogin") == 1) {
+                    $.cookie('Authorization', data.data.token, {expires: 7, path: '/'});
+                } else {
+                    $.cookie('Authorization', data.data.token, {path: '/'});
                 }
-            }else{
-                if(needLoginPath.indexOf(window.location.pathname) != -1){
+            } else {
+                if (needLoginPath.indexOf(window.location.pathname) != -1) {
                     location.href = '/user/login.html';
                 }
                 $(".user_link").html("<i class=\"line mr20\">|</i><a href=\"/user/login.html\"  class=\"mr15\">登录</a><a href=\"/user/register.html\" >注册</a>");
@@ -94,7 +97,6 @@ if(!token){
 }
 
 
-
 String.prototype.isPhone = function () {
     var strTemp = /^1[3|4|5|6|7|8|9][0-9]{9}$/;
     if (strTemp.test(this)) {
@@ -104,7 +106,7 @@ String.prototype.isPhone = function () {
 };
 
 String.prototype.isBlank = function () {
-    if(this == null || $.trim(this) == ""){
+    if (this == null || $.trim(this) == "") {
         return true;
     }
     return false;
@@ -118,11 +120,8 @@ String.prototype.isNickName = function () {
 };
 
 
-
-
-
 function logout() {
-    $.cookie('Authorization', null,{ path: '/'  });
+    $.cookie('Authorization', null, {path: '/'});
     location.reload();
 }
 
@@ -133,9 +132,9 @@ function isImg(str) {
 
 
 //校验图片上传
-function checkPicUpload(file){
+function checkPicUpload(file) {
 
-    if(!isImg(file.value.substr(file.value.lastIndexOf(".")))){
+    if (!isImg(file.value.substr(file.value.lastIndexOf(".")))) {
         layer.alert('只能上传图片格式的文件！');
         return false;
     }
@@ -144,13 +143,13 @@ function checkPicUpload(file){
     if (isIE && !file.files) {
         var filePath = file.value;
         var fileSystem = new ActiveXObject("Scripting.FileSystemfileect");
-        var file = fileSystem.GetFile (filePath);
+        var file = fileSystem.GetFile(filePath);
         fileSize = file.Size;
-    }else {
+    } else {
         fileSize = file.files[0].size;
     }
-    fileSize=Math.round(fileSize/1024*100)/100; //单位为KB
-    if(fileSize>=1024){
+    fileSize = Math.round(fileSize / 1024 * 100) / 100; //单位为KB
+    if (fileSize >= 1024) {
         layer.alert('上传的图片大小不能超过1M！');
         return false;
     }

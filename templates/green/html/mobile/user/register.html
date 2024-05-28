@@ -25,20 +25,21 @@
     </a>
     </div>
 </div>
-<form lay-filter="loginForm" id="form1" style="height: 500px;padding-top:30px;padding-right: 20px" class="layui-form" action="">
+<form lay-filter="loginForm" id="form1" style="height: 500px;padding-top:30px;padding-right: 20px" class="layui-form"
+      action="">
     <input type="hidden" id="bookIdHidden" name="bookId" th:value="${bookId}"/>
 
     <div class="layui-form-item">
         <label class="layui-form-label">手机号码</label>
         <div class="layui-input-inline">
-            <input name="txtUName" type="text" id="txtUName"  placeholder="请输入手机号"
+            <input name="txtUName" type="text" id="txtUName" placeholder="请输入手机号"
                    autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">密码</label>
         <div class="layui-input-inline">
-            <input name="txtPassword" type="password" id="txtPassword"  placeholder="请输入密码"
+            <input name="txtPassword" type="password" id="txtPassword" placeholder="请输入密码"
                    autocomplete="off" class="layui-input">
         </div>
 
@@ -46,7 +47,7 @@
     <div class="layui-form-item ">
         <label class="layui-form-label">验证码</label>
         <div class="layui-input-inline">
-            <input name="txtUName" type="text" id="TxtChkCode"  placeholder="请输入验证码"
+            <input name="txtUName" type="text" id="TxtChkCode" placeholder="请输入验证码"
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-input-inline"><img
@@ -55,8 +56,8 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <input type="button" value="注册" id="btnRegister" class="layui-btn" />
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <input type="button" value="注册" id="btnRegister" class="layui-btn"/>
+            <a class="layui-btn layui-btn-primary" href="/user/login.html">登录</a>
         </div>
     </div>
 </form>
@@ -68,9 +69,8 @@
 <div th:replace="mobile/common/js :: js">
 </div>
 <script type="text/javascript">
-    $("#form1").css("min-height",($(window).height() - 140)+"px")
     $("#chkd").click();
-   
+
     $("#btnRegister").click(function () {
         var username = $("#txtUName").val();
         if (username.isBlank()) {
@@ -94,12 +94,12 @@
         $.ajax({
             type: "POST",
             url: "/user/register",
-            data: {"username": username, "password": password,"velCode":velCode},
+            data: {"username": username, "password": password, "velCode": velCode},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     $.cookie('Authorization', data.data.token, {path: '/'});
-                    window.location.href="/";
+                    window.location.href = "/";
                 } else {
                     layer.alert(data.msg);
                 }
@@ -111,12 +111,12 @@
         })
 
     })
+
     //获取验证码
     function getVerify(obj) {
         obj.src = "/file/getVerify?" + Math.random();
     }
 </script>
-
 
 
 </html>

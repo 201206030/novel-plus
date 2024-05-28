@@ -51,7 +51,7 @@ public class PayController extends BaseController {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
             //未登录，跳转到登陆页面
-            httpResponse.sendRedirect("/user/login.html?originUrl=/pay/aliPay?payAmount=" + payAmount);
+            httpResponse.sendRedirect("/user/login.html?originUrl=/pay/index.html");
         } else {
             //创建充值订单
             Long outTradeNo = orderService.createPayOrder((byte) 1, payAmount, userDetails.getId());
@@ -121,7 +121,7 @@ public class PayController extends BaseController {
 
         PrintWriter out = httpResponse.getWriter();
 
-        //获取支付宝POST过来反馈信息
+        //获取支付宝POST过来的信息
         Map<String, String> params = new HashMap<>();
         Map<String, String[]> requestParams = request.getParameterMap();
         for (String name : requestParams.keySet()) {
@@ -134,18 +134,10 @@ public class PayController extends BaseController {
             params.put(name, valueStr);
         }
 
-        //调用SDK验证签名
+        //验证签名
         boolean signVerified = AlipaySignature.rsaCheckV1(params, alipayConfig.getPublicKey(),
             alipayConfig.getCharset(), alipayConfig.getSignType());
 
-        //——请在这里编写您的程序（以下代码仅作参考）——
-
-	/* 实际验证过程建议商户务必添加以下校验：
-	1、需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号，
-	2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额），
-	3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）
-	4、验证app_id是否为该商户本身。
-	*/
         if (signVerified) {
             //验证成功
             //商户订单号
@@ -160,21 +152,18 @@ public class PayController extends BaseController {
             String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
                 StandardCharsets.UTF_8);
 
-            //更新订单状态
-            orderService.updatePayOrder(Long.parseLong(outTradeNo), tradeNo, tradeStatus);
+            if ("TRADE_SUCCESS".equals(tradeStatus)) {
+                //支付成功
+                orderService.updatePayOrder(Long.parseLong(outTradeNo), tradeNo, 1);
+            }
 
             out.println("success");
 
         } else {//验证失败
             out.println("fail");
 
-            //调试用，写文本函数记录程序运行情况是否正常
-            //String sWord = AlipaySignature.getSignCheckContentV1(params);
-            //AlipayConfig.logResult(sWord);
         }
 
-
     }
-
 
 }

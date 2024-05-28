@@ -1,6 +1,5 @@
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
     <title th:text="'充值_'+${application.website.name}"></title>
@@ -20,39 +19,51 @@
             <div class="payBox cf">
                 <div class="payHead cf">
                     <div class="fl">
-                        充值账号：<span class="user_name" id="my_name"></span>余额：<em class="red" id="accountBalance">0</em>屋币<!--<em class="red">+0</em>代金券-->
+                        充值账号：<span class="user_name" id="my_name"></span>余额：<em class="red" id="accountBalance">0</em>屋币
+                        <!--<em class="red">+0</em>代金券-->
                     </div>
                 </div>
                 <div class="payCon">
                     <h5>选择充值方式</h5>
                     <ul class="pay_way cf" id="ulPayType">
-                        <li class="on"  valp="1"><img class="pay_pic" src="../images/pay_zfb.png" alt="支付宝支付" /></li>
-                        <li valp="2"><img class="pay_pic" src="../images/pay_wx.png" alt="微信支付" /></li>
+                        <li class="on" valp="1"><img class="pay_pic" src="../images/pay_zfb.png" alt="支付宝支付"/></li>
+                        <li valp="2"><img class="pay_pic" src="../images/pay_wx.png" alt="微信支付"/></li>
 
                     </ul>
                     <h5>选择充值金额</h5>
                     <ul class="pay_way cf" id="ulZFWX">
                         <li vals="10"><strong>10元</strong><span class="pay_mn">1000屋币</span></li>
                         <li vals="30"><strong>30元</strong><span class="pay_mn">3000屋币</span></li>
-                        <li vals="50"><strong>50元</strong><span class="pay_mn">5000屋币<!--<em class="red">+ 送500代金券</em>--></span></li>
-                        <li vals="100"><strong>100元</strong><span class="pay_mn">10000屋币<!--<em class="red">+ 送1200代金券</em>--></span></li>
-                        <li vals="200"><strong>200元</strong><span class="pay_mn">20000屋币<!--<em class="red">+ 送3000代金券</em>--></span></li>
-                        <li vals="500"><strong>500元</strong><span class="pay_mn">50000屋币<!--<em class="red">+ 送10000代金券</em>--></span></li>
+                        <li vals="50"><strong>50元</strong><span class="pay_mn">5000屋币
+                            <!--<em class="red">+ 送500代金券</em>--></span></li>
+                        <li vals="100"><strong>100元</strong><span class="pay_mn">10000屋币
+                            <!--<em class="red">+ 送1200代金券</em>--></span></li>
+                        <li vals="200"><strong>200元</strong><span class="pay_mn">20000屋币
+                            <!--<em class="red">+ 送3000代金券</em>--></span></li>
+                        <li vals="500"><strong>500元</strong><span class="pay_mn">50000屋币
+                            <!--<em class="red">+ 送10000代金券</em>--></span></li>
                     </ul>
                     <ul class="pay_way cf" style="display:none;" id="ulPayPal">
                         <li vals="20"><strong>20美元</strong><span class="pay_mn">10000屋币</span></li>
-                        <li vals="50" class="on"><strong>50美元</strong><span class="pay_mn">25000屋币<em class="red"></em></span></li>
-                        <li vals="100"><strong>100美元</strong><span class="pay_mn">50000屋币<em class="red"></em></span></li>
+                        <li vals="50" class="on"><strong>50美元</strong><span class="pay_mn">25000屋币<em class="red"></em></span>
+                        </li>
+                        <li vals="100"><strong>100美元</strong><span class="pay_mn">50000屋币<em class="red"></em></span>
+                        </li>
                     </ul>
                     <ul class="pay_Checkout" id="ulZFWXXJ">
                         <li>当前汇率：1元=100屋币</li>
-                        <li>总计金额：<em class="red" id="showTotal">￥50元</em> 获得 <em class="red" id="showRemark">5000屋币<!--+500代金券--></em></li>
-                        <li style="display:none"><a class="btn_red" href="pay_success.html" onclick="javascript:UserPay.sendPay();">立即支付</a></li>
+                        <li>总计金额：<em class="red" id="showTotal">￥50元</em> 获得 <em class="red" id="showRemark">5000屋币
+                            <!--+500代金券--></em></li>
+                        <li style="display:none"><a class="btn_red" href="pay_success.html"
+                                                    onclick="javascript:UserPay.sendPay();">立即支付</a></li>
                     </ul>
                     <ul class="pay_Checkout" style="display:none;" id="ulPayPalXJ">
                         <li>当前汇率：1美元=500屋币</li>
-                        <li>总计金额：<em class="red" id="showPayPalTotal">50美元</em> 获得 <em class="red" id="showPayPalRemark">25000屋币</em></li>
-                        <li style="display:none"><a class="btn_red" href="javascript:void(0);" onclick="javascript:UserPay.sendPay();">立即支付</a></li>
+                        <li>总计金额：<em class="red" id="showPayPalTotal">50美元</em> 获得 <em class="red"
+                                                                                       id="showPayPalRemark">25000屋币</em>
+                        </li>
+                        <li style="display:none"><a class="btn_red" href="javascript:void(0);"
+                                                    onclick="javascript:UserPay.sendPay();">立即支付</a></li>
                     </ul>
                 </div>
                 <div class="payFoot">
@@ -68,7 +79,7 @@
 
         </div>
     </div>
-    <input type="hidden" id="pValue" name="payAmount"  />
+    <input type="hidden" id="pValue" name="payAmount"/>
 </form>
 
 
@@ -80,7 +91,6 @@
 <script type="text/javascript">
 
 
-
     //查询用户信息
     $.ajax({
         type: "get",
@@ -89,9 +99,9 @@
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                if(data.data.nickName){
+                if (data.data.nickName) {
                     $("#my_name").html(data.data.nickName);
-                }else{
+                } else {
                     $("#my_name").html(data.data.username);
                 }
 
@@ -99,7 +109,7 @@
 
             } else if (data.code == 1001) {
                 //未登录
-                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
             } else {
                 layer.alert(data.msg);
@@ -115,17 +125,14 @@
 
         var payType = $("#ulPayType").find("li.on").attr("valp");
 
-        if(payType == 2){
+        if (payType == 2) {
             layer.alert("微信支付暂未开通，敬请期待");
-            return ;
+            return;
         }
 
         $("#pValue").val($(this).attr("vals"));
 
         $("#payform").submit();
-
-
-
 
 
     });

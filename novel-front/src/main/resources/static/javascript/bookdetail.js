@@ -27,15 +27,14 @@
                     if (layerStatus == 1) {
                         $("#cFavs").html("<a class=\"ico_shelf\" href=\"javascript:void(0);\"><b>已收藏</b></a>");
                         jQuery.cookie("u-faorites", "1");
-                    }
-                    else {
+                    } else {
                         $("#cFavs").html("<a class=\"btn_ora_white btn_addsj\" href=\"javascript:void(0);\">已在书架</a>");
                     }
 
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);
@@ -91,7 +90,7 @@
         }
     },
     SaveComment: function (cmtBId, cmtCId, cmtDetail) {
-        if(!isLogin){
+        if (!isLogin) {
             layer.alert('请先登陆');
             return;
         }
@@ -121,7 +120,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);
@@ -187,7 +186,7 @@
         localStorage.setItem("fonts", fonts);
         $(".readBox").css("font-size", fonts + "px");
         $("#cFonts").html(fonts);
-        $("#ChapterBody").attr("class","article-content font"+fonts);
+        $("#ChapterBody").attr("class", "article-content font" + fonts);
         BookDetail.reShowCover();
     },
     SetBackUpColor: function (colorNum) {

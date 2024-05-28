@@ -106,10 +106,10 @@ Array.prototype.remove = function (val) {
 var token = $.cookie('Authorization');
 if (!token) {
     if (needLoginPath.indexOf(window.location.pathname) != -1) {
-        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
     }
 
-    $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");
+    // $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");
 } else {
     $.ajax({
         type: "POST",
@@ -118,10 +118,10 @@ if (!token) {
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                $(".user_link").html("<a href=\"/user/userinfo.html\"><i style=\"font-size: 20px;\" class=\"layui-icon \n" +
-                    "\">&#xe66f;" +
-                    "\n" +
-                    "</i></a>");
+                // $(".user_link").html("<a href=\"/user/userinfo.html\"><i style=\"font-size: 20px;\" class=\"layui-icon \n" +
+                //     "\">&#xe66f;" +
+                //     "\n" +
+                //     "</i></a>");
                 if ("/user/login.html" == window.location.pathname) {
                     var orginUrl = getSearchString("originUrl");
                     window.location.href = orginUrl == undefined || orginUrl.isBlank() ? "/" : orginUrl;
@@ -137,7 +137,7 @@ if (!token) {
                 if (needLoginPath.indexOf(window.location.pathname) != -1) {
                     location.href = '/user/login.html';
                 }
-                $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");
+                // $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");
             }
         },
         error: function () {

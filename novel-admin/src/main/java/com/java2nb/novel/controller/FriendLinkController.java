@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -83,7 +84,7 @@ public class FriendLinkController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("novel:friendLink:add")
-    public R save(FriendLinkDO friendLink) {
+    public R save(@Validated FriendLinkDO friendLink) {
         if (friendLinkService.save(friendLink) > 0) {
             redisTemplate.delete(CacheKey.INDEX_LINK_KEY);
             return R.ok();
@@ -98,7 +99,7 @@ public class FriendLinkController {
     @ResponseBody
     @RequestMapping("/update")
     @RequiresPermissions("novel:friendLink:edit")
-    public R update(FriendLinkDO friendLink) {
+    public R update(@Validated FriendLinkDO friendLink) {
         friendLinkService.update(friendLink);
         redisTemplate.delete(CacheKey.INDEX_LINK_KEY);
         return R.ok();

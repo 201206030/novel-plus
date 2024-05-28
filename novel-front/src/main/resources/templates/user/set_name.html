@@ -27,7 +27,7 @@
                 <div class="my_info_txt">
                     <ul class="mytab_list">
                         <li><i class="tit">我的昵称</i><input name="txtNiceName" type="text" value="15171695474"
-                                                          maxlength="20" id="txtNiceName" class="s_input"
+                                                          maxlength="11" id="txtNiceName" class="s_input"
                                                           placeholder=""/></li>
                         <li><i class="tit">&nbsp;</i>用户名只能包括汉字、英文字母、数字和下划线</li>
                         <li><i class="tit">&nbsp;</i><input type="button" onclick="updateName()" name="btn" value="修改"
@@ -61,7 +61,7 @@
 
             } else if (data.code == 1001) {
                 //未登录
-                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
             } else {
                 layer.alert(data.msg);
@@ -96,7 +96,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     $("#LabErr").html(data.msg);

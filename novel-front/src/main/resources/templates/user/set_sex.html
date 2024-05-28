@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
     <title th:text="'修改性别_'+${application.website.name}"></title>
@@ -24,14 +25,16 @@
         <div class="my_r">
             <div class="my_info cf">
                 <div class="my_info_txt">
-                        <ul class="mytab_list">
-                            <li><i class="tit">我的性别</i>
-                                <label><input type="radio" name="sex" value="0"  />&nbsp;男生</label>
-                                <label><input class="ml20" type="radio" name="sex" value="1" checked />&nbsp;女生</label>
-                            </li>
-                            <li class="mt20"><i class="tit">&nbsp;</i><input type="button" onclick="updateSex()" name="btn" value="修改" id="btn" class="s_btn btn_red" /></li>
-                            <li><i class="tit">&nbsp;</i><span id="LabErr"></span></li>
-                        </ul>
+                    <ul class="mytab_list">
+                        <li><i class="tit">我的性别</i>
+                            <label><input type="radio" name="sex" value="0"/>&nbsp;男生</label>
+                            <label><input class="ml20" type="radio" name="sex" value="1" checked/>&nbsp;女生</label>
+                        </li>
+                        <li class="mt20"><i class="tit">&nbsp;</i><input type="button" onclick="updateSex()" name="btn"
+                                                                         value="修改" id="btn" class="s_btn btn_red"/>
+                        </li>
+                        <li><i class="tit">&nbsp;</i><span id="LabErr"></span></li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -50,15 +53,14 @@
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                if(data.data.userSex === '0'){
-                    $("input[name=sex]").eq(0).attr("checked",true);
+                if (data.data.userSex === '0') {
+                    $("input[name=sex]").eq(0).attr("checked", true);
                 }
-
 
 
             } else if (data.code == 1001) {
                 //未登录
-                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
             } else {
                 layer.alert(data.msg);
@@ -69,11 +71,12 @@
             layer.alert('网络异常');
         }
     })
+
     function updateSex() {
         $.ajax({
             type: "POST",
             url: "/user/updateUserInfo",
-            data: {'userSex':$("input[name=sex]:checked").val()},
+            data: {'userSex': $("input[name=sex]:checked").val()},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -81,7 +84,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);

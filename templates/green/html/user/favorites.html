@@ -1,11 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <head th:replace="common/header :: common_head(~{::title},~{::meta},~{::link},~{})">
         <title th:text="'我的书架_'+${application.website.name}"></title>
-        <meta name="keywords" th:content="'我的书架,个人中心,'+${application.website.name}+'小说,'+${application.website.name}" />
-        <meta name="description" th:content="${application.website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'小说！'" />
-        <link rel="stylesheet" href="/css/user.css" />
+        <meta name="keywords" th:content="'我的书架,个人中心,'+${application.website.name}+'小说,'+${application.website.name}"/>
+        <meta name="description"
+              th:content="${application.website.name}+'小说每日更新小说连载,小说排行榜,提供言情小说,都市小说,玄幻小说,穿越小说,青春小说,总裁豪门小说,网络小说,免费小说,全本小说,首发小说,最新章节免费小说阅读,精彩尽在'+${application.website.name}+'小说！'"/>
+        <link rel="stylesheet" href="/css/user.css"/>
     </head>
 </head>
 <body class="">
@@ -29,7 +31,9 @@
         <div class="my_r">
             <div class="my_bookshelf">
                 <div class="title cf">
-                    <h2 class="fl"><a href="javascript:void(0);" class="red">我的书架</a></h2><i class="fl ml20 mr20 font16">|</i><h2 class="fl"><a href="/user/read_history.html" >最近阅读</a></h2>
+                    <h2 class="fl"><a href="javascript:void(0);" class="red">我的书架</a></h2><i
+                        class="fl ml20 mr20 font16">|</i>
+                    <h2 class="fl"><a href="/user/read_history.html">最近阅读</a></h2>
                 </div>
 
                 <div id="divData" class="updateTable">
@@ -54,7 +58,6 @@
                         </tr>
                         </thead>
                         <tbody id="bookShelfList">
-
 
 
                         </tbody>
@@ -82,31 +85,31 @@
         $.ajax({
             type: "get",
             url: "/user/listBookShelfByPage",
-            data: {'curr':curr,'limit':limit},
+            data: {'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
                     var bookShelfList = data.data.list;
                     if (bookShelfList.length > 0) {
                         var bookShelfListHtml = "";
-                        for(var i=0;i<bookShelfList.length;i++){
+                        for (var i = 0; i < bookShelfList.length; i++) {
                             var book = bookShelfList[i];
-                            bookShelfListHtml+=(" <tr class=\"book_list\" vals=\"291\">\n" +
+                            bookShelfListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
                                 "                            <td class=\"style bookclass\">\n" +
-                                "                                <a href=\"/book/bookclass.html?c="+book.catId+"\" >["+book.catName+"]</a>\n" +
+                                "                                <a href=\"/book/bookclass.html?c=" + book.catId + "\" >[" + book.catName + "]</a>\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"name\">\n" +
-                                "                                <a href=\"/book/"+book.bookId+".html\">\n" +
-                                "                                    "+book.bookName+"</a>\n" +
+                                "                                <a href=\"/book/" + book.bookId + ".html\">\n" +
+                                "                                    " + book.bookName + "</a>\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"chapter\" valsc=\"291|2037554|1\">\n" +
-                                "<a href='/book/"+book.bookId+"/"+book.lastIndexId+".html'>"+book.lastIndexName+"</a>"+
+                                "<a href='/book/" + book.bookId + "/" + book.lastIndexId + ".html'>" + book.lastIndexName + "</a>" +
                                 "                            </td>\n" +
                                 "                            <td class=\"time\">\n" +
-                                "                                "+book.lastIndexUpdateTime+"\n" +
+                                "                                " + book.lastIndexUpdateTime + "\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"goread\">\n" +
-                                "<a href='/book/"+book.bookId+"/"+book.preContentId+".html'>继续阅读</a>"+
+                                "<a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>继续阅读</a>" +
                                 "                            </td>\n" +
                                 "                        </tr>");
                         }
@@ -144,9 +147,9 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
-                }else {
+                } else {
                     layer.alert(data.msg);
                 }
 
