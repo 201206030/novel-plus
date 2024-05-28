@@ -61,9 +61,9 @@ novel-plus -- 父工程
 
 ### 绿色主题模版
 
-[![点击查看大图](https://youdoc.gitee.io/resource/images/os/novel-plus/green.png)](https://youdoc.gitee.io/resource/images/os/novel-plus/green.png)
-[![点击查看大图](https://youdoc.gitee.io/resource/images/os/novel-plus/green3.png)](https://youdoc.gitee.io/resource/images/os/novel-plus/green3.png)
-[![点击查看大图](https://youdoc.gitee.io/resource/images/os/novel-plus/green2.png)](https://youdoc.gitee.io/resource/images/os/novel-plus/green2.png)
+[![点击查看大图](https://www.xxyopen.com/images/green_novel.png)](https://www.xxyopen.com/images/green_novel.png)
+[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)
+[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)
 
 ## 演示视频
 
