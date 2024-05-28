@@ -63,7 +63,6 @@
 <div th:replace="mobile/common/js :: js">
 </div>
 <script type="text/javascript">
-    $("#form1").css("min-height", ($(window).height() - 140) + "px")
     if (localStorage.getItem("autoLogin") == 1) {
         $("#autoLogin").prop("checked", 'true');
         layui.form.render('checkbox', 'loginForm');

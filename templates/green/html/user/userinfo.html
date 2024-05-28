@@ -1,6 +1,5 @@
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
     <title th:text="'个人中心_'+${application.website.name}"></title>
@@ -25,12 +24,14 @@
         </div>
         <div class="my_r">
             <div class="my_info cf">
-                <img id="imgLogo" class="user_big_head" src="/images/man.png" />
+                <img id="imgLogo" class="user_big_head" src="/images/man.png"/>
                 <div class="my_info_txt">
                     <p class="my_name" id="my_name">
-                        </p>
+                    </p>
                     <ul class="my_list">
-                        <li class="my_gold"><i>账户余额：</i><em class="red" id="accountBalance">0</em>屋币<!--<em class="red">+</em><em class="red">0</em>代金券--><a href="/pay/index.html" class="btn_link">立即充值</a></li>
+                        <li class="my_gold"><i>账户余额：</i><em class="red" id="accountBalance">0</em>屋币
+                            <!--<em class="red">+</em><em class="red">0</em>代金券--><a href="/pay/index.html"
+                                                                                     class="btn_link">立即充值</a></li>
                         <li class="my_baonian"></li>
 
                     </ul>
@@ -87,12 +88,12 @@
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                if(data.data.userPhoto){
-                    $("#imgLogo").attr("src",data.data.userPhoto);
+                if (data.data.userPhoto) {
+                    $("#imgLogo").attr("src", data.data.userPhoto);
                 }
-                if(data.data.nickName){
+                if (data.data.nickName) {
                     $("#my_name").html(data.data.nickName);
-                }else{
+                } else {
                     $("#my_name").html(data.data.username);
                 }
 
@@ -100,7 +101,7 @@
 
             } else if (data.code == 1001) {
                 //未登录
-                location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
             } else {
                 layer.alert(data.msg);
@@ -115,7 +116,7 @@
     $.ajax({
         type: "get",
         url: "/user/listBookShelfByPage",
-        data: {'limit':2},
+        data: {'limit': 2},
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
@@ -126,7 +127,7 @@
                         var book = bookShelfList[i];
                         bookShelfListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
                             "                            <td class=\"style bookclass\">\n" +
-                            "                                <a href=\"/book/bookclass.html?c="+book.catId+"\" >[" + book.catName + "]</a>\n" +
+                            "                                <a href=\"/book/bookclass.html?c=" + book.catId + "\" >[" + book.catName + "]</a>\n" +
                             "                            </td>\n" +
                             "                            <td class=\"name\">\n" +
                             "                                <a href=\"/book/" + book.bookId + ".html\">\n" +

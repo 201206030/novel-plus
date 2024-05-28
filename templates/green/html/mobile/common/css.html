@@ -1,6 +1,11 @@
 <div th:fragment="css">
     <link rel="stylesheet" href="/mobile/layui/css/layui.css">
     <style type="text/css">
+        body {
+            min-height: 100vh;
+            position: relative;
+        }
+
         .app {
             display: none;
         }
@@ -22,9 +27,12 @@
         }
 
         #footer {
-            padding-top: 6px;
-            height: 60px;
-            line-height: 54px;
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            line-height: 48px;
             text-align: center;
         }
     </style>
