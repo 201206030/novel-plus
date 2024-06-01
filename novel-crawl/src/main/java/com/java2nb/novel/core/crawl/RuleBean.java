@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * 爬虫解析规则bean
+ *
  * @author Administrator
  */
 @Data
@@ -13,17 +14,17 @@ public class RuleBean {
 
     /**
      * 小说更新列表url
-     * */
+     */
     private String updateBookListUrl;
 
     /**
      * 分类列表页URL规则
-     * */
+     */
     private String bookListUrl;
 
-    private Map<String,String> catIdRule;
+    private Map<String, String> catIdRule;
 
-    private Map<String,Byte> bookStatusRule;
+    private Map<String, Byte> bookStatusRule;
 
     private String bookIdPatten;
     private String pagePatten;
@@ -50,6 +51,8 @@ public class RuleBean {
     private String picUrlPrefix;
 
     private String bookIndexStart;
+
+    private String filterContent;
 
 
 }

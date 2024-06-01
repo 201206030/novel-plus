@@ -144,6 +144,9 @@
                                 示例：<b>&lt;script&gt;</b>
                                 <li><input type="text" id="contentEnd" class="s_input icon_key"
                                            placeholder="小说内容结束截取字符串："></li>
+                                示例：<b>&lt;div\s+id=&quot;content_tip&quot;&gt;\s*&lt;b&gt;([^/]+)&lt;/b&gt;\s*&lt;/div&gt;</b>
+                                <li><textarea id="filterContent"
+                                              placeholder="过滤内容（多个内容换行）" rows="5" cols="52"></textarea></li>
 
                                 <li><input type="button" onclick="addCrawlSource()" name="btnRegister" value="提交"
                                            id="btnRegister" class="btn_red"></li>
@@ -404,6 +407,9 @@
         }
 
         crawlRule.contentEnd = contentEnd;
+
+        var filterContent = $("#filterContent").val();
+        crawlRule.filterContent = filterContent;
 
 
         $.ajax({
