@@ -1,7 +1,5 @@
-CREATE
-    database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
-use
-    `novel_plus`;
+CREATE database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use `novel_plus`;
 
 SET NAMES utf8mb4;
 
