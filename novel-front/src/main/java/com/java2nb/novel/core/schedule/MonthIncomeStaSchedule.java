@@ -3,7 +3,9 @@ package com.java2nb.novel.core.schedule;
 
 import com.java2nb.novel.core.config.AuthorIncomeProperties;
 import com.java2nb.novel.core.utils.DateUtil;
-import com.java2nb.novel.entity.*;
+import com.java2nb.novel.entity.Author;
+import com.java2nb.novel.entity.AuthorIncome;
+import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -64,24 +66,23 @@ public class MonthIncomeStaSchedule {
 
                     Long bookId = book.getId();
 
-
                     //3.月收入数据未统计入库,分作品统计数据入库
                     Long monthIncome = authorService.queryTotalAccount(userId, bookId, startTime, endTime);
 
                     BigDecimal monthIncomeShare = new BigDecimal(monthIncome)
-                            .multiply(authorIncomeConfig.getShareProportion());
+                        .multiply(authorIncomeConfig.getShareProportion());
                     long preTaxIncome = monthIncomeShare
-                            .multiply(authorIncomeConfig.getExchangeProportion())
-                            .multiply(new BigDecimal(100))
-                            .longValue();
+                        .multiply(authorIncomeConfig.getExchangeProportion())
+                        .multiply(new BigDecimal(100))
+                        .longValue();
 
                     totalPreTaxIncome += preTaxIncome;
 
                     long afterTaxIncome = monthIncomeShare
-                            .multiply(authorIncomeConfig.getTaxRate())
-                            .multiply(authorIncomeConfig.getExchangeProportion())
-                            .multiply(new BigDecimal(100))
-                            .longValue();
+                        .multiply(authorIncomeConfig.getTaxRate())
+                        .multiply(authorIncomeConfig.getExchangeProportion())
+                        .multiply(new BigDecimal(100))
+                        .longValue();
 
                     totalAfterTaxIncome += afterTaxIncome;
 
@@ -102,7 +103,7 @@ public class MonthIncomeStaSchedule {
 
                 }
 
-                if (totalPreTaxIncome > 0 && !authorService.queryIsStatisticsMonth(0L, endTime)) {
+                if (totalPreTaxIncome > 0 && !authorService.queryIsStatisticsMonth(authorId, 0L, endTime)) {
 
                     AuthorIncome authorIncome = new AuthorIncome();
                     authorIncome.setAuthorId(authorId);
