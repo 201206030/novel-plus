@@ -63,7 +63,7 @@ public class CrawlServiceImpl implements CrawlService {
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
 
-    private CrawlHttpClient crawlHttpClient;
+    private final CrawlHttpClient crawlHttpClient;
 
 
     @Override
