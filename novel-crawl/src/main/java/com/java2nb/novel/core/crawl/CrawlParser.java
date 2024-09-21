@@ -1,23 +1,23 @@
 package com.java2nb.novel.core.crawl;
 
-import com.java2nb.novel.core.utils.HttpUtil;
 import com.java2nb.novel.core.utils.RandomBookInfoUtil;
-import com.java2nb.novel.core.utils.RestTemplateUtil;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.utils.Constants;
+import com.java2nb.novel.utils.CrawlHttpClient;
 import io.github.xxyopen.util.IdWorker;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,20 +26,19 @@ import java.util.regex.Pattern;
  *
  * @author Administrator
  */
-@Slf4j
+@Component
+@RequiredArgsConstructor
 public class CrawlParser {
 
-    private static final IdWorker idWorker = IdWorker.INSTANCE;
+    private final IdWorker ID_WORKER = IdWorker.INSTANCE;
 
-    private static final RestTemplate restTemplate = RestTemplateUtil.getInstance("utf-8");
-
-    private static final ThreadLocal<Integer> retryCount = new ThreadLocal<>();
+    private final CrawlHttpClient crawlHttpClient;
 
     @SneakyThrows
-    public static void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler) {
+    public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler) {
         Book book = new Book();
         String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
-        String bookDetailHtml = getByHttpClientWithChrome(bookDetailUrl);
+        String bookDetailHtml = crawlHttpClient.get(bookDetailUrl);
         if (bookDetailHtml != null) {
             Pattern bookNamePatten = PatternFactory.getPattern(ruleBean.getBookNamePatten());
             Matcher bookNameMatch = bookNamePatten.matcher(bookDetailHtml);
@@ -144,7 +143,7 @@ public class CrawlParser {
         handler.handle(book);
     }
 
-    public static boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean,
+    public boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean,
         Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) {
 
         Date currentDate = new Date();
@@ -153,7 +152,7 @@ public class CrawlParser {
         List<BookContent> contentList = new ArrayList<>();
         //读取目录
         String indexListUrl = ruleBean.getBookIndexUrl().replace("{bookId}", sourceBookId);
-        String indexListHtml = getByHttpClientWithChrome(indexListUrl);
+        String indexListHtml = crawlHttpClient.get(indexListUrl);
 
         if (indexListHtml != null) {
             if (StringUtils.isNotBlank(ruleBean.getBookIndexStart())) {
@@ -217,7 +216,7 @@ public class CrawlParser {
                         .replace("{indexId}", sourceIndexId);
 
                     //查询章节内容
-                    String contentHtml = getByHttpClientWithChrome(contentUrl);
+                    String contentHtml = crawlHttpClient.get(contentUrl);
                     if (contentHtml != null && !contentHtml.contains("正在手打中")) {
                         String content = contentHtml.substring(
                             contentHtml.indexOf(ruleBean.getContentStart()) + ruleBean.getContentStart().length());
@@ -254,7 +253,7 @@ public class CrawlParser {
                         } else {
                             //章节插入
                             //设置目录和章节内容
-                            Long indexId = idWorker.nextId();
+                            Long indexId = ID_WORKER.nextId();
                             bookIndex.setId(indexId);
                             bookIndex.setBookId(book.getId());
 
@@ -308,56 +307,4 @@ public class CrawlParser {
         return false;
 
     }
-
-
-    private static String getByHttpClient(String url) {
-        try {
-            ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
-            if (forEntity.getStatusCode() == HttpStatus.OK) {
-                String body = forEntity.getBody();
-                assert body != null;
-                if (body.length() < Constants.INVALID_HTML_LENGTH) {
-                    return processErrorHttpResult(url);
-                }
-                //成功获得html内容
-                return body;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return processErrorHttpResult(url);
-
-    }
-
-    private static String getByHttpClientWithChrome(String url) {
-        try {
-
-            String body = HttpUtil.getByHttpClientWithChrome(url);
-            if (body != null && body.length() < Constants.INVALID_HTML_LENGTH) {
-                return processErrorHttpResult(url);
-            }
-            //成功获得html内容
-            return body;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return processErrorHttpResult(url);
-
-    }
-
-    @SneakyThrows
-    private static String processErrorHttpResult(String url) {
-        Integer count = retryCount.get();
-        if (count == null) {
-            count = 0;
-        }
-        if (count < Constants.HTTP_FAIL_RETRY_COUNT) {
-            Thread.sleep(new Random().nextInt(10 * 1000));
-            retryCount.set(++count);
-            return getByHttpClient(url);
-        }
-        return null;
-    }
-
-
 }

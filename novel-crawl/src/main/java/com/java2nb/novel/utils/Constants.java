@@ -7,7 +7,7 @@ public class Constants {
 
     /**
      * 本地图片保存前缀
-     * */
+     */
     public static final String LOCAL_PIC_PREFIX = "/localPic/";
 
     /**
@@ -23,5 +23,5 @@ public class Constants {
     /**
      * 爬取小说http请求失败重试次数
      */
-    public static final Integer HTTP_FAIL_RETRY_COUNT = 5;
+    public static final Integer HTTP_FAIL_RETRY_COUNT = 3;
 }

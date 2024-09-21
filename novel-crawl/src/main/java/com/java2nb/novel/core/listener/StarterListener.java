@@ -1,10 +1,12 @@
 package com.java2nb.novel.core.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java2nb.novel.core.crawl.ChapterBean;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
-import com.java2nb.novel.entity.*;
+import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.entity.CrawlSingleTask;
+import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.utils.Constants;
@@ -33,6 +35,8 @@ public class StarterListener implements ServletContextListener {
 
     private final CrawlService crawlService;
 
+    private final CrawlParser crawlParser;
+
     @Value("${crawl.update.thread}")
     private int updateThreadCount;
 
@@ -56,20 +60,24 @@ public class StarterListener implements ServletContextListener {
                                 CrawlSource source = crawlService.queryCrawlSource(needUpdateBook.getCrawlSourceId());
                                 RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
                                 //解析小说基本信息
-                                CrawlParser.parseBook(ruleBean, needUpdateBook.getCrawlBookId(),book -> {
+                                crawlParser.parseBook(ruleBean, needUpdateBook.getCrawlBookId(), book -> {
                                     //这里只做老书更新
                                     book.setId(needUpdateBook.getId());
                                     book.setWordCount(needUpdateBook.getWordCount());
-                                    if (needUpdateBook.getPicUrl() != null && needUpdateBook.getPicUrl().contains(Constants.LOCAL_PIC_PREFIX)) {
+                                    if (needUpdateBook.getPicUrl() != null && needUpdateBook.getPicUrl()
+                                        .contains(Constants.LOCAL_PIC_PREFIX)) {
                                         //本地图片则不更新
                                         book.setPicUrl(null);
                                     }
                                     //查询已存在的章节
-                                    Map<Integer, BookIndex> existBookIndexMap = bookService.queryExistBookIndexMap(needUpdateBook.getId());
+                                    Map<Integer, BookIndex> existBookIndexMap = bookService.queryExistBookIndexMap(
+                                        needUpdateBook.getId());
                                     //解析章节目录
-                                    CrawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(), book, ruleBean, existBookIndexMap,chapter -> {
-                                        bookService.updateBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList(), existBookIndexMap);
-                                    });
+                                    crawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(), book,
+                                        ruleBean, existBookIndexMap, chapter -> {
+                                            bookService.updateBookAndIndexAndContent(book, chapter.getBookIndexList(),
+                                                chapter.getBookContentList(), existBookIndexMap);
+                                        });
                                 });
                             } catch (Exception e) {
                                 log.error(e.getMessage(), e);
@@ -88,7 +96,6 @@ public class StarterListener implements ServletContextListener {
 
         }
 
-
         new Thread(() -> {
             log.info("程序启动,开始执行单本采集任务线程。。。");
             while (true) {
@@ -103,7 +110,8 @@ public class StarterListener implements ServletContextListener {
                         CrawlSource source = crawlService.queryCrawlSource(task.getSourceId());
                         RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
 
-                        if (crawlService.parseBookAndSave(task.getCatId(), ruleBean, task.getSourceId(), task.getSourceBookId())) {
+                        if (crawlService.parseBookAndSave(task.getCatId(), ruleBean, task.getSourceId(),
+                            task.getSourceBookId())) {
                             //采集成功
                             crawlStatus = 1;
                         }

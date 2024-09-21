@@ -14,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Objects;
 
@@ -37,10 +40,13 @@ public class FileUtil {
             //本地图片保存
             HttpHeaders headers = new HttpHeaders();
             HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-            ResponseEntity<Resource> resEntity = RestTemplateUtil.getInstance(Charsets.ISO_8859_1.name()).exchange(picSrc, HttpMethod.GET, requestEntity, Resource.class);
+            ResponseEntity<Resource> resEntity = RestTemplates.newInstance(Charsets.ISO_8859_1.name())
+                .exchange(picSrc, HttpMethod.GET, requestEntity, Resource.class);
             input = Objects.requireNonNull(resEntity.getBody()).getInputStream();
             Date currentDate = new Date();
-            picSrc = visitPrefix + DateUtils.formatDate(currentDate, "yyyy") + "/" + DateUtils.formatDate(currentDate, "MM") + "/" + DateUtils.formatDate(currentDate, "dd") + "/"
+            picSrc =
+                visitPrefix + DateUtils.formatDate(currentDate, "yyyy") + "/" + DateUtils.formatDate(currentDate, "MM")
+                    + "/" + DateUtils.formatDate(currentDate, "dd") + "/"
                     + UUIDUtil.getUUID32()
                     + picSrc.substring(picSrc.lastIndexOf("."));
             File picFile = new File(picSavePath + picSrc);
@@ -66,7 +72,6 @@ public class FileUtil {
         } finally {
             closeStream(input, out);
         }
-
 
         return picSrc;
     }

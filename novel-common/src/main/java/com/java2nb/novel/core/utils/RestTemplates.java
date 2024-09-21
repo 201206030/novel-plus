@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class RestTemplateUtil {
+public class RestTemplates {
 
     private static HttpProxyProperties httpProxyProperties;
 
-    RestTemplateUtil(HttpProxyProperties properties) {
+    RestTemplates(HttpProxyProperties properties) {
         httpProxyProperties = properties;
     }
 
     @SneakyThrows
-    public static RestTemplate getInstance(String charset) {
+    public static RestTemplate newInstance(String charset) {
 
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 

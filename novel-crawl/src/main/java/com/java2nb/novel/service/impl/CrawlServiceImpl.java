@@ -2,17 +2,11 @@ package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
-import io.github.xxyopen.util.IdWorker;
-import io.github.xxyopen.util.ThreadUtil;
-import io.github.xxyopen.web.exception.BusinessException;
-import io.github.xxyopen.web.util.BeanUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
@@ -24,6 +18,12 @@ import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.vo.CrawlSingleTaskVO;
 import com.java2nb.novel.vo.CrawlSourceVO;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
+import io.github.xxyopen.util.IdWorker;
+import io.github.xxyopen.util.ThreadUtil;
+import io.github.xxyopen.web.exception.BusinessException;
+import io.github.xxyopen.web.util.BeanUtil;
 import io.github.xxyopen.web.util.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -51,6 +51,7 @@ import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 @Slf4j
 public class CrawlServiceImpl implements CrawlService {
 
+    private final CrawlParser crawlParser;
 
     private final CrawlSourceMapper crawlSourceMapper;
 
@@ -71,15 +72,16 @@ public class CrawlServiceImpl implements CrawlService {
         crawlSourceMapper.insertSelective(source);
 
     }
+
     @Override
     public void updateCrawlSource(CrawlSource source) {
-        if(source.getId()!=null){
-            Optional<CrawlSource> opt=crawlSourceMapper.selectByPrimaryKey(source.getId());
-            if(opt.isPresent()) {
-                CrawlSource crawlSource =opt.get();
+        if (source.getId() != null) {
+            Optional<CrawlSource> opt = crawlSourceMapper.selectByPrimaryKey(source.getId());
+            if (opt.isPresent()) {
+                CrawlSource crawlSource = opt.get();
                 if (crawlSource.getSourceStatus() == (byte) 1) {
                     //关闭
-                    openOrCloseCrawl(crawlSource.getId(),(byte)0);
+                    openOrCloseCrawl(crawlSource.getId(), (byte) 0);
                 }
                 Date currentDate = new Date();
                 crawlSource.setUpdateTime(currentDate);
@@ -89,14 +91,15 @@ public class CrawlServiceImpl implements CrawlService {
             }
         }
     }
+
     @Override
     public PageBean<CrawlSource> listCrawlByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider render = select(id, sourceName, sourceStatus, createTime, updateTime)
-                .from(crawlSource)
-                .orderBy(updateTime)
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+            .from(crawlSource)
+            .orderBy(updateTime)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
         List<CrawlSource> crawlSources = crawlSourceMapper.selectMany(render);
         PageBean<CrawlSource> pageBean = PageBuilder.build(crawlSources);
         pageBean.setList(BeanUtil.copyList(crawlSources, CrawlSourceVO.class));
@@ -113,7 +116,8 @@ public class CrawlServiceImpl implements CrawlService {
         if (sourceStatus == (byte) 0) {
             //关闭,直接修改数据库状态，并直接修改数据库状态后获取该爬虫正在运行的线程集合全部停止
             SpringUtil.getBean(CrawlService.class).updateCrawlSourceStatus(sourceId, sourceStatus);
-            Set<Long> runningCrawlThreadId = (Set<Long>) cacheService.getObject(CacheKey.RUNNING_CRAWL_THREAD_KEY_PREFIX + sourceId);
+            Set<Long> runningCrawlThreadId = (Set<Long>) cacheService.getObject(
+                CacheKey.RUNNING_CRAWL_THREAD_KEY_PREFIX + sourceId);
             if (runningCrawlThreadId != null) {
                 for (Long ThreadId : runningCrawlThreadId) {
                     Thread thread = ThreadUtil.findThread(ThreadId);
@@ -157,11 +161,12 @@ public class CrawlServiceImpl implements CrawlService {
 
     @Override
     public CrawlSource queryCrawlSource(Integer sourceId) {
-        SelectStatementProvider render = select(CrawlSourceDynamicSqlSupport.sourceStatus, CrawlSourceDynamicSqlSupport.crawlRule)
-                .from(crawlSource)
-                .where(id, isEqualTo(sourceId))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider render = select(CrawlSourceDynamicSqlSupport.sourceStatus,
+            CrawlSourceDynamicSqlSupport.crawlRule)
+            .from(crawlSource)
+            .where(id, isEqualTo(sourceId))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
         return crawlSourceMapper.selectMany(render).get(0);
     }
 
@@ -182,10 +187,10 @@ public class CrawlServiceImpl implements CrawlService {
     public PageBean<CrawlSingleTask> listCrawlSingleTaskByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider render = select(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask.allColumns())
-                .from(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask)
-                .orderBy(CrawlSingleTaskDynamicSqlSupport.createTime.descending())
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+            .from(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask)
+            .orderBy(CrawlSingleTaskDynamicSqlSupport.createTime.descending())
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
         List<CrawlSingleTask> crawlSingleTasks = crawlSingleTaskMapper.selectMany(render);
         PageBean<CrawlSingleTask> pageBean = PageBuilder.build(crawlSingleTasks);
         pageBean.setList(BeanUtil.copyList(crawlSingleTasks, CrawlSingleTaskVO.class));
@@ -200,7 +205,8 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public CrawlSingleTask getCrawlSingleTask() {
 
-        List<CrawlSingleTask> list = crawlSingleTaskMapper.selectMany(select(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask.allColumns())
+        List<CrawlSingleTask> list = crawlSingleTaskMapper.selectMany(
+            select(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask.allColumns())
                 .from(CrawlSingleTaskDynamicSqlSupport.crawlSingleTask)
                 .where(CrawlSingleTaskDynamicSqlSupport.taskStatus, isEqualTo((byte) 2))
                 .orderBy(CrawlSingleTaskDynamicSqlSupport.createTime)
@@ -226,12 +232,12 @@ public class CrawlServiceImpl implements CrawlService {
 
     @Override
     public CrawlSource getCrawlSource(Integer id) {
-            Optional<CrawlSource> opt=crawlSourceMapper.selectByPrimaryKey(id);
-            if(opt.isPresent()) {
-                CrawlSource crawlSource =opt.get();
-                return crawlSource;
-            }
-            return null;
+        Optional<CrawlSource> opt = crawlSourceMapper.selectByPrimaryKey(id);
+        if (opt.isPresent()) {
+            CrawlSource crawlSource = opt.get();
+            return crawlSource;
+        }
+        return null;
     }
 
     /**
@@ -251,8 +257,8 @@ public class CrawlServiceImpl implements CrawlService {
                 if (StringUtils.isNotBlank(ruleBean.getCatIdRule().get("catId" + catId))) {
                     //拼接分类URL
                     String catBookListUrl = ruleBean.getBookListUrl()
-                            .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
-                            .replace("{page}", page + "");
+                        .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
+                        .replace("{page}", page + "");
 
                     String bookListHtml = getByHttpClientWithChrome(catBookListUrl);
                     if (bookListHtml != null) {
@@ -268,13 +274,11 @@ public class CrawlServiceImpl implements CrawlService {
                                     return;
                                 }
 
-
                                 String bookId = bookIdMatcher.group(1);
                                 parseBookAndSave(catId, ruleBean, sourceId, bookId);
                             } catch (Exception e) {
                                 log.error(e.getMessage(), e);
                             }
-
 
                             isFindBookId = bookIdMatcher.find();
                         }
@@ -306,7 +310,7 @@ public class CrawlServiceImpl implements CrawlService {
 
         final AtomicBoolean parseResult = new AtomicBoolean(false);
 
-        CrawlParser.parseBook(ruleBean, bookId, book -> {
+        crawlParser.parseBook(ruleBean, bookId, book -> {
             if (book.getBookName() == null || book.getAuthorName() == null) {
                 return;
             }
@@ -330,9 +334,11 @@ public class CrawlServiceImpl implements CrawlService {
                 book.setCrawlLastTime(new Date());
                 book.setId(idWorker.nextId());
                 //解析章节目录
-                boolean parseIndexContentResult = CrawlParser.parseBookIndexAndContent(bookId, book, ruleBean, new HashMap<>(0), chapter -> {
-                    bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(), chapter.getBookContentList());
-                });
+                boolean parseIndexContentResult = crawlParser.parseBookIndexAndContent(bookId, book, ruleBean,
+                    new HashMap<>(0), chapter -> {
+                        bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(),
+                            chapter.getBookContentList());
+                    });
                 parseResult.set(parseIndexContentResult);
 
             } else {
@@ -356,11 +362,12 @@ public class CrawlServiceImpl implements CrawlService {
 
     @Override
     public List<CrawlSource> queryCrawlSourceByStatus(Byte sourceStatus) {
-        SelectStatementProvider render = select(CrawlSourceDynamicSqlSupport.id, CrawlSourceDynamicSqlSupport.sourceStatus, CrawlSourceDynamicSqlSupport.crawlRule)
-                .from(crawlSource)
-                .where(CrawlSourceDynamicSqlSupport.sourceStatus, isEqualTo(sourceStatus))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider render = select(CrawlSourceDynamicSqlSupport.id,
+            CrawlSourceDynamicSqlSupport.sourceStatus, CrawlSourceDynamicSqlSupport.crawlRule)
+            .from(crawlSource)
+            .where(CrawlSourceDynamicSqlSupport.sourceStatus, isEqualTo(sourceStatus))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
         return crawlSourceMapper.selectMany(render);
     }
 }
