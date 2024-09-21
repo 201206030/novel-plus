@@ -16,6 +16,7 @@ import com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport;
 import com.java2nb.novel.mapper.CrawlSourceMapper;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
+import com.java2nb.novel.utils.CrawlHttpClient;
 import com.java2nb.novel.vo.CrawlSingleTaskVO;
 import com.java2nb.novel.vo.CrawlSourceVO;
 import io.github.xxyopen.model.page.PageBean;
@@ -38,7 +39,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.java2nb.novel.core.utils.HttpUtil.getByHttpClientWithChrome;
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
@@ -62,6 +62,8 @@ public class CrawlServiceImpl implements CrawlService {
     private final CacheService cacheService;
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
+
+    private CrawlHttpClient crawlHttpClient;
 
 
     @Override
@@ -260,7 +262,7 @@ public class CrawlServiceImpl implements CrawlService {
                         .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
                         .replace("{page}", page + "");
 
-                    String bookListHtml = getByHttpClientWithChrome(catBookListUrl);
+                    String bookListHtml = crawlHttpClient.get(catBookListUrl);
                     if (bookListHtml != null) {
                         Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
                         Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
