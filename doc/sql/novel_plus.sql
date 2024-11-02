@@ -3137,3 +3137,8 @@ VALUES ('香书小说网', '{
   "contentEnd": "<p>",
   "filterContent":"<div\\\\s+id=\\"content_tip\\">\\\\s*<b>([^/]+)</b>\\\\s*</div>"
 }', 0, '2024-06-01 10:11:39', '2024-06-01 10:11:39');
+
+
+update crawl_source
+set crawl_rule = replace(crawl_rule, 'ibiquzw.org', 'ibiqugu.net')
+where id = 16;
