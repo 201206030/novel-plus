@@ -3104,3 +3104,36 @@ update website_info
 set logo     = '/images/logo.png',
     logo_dark='/images/logo.png'
 where id = 1;
+
+
+INSERT INTO crawl_source (source_name, crawl_rule, source_status, create_time, update_time)
+VALUES ('香书小说网', '{
+  "bookListUrl": "http://www.xbiqugu.net/fenlei/{catId}_{page}.html",
+  "catIdRule": {
+    "catId1": "1",
+    "catId2": "2",
+    "catId3": "3",
+    "catId4": "4",
+    "catId5": "6",
+    "catId6": "5"
+  },
+  "bookIdPatten": "<a\\\\s+href=\\"http://www.xbiqugu.net/(\\\\d+/\\\\d+)/\\"\\\\s+target=\\"_blank\\">",
+  "pagePatten": "<em\\\\s+id=\\"pagestats\\">(\\\\d+)/\\\\d+</em>",
+  "totalPagePatten": "<em\\\\s+id=\\"pagestats\\">\\\\d+/(\\\\d+)</em>",
+  "bookDetailUrl": "http://www.xbiqugu.net/{bookId}/",
+  "bookNamePatten": "<h1>([^/]+)</h1>",
+  "authorNamePatten": "者：([^/]+)</p>",
+  "picUrlPatten": "src=\\"(http://www.xbiqugu.net/files/article/image/\\\\d+/\\\\d+/\\\\d+s\\\\.jpg)\\"",
+  "bookStatusRule": {},
+  "descStart": "<div id=\\"intro\\">",
+  "descEnd": "</div>",
+  "upadateTimePatten": "<p>最后更新：(\\\\d+-\\\\d+-\\\\d+\\\\s\\\\d+:\\\\d+:\\\\d+)</p>",
+  "upadateTimeFormatPatten": "yyyy-MM-dd HH:mm:ss",
+  "bookIndexUrl": "http://www.xbiqugu.net/{bookId}/",
+  "indexIdPatten": "<a\\\\s+href=''/\\\\d+/\\\\d+/(\\\\d+)\\\\.html''\\\\s+>[^/]+</a>",
+  "indexNamePatten": "<a\\\\s+href=''/\\\\d+/\\\\d+/\\\\d+\\\\.html''\\\\s+>([^/]+)</a>",
+  "bookContentUrl": "http://www.xbiqugu.net/{bookId}/{indexId}.html",
+  "contentStart": "<div id=\\"content\\">",
+  "contentEnd": "<p>",
+  "filterContent":"<div\\\\s+id=\\"content_tip\\">\\\\s*<b>([^/]+)</b>\\\\s*</div>"
+}', 0, '2024-06-01 10:11:39', '2024-06-01 10:11:39');
