@@ -3140,5 +3140,5 @@ VALUES ('香书小说网', '{
 
 
 update crawl_source
-set crawl_rule = replace(crawl_rule, 'ibiquzw.org', 'ibiqugu.net')
+set crawl_rule = replace(crawl_rule, 'ibiquzw.org', 'biquxs.info')
 where id = 16;
