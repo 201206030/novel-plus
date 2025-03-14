@@ -2,13 +2,18 @@ package com.java2nb.novel.core.utils;
 
 import com.java2nb.novel.core.config.HttpProxyProperties;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -61,6 +66,15 @@ public class RestTemplates {
         if (Objects.nonNull(httpProxyProperties) && Boolean.TRUE.equals(httpProxyProperties.getEnabled())) {
             HttpHost proxy = new HttpHost(httpProxyProperties.getIp(), httpProxyProperties.getPort());
             clientBuilder.setProxy(proxy);
+            if (StringUtils.isNotBlank(httpProxyProperties.getUsername()) && StringUtils.isNotBlank(
+                httpProxyProperties.getPassword())) {
+                // 创建CredentialsProvider实例并添加代理认证信息
+                CredentialsProvider provider = new BasicCredentialsProvider();
+                UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+                    httpProxyProperties.getUsername(), httpProxyProperties.getPassword());
+                provider.setCredentials(AuthScope.ANY, credentials);
+                clientBuilder.setDefaultCredentialsProvider(provider);
+            }
         }
         CloseableHttpClient httpClient = clientBuilder.setConnectionManager(connectionManager)
             .build();
