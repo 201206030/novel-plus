@@ -309,6 +309,10 @@ public class CrawlServiceImpl implements CrawlService {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
+            if (page == totalPage) {
+                // 第一遍采集完成，翻到第一页，继续第二次采集，适用于分页数比较少的最近更新列表
+                page = 0;
+            }
 
             page += 1;
         }

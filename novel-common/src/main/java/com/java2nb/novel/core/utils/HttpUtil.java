@@ -14,12 +14,13 @@ public class HttpUtil {
 
     public static String getByHttpClientWithChrome(String url) {
         try {
+            log.debug("Get url：{}", url);
             HttpHeaders headers = new HttpHeaders();
             headers.add("user-agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36");
             HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
             ResponseEntity<String> forEntity = REST_TEMPLATE.exchange(url, HttpMethod.GET, requestEntity, String.class);
-
+            log.debug("Response code：{}", forEntity.getStatusCode());
             if (forEntity.getStatusCode() == HttpStatus.OK) {
                 return forEntity.getBody();
             } else {
