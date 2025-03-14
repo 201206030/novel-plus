@@ -1,5 +1,6 @@
 package com.java2nb.novel.core.crawl;
 
+import com.java2nb.novel.utils.Constants;
 import lombok.Data;
 
 import java.util.Map;
@@ -11,6 +12,12 @@ import java.util.Map;
  */
 @Data
 public class RuleBean {
+
+    /**
+     * 网页字符编码
+     */
+    private String charset = Constants.CRAWL_DEFAULT_CHARSET;
+
 
     /**
      * 小说更新列表url

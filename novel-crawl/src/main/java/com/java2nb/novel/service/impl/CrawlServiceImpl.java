@@ -271,7 +271,7 @@ public class CrawlServiceImpl implements CrawlService {
                     }
                     log.info("catBookListUrl：{}", catBookListUrl);
 
-                    String bookListHtml = crawlHttpClient.get(catBookListUrl);
+                    String bookListHtml = crawlHttpClient.get(catBookListUrl, ruleBean.getCharset());
                     if (bookListHtml != null) {
                         Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
                         Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);

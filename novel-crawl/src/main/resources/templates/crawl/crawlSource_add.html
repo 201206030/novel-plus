@@ -54,6 +54,8 @@
                                 <!--示例：<b>https://m.xdingdiann.com/sort/0/1.html</b>
                                 <li><input type="text" id="updateBookListUrl" class="s_input icon_key"
                                            placeholder="小说更新列表url"></li>-->
+                                示例：<b>utf-8</b>
+                                <li><input type="text" id="charset" class="s_input icon_name" placeholder="网站编码"></li>
                                 示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
                                 <li><input type="text" id="bookListUrl" class="s_input icon_key"
                                            placeholder="分类列表页URL规则"></li>
@@ -410,6 +412,11 @@
 
         var filterContent = $("#filterContent").val();
         crawlRule.filterContent = filterContent;
+
+        var charset = $('#charset').val();
+        if (charset) {
+            crawlRule.charset = charset;
+        }
 
 
         $.ajax({

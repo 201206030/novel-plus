@@ -38,7 +38,7 @@ public class CrawlParser {
     public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler) {
         Book book = new Book();
         String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
-        String bookDetailHtml = crawlHttpClient.get(bookDetailUrl);
+        String bookDetailHtml = crawlHttpClient.get(bookDetailUrl, ruleBean.getCharset());
         if (bookDetailHtml != null) {
             Pattern bookNamePatten = PatternFactory.getPattern(ruleBean.getBookNamePatten());
             Matcher bookNameMatch = bookNamePatten.matcher(bookDetailHtml);
@@ -152,7 +152,7 @@ public class CrawlParser {
         List<BookContent> contentList = new ArrayList<>();
         //读取目录
         String indexListUrl = ruleBean.getBookIndexUrl().replace("{bookId}", sourceBookId);
-        String indexListHtml = crawlHttpClient.get(indexListUrl);
+        String indexListHtml = crawlHttpClient.get(indexListUrl, ruleBean.getCharset());
 
         if (indexListHtml != null) {
             if (StringUtils.isNotBlank(ruleBean.getBookIndexStart())) {
@@ -216,7 +216,7 @@ public class CrawlParser {
                         .replace("{indexId}", sourceIndexId);
 
                     //查询章节内容
-                    String contentHtml = crawlHttpClient.get(contentUrl);
+                    String contentHtml = crawlHttpClient.get(contentUrl, ruleBean.getCharset());
                     if (contentHtml != null && !contentHtml.contains("正在手打中")) {
                         String content = contentHtml.substring(
                             contentHtml.indexOf(ruleBean.getContentStart()) + ruleBean.getContentStart().length());

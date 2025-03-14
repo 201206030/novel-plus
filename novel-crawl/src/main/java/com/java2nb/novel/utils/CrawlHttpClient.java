@@ -25,7 +25,7 @@ public class CrawlHttpClient {
 
     private static final ThreadLocal<Integer> RETRY_COUNT = new ThreadLocal<>();
 
-    public String get(String url) {
+    public String get(String url, String charset) {
         if (Objects.nonNull(intervalMin) && Objects.nonNull(intervalMax) && intervalMax > intervalMin) {
             try {
                 Thread.sleep(random.nextInt(intervalMax - intervalMin + 1) + intervalMin);
@@ -33,22 +33,22 @@ public class CrawlHttpClient {
                 log.error(e.getMessage(), e);
             }
         }
-        String body = HttpUtil.getByHttpClientWithChrome(url);
+        String body = HttpUtil.getByHttpClientWithChrome(url, charset);
         if (Objects.isNull(body) || body.length() < Constants.INVALID_HTML_LENGTH) {
-            return processErrorHttpResult(url);
+            return processErrorHttpResult(url, charset);
         }
         //成功获得html内容
         return body;
     }
 
-    private String processErrorHttpResult(String url) {
+    private String processErrorHttpResult(String url, String charset) {
         Integer count = RETRY_COUNT.get();
         if (count == null) {
             count = 0;
         }
         if (count < Constants.HTTP_FAIL_RETRY_COUNT) {
             RETRY_COUNT.set(++count);
-            return get(url);
+            return get(url, charset);
         }
         RETRY_COUNT.remove();
         return null;
