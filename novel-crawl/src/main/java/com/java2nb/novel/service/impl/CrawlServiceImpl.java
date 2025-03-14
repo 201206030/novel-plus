@@ -255,12 +255,21 @@ public class CrawlServiceImpl implements CrawlService {
         while (page <= totalPage) {
 
             try {
-
-                if (StringUtils.isNotBlank(ruleBean.getCatIdRule().get("catId" + catId))) {
-                    //拼接分类URL
-                    String catBookListUrl = ruleBean.getBookListUrl()
-                        .replace("{catId}", ruleBean.getCatIdRule().get("catId" + catId))
-                        .replace("{page}", page + "");
+                String catIdRule = ruleBean.getCatIdRule().get("catId" + catId);
+                if (StringUtils.isNotBlank(catIdRule)) {
+                    String catBookListUrl = "";
+                    if (StringUtils.isNotBlank(ruleBean.getBookListUrl())) {
+                        // 兼容老规则
+                        // 拼接分类URL
+                        catBookListUrl = ruleBean.getBookListUrl()
+                            .replace("{catId}", catIdRule)
+                            .replace("{page}", page + "");
+                    } else {
+                        // 新规则
+                        // 拼接分类URL
+                        catBookListUrl = catIdRule.replace("{page}", page + "");
+                    }
+                    log.info("catBookListUrl：{}", catBookListUrl);
 
                     String bookListHtml = crawlHttpClient.get(catBookListUrl);
                     if (bookListHtml != null) {
