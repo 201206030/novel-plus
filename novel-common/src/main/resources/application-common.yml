@@ -1,4 +1,7 @@
 spring:
+  datasource:
+    url: jdbc:shardingsphere:absolutepath:${user.dir}/config/shardingsphere-jdbc.yml
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
   cache:
     ehcache:
       config: classpath:ehcache.xml

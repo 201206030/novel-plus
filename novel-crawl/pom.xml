@@ -63,6 +63,11 @@
                                         <include name="*.*"/>
                                     </fileset>
                                 </copy>
+                                <copy todir="${project.build.directory}/build/config" overwrite="true">
+                                    <fileset dir="${basedir}/../config">
+                                        <include name="*.*"/>
+                                    </fileset>
+                                </copy>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
                                       tofile="${project.build.directory}/build/${project.artifactId}.jar"/>
 

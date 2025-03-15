@@ -7,9 +7,6 @@ logging:
     root: error
     com.java2nb: error
 spring:
-  datasource:
-    driverClassName: org.apache.shardingsphere.driver.ShardingSphereDriver
-    url: jdbc:shardingsphere:absolutepath:${user.dir}/config/shardingsphere-jdbc.yml
   redis:
     host: 127.0.0.1
     port: 6379

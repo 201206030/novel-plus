@@ -9,6 +9,9 @@ server:
 #  basic:
 #    enabled: false
 spring:
+  datasource:
+    driverClassName: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:absolutepath:${user.dir}/config/shardingsphere-jdbc.yml
   thymeleaf:
     mode: LEGACYHTML5
     cache: false
@@ -23,7 +26,7 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-          
+
   devtools:
     restart:
       enabled: true

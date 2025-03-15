@@ -34,7 +34,7 @@ rules:
         tableStrategy:
           standard:
             # 分片列名称
-            shardingColumn: chapter_id
+            shardingColumn: index_id
             # 分片算法名称
             shardingAlgorithmName: bookContentSharding
 
@@ -44,7 +44,7 @@ rules:
         type: INLINE
         props:
           # 分片算法的行表达式
-          algorithm-expression: book_content${chapter_id % 10}
+          algorithm-expression: book_content${index_id % 10}
 
 
 

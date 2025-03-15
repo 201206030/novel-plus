@@ -84,6 +84,11 @@
                                         <include name="application-website.yml"/>
                                     </fileset>
                                 </copy>
+                                <copy todir="${project.build.directory}/build/config" overwrite="true">
+                                    <fileset dir="${basedir}/../config">
+                                        <include name="*.*"/>
+                                    </fileset>
+                                </copy>
                                 <copy todir="${project.build.directory}/build/templates" overwrite="true">
                                     <fileset dir="${basedir}/../templates">
                                         <include name="**/*.*"/>
