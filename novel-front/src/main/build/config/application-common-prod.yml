@@ -36,7 +36,11 @@ http:
     # 是否开启 HTTP 代理，true-开启，false-不开启
     enabled: false
     # 代理 IP
-    ip: u493.kdltps.com
+    ip: us.swiftproxy.net
     # 代理端口号
-    port: 15818
+    port: 7878
+    # 代理用户名
+    username: swiftproxy_u
+    # 代理密码
+    password: swiftproxy_p
 
