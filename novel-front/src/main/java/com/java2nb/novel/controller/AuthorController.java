@@ -12,11 +12,11 @@ import com.java2nb.novel.entity.AuthorIncomeDetail;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -54,7 +54,7 @@ public class AuthorController extends BaseController{
      * 发布小说
      * */
     @PostMapping("addBook")
-    public RestResult<Void> addBook(@RequestParam("bookDesc") String bookDesc,Book book,HttpServletRequest request){
+    public RestResult<Void> addBook(@RequestParam("bookDesc") String bookDesc, Book book, HttpServletRequest request){
 
         Author author = checkAuthor(request);
 

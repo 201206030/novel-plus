@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    include: [ common-dev ]
+  config:
+    import: classpath:application-common-dev.yml
 
 
 pic:

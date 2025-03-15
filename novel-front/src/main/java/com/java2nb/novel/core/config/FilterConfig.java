@@ -2,13 +2,13 @@ package com.java2nb.novel.core.config;
 
 import com.java2nb.novel.core.filter.NovelFilter;
 import com.java2nb.novel.core.filter.XssFilter;
+import jakarta.servlet.DispatcherType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.DispatcherType;
 import java.util.HashMap;
 import java.util.Map;
 

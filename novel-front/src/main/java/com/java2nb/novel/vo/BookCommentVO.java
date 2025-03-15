@@ -6,7 +6,6 @@ import com.java2nb.novel.core.serialize.CommentUserNameSerialize;
 import com.java2nb.novel.entity.BookComment;
 import lombok.Data;
 
-import javax.annotation.Generated;
 import java.util.Date;
 
 /**

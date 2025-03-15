@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    include: [ common-prod ]
+  config:
+    import: classpath:application-common-prod.yml
 
   #静态文件路径配置
   resources:

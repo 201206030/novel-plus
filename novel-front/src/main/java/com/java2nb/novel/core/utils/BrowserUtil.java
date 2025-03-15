@@ -1,6 +1,7 @@
 package com.java2nb.novel.core.utils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.regex.Pattern;
 
 public class BrowserUtil {

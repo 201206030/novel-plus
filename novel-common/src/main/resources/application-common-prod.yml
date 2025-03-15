@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    include: [ common ]
+  config:
+    import: classpath:application-common.yml
   main:
     allow-bean-definition-overriding: true
   #Redis服务器IP

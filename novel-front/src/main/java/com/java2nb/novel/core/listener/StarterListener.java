@@ -3,12 +3,12 @@ package com.java2nb.novel.core.listener;
 import com.java2nb.novel.core.config.WebsiteProperties;
 import com.java2nb.novel.entity.WebsiteInfo;
 import com.java2nb.novel.mapper.WebsiteInfoMapper;
+import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletContext;
 
 /**
  * 启动监听器

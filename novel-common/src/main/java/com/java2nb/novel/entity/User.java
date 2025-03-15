@@ -2,9 +2,9 @@ package com.java2nb.novel.entity;
 
 import io.github.xxyopen.web.valid.AddGroup;
 import io.github.xxyopen.web.valid.UpdateGroup;
+import jakarta.validation.constraints.*;
 
 import javax.annotation.Generated;
-import javax.validation.constraints.*;
 import java.util.Date;
 
 public class User {

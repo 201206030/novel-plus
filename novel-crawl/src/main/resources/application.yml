@@ -8,9 +8,7 @@ server:
 spring:
   profiles:
     active: dev
-  config:
-    use-legacy-processing: true
-    
+
 #登录用户名密码
 admin:
   username: admin

@@ -29,19 +29,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.orderbyhelper.OrderByHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.java2nb.novel.mapper.BookCategoryDynamicSqlSupport.bookCategory;
@@ -201,9 +198,6 @@ public class BookServiceImpl implements BookService {
 
         PageHelper.startPage(page, pageSize);
 
-        if (StringUtils.isNotBlank(params.getSort())) {
-            OrderByHelper.orderBy(params.getSort() + " desc");
-        }
         return PageBuilder.build(bookMapper.searchByPage(params));
 
     }
@@ -231,23 +225,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer page, Integer pageSize) {
-        if (StringUtils.isNotBlank(orderBy)) {
-            OrderByHelper.orderBy(orderBy);
-        }
         if (page != null && pageSize != null) {
             PageHelper.startPage(page, pageSize);
         }
-
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id,
+        QueryExpressionDSL<org.mybatis.dynamic.sql.select.SelectModel>.QueryExpressionWhereBuilder where = select(
+            BookIndexDynamicSqlSupport.id,
             BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum,
             BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime,
             BookIndexDynamicSqlSupport.isVip)
             .from(bookIndex)
-            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId));
+        if("index_num desc".equals(orderBy)){
+            where.orderBy(BookIndexDynamicSqlSupport.indexNum.descending());
+        }
+        return bookIndexMapper.selectMany(where
             .build()
-            .render(RenderingStrategies.MYBATIS3);
-
-        return bookIndexMapper.selectMany(selectStatement);
+            .render(RenderingStrategies.MYBATIS3));
     }
 
 
@@ -384,7 +377,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        OrderByHelper.orderBy("t1.create_time desc");
         return PageBuilder.build(bookCommentMapper.listCommentByPage(userId, bookId));
     }
 

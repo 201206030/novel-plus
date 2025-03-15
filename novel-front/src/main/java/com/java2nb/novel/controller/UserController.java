@@ -13,13 +13,13 @@ import com.java2nb.novel.service.UserService;
 import io.github.xxyopen.model.resp.RestResult;
 import io.github.xxyopen.web.valid.AddGroup;
 import io.github.xxyopen.web.valid.UpdateGroup;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 

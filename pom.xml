@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
@@ -30,11 +30,10 @@
         <java.version>21</java.version>
         <maven.test.skip>true</maven.test.skip>
         <mysql.version>8.0.29</mysql.version>
-        <mybatis.version>2.1.4</mybatis.version>
+        <mybatis.version>3.0.4</mybatis.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
-        <mybatis-dynamic-sql.version>1.1.4</mybatis-dynamic-sql.version>
+        <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
         <pagehelper.version>1.4.6</pagehelper.version>
-        <orderbyhelper.version>1.0.2</orderbyhelper.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <jjwt.version>0.9.1</jjwt.version>
         <jest.version>6.3.1</jest.version>

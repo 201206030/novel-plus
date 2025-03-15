@@ -3,11 +3,10 @@ package com.java2nb.novel.controller;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.utils.CookieUtil;
 import com.java2nb.novel.core.utils.JwtTokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author 11797
