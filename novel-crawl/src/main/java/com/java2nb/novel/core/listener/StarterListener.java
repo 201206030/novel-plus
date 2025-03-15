@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import javax.servlet.ServletContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Administrator
  */
-@WebListener
+@Component
 @Slf4j
 @RequiredArgsConstructor
-public class StarterListener implements ServletContextListener {
+public class StarterListener implements ServletContextInitializer {
 
     private final BookService bookService;
 
@@ -41,7 +41,7 @@ public class StarterListener implements ServletContextListener {
     private int updateThreadCount;
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void onStartup(ServletContext servletContext) {
         for (int i = 0; i < updateThreadCount; i++) {
             new Thread(() -> {
                 log.info("程序启动,开始执行自动更新线程。。。");

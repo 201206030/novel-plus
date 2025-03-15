@@ -20,14 +20,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.18.RELEASE</version>
+        <version>2.7.18</version>
         <relativePath/>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.test.skip>true</maven.test.skip>
         <mysql.version>8.0.29</mysql.version>
         <mybatis.version>2.1.4</mybatis.version>
@@ -40,12 +40,11 @@
         <jest.version>6.3.1</jest.version>
         <redis.version>1.4.1.RELEASE</redis.version>
         <redisson.version>3.12.5</redisson.version>
-        <sharding.jdbc.version>3.0.0</sharding.jdbc.version>
+        <shardingsphere-jdbc.version>5.5.1</shardingsphere-jdbc.version>
         <aliyun-sdk-oss.version>3.16.3</aliyun-sdk-oss.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <alipay-sdk-java.version>4.35.139.ALL</alipay-sdk-java.version>
         <xxyopen.version>1.0.0</xxyopen.version>
-        <jackson.version>2.15.1</jackson.version>
     </properties>
 
     <dependencyManagement>

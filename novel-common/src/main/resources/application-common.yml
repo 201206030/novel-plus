@@ -27,6 +27,8 @@ mybatis:
 logging:
   config: classpath:logback-boot.xml
 
+pagehelper:
+  helper-dialect: mysql
 
 
 
