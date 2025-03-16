@@ -1,0 +1,9 @@
+#端口号
+server:
+  port: 8088
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: test123456
+

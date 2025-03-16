@@ -5,8 +5,6 @@ spring:
   profiles:
     active: dev
     include: website,alipay,oss
-  config:
-    use-legacy-processing: true
 
 jwt:
   secret: novel!#20191230

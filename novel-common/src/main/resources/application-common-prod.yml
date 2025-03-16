@@ -3,14 +3,16 @@ spring:
     import: classpath:application-common.yml
   main:
     allow-bean-definition-overriding: true
-  #Redis服务器IP
-  redis:
-    host: 127.0.0.1
-    #Redis服务器连接端口
-    port: 6379
-    #Redis服务器连接密码
-    password: test123456
-    timeout: 10000
+  data:
+    redis:
+      #Redis服务器IP
+      host: 127.0.0.1
+      #Redis服务器连接端口
+      port: 6379
+      #Redis服务器连接密码
+      password: test123456
+      #连接超时时间（毫秒）
+      timeout: 10000
 
 logging:
   level:
