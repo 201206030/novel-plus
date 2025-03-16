@@ -46,7 +46,15 @@ book:
     value: 5
 
 
-
+--- #--------------------- Spring AI 配置----------------------
+spring:
+  ai:
+    openai:
+      api-key: sk-nnhjmxuljagcuubbovjztbhkiawqaabzziazeurppinxtgva
+      base-url: https://api.siliconflow.cn
+      chat:
+        options:
+          model: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
 
 
 

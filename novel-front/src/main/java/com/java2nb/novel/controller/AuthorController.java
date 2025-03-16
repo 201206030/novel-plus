@@ -12,9 +12,11 @@ import com.java2nb.novel.entity.AuthorIncomeDetail;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -31,6 +33,8 @@ public class AuthorController extends BaseController{
     private final AuthorService authorService;
 
     private final BookService bookService;
+
+    private final ChatClient chatClient;
 
     /**
      * 校验笔名是否存在
@@ -218,6 +222,54 @@ public class AuthorController extends BaseController{
         return author;
 
 
+    }
+
+    /**
+     * AI扩写
+     */
+    @PostMapping("ai/expand")
+    public RestResult<String> expandText(@RequestParam("text") String text, @RequestParam("ratio") Double ratio) {
+        String prompt = "请将以下文本扩写为原长度的" + ratio/100 + "倍：" + text;
+        return RestResult.ok(chatClient.prompt()
+                .user(prompt)
+                .call()
+                .content());
+    }
+
+    /**
+     * AI缩写
+     */
+    @PostMapping("ai/condense")
+    public RestResult<String> condenseText(@RequestParam("text") String text, @RequestParam("ratio") Integer ratio) {
+        String prompt = "请将以下文本缩写为原长度的" + 100/ratio + "分之一：" + text;
+        return RestResult.ok(chatClient.prompt()
+                .user(prompt)
+                .call()
+                .content());
+    }
+
+    /**
+     * AI续写
+     */
+    @PostMapping("ai/continue")
+    public RestResult<String> continueText(@RequestParam("text") String text, @RequestParam("length") Integer length) {
+        String prompt = "请续写以下文本，续写长度约为" + length + "字：" + text;
+        return RestResult.ok(chatClient.prompt()
+                .user(prompt)
+                .call()
+                .content());
+    }
+
+    /**
+     * AI润色
+     */
+    @PostMapping("ai/polish")
+    public RestResult<String> polishText(@RequestParam("text") String text) {
+        String prompt = "请润色优化以下文本，保持原意：" + text;
+        return RestResult.ok(chatClient.prompt()
+                .user(prompt)
+                .call()
+                .content());
     }
 
 
