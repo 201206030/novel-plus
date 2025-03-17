@@ -3,15 +3,14 @@ package com.java2nb.novel.core.advice;
 import io.github.xxyopen.model.resp.RestResult;
 import io.github.xxyopen.model.resp.SysResultCode;
 import io.github.xxyopen.web.exception.BusinessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class CommonExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(io.github.xxyopen.web.exception.CommonExceptionHandler.class);
 
     public CommonExceptionHandler() {
     }
