@@ -49,3 +49,13 @@ http:
     # 代理密码
     password: swiftproxy_p
 
+
+--- #--------------------- Spring AI 配置----------------------
+spring:
+  ai:
+    openai:
+      api-key: sk-nnhjmxuljagcuubbovjztbhkiawqaabzziazeurppinxtgva
+      base-url: https://api.siliconflow.cn
+      chat:
+        options:
+          model: deepseek-ai/DeepSeek-R1-Distill-Llama-8B

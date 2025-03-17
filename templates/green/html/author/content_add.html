@@ -8,6 +8,79 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <style>
+            /* 编辑器容器样式 */
+            .editor-container {
+                margin: 10px 0px;
+                padding: 20px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+            }
+
+            /* 文本域样式 */
+            #bookContent {
+                width: 93%;
+                height: 400px;
+                padding: 15px;
+                border: 1px solid #e6e6e6;
+                border-radius: 4px;
+                font-size: 14px;
+                line-height: 1.6;
+                resize: vertical;
+            }
+
+            /* 工具栏样式 */
+            .ai-toolbar {
+                margin-bottom: 15px;
+                display: flex;
+                gap: 10px; /* 按钮间距 */
+            }
+
+            /* 自定义链接按钮样式 */
+            .ai-link {
+                display: inline-block;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                color: #fff;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                background: linear-gradient(135deg, #6a11cb, #2575fc);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 链接按钮悬停效果 */
+            .ai-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            /* 链接按钮点击效果 */
+            .ai-link:active {
+                transform: translateY(0);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 不同按钮的颜色 */
+            .ai-link.expand {
+                background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            }
+
+            .ai-link.condense {
+                background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            }
+
+            .ai-link.continue {
+                background: linear-gradient(135deg, #f6d365, #fda085);
+            }
+
+            .ai-link.polish {
+                background: linear-gradient(135deg, #ff6f61, #ffcc00);
+            }
+        </style>
     </head>
 </head>
 <body class="">
@@ -46,18 +119,29 @@
                             <ul class="log_list">
                                 <li><span id="LabErr"></span></li>
                                 <b>章节名：</b>
-                                <li><input type="text" id="bookIndex" name="bookIndex" class="s_input" ></li>
-                                <b>章节内容：</b><li id="contentLi">
-                                <textarea name="bookContent" rows="30" cols="80" id="bookContent"
-                                          class="textarea"></textarea></li><br/>
+                                <li><input type="text" id="bookIndex" name="bookIndex" class="s_input"></li>
+                                <b>章节内容：</b>
+                                <li id="contentLi" style="width: 500px">
+                                    <div class="editor-container">
+                                        <div class="ai-toolbar">
+                                            <a class="ai-link expand" data-type="expand">AI扩写</a>
+                                            <a class="ai-link condense" data-type="condense">AI缩写</a>
+                                            <a class="ai-link continue" data-type="continue">AI续写</a>
+                                            <a class="ai-link polish" data-type="polish">AI润色</a>
+                                        </div>
+                                        <textarea id="bookContent" name="bookContent"
+                                                  placeholder="请输入文本内容..."></textarea>
+                                    </div>
 
-                                <b>是否收费：</b>
-                                <li><input type="radio" name="isVip" value="0" checked  >免费
-                                 <input type="radio" name="isVip" value="1"   >收费</li>
+                                    <b>是否收费：</b>
+                                <li><input type="radio" name="isVip" value="0" checked>免费
+                                    <input type="radio" name="isVip" value="1">收费
+                                </li>
 
 
-                                <li style="margin-top: 10px"><input type="button" onclick="addBookContent()" name="btnRegister" value="提交"
-                                           id="btnRegister" class="btn_red">
+                                <li style="margin-top: 10px"><input type="button" onclick="addBookContent()"
+                                                                    name="btnRegister" value="提交"
+                                                                    id="btnRegister" class="btn_red">
 
 
                                 </li>
@@ -113,9 +197,10 @@
 
 
     var lock = false;
+
     function addBookContent() {
 
-        if(lock){
+        if (lock) {
             return;
         }
         lock = true;
@@ -125,14 +210,14 @@
 
 
         var indexName = $("#bookIndex").val();
-        if(!indexName){
+        if (!indexName) {
             $("#LabErr").html("章节名不能为空！");
             lock = false;
             return;
         }
 
         var content = $("#bookContent").val();
-        if(!content){
+        if (!content) {
             $("#LabErr").html("章节内容不能为空！");
             lock = false;
             return;
@@ -142,17 +227,15 @@
         var isVip = $("input:checked[name=isVip]").val();
 
 
-
-
         $.ajax({
             type: "POST",
             url: "/author/addBookContent",
-            data: {'bookId':bookId,'indexName':indexName,'content':content,'isVip':isVip},
+            data: {'bookId': bookId, 'indexName': indexName, 'content': content, 'isVip': isVip},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
 
-                    window.location.href = '/author/index_list.html?bookId='+bookId;
+                    window.location.href = '/author/index_list.html?bookId=' + bookId;
 
 
                 } else {
@@ -167,6 +250,111 @@
             }
         })
 
+    }
+
+
+    // 打字机效果函数
+    function typeWriter(textarea, text, speed = 50) {
+        let i = 0;
+        const timer = setInterval(() => {
+            if (i < text.length) {
+                textarea.val(textarea.val() + text.charAt(i));
+                i++;
+                // 滚动到底部
+                textarea.scrollTop(textarea[0].scrollHeight);
+            } else {
+                clearInterval(timer);
+            }
+        }, speed);
+    }
+
+    $('.ai-toolbar .ai-link').click(function(e){
+        e.preventDefault(); // 阻止默认链接行为
+        const type = $(this).data('type');
+        const textarea = $('#bookContent');
+        const selectedText = textarea.val().substring(textarea[0].selectionStart, textarea[0].selectionEnd);
+
+        // 检查是否选中文本
+        if (!selectedText) {
+            layer.msg('请先选中要处理的文本');
+            return;
+        }
+
+        const loading = layer.load(1, {shade: 0.3});
+
+        // 参数配置
+        let params = {text: selectedText};
+        if(type === 'expand' || type === 'condense'){
+            layer.prompt({
+                title: '请输入比例',
+                value: 2,
+                btn: ['确定', '取消'],
+                btn2: function(){
+                    layer.close(loading);
+                },
+                cancel: function(){
+                    layer.close(loading);
+                }
+            }, function(value, index){
+                if(isNaN(Number(value)) || isNaN(parseFloat(value))){
+                    layer.msg('请输入正确的比例');
+                    return;
+                }
+                if(type === 'expand' && value <= 1){
+                    layer.msg('请输入正确的比例');
+                    return;
+                }
+                if(type === 'condense' && (value <=0 || value >= 1)){
+                    layer.msg('请输入正确的比例');
+                    return;
+                }
+                params.ratio = parseFloat(value) * 100;
+                layer.close(index);
+                sendRequest(type, params, loading, textarea);
+            });
+            return;
+        }else if(type === 'continue'){
+            layer.prompt({
+                title: '请输入续写长度（字数）',
+                value: 200,
+                btn: ['确定', '取消'],
+                btn2: function(){
+                    layer.close(loading);
+                },
+                cancel: function(){
+                    layer.close(loading);
+                }
+            }, function(value, index){
+                if(!Number.isInteger(Number(value)) || value <= 0){
+                    layer.msg('请输入正确的长度');
+                    return;
+                }
+                params.length = parseInt(value);
+                layer.close(index);
+                sendRequest(type, params, loading, textarea);
+            });
+            return;
+        }
+
+        sendRequest(type, params, loading, textarea);
+    });
+
+    function sendRequest(type, params, loading, textarea){
+        $.ajax({
+            url: '/author/ai/' + type,
+            type: 'POST',
+            data: params,
+            success: function(res){
+                layer.close(loading);
+                // 将生成的内容追加到文本末尾
+                const newText = "\n\n" + res.data; // 添加换行符分隔
+                typeWriter(textarea, newText); // 使用打字机效果
+            },
+            error: function(){
+                layer.msg('请求失败，请稍后重试');
+                layer.close(loading);
+            }
+        });
     }
 
 </script>

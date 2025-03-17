@@ -42,6 +42,7 @@ novel-plus -- 父工程
 | 技术                  | 说明
 |---------------------| ---------------------------
 | Spring Boot         | Spring 应用快速开发脚手架
+| Spring AI           |    Spring 官方 AI 框架     
 | MyBatis             | 持久层 ORM 框架
 | MyBatis Dynamic SQL | Mybatis 动态 sql
 | PageHelper          | MyBatis 分页插件
