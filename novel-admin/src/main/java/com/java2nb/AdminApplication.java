@@ -1,5 +1,6 @@
 package com.java2nb;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.net.InetAddress;
+import java.sql.Connection;
 
 
 @EnableTransactionManagement
@@ -34,7 +36,14 @@ public class AdminApplication {
         return args -> {
             // 提前创建连接池，而不是在第一次访问数据库时才创建，提高第一次登录速度
             log.info("创建连接池...");
-            dataSource.getConnection();
+            try (Connection connection = dataSource.getConnection()) {
+                HikariDataSource hikariDataSource = (HikariDataSource) dataSource;
+                log.info("最小空闲连接数：{}", hikariDataSource.getMinimumIdle());
+                log.info("最大连接数：{}", hikariDataSource.getMaximumPoolSize());
+                log.info("创建连接池完成.");
+                log.info("数据库：{}", connection.getMetaData().getDatabaseProductName());
+                log.info("数据库版本：{}", connection.getMetaData().getDatabaseProductVersion());
+            }
             log.info("项目启动啦，访问路径：{}",
                 "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + ctx.getEnvironment()
                     .getProperty("server.port"));
