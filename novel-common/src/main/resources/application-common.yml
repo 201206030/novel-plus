@@ -2,9 +2,6 @@ spring:
   datasource:
     url: jdbc:shardingsphere:absolutepath:${user.dir}/config/shardingsphere-jdbc.yml
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-  cache:
-    ehcache:
-      config: classpath:ehcache.xml
   thymeleaf:
     mode: LEGACYHTML5 #去除thymeleaf的html严格校验thymeleaf.mode=LEGACYHTML5
     cache: false # 是否开启模板缓存，默认true,建议在开发时关闭缓存,不然没法看到实时
