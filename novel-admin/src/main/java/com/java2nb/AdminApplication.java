@@ -35,7 +35,7 @@ public class AdminApplication {
         return args -> {
             log.info("创建连接池...");
             try (Connection connection = dataSource.getConnection()) {
-                log.info("创建连接池完成.");
+                log.info("连接池已创建.");
                 log.info("数据库：{}", connection.getMetaData().getDatabaseProductName());
                 log.info("数据库版本：{}", connection.getMetaData().getDatabaseProductVersion());
             }
