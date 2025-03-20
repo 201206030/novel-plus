@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build project with Maven
-        run: mvn clean install -DskipTests=true
+        run: mvn clean install -DskipTests=true -Pcentral-repo
 
       - name: Create Release
         id: create_release
