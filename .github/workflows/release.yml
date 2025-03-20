@@ -1,0 +1,54 @@
+name: Create novel-plus Maven Release with ZIPs
+
+on:
+  push:
+    # 匹配所有以'v'开头的标签
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          # 可选，默认是 temurin，也可以选择其他发行版
+          distribution: 'temurin'
+
+      - name: Build project with Maven
+        run: mvn clean install -DskipTests=true
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # 使用 tag_name 而不是 github.ref
+          tag_name: ${{ github.ref_name }}
+          release_name: novel-plus ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload all *.zip artifacts from submodules
+        run: |
+          for module in novel-common novel-crawl novel-front novel-admin 
+          do
+            for file in $(find ./$module/target/build -type f -name "*.zip")
+            do
+              asset_path="$file"
+              asset_name=$(basename "$file")
+              echo "Uploading $asset_name..."
+              curl -X POST \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Content-Type: application/zip" \
+                --data-binary @"$file" \
+                "${{ steps.create_release.outputs.upload_url }}?name=$asset_name"
+            done
+          done
