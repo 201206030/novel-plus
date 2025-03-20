@@ -53,7 +53,7 @@
                                 更新时间
                             </th>
                             <th class="goread">
-                                书签
+                                操作
                             </th>
                         </tr>
                         </thead>
@@ -94,7 +94,7 @@
                         var bookShelfListHtml = "";
                         for (var i = 0; i < bookShelfList.length; i++) {
                             var book = bookShelfList[i];
-                            bookShelfListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
+                            bookShelfListHtml += (" <tr id='shelf" + book.bookId + "' class=\"book_list\" vals=\"291\">\n" +
                                 "                            <td class=\"style bookclass\">\n" +
                                 "                                <a href=\"/book/bookclass.html?c=" + book.catId + "\" >[" + book.catName + "]</a>\n" +
                                 "                            </td>\n" +
@@ -109,7 +109,8 @@
                                 "                                " + book.lastIndexUpdateTime + "\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"goread\">\n" +
-                                "<a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>继续阅读</a>" +
+                                "<div style=''><a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>继续阅读</a></div>" +
+                                "<div style='line-height:8px;padding-bottom:13px'><a href='javascript:removeFromBookShelf(\"" + book.bookId + "\")'>移出书架</a></div>" +
                                 "                            </td>\n" +
                                 "                        </tr>");
                         }
@@ -158,6 +159,22 @@
                 layer.alert('网络异常');
             }
         })
+
+    }
+
+    function removeFromBookShelf(bookId) {
+
+        $.ajax({
+            type: "delete",
+            url: "/user/removeFromBookShelf/" + bookId,
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#shelf" + bookId).remove();
+                }
+            }
+        });
 
     }
 </script>
