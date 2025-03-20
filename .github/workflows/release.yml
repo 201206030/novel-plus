@@ -40,6 +40,8 @@ jobs:
       # 使用 action 来替代直接 curl 进行上传
       - name: Upload sql.zip
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/novel-common/target/build/sql.zip
@@ -48,6 +50,8 @@ jobs:
 
       - name: Upload novel-crawl.zip
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/novel-crawl/target/build/novel-crawl.zip
@@ -56,6 +60,8 @@ jobs:
 
       - name: Upload novel-front.zip
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/novel-front/target/build/novel-front.zip
@@ -64,6 +70,8 @@ jobs:
 
       - name: Upload novel-admin.zip
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/novel-admin/target/build/novel-admin.zip
