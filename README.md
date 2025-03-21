@@ -17,7 +17,7 @@
 
 novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS
 系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和
-TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、会员充值、订阅模式、新闻发布和实时统计报表。
+TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、AI写作、会员充值、订阅模式、新闻发布和实时统计报表。
 
 ## 项目地址
 
@@ -67,6 +67,28 @@ novel-plus -- 父工程
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)
 
+## AI写作
+
+novel-plus 5.x 版本已集成 Spring 官方最新发布的 Spring AI 框架，在小说章节发布页面的文本编辑器中推出了多项智能编辑功能，包括 AI 扩写、缩写、续写及文本润色等。这些功能的设计灵感来源于百家号文章编辑器中的 AI 助手。
+
+目前，AI 编辑功能仍处于实验阶段，仅实现了基础的核心功能。我们非常重视用户的实际使用体验和反馈，未来将根据用户需求和使用情况，持续优化和调整该功能。如果用户反馈积极，我们计划进一步开发更高级的 AI 功能，例如自动生成有声小说、智能情节推荐等，以全面提升 novel-plus 的创作能力和用户体验。
+
+我们将持续关注 AI 技术的发展，并致力于将其与小说创作场景深度融合，为用户带来更智能、更便捷的创作工具。
+
+由于 DeepSeek 官方 API 目前不可用，novel-plus 项目默认使用的是第三方[硅基流动](https://cloud.siliconflow.cn/i/DOgMRH9S)提供的 API，采用的 AI 模型为：`deepseek-ai/DeepSeek-R1-Distill-Llama-8B`（DeepSeek-R1 的蒸馏版本，免费使用）。只需注册一个硅基流动账号，创建一个 API 密钥，并将其添加到 novel-plus 项目 novel-front 模块的 yaml 配置文件中，即可体验 novel-plus 项目的 AI 写作功能。
+
+```yaml
+spring:
+  ai:
+    openai:
+      api-key: sk-rrrupturhdofbiqzjutduuiceecpvfqlnvmgcyiaipbdikoi
+      base-url: https://api.siliconflow.cn
+      chat:
+        options:
+          model: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
+```
+
+![](https://www.xxyopen.com/images/ai_editor.png)
 ## 演示视频
 
 https://www.bilibili.com/video/BV18e41197xs
