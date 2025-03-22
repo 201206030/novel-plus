@@ -347,8 +347,12 @@
             success: function(res){
                 layer.close(loading);
                 // 将生成的内容追加到文本末尾
-                const newText = "\n\n" + res.data; // 添加换行符分隔
-                typeWriter(textarea, newText); // 使用打字机效果
+                if(res.code == '200'){
+                    const newText = "\n\n【AI生成内容】" + res.data; // 添加换行符分隔
+                    typeWriter(textarea, newText); // 使用打字机效果
+                }else{
+                    layer.msg('AI内容生成失败，请稍后重试');
+                }
             },
             error: function(){
                 layer.msg('请求失败，请稍后重试');
