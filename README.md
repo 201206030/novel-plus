@@ -91,6 +91,13 @@ API 密钥，并将其添加到 novel-plus 项目 novel-front 模块的 yaml 配
 spring:
   ai:
     openai:
+      image:
+        enabled: true
+        base-url: https://api.siliconflow.cn
+        api-key: sk-rrrupturhdofbiqzjutduuiceecpvfqlnvmgcyiaipbdikoi
+        options:
+          model: Kwai-Kolors/Kolors
+          response_format: URL
       api-key: sk-rrrupturhdofbiqzjutduuiceecpvfqlnvmgcyiaipbdikoi
       base-url: https://api.siliconflow.cn
       chat:

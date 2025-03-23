@@ -54,7 +54,14 @@ http:
 spring:
   ai:
     openai:
-      api-key: sk-nnhjmxuljagcuubbovjztbhkiawqaabzziazeurppinxtgva
+      image:
+        enabled: true
+        base-url: https://api.siliconflow.cn
+        api-key: sk-rrrupturhdofbiqzjutduuiceecpvfqlnvmgcyiaipbdikoi
+        options:
+          model: Kwai-Kolors/Kolors
+          response_format: URL
+      api-key: sk-rrrupturhdofbiqzjutduuiceecpvfqlnvmgcyiaipbdikoi
       base-url: https://api.siliconflow.cn
       chat:
         options:
