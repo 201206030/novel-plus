@@ -15,7 +15,7 @@
                 padding: 20px;
                 background: #fff;
                 border-radius: 8px;
-                box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
             }
 
             /* 文本域样式 */
@@ -124,10 +124,10 @@
                                 <li id="contentLi" style="width: 500px">
                                     <div class="editor-container">
                                         <div class="ai-toolbar">
-                                            <a class="ai-link expand" data-type="expand">AI扩写</a>
-                                            <a class="ai-link condense" data-type="condense">AI缩写</a>
-                                            <a class="ai-link continue" data-type="continue">AI续写</a>
-                                            <a class="ai-link polish" data-type="polish">AI润色</a>
+                                            <a class="ai-link expand" data-type="stream/expand">AI扩写</a>
+                                            <a class="ai-link condense" data-type="stream/condense">AI缩写</a>
+                                            <a class="ai-link continue" data-type="stream/continue">AI续写</a>
+                                            <a class="ai-link polish" data-type="stream/polish">AI润色</a>
                                         </div>
                                         <textarea id="bookContent" name="bookContent"
                                                   placeholder="请输入文本内容..."></textarea>
@@ -268,7 +268,7 @@
         }, speed);
     }
 
-    $('.ai-toolbar .ai-link').click(function(e){
+    $('.ai-toolbar .ai-link').click(function (e) {
         e.preventDefault(); // 阻止默认链接行为
         const type = $(this).data('type');
         const textarea = $('#bookContent');
@@ -284,27 +284,27 @@
 
         // 参数配置
         let params = {text: selectedText};
-        if(type === 'expand' || type === 'condense'){
+        if (type === 'stream/expand' || type === 'stream/condense') {
             layer.prompt({
                 title: '请输入比例',
                 value: 2,
                 btn: ['确定', '取消'],
-                btn2: function(){
+                btn2: function () {
                     layer.close(loading);
                 },
-                cancel: function(){
+                cancel: function () {
                     layer.close(loading);
                 }
-            }, function(value, index){
-                if(isNaN(Number(value)) || isNaN(parseFloat(value))){
+            }, function (value, index) {
+                if (isNaN(Number(value)) || isNaN(parseFloat(value))) {
                     layer.msg('请输入正确的比例');
                     return;
                 }
-                if(type === 'expand' && value <= 1){
+                if (type === 'stream/expand' && value <= 1) {
                     layer.msg('请输入正确的比例');
                     return;
                 }
-                if(type === 'condense' && (value <=0 || value >= 1)){
+                if (type === 'stream/condense' && (value <= 0 || value >= 1)) {
                     layer.msg('请输入正确的比例');
                     return;
                 }
@@ -313,19 +313,19 @@
                 sendRequest(type, params, loading, textarea);
             });
             return;
-        }else if(type === 'continue'){
+        } else if (type === 'stream/continue') {
             layer.prompt({
                 title: '请输入续写长度（字数）',
                 value: 200,
                 btn: ['确定', '取消'],
-                btn2: function(){
+                btn2: function () {
                     layer.close(loading);
                 },
-                cancel: function(){
+                cancel: function () {
                     layer.close(loading);
                 }
-            }, function(value, index){
-                if(!Number.isInteger(Number(value)) || value <= 0){
+            }, function (value, index) {
+                if (!Number.isInteger(Number(value)) || value <= 0) {
                     layer.msg('请输入正确的长度');
                     return;
                 }
@@ -339,26 +339,28 @@
         sendRequest(type, params, loading, textarea);
     });
 
-    function sendRequest(type, params, loading, textarea){
-        $.ajax({
-            url: '/author/ai/' + type,
-            type: 'POST',
-            data: params,
-            success: function(res){
-                layer.close(loading);
-                // 将生成的内容追加到文本末尾
-                if(res.code == '200'){
-                    const newText = "\n\n【AI生成内容】" + res.data; // 添加换行符分隔
-                    typeWriter(textarea, newText); // 使用打字机效果
-                }else{
-                    layer.msg('AI内容生成失败，请稍后重试');
-                }
-            },
-            error: function(){
-                layer.msg('请求失败，请稍后重试');
-                layer.close(loading);
-            }
-        });
+    function sendRequest(type, params, loading, textarea) {
+        const url = `/author/ai/${type}?text=${encodeURIComponent(params.text)}&ratio=${params.ratio}&length=${params.length}`;
+        const eventSource = new EventSource(url);
+
+        // 监听消息事件
+        eventSource.onmessage = function (event) {
+            layer.close(loading);
+            const data = event.data;
+            console.log('Received data:', data);
+
+            textarea.val(textarea.val() + data);
+            // 滚动到底部
+            textarea.scrollTop(textarea[0].scrollHeight);
+        };
+
+        // 监听错误事件
+        eventSource.onerror = function (error) {
+            layer.close(loading);
+            console.error('EventSource failed:', error);
+            eventSource.close(); // 关闭连接
+        };
+
     }
 
 </script>

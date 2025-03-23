@@ -12,9 +12,13 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.Objects;
+
 /**
- * 在对 RestController 返回对象 json 格式化时，将所有 Long 类型转为 String 类型返回，避免前端数据精度丢失的问题
- * 取代 spring.jackson.generator.write-numbers-as-strings=true 配置，避免影响全局的 ObjectMapper 配置
+ * 在对 RestController 返回对象 json 序列化时，将所有 Long 类型转为 String 类型返回，避免前端数据精度丢失的问题
+ * 取代 spring.jackson.generator.write-numbers-as-strings=true 配置，避免影响全局的 ObjectMapper
+ *
+ * @author xiongxiaoyang
  * */
 @RestControllerAdvice
 public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
@@ -38,7 +42,11 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         // 使用自定义的 ObjectMapper 序列化响应体
-        return customObjectMapper.valueToTree(body);
+        if(Objects.nonNull(body)) {
+            return customObjectMapper.valueToTree(body);
+        }else{
+            return null;
+        }
     }
 
 }
