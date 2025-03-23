@@ -22,25 +22,19 @@
 
         body {
 
-  -webkit-user-select: none; /* Chrome, Safari, Opera */
+            -webkit-user-select: none; /* Chrome, Safari, Opera */
 
 
-  -moz-user-select: none;    /* Firefox */
+            -moz-user-select: none; /* Firefox */
 
 
-  -ms-user-select: none;     /* Internet Explorer/Edge */
+            -ms-user-select: none; /* Internet Explorer/Edge */
 
 
-  user-select: none;         /* Non-prefixed version, currently supported by Chrome, Opera, and Firefox */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Firefox */
 
 
-}
-
-
-
-
-
-
+        }
 
 
         .line-limit-length {
@@ -84,16 +78,16 @@
             height: 180px;
         }
 
-  #tipLayer {
-    display: none;
-    position: absolute;
-    background-color: rgba(255, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    z-index: 1000;
-}
+        #tipLayer {
+            display: none;
+            position: absolute;
+            background-color: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            z-index: 1000;
+        }
 
     </style>
 </head>
@@ -173,7 +167,7 @@
                             book.bookDesc = book.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "").replace(/&nbsp;/g, "");
                         }
 
-                        bookListHtml += ("<div id='"+book.bookId+"' onclick='read(\""+book.bookId+"\",\""+book.preContentId+"\")' class=\"item layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
+                        bookListHtml += ("<div id='" + book.bookId + "' onclick='read(\"" + book.bookId + "\",\"" + book.preContentId + "\")' class=\"item layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
                             "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
                             "                <img style='width: 130px;height: 180px' align=\"center\"\n" +
                             "                     src=\"" + book.picUrl + "\"/>\n" +
@@ -197,40 +191,38 @@
                     $("#bookList").html(bookListHtml);
 
 
-$(".item").on('touchstart', function(e) {
-        var element = $(this);
-        // 清除可能存在的定时器
-        clearTimeout(timeout);
-        isLongPress = false;
+                    $(".item").on('touchstart', function (e) {
+                        var element = $(this);
+                        // 清除可能存在的定时器
+                        clearTimeout(timeout);
+                        isLongPress = false;
 
-        // 获取触摸点位置
-        var touch = e.originalEvent.touches[0];
+                        // 获取触摸点位置
+                        var touch = e.originalEvent.touches[0];
 
-        // 设置一个定时器，在500ms后触发（可以根据需要调整时间）
-        timeout = setTimeout(function() {
-            e.preventDefault();
-            showTip(touch, element);
-        }, 1000);
-    }).on('touchend', function(e) {
-        if (!isLongPress) {
-            // 如果没有发生长按，则执行点击事件的逻辑
-            clearTimeout(timeout);
-        }
-    }).on('touchmove', function() {
-        clearTimeout(timeout);
-        hideTip();
-    }).on('contextmenu', function(e) {
-        e.preventDefault();
-    });
+                        // 设置一个定时器，在500ms后触发（可以根据需要调整时间）
+                        timeout = setTimeout(function () {
+                            e.preventDefault();
+                            showTip(touch, element);
+                        }, 1000);
+                    }).on('touchend', function (e) {
+                        if (!isLongPress) {
+                            // 如果没有发生长按，则执行点击事件的逻辑
+                            clearTimeout(timeout);
+                        }
+                    }).on('touchmove', function () {
+                        clearTimeout(timeout);
+                        hideTip();
+                    }).on('contextmenu', function (e) {
+                        e.preventDefault();
+                    });
 
-    $('#tipLayer').click(function() {
-        // 点击tips层时删除对应的.item元素
-        removeFromBookShelf($(this).data('target').attr("id"));
-        $(this).data('target').remove();
-        hideTip();
-    });
-
-
+                    $('#tipLayer').click(function () {
+                        // 点击tips层时删除对应的.item元素
+                        removeFromBookShelf($(this).data('target').attr("id"));
+                        $(this).data('target').remove();
+                        hideTip();
+                    });
 
 
                     layui.use('laypage', function () {
@@ -272,7 +264,7 @@ $(".item").on('touchstart', function(e) {
     }
 
     function showTip(touchEvent, element) {
-    isLongPress = true;
+        isLongPress = true;
         // 根据触摸点位置设置弹出层的位置
         $('#tipLayer')
             .css({
@@ -284,7 +276,7 @@ $(".item").on('touchstart', function(e) {
     }
 
     function hideTip() {
-    isLongPress = false;
+        isLongPress = false;
         $('#tipLayer').hide().removeData('target'); // 隐藏tips并清除数据
     }
 
@@ -333,11 +325,11 @@ $(".item").on('touchstart', function(e) {
         searchByAllCondition(1, 20, keywords);
     }
 
-    function read(bookId,contentId){
-    if(isLongPress){
-     return false;
-    }
-        location.href = '/book/'+bookId+"/"+contentId+".html"
+    function read(bookId, contentId) {
+        if (isLongPress) {
+            return false;
+        }
+        location.href = '/book/' + bookId + "/" + contentId + ".html"
         hideTip();
     }
 
@@ -347,19 +339,19 @@ $(".item").on('touchstart', function(e) {
 
     function removeFromBookShelf(bookId) {
 
-         $.ajax({
-             type: "delete",
-             url: "/user/removeFromBookShelf/" + bookId,
-             data: {},
-             dataType: "json",
-             success: function (data) {
-                 if (data.code == 200) {
-                     $("#shelf" + bookId).remove();
-                 }
-             }
-         });
+        $.ajax({
+            type: "delete",
+            url: "/user/removeFromBookShelf/" + bookId,
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#shelf" + bookId).remove();
+                }
+            }
+        });
 
-     }
+    }
 
 
 </script>
