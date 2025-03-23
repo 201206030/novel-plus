@@ -18,6 +18,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.Objects;
 
@@ -125,5 +130,23 @@ public class FileUtil {
 
     }
 
+    /**
+     * 下载文件
+     *
+     * @param downloadUrl 下载的URL
+     * @param savePath    保存的路径
+     */
+    @SneakyThrows
+    public void downloadFile(String downloadUrl, String savePath) {
+        Path path = Paths.get(savePath);
+        Path parentPath = path.getParent();
+        if (Files.notExists(parentPath)) {
+            Files.createDirectories(parentPath);
+        }
+        URL url = new URL(downloadUrl);
+        try (InputStream in = url.openStream()) {
+            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
 
 }
