@@ -69,4 +69,8 @@ public interface CacheKey {
      * 测试爬虫规则缓存
      */
     String BOOK_TEST_PARSE = "testParse";
+    /**
+     * AI生成图片
+     * */
+    String AI_GEN_PIC = "aiGenPic";
 }

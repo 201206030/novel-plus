@@ -290,4 +290,9 @@ public interface BookService {
      * @param authorId
      */
     void updateBookPic(Long bookId, String bookPic, Long authorId);
+
+    /**
+     * 查询AI生成图片
+     */
+    String queryAiGenPic(Long bookId);
 }

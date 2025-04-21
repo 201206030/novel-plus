@@ -559,6 +559,7 @@ public class BookServiceImpl implements BookService {
                     .where(id, isEqualTo(book.getId()))
                     .build()
                     .render(RenderingStrategies.MYBATIS3));
+                cacheService.set(CacheKey.AI_GEN_PIC + book.getId(), picUrl, 60 * 60);
             });
         }
     }
@@ -880,6 +881,11 @@ public class BookServiceImpl implements BookService {
             .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
             .build()
             .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public String queryAiGenPic(Long bookId) {
+        return cacheService.get(CacheKey.AI_GEN_PIC + bookId);
     }
 
 

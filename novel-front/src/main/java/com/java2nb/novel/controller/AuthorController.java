@@ -239,6 +239,14 @@ public class AuthorController extends BaseController {
     }
 
     /**
+     * 查询AI生成图片
+     */
+    @GetMapping("queryAiGenPic")
+    public RestResult<String> queryAiGenPic(@RequestParam("bookId") Long bookId) {
+        return RestResult.ok(bookService.queryAiGenPic(bookId));
+    }
+
+    /**
      * AI扩写
      */
     @PostMapping("ai/expand")
