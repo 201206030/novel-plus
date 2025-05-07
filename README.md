@@ -1,5 +1,4 @@
 <p align="center">
-    <a href="https://www.swiftproxy.net/?code=T2WV1VT50"><img src="https://xxyopen.com/images/ad1.png" alt="AD" ></a>
     <a href="https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console"><img src="https://youdoc.github.io/img/tencent.jpg" alt="AD" ></a>
 </p>
 <p align="center">
