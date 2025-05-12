@@ -34,6 +34,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -308,12 +309,18 @@ public class CrawlServiceImpl implements CrawlService {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-            if (page == totalPage) {
+            if (page >= totalPage) {
                 // 第一遍采集完成，翻到第一页，继续第二次采集，适用于分页数比较少的最近更新列表
-                page = 0;
+                page = 1;
+                try {
+                    // 第一遍采集完成，休眠1分钟
+                    Thread.sleep(Duration.ofMinutes(1));
+                } catch (InterruptedException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }else{
+                page += 1;
             }
-
-            page += 1;
         }
 
 
