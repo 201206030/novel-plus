@@ -256,53 +256,52 @@ public class CrawlServiceImpl implements CrawlService {
 
             try {
                 String catIdRule = ruleBean.getCatIdRule().get("catId" + catId);
-                if (StringUtils.isNotBlank(catIdRule)) {
-                    String catBookListUrl = "";
-                    if (StringUtils.isNotBlank(ruleBean.getBookListUrl())) {
-                        // 兼容老规则
-                        // 拼接分类URL
-                        catBookListUrl = ruleBean.getBookListUrl()
-                            .replace("{catId}", catIdRule)
-                            .replace("{page}", page + "");
-                    } else {
-                        // 新规则
-                        // 拼接分类URL
-                        catBookListUrl = catIdRule.replace("{page}", page + "");
-                    }
-                    log.info("catBookListUrl：{}", catBookListUrl);
+                if (StringUtils.isBlank(catIdRule) || Thread.currentThread().isInterrupted()) {
+                    return;
+                }
+                String catBookListUrl = "";
+                if (StringUtils.isNotBlank(ruleBean.getBookListUrl())) {
+                    // 兼容老规则
+                    // 拼接分类URL
+                    catBookListUrl = ruleBean.getBookListUrl()
+                        .replace("{catId}", catIdRule)
+                        .replace("{page}", page + "");
+                } else {
+                    // 新规则
+                    // 拼接分类URL
+                    catBookListUrl = catIdRule.replace("{page}", page + "");
+                }
+                log.info("catBookListUrl：{}", catBookListUrl);
 
-                    String bookListHtml = crawlHttpClient.get(catBookListUrl, ruleBean.getCharset());
-                    if (bookListHtml != null) {
-                        Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
-                        Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
-                        boolean isFindBookId = bookIdMatcher.find();
-                        while (isFindBookId) {
-                            try {
-                                //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
-                                //捕获中断异常InterruptedException来退出线程。
-                                //2.非阻塞过程中通过判断中断标志来退出线程。
-                                if (Thread.currentThread().isInterrupted()) {
-                                    return;
-                                }
-
-                                String bookId = bookIdMatcher.group(1);
-                                parseBookAndSave(catId, ruleBean, sourceId, bookId);
-                            } catch (Exception e) {
-                                log.error(e.getMessage(), e);
+                String bookListHtml = crawlHttpClient.get(catBookListUrl, ruleBean.getCharset());
+                if (bookListHtml != null) {
+                    Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
+                    Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
+                    boolean isFindBookId = bookIdMatcher.find();
+                    while (isFindBookId) {
+                        try {
+                            //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
+                            //捕获中断异常InterruptedException来退出线程。
+                            //2.非阻塞过程中通过判断中断标志来退出线程。
+                            if (Thread.currentThread().isInterrupted()) {
+                                return;
                             }
 
-                            isFindBookId = bookIdMatcher.find();
+                            String bookId = bookIdMatcher.group(1);
+                            parseBookAndSave(catId, ruleBean, sourceId, bookId);
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
                         }
 
-                        Pattern totalPagePatten = Pattern.compile(ruleBean.getTotalPagePatten());
-                        Matcher totalPageMatcher = totalPagePatten.matcher(bookListHtml);
-                        boolean isFindTotalPage = totalPageMatcher.find();
-                        if (isFindTotalPage) {
+                        isFindBookId = bookIdMatcher.find();
+                    }
 
-                            totalPage = Integer.parseInt(totalPageMatcher.group(1));
+                    Pattern totalPagePatten = Pattern.compile(ruleBean.getTotalPagePatten());
+                    Matcher totalPageMatcher = totalPagePatten.matcher(bookListHtml);
+                    boolean isFindTotalPage = totalPageMatcher.find();
+                    if (isFindTotalPage) {
 
-                        }
-
+                        totalPage = Integer.parseInt(totalPageMatcher.group(1));
 
                     }
                 }
