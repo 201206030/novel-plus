@@ -68,6 +68,8 @@ public class CrawlServiceImpl implements CrawlService {
 
     private final Map<Integer, Byte> crawlSourceStatusMap = new HashMap<>();
 
+    private final Map<Integer, Set<Long>> runningCrawlThread = new HashMap<>();
+
 
     @Override
     public void addCrawlSource(CrawlSource source) {
@@ -123,8 +125,7 @@ public class CrawlServiceImpl implements CrawlService {
         if (sourceStatus == (byte) 0) {
             // 关闭
             // 将该爬虫源正在运行的线程集合全部停止
-            Set<Long> runningCrawlThreadId = (Set<Long>) cacheService.getObject(
-                CacheKey.RUNNING_CRAWL_THREAD_KEY_PREFIX + sourceId);
+            Set<Long> runningCrawlThreadId = runningCrawlThread.get(sourceId);
             if (runningCrawlThreadId != null) {
                 for (Long ThreadId : runningCrawlThreadId) {
                     Thread thread = ThreadUtil.findThread(ThreadId);
@@ -152,7 +153,7 @@ public class CrawlServiceImpl implements CrawlService {
                     //thread加入到监控缓存中
                     threadIds.add(thread.getId());
                 }
-                cacheService.setObject(CacheKey.RUNNING_CRAWL_THREAD_KEY_PREFIX + sourceId, threadIds);
+                runningCrawlThread.put(sourceId, threadIds);
             }
 
         }
