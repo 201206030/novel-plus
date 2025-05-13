@@ -74,10 +74,8 @@ public class StarterListener implements ServletContextInitializer {
                                         needUpdateBook.getId());
                                     //解析章节目录
                                     crawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(), book,
-                                        ruleBean, existBookIndexMap, chapter -> {
-                                            bookService.updateBookAndIndexAndContent(book, chapter.getBookIndexList(),
-                                                chapter.getBookContentList(), existBookIndexMap);
-                                        });
+                                        ruleBean, existBookIndexMap, chapter -> bookService.updateBookAndIndexAndContent(book, chapter.getBookIndexList(),
+                                            chapter.getBookContentList(), existBookIndexMap));
                                 });
                             } catch (Exception e) {
                                 log.error(e.getMessage(), e);

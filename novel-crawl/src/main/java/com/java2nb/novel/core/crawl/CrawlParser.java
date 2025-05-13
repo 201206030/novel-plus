@@ -10,9 +10,11 @@ import com.java2nb.novel.utils.CrawlHttpClient;
 import io.github.xxyopen.util.IdWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +28,7 @@ import java.util.regex.Pattern;
  *
  * @author Administrator
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CrawlParser {
@@ -34,8 +37,8 @@ public class CrawlParser {
 
     private final CrawlHttpClient crawlHttpClient;
 
-    @SneakyThrows
-    public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler) {
+    public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler)
+        throws InterruptedException {
         Book book = new Book();
         String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
         String bookDetailHtml = crawlHttpClient.get(bookDetailUrl, ruleBean.getCharset());
@@ -120,8 +123,12 @@ public class CrawlParser {
                         if (isFindUpdateTime) {
                             String updateTime = updateTimeMatch.group(1);
                             //设置更新时间
-                            book.setLastIndexUpdateTime(
-                                new SimpleDateFormat(ruleBean.getUpadateTimeFormatPatten()).parse(updateTime));
+                            try {
+                                book.setLastIndexUpdateTime(
+                                    new SimpleDateFormat(ruleBean.getUpadateTimeFormatPatten()).parse(updateTime));
+                            } catch (ParseException e) {
+                                log.error("解析最新章节更新时间出错", e);
+                            }
 
                         }
                     }
@@ -144,7 +151,7 @@ public class CrawlParser {
     }
 
     public boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean,
-        Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) {
+        Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) throws InterruptedException{
 
         Date currentDate = new Date();
 

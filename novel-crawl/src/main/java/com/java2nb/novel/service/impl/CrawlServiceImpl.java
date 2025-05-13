@@ -249,6 +249,11 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public void parseBookList(int catId, RuleBean ruleBean, Integer sourceId) {
 
+        String catIdRule = ruleBean.getCatIdRule().get("catId" + catId);
+        if (StringUtils.isBlank(catIdRule)) {
+            return;
+        }
+
         //当前页码1
         int page = 1;
         int totalPage = page;
@@ -256,11 +261,7 @@ public class CrawlServiceImpl implements CrawlService {
         while (page <= totalPage) {
 
             try {
-                String catIdRule = ruleBean.getCatIdRule().get("catId" + catId);
-                if (StringUtils.isBlank(catIdRule) || Thread.currentThread().isInterrupted()) {
-                    return;
-                }
-                String catBookListUrl = "";
+                String catBookListUrl;
                 if (StringUtils.isNotBlank(ruleBean.getBookListUrl())) {
                     // 兼容老规则
                     // 拼接分类URL
@@ -290,6 +291,12 @@ public class CrawlServiceImpl implements CrawlService {
 
                             String bookId = bookIdMatcher.group(1);
                             parseBookAndSave(catId, ruleBean, sourceId, bookId);
+                        } catch (InterruptedException e) {
+                            log.error(e.getMessage(), e);
+                            //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
+                            //捕获中断异常InterruptedException来退出线程。
+                            //2.非阻塞过程中通过判断中断标志来退出线程。
+                            return;
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
@@ -306,6 +313,12 @@ public class CrawlServiceImpl implements CrawlService {
 
                     }
                 }
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(), e);
+                //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
+                //捕获中断异常InterruptedException来退出线程。
+                //2.非阻塞过程中通过判断中断标志来退出线程。
+                return;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -317,8 +330,12 @@ public class CrawlServiceImpl implements CrawlService {
                     Thread.sleep(Duration.ofMinutes(1));
                 } catch (InterruptedException e) {
                     log.error(e.getMessage(), e);
+                    //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
+                    //捕获中断异常InterruptedException来退出线程。
+                    //2.非阻塞过程中通过判断中断标志来退出线程。
+                    return;
                 }
-            }else{
+            } else {
                 page += 1;
             }
         }
@@ -327,7 +344,8 @@ public class CrawlServiceImpl implements CrawlService {
     }
 
     @Override
-    public boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId) {
+    public boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId)
+        throws InterruptedException {
 
         final AtomicBoolean parseResult = new AtomicBoolean(false);
 
@@ -391,4 +409,5 @@ public class CrawlServiceImpl implements CrawlService {
             .render(RenderingStrategies.MYBATIS3);
         return crawlSourceMapper.selectMany(render);
     }
+
 }

@@ -53,7 +53,7 @@ public interface CrawlService {
      * @param ruleBean 采集规则\
      * @return true:成功，false:失败
      * */
-    boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId);
+    boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId) throws InterruptedException;
 
     /**
      * 根据爬虫状态查询爬虫源集合
