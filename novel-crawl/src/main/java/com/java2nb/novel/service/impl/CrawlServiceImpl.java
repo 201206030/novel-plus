@@ -66,6 +66,8 @@ public class CrawlServiceImpl implements CrawlService {
 
     private final CrawlHttpClient crawlHttpClient;
 
+    private final Map<Integer, Byte> crawlSourceStatusMap = new HashMap<>();
+
 
     @Override
     public void addCrawlSource(CrawlSource source) {
@@ -104,6 +106,8 @@ public class CrawlServiceImpl implements CrawlService {
             .build()
             .render(RenderingStrategies.MYBATIS3);
         List<CrawlSource> crawlSources = crawlSourceMapper.selectMany(render);
+        crawlSources.forEach(crawlSource -> crawlSource.setSourceStatus(
+            Optional.ofNullable(crawlSourceStatusMap.get(crawlSource.getId())).orElse((byte) 0)));
         PageBean<CrawlSource> pageBean = PageBuilder.build(crawlSources);
         pageBean.setList(BeanUtil.copyList(crawlSources, CrawlSourceVO.class));
         return pageBean;
@@ -113,12 +117,12 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public void openOrCloseCrawl(Integer sourceId, Byte sourceStatus) {
 
-        //判断是开启还是关闭，如果是关闭，则修改数据库状态后获取该爬虫正在运行的线程集合并全部停止
-        //如果是开启，先查询数据库中状态，判断该爬虫源是否还在运行，如果在运行，则忽略，
-        // 如果没有则修改数据库状态，并启动线程爬取小说数据加入到runningCrawlThread中
+        // 判断是开启还是关闭，如果是关闭，则获取该爬虫源正在运行的线程集合并全部中断
+        // 如果是开启，先判断该爬虫源是否还在运行，如果在运行，则忽略，如果没有运行则启动线程爬取小说数据并加入到runningCrawlThread中
+        // 最后，保存爬虫源状态
         if (sourceStatus == (byte) 0) {
-            //关闭,直接修改数据库状态，并直接修改数据库状态后获取该爬虫正在运行的线程集合全部停止
-            SpringUtil.getBean(CrawlService.class).updateCrawlSourceStatus(sourceId, sourceStatus);
+            // 关闭
+            // 将该爬虫源正在运行的线程集合全部停止
             Set<Long> runningCrawlThreadId = (Set<Long>) cacheService.getObject(
                 CacheKey.RUNNING_CRAWL_THREAD_KEY_PREFIX + sourceId);
             if (runningCrawlThreadId != null) {
@@ -132,16 +136,13 @@ public class CrawlServiceImpl implements CrawlService {
 
 
         } else {
-            //开启
-            //查询爬虫源状态和规则
-            CrawlSource source = queryCrawlSource(sourceId);
-            Byte realSourceStatus = source.getSourceStatus();
-
+            // 开启
+            Byte realSourceStatus = Optional.ofNullable(crawlSourceStatusMap.get(sourceId)).orElse((byte) 0);
             if (realSourceStatus == (byte) 0) {
-                //该爬虫源已经停止运行了,修改数据库状态，并启动线程爬取小说数据加入到runningCrawlThread中
-                SpringUtil.getBean(CrawlService.class).updateCrawlSourceStatus(sourceId, sourceStatus);
+                // 查询爬虫源规则
+                CrawlSource source = queryCrawlSource(sourceId);
+                //该爬虫源已经停止运行了,启动线程爬取小说数据并将线程加入到runningCrawlThread中
                 RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
-
                 Set<Long> threadIds = new HashSet<>();
                 //按分类开始爬虫解析任务
                 for (int i = 1; i < 8; i++) {
@@ -150,15 +151,14 @@ public class CrawlServiceImpl implements CrawlService {
                     thread.start();
                     //thread加入到监控缓存中
                     threadIds.add(thread.getId());
-
                 }
                 cacheService.setObject(CacheKey.RUNNING_CRAWL_THREAD_KEY_PREFIX + sourceId, threadIds);
-
-
             }
 
-
         }
+
+        // 保存爬虫源状态
+        crawlSourceStatusMap.put(sourceId, sourceStatus);
 
     }
 
