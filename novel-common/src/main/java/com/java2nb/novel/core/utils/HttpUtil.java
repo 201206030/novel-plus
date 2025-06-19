@@ -5,8 +5,8 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Administrator
@@ -16,7 +16,7 @@ public class HttpUtil {
 
     private static final String DEFAULT_CHARSET = "utf-8";
 
-    private static final Map<String, RestTemplate> REST_TEMPLATE_MAP = new HashMap<>();
+    private static final Map<String, RestTemplate> REST_TEMPLATE_MAP = new ConcurrentHashMap<>();
 
     public static String getByHttpClientWithChrome(String url, String charset) {
         log.debug("Get url：{}", url);
