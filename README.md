@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV1Zo4y187Mi'>项目演示</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a>
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='http://117.72.165.13:8888'>演示站点</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a>
 </p> 
 
 ## 项目介绍
@@ -21,8 +21,8 @@ TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数�
 ## 项目地址
 
 - 学习版：[GitHub](https://github.com/201206030/novel) ｜ [码云](https://gitee.com/novel_dev_team/novel)
-  ｜ [保姆级教程](https://docs.xxyopen.com)
-- **应用版**：[GitHub](https://github.com/201206030/novel-plus) ｜ [码云](https://gitee.com/novel_dev_team/novel-plus)
+  ｜ [保姆级教程](https://docs.xxyopen.com) 
+- **应用版**：[GitHub](https://github.com/201206030/novel-plus) ｜ [码云](https://gitee.com/novel_dev_team/novel-plus) ｜ [演示站点](http://117.72.165.13:8888)
 - 微服务版：[GitHub](https://github.com/201206030/novel-cloud) ｜ [码云](https://gitee.com/novel_dev_team/novel-cloud)
 
 ## 项目结构
