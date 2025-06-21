@@ -110,6 +110,10 @@ public class CrawlParser {
                             }
                         }
                     }
+                    //去除小说简介末尾冗余的小说名
+                    if (desc.endsWith(bookName)) {
+                        desc = desc.substring(0, desc.length() - bookName.length());
+                    }
                     //设置书籍简介
                     book.setBookDesc(desc);
                     if (StringUtils.isNotBlank(ruleBean.getStatusPatten())) {
@@ -161,7 +165,7 @@ public class CrawlParser {
     }
 
     public boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean,
-        Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) throws InterruptedException{
+        Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) throws InterruptedException {
 
         Date currentDate = new Date();
 
