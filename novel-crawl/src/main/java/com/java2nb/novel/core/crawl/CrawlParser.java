@@ -238,6 +238,8 @@ public class CrawlParser {
                                 }
                             }
                         }
+                        // 去除小说内容末尾的所有换行
+                        content = removeTrailingBrTags(content);
                         //插入章节目录和章节内容
                         BookIndex bookIndex = new BookIndex();
                         bookIndex.setIndexName(indexName);
@@ -314,4 +316,12 @@ public class CrawlParser {
         return false;
 
     }
+
+    /**
+     * 删除字符串末尾的所有 <br> 类似标签（允许各种空格）
+     */
+    public static String removeTrailingBrTags(String str) {
+        return str.replaceAll("(?i)(?:\\s*<\\s*br\\s*/?\\s*>)++(?:\\s|\\u3000)*$", "");
+    }
+
 }
