@@ -45,6 +45,7 @@ public class RuleBean {
     private String visitCountPatten;
     private String descStart;
     private String descEnd;
+    private String filterDesc;
     private String upadateTimePatten;
     private String upadateTimeFormatPatten;
     private String bookIndexUrl;

@@ -119,6 +119,9 @@
                                 示例：<b>&lt;/p&gt;</b>
                                 <li><input type="text" id="descEnd" class="s_input icon_key" placeholder="小说简介结束截取字符串：">
                                 </li>
+                                示例：<b>&lt;span\s+class="allshow"&gt;([^/]+)&lt;/span&gt;</b>
+                                <li><textarea id="filterDesc"
+                                              placeholder="过滤简介（多个内容换行）" rows="5" cols="52"></textarea></li>
                                 示例：<b>更新：(\d+-\d+-\d+\s\d+:\d+:\d+)&lt;/a&gt;</b>
                                 <li><input type="text" id="upadateTimePatten" class="s_input icon_key"
                                            placeholder="小说更新时间的正则表达式："></li>
@@ -266,6 +269,7 @@
             $("#visitCountPatten").val(crawlRule.visitCountPatten);
             $("#descStart").val(crawlRule.descStart);
             $("#descEnd").val(crawlRule.descEnd);
+            $("#filterDesc").val(crawlRule.filterDesc);
             $("#upadateTimePatten").val(crawlRule.upadateTimePatten);
             $("#upadateTimeFormatPatten").val(crawlRule.upadateTimeFormatPatten);
             $("#bookIndexUrl").val(crawlRule.bookIndexUrl);
@@ -423,6 +427,9 @@
         }
 
         crawlRule.descEnd = descEnd;
+
+        var filterDesc = $("#filterDesc").val();
+        crawlRule.filterDesc = filterDesc;
 
         var upadateTimePatten = $("#upadateTimePatten").val();
 

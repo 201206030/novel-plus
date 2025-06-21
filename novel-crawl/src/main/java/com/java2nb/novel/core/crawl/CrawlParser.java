@@ -100,6 +100,16 @@ public class CrawlParser {
                         .replaceAll("<p>\\s*</p>", "")
                         .replaceAll("<p>", "")
                         .replaceAll("</p>", "<br/>");
+                    // 小说简介过滤
+                    String filterDesc = ruleBean.getFilterDesc();
+                    if (StringUtils.isNotBlank(filterDesc)) {
+                        String[] filterRules = filterDesc.replace("\r\n", "\n").split("\n");
+                        for (String filterRule : filterRules) {
+                            if (StringUtils.isNotBlank(filterRule)) {
+                                desc = desc.replaceAll(filterRule, "");
+                            }
+                        }
+                    }
                     //设置书籍简介
                     book.setBookDesc(desc);
                     if (StringUtils.isNotBlank(ruleBean.getStatusPatten())) {
