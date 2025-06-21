@@ -110,7 +110,9 @@ public class CrawlParser {
                             }
                         }
                     }
-                    //去除小说简介末尾冗余的小说名
+                    // 去除小说简介前后空格
+                    desc = desc.trim();
+                    // 去除小说简介末尾冗余的小说名
                     if (desc.endsWith(bookName)) {
                         desc = desc.substring(0, desc.length() - bookName.length());
                     }
