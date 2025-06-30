@@ -77,14 +77,11 @@ novel-plus 5.x 已集成 Spring 官方最新发布的 Spring AI 框架，并推�
 1. v5.0.0 版本在小说章节发布页面的文本编辑器中集成了多项智能编辑功能，包括 AI 扩写、缩写、续写及文本润色等。这些功能的设计灵感来源于百家号文章编辑器中的 AI 助手。
 2. v5.1.0 版本在小说发布页面，新增 AI 生成封面图功能。若作家未上传自定义封面图，系统将根据小说信息自动生成封面图。
 
-目前，AI 功能仍处于实验阶段，仅实现了基础的核心功能。我们非常重视用户的实际使用体验和反馈，未来将根据用户需求和使用情况，持续优化和调整该功能。如果用户反馈积极，我们计划进一步开发更高级的
-AI 功能，例如自动生成有声小说、智能情节推荐等，以全面提升 novel-plus 的创作能力和用户体验。
+目前，AI 功能仍处于实验阶段，仅实现了基础的核心功能。我们非常重视用户的实际使用体验和反馈，未来将根据用户需求和使用情况，持续优化和调整该功能。如果用户反馈积极，我们计划进一步开发更高级的 AI 功能，例如自动生成有声小说、智能情节推荐等，以全面提升 novel-plus 的创作能力和用户体验。
 
 我们将持续关注 AI 技术的发展，并致力于将其与小说创作场景深度融合，为用户带来更智能、更便捷的创作工具。
 
-由于 DeepSeek 官方 API 目前不可用，novel-plus 项目默认使用的是第三方[硅基流动](https://cloud.siliconflow.cn/i/DOgMRH9S)
-提供的 API，采用的 AI 模型有对话模型`deepseek-ai/DeepSeek-R1-Distill-Llama-8B`（DeepSeek-R1 的蒸馏版本，免费使用）和生图模型`Kwai-Kolors/Kolors`（快手 Kolors 团队开发的文本到图像生成模型，免费使用）。只需注册一个硅基流动账号，创建一个
-API 密钥，并将其添加到 novel-plus 项目 novel-front 模块的 yaml 配置文件中，即可体验 novel-plus 项目的 AI 写作功能。
+novel-plus 项目默认使用的是第三方大模型服务平台[硅基流动](https://cloud.siliconflow.cn/i/DOgMRH9S)提供的 API（兼容 OpenAI 的相关接口，可直接通过 Spring AI 框架调用），采用的 AI 模型有对话模型`deepseek-ai/DeepSeek-R1-Distill-Llama-8B`（DeepSeek-R1 的蒸馏版本，免费使用）和生图模型`Kwai-Kolors/Kolors`（快手 Kolors 团队开发的文本到图像生成模型，免费使用）。只需注册一个硅基流动账号，创建一个 API 密钥，并将其添加到 novel-plus 项目 novel-front 模块的 yaml 配置文件中，即可体验 novel-plus 项目的 AI 写作功能。
 
 ```yaml
 spring:
@@ -104,7 +101,7 @@ spring:
           model: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
 ```
 
-> ⚠️ novel-plus 项目默认使用的都是免费 AI 模型，生成效果有限。如果对生成内容有更高的要求，建议选用付费的 AI 模型。
+⚠️ novel-plus 项目默认使用的都是免费 AI 模型，生成效果有限。如果对生成内容有更高的要求，建议选用付费的 AI 模型。
 
 ## 增值服务
 

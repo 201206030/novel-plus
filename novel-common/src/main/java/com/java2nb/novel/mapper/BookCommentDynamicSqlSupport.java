@@ -20,6 +20,9 @@ public final class BookCommentDynamicSqlSupport {
     public static final SqlColumn<String> commentContent = bookComment.commentContent;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> location = bookComment.location;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> replyCount = bookComment.replyCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -38,6 +41,8 @@ public final class BookCommentDynamicSqlSupport {
         public final SqlColumn<Long> bookId = column("book_id", JDBCType.BIGINT);
 
         public final SqlColumn<String> commentContent = column("comment_content", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> location = column("location", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> replyCount = column("reply_count", JDBCType.INTEGER);
 

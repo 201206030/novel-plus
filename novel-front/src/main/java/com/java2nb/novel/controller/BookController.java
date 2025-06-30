@@ -2,12 +2,14 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.BookComment;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.service.BookContentService;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.service.IpLocationService;
 import com.java2nb.novel.vo.BookCommentVO;
 import com.java2nb.novel.vo.BookSettingVO;
 import com.java2nb.novel.vo.BookSpVO;
@@ -36,6 +38,8 @@ public class BookController extends BaseController {
     private final BookService bookService;
 
     private final Map<String, BookContentService> bookContentServiceMap;
+
+    private final IpLocationService ipLocationService;
 
     /**
      * 查询首页小说设置列表数据
@@ -158,6 +162,7 @@ public class BookController extends BaseController {
         if (userDetails == null) {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
+        comment.setLocation(ipLocationService.getLocation(IpUtil.getRealIp(request)));
         bookService.addBookComment(userDetails.getId(), comment);
         return RestResult.ok();
     }

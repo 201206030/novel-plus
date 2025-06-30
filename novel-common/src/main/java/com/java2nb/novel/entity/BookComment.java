@@ -15,6 +15,9 @@ public class BookComment {
     private String commentContent;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String location;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer replyCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -54,6 +57,16 @@ public class BookComment {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCommentContent(String commentContent) {
         this.commentContent = commentContent == null ? null : commentContent.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getLocation() {
+        return location;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setLocation(String location) {
+        this.location = location == null ? null : location.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

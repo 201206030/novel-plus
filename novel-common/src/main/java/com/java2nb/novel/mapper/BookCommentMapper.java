@@ -29,7 +29,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface BookCommentMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, bookId, commentContent, replyCount, auditStatus, createTime, createUserId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, bookId, commentContent, location, replyCount, auditStatus, createTime, createUserId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -58,6 +58,7 @@ public interface BookCommentMapper {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="book_id", property="bookId", jdbcType=JdbcType.BIGINT),
         @Result(column="comment_content", property="commentContent", jdbcType=JdbcType.VARCHAR),
+        @Result(column="location", property="location", jdbcType=JdbcType.VARCHAR),
         @Result(column="reply_count", property="replyCount", jdbcType=JdbcType.INTEGER),
         @Result(column="audit_status", property="auditStatus", jdbcType=JdbcType.TINYINT),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
@@ -92,6 +93,7 @@ public interface BookCommentMapper {
             c.map(id).toProperty("id")
             .map(bookId).toProperty("bookId")
             .map(commentContent).toProperty("commentContent")
+            .map(location).toProperty("location")
             .map(replyCount).toProperty("replyCount")
             .map(auditStatus).toProperty("auditStatus")
             .map(createTime).toProperty("createTime")
@@ -105,6 +107,7 @@ public interface BookCommentMapper {
             c.map(id).toProperty("id")
             .map(bookId).toProperty("bookId")
             .map(commentContent).toProperty("commentContent")
+            .map(location).toProperty("location")
             .map(replyCount).toProperty("replyCount")
             .map(auditStatus).toProperty("auditStatus")
             .map(createTime).toProperty("createTime")
@@ -118,6 +121,7 @@ public interface BookCommentMapper {
             c.map(id).toPropertyWhenPresent("id", record::getId)
             .map(bookId).toPropertyWhenPresent("bookId", record::getBookId)
             .map(commentContent).toPropertyWhenPresent("commentContent", record::getCommentContent)
+            .map(location).toPropertyWhenPresent("location", record::getLocation)
             .map(replyCount).toPropertyWhenPresent("replyCount", record::getReplyCount)
             .map(auditStatus).toPropertyWhenPresent("auditStatus", record::getAuditStatus)
             .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
@@ -157,6 +161,7 @@ public interface BookCommentMapper {
         return dsl.set(id).equalTo(record::getId)
                 .set(bookId).equalTo(record::getBookId)
                 .set(commentContent).equalTo(record::getCommentContent)
+                .set(location).equalTo(record::getLocation)
                 .set(replyCount).equalTo(record::getReplyCount)
                 .set(auditStatus).equalTo(record::getAuditStatus)
                 .set(createTime).equalTo(record::getCreateTime)
@@ -168,6 +173,7 @@ public interface BookCommentMapper {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(bookId).equalToWhenPresent(record::getBookId)
                 .set(commentContent).equalToWhenPresent(record::getCommentContent)
+                .set(location).equalToWhenPresent(record::getLocation)
                 .set(replyCount).equalToWhenPresent(record::getReplyCount)
                 .set(auditStatus).equalToWhenPresent(record::getAuditStatus)
                 .set(createTime).equalToWhenPresent(record::getCreateTime)
@@ -179,6 +185,7 @@ public interface BookCommentMapper {
         return update(c ->
             c.set(bookId).equalTo(record::getBookId)
             .set(commentContent).equalTo(record::getCommentContent)
+            .set(location).equalTo(record::getLocation)
             .set(replyCount).equalTo(record::getReplyCount)
             .set(auditStatus).equalTo(record::getAuditStatus)
             .set(createTime).equalTo(record::getCreateTime)
@@ -192,6 +199,7 @@ public interface BookCommentMapper {
         return update(c ->
             c.set(bookId).equalToWhenPresent(record::getBookId)
             .set(commentContent).equalToWhenPresent(record::getCommentContent)
+            .set(location).equalToWhenPresent(record::getLocation)
             .set(replyCount).equalToWhenPresent(record::getReplyCount)
             .set(auditStatus).equalToWhenPresent(record::getAuditStatus)
             .set(createTime).equalToWhenPresent(record::getCreateTime)
