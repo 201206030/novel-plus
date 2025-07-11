@@ -2,12 +2,10 @@ package com.java2nb.novel.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.CrawlParser;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.utils.SpringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
@@ -59,8 +57,6 @@ public class CrawlServiceImpl implements CrawlService {
     private final CrawlSingleTaskMapper crawlSingleTaskMapper;
 
     private final BookService bookService;
-
-    private final CacheService cacheService;
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
 
@@ -198,6 +194,16 @@ public class CrawlServiceImpl implements CrawlService {
         List<CrawlSingleTask> crawlSingleTasks = crawlSingleTaskMapper.selectMany(render);
         PageBean<CrawlSingleTask> pageBean = PageBuilder.build(crawlSingleTasks);
         pageBean.setList(BeanUtil.copyList(crawlSingleTasks, CrawlSingleTaskVO.class));
+        for (CrawlSingleTask crawlSingleTask : pageBean.getList()) {
+            if (crawlSingleTask.getTaskStatus() == 2
+                && crawlParser.getCrawlTaskProgress(crawlSingleTask.getId()) != null) {
+                // 如果排队中的任务有任务进度
+                // 1.设置任务进度
+                crawlSingleTask.setCrawlChapters(crawlParser.getCrawlTaskProgress(crawlSingleTask.getId()));
+                // 2.将排队中的任务状态修改成采集中
+                crawlSingleTask.setTaskStatus((byte) 3);
+            }
+        }
         return pageBean;
     }
 
@@ -227,8 +233,12 @@ public class CrawlServiceImpl implements CrawlService {
         excCount += 1;
         task.setExcCount(excCount);
         if (status == 1 || excCount == 5) {
-            //当采集成功或者采集次数等于5，则更新采集最终状态，并停止采集
+            // 当采集成功或者采集次数等于5，则更新采集最终状态，并停止采集
             task.setTaskStatus(status);
+        }
+        if (status == 1) {
+            // 当采集成功，保存采集的章节数量
+            task.setCrawlChapters(crawlParser.getCrawlTaskProgress(task.getId()));
         }
         crawlSingleTaskMapper.updateByPrimaryKeySelective(task);
 
@@ -242,6 +252,11 @@ public class CrawlServiceImpl implements CrawlService {
             return crawlSource;
         }
         return null;
+    }
+
+    @Override
+    public Integer getTaskProgress(Long taskId) {
+        return Optional.ofNullable(crawlParser.getCrawlTaskProgress(taskId)).orElse(0);
     }
 
     /**
@@ -291,7 +306,7 @@ public class CrawlServiceImpl implements CrawlService {
                             }
 
                             String bookId = bookIdMatcher.group(1);
-                            parseBookAndSave(catId, ruleBean, sourceId, bookId);
+                            parseBookAndSave(catId, ruleBean, sourceId, bookId, null);
                         } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
                             //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
@@ -345,7 +360,7 @@ public class CrawlServiceImpl implements CrawlService {
     }
 
     @Override
-    public boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId)
+    public boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId, CrawlSingleTask task)
         throws InterruptedException {
 
         final AtomicBoolean parseResult = new AtomicBoolean(false);
@@ -378,7 +393,7 @@ public class CrawlServiceImpl implements CrawlService {
                     new HashMap<>(0), chapter -> {
                         bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(),
                             chapter.getBookContentList());
-                    });
+                    }, task);
                 parseResult.set(parseIndexContentResult);
 
             } else {

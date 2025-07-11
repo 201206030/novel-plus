@@ -38,6 +38,9 @@ public final class CrawlSingleTaskDynamicSqlSupport {
     public static final SqlColumn<Byte> excCount = crawlSingleTask.excCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> crawlChapters = crawlSingleTask.crawlChapters;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Date> createTime = crawlSingleTask.createTime;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -59,6 +62,8 @@ public final class CrawlSingleTaskDynamicSqlSupport {
         public final SqlColumn<Byte> taskStatus = column("task_status", JDBCType.TINYINT);
 
         public final SqlColumn<Byte> excCount = column("exc_count", JDBCType.TINYINT);
+
+        public final SqlColumn<Integer> crawlChapters = column("crawl_chapters", JDBCType.INTEGER);
 
         public final SqlColumn<Date> createTime = column("create_time", JDBCType.TIMESTAMP);
 

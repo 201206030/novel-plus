@@ -1,25 +1,24 @@
 package com.java2nb.novel.core.crawl;
 
+import com.java2nb.novel.core.cache.CacheKey;
+import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.utils.RandomBookInfoUtil;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.utils.Constants;
 import com.java2nb.novel.utils.CrawlHttpClient;
 import io.github.xxyopen.util.IdWorker;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +35,18 @@ public class CrawlParser {
     private final IdWorker ID_WORKER = IdWorker.INSTANCE;
 
     private final CrawlHttpClient crawlHttpClient;
+
+    /**
+     * 爬虫任务进度
+     */
+    private final Map<Long, Integer> crawlTaskProgress = new HashMap<>();
+
+    /**
+     * 获取爬虫任务进度
+     */
+    public Integer getCrawlTaskProgress(Long taskId) {
+        return crawlTaskProgress.get(taskId);
+    }
 
     public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler)
         throws InterruptedException {
@@ -156,7 +167,7 @@ public class CrawlParser {
                 } else if (book.getVisitCount() != null && book.getScore() == null) {
                     //随机根据访问次数生成评分
                     book.setScore(RandomBookInfoUtil.getScoreByVisitCount(book.getVisitCount()));
-                } else if (book.getVisitCount() == null && book.getScore() == null) {
+                } else if (book.getVisitCount() == null) {
                     //都没有，设置成固定值
                     book.setVisitCount(Constants.VISIT_COUNT_DEFAULT);
                     book.setScore(6.5f);
@@ -167,7 +178,13 @@ public class CrawlParser {
     }
 
     public boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean,
-        Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler) throws InterruptedException {
+        Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler, CrawlSingleTask task)
+        throws InterruptedException {
+
+        if (task != null) {
+            // 开始采集
+            crawlTaskProgress.put(task.getId(), 0);
+        }
 
         Date currentDate = new Date();
 
@@ -225,7 +242,7 @@ public class CrawlParser {
                                 calResult = sourceIndexId.substring(0, sourceBookId.length() - y);
                             }
 
-                            if (calResult.length() == 0) {
+                            if (calResult.isEmpty()) {
                                 calResult = "0";
 
                             }
@@ -291,6 +308,11 @@ public class CrawlParser {
                         }
                         bookIndex.setUpdateTime(currentDate);
 
+                        if (task != null) {
+                            // 更新采集进度
+                            crawlTaskProgress.put(task.getId(), indexNum + 1);
+                        }
+
 
                     }
 
@@ -300,10 +322,10 @@ public class CrawlParser {
                 isFindIndex = indexIdMatch.find() & indexNameMatch.find();
             }
 
-            if (indexList.size() > 0) {
+            if (!indexList.isEmpty()) {
                 //如果有爬到最新章节，则设置小说主表的最新章节信息
                 //获取爬取到的最新章节
-                BookIndex lastIndex = indexList.get(indexList.size() - 1);
+                BookIndex lastIndex = indexList.getLast();
                 book.setLastIndexId(lastIndex.getId());
                 book.setLastIndexName(lastIndex.getIndexName());
                 book.setLastIndexUpdateTime(currentDate);
@@ -312,7 +334,7 @@ public class CrawlParser {
             book.setWordCount(totalWordCount);
             book.setUpdateTime(currentDate);
 
-            if (indexList.size() == contentList.size() && indexList.size() > 0) {
+            if (indexList.size() == contentList.size() && !indexList.isEmpty()) {
 
                 handler.handle(new ChapterBean() {{
                     setBookIndexList(indexList);

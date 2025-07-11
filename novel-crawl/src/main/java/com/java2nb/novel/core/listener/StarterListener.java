@@ -74,8 +74,10 @@ public class StarterListener implements ServletContextInitializer {
                                         needUpdateBook.getId());
                                     //解析章节目录
                                     crawlParser.parseBookIndexAndContent(needUpdateBook.getCrawlBookId(), book,
-                                        ruleBean, existBookIndexMap, chapter -> bookService.updateBookAndIndexAndContent(book, chapter.getBookIndexList(),
-                                            chapter.getBookContentList(), existBookIndexMap));
+                                        ruleBean, existBookIndexMap,
+                                        chapter -> bookService.updateBookAndIndexAndContent(book,
+                                            chapter.getBookIndexList(),
+                                            chapter.getBookContentList(), existBookIndexMap), null);
                                 });
                             } catch (Exception e) {
                                 log.error(e.getMessage(), e);
@@ -107,9 +109,8 @@ public class StarterListener implements ServletContextInitializer {
                         //查询爬虫规则
                         CrawlSource source = crawlService.queryCrawlSource(task.getSourceId());
                         RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
-
                         if (crawlService.parseBookAndSave(task.getCatId(), ruleBean, task.getSourceId(),
-                            task.getSourceBookId())) {
+                            task.getSourceBookId(), task)) {
                             //采集成功
                             crawlStatus = 1;
                         }
@@ -122,6 +123,7 @@ public class StarterListener implements ServletContextInitializer {
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
+
                 if (task != null) {
                     crawlService.updateCrawlSingleTask(task, crawlStatus);
                 }

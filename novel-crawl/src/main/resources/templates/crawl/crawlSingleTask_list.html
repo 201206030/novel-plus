@@ -49,6 +49,9 @@
                                 采集小说作者名
                             </th>
                             <th class="goread">
+                                采集进度
+                            </th>
+                            <th class="goread">
                                 采集次数
                             </th>
                             <th class="goread">
@@ -113,9 +116,15 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
-    search(1, 10);
+    let curr = 1;
+    let limit = 10;
 
-    function search(curr, limit) {
+    search();
+    setInterval(function(){
+        search();
+    }, 10000);
+
+    function search() {
 
         $.ajax({
             type: "get",
@@ -140,10 +149,13 @@
                                 "                                " + crawlSource.authorName + "\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"goread\">\n" +
+                                "                                " + crawlSource.crawlChapters + "\n" + "章" +
+                                "                            </td>\n" +
+                                "                            <td class=\"goread\">\n" +
                                 "                                " + crawlSource.excCount + "\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"goread\">\n" +
-                                "                                " + (crawlSource.taskStatus == 0 ? '采集失败' : (crawlSource.taskStatus == 1 ? '采集成功' : (crawlSource.excCount > 0 ? '采集中' : '排队中'))) + "\n" +
+                                "                                " + (crawlSource.taskStatus == 0 ? '采集失败' : (crawlSource.taskStatus == 1 ? '采集成功' : (crawlSource.taskStatus == 3 || crawlSource.excCount > 0 ? '采集中' : '排队中'))) + "\n" +
                                 "                            </td>\n" +
                                 "                            <td class=\"name\" valsc=\"291|2037554|1\">"
                                 + crawlSource.createTime + "</td>\n" +
@@ -171,7 +183,9 @@
 
                                     //首次不执行
                                     if (!first) {
-                                        search(obj.curr, obj.limit);
+                                        curr = obj.curr;
+                                        limit = obj.limit;
+                                        search();
                                     } else {
 
                                     }
