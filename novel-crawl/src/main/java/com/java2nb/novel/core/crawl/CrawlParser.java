@@ -1,7 +1,5 @@
 package com.java2nb.novel.core.crawl;
 
-import com.java2nb.novel.core.cache.CacheKey;
-import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.utils.RandomBookInfoUtil;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
@@ -46,6 +44,13 @@ public class CrawlParser {
      */
     public Integer getCrawlTaskProgress(Long taskId) {
         return crawlTaskProgress.get(taskId);
+    }
+
+    /**
+     * 移除爬虫任务进度
+     */
+    public void removeCrawlTaskProgress(Long taskId) {
+        crawlTaskProgress.remove(taskId);
     }
 
     public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler)
@@ -310,7 +315,7 @@ public class CrawlParser {
 
                         if (task != null) {
                             // 更新采集进度
-                            crawlTaskProgress.put(task.getId(), indexNum + 1);
+                            crawlTaskProgress.put(task.getId(), indexList.size());
                         }
 
 

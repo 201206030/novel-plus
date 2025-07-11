@@ -197,11 +197,11 @@ public class CrawlServiceImpl implements CrawlService {
         for (CrawlSingleTask crawlSingleTask : pageBean.getList()) {
             if (crawlSingleTask.getTaskStatus() == 2
                 && crawlParser.getCrawlTaskProgress(crawlSingleTask.getId()) != null) {
-                // 如果排队中的任务有任务进度
-                // 1.设置任务进度
-                crawlSingleTask.setCrawlChapters(crawlParser.getCrawlTaskProgress(crawlSingleTask.getId()));
-                // 2.将排队中的任务状态修改成采集中
+                // 如果排队中的任务有任务进度，将排队中的任务状态修改成采集中并设置任务进度
                 crawlSingleTask.setTaskStatus((byte) 3);
+                crawlSingleTask.setCrawlChapters(crawlParser.getCrawlTaskProgress(crawlSingleTask.getId()));
+                // 只会有一个任务在采集中
+                break;
             }
         }
         return pageBean;
@@ -241,17 +241,14 @@ public class CrawlServiceImpl implements CrawlService {
             task.setCrawlChapters(crawlParser.getCrawlTaskProgress(task.getId()));
         }
         crawlSingleTaskMapper.updateByPrimaryKeySelective(task);
+        // 删除任务进度
+        crawlParser.removeCrawlTaskProgress(task.getId());
 
     }
 
     @Override
     public CrawlSource getCrawlSource(Integer id) {
-        Optional<CrawlSource> opt = crawlSourceMapper.selectByPrimaryKey(id);
-        if (opt.isPresent()) {
-            CrawlSource crawlSource = opt.get();
-            return crawlSource;
-        }
-        return null;
+        return crawlSourceMapper.selectByPrimaryKey(id).orElse(null);
     }
 
     @Override
