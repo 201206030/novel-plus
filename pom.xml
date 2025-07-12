@@ -5,7 +5,7 @@
 
     <groupId>com.java2nb</groupId>
     <artifactId>novel</artifactId>
-    <version>4.3.0</version>
+    <version>5.2.0</version>
     <modules>
         <module>novel-common</module>
         <module>novel-front</module>
@@ -20,32 +20,30 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.18.RELEASE</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>21</java.version>
         <maven.test.skip>true</maven.test.skip>
         <mysql.version>8.0.29</mysql.version>
-        <mybatis.version>2.1.4</mybatis.version>
+        <mybatis.version>3.0.4</mybatis.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
-        <mybatis-dynamic-sql.version>1.1.4</mybatis-dynamic-sql.version>
+        <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
         <pagehelper.version>1.4.6</pagehelper.version>
-        <orderbyhelper.version>1.0.2</orderbyhelper.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <jjwt.version>0.9.1</jjwt.version>
         <jest.version>6.3.1</jest.version>
         <redis.version>1.4.1.RELEASE</redis.version>
         <redisson.version>3.12.5</redisson.version>
-        <sharding.jdbc.version>3.0.0</sharding.jdbc.version>
+        <shardingsphere-jdbc.version>5.5.1</shardingsphere-jdbc.version>
         <aliyun-sdk-oss.version>3.16.3</aliyun-sdk-oss.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <alipay-sdk-java.version>4.35.139.ALL</alipay-sdk-java.version>
         <xxyopen.version>1.0.0</xxyopen.version>
-        <jackson.version>2.15.1</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -54,6 +52,13 @@
                 <groupId>com.java2nb</groupId>
                 <artifactId>novel-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>1.0.0-M6</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -108,4 +113,35 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <!-- 定义一个用于切换到中央仓库的profile -->
+            <id>central-repo</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo.maven.apache.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central-plugin</id>
+                    <url>https://repo.maven.apache.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
 </project>

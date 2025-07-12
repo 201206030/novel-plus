@@ -106,7 +106,7 @@ Array.prototype.remove = function (val) {
 var token = $.cookie('Authorization');
 if (!token) {
     if (needLoginPath.indexOf(window.location.pathname) != -1) {
-        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
     }
 
     $(".user_link").html("<a href=\"/user/login.html\">登录</a>｜<a href=\"/user/register.html\">注册</a>");

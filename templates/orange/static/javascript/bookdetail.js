@@ -35,7 +35,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);
@@ -92,7 +92,7 @@
     },
     SaveComment: function (cmtBId, cmtCId, cmtDetail) {
         if(!isLogin){
-            layer.alert('请先登陆');
+            layer.alert('请先登录');
             return;
         }
         var cmtDetailTemp = cmtDetail.replace(/(^\s*)/g, "");
@@ -121,7 +121,7 @@
 
                 } else if (data.code == 1001) {
                     //未登录
-                    location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
                     layer.alert(data.msg);

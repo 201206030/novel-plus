@@ -1,12 +1,9 @@
 package com.java2nb.novel.service;
 
 
+import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import com.java2nb.novel.entity.*;
-import com.java2nb.novel.vo.BookCommentVO;
-import com.java2nb.novel.vo.BookSettingVO;
-import com.java2nb.novel.vo.BookSpVO;
-import com.java2nb.novel.vo.BookVO;
 
 import java.util.Date;
 import java.util.List;
@@ -290,4 +287,20 @@ public interface BookService {
      * @param authorId
      */
     void updateBookPic(Long bookId, String bookPic, Long authorId);
+
+    /**
+     * 查询AI生成图片
+     */
+    String queryAiGenPic(Long bookId);
+
+    /**
+     * 新增回复
+     * @param userId 用户ID
+     * @param commentReply 回复内容
+     * */
+    void addBookCommentReply(Long userId, BookCommentReply commentReply);
+
+    PageBean<BookCommentReplyVO> listCommentReplyByPage(Long userId, Long commentId, int page, int pageSize);
+
+    BookComment getBookComment(Long commentId);
 }

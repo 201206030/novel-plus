@@ -1,15 +1,15 @@
 package com.java2nb.novel.core.utils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Administrator
  */
 public class CookieUtil {
 
-    public static String getCookie(HttpServletRequest request,String key){
+    public static String getCookie(HttpServletRequest request, String key){
         Cookie[] cookies = request.getCookies();
         if(cookies != null) {
             for (Cookie cookie : cookies) {

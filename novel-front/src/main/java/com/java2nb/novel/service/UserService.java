@@ -26,8 +26,8 @@ public interface UserService {
     UserDetails register(User user);
 
     /**
-     * 用户登陆
-     * @param user 用户登陆信息类
+     * 用户登录
+     * @param user 用户登录信息类
      * @return jwt载体信息类
      * */
     UserDetails login(User user);

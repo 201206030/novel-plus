@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontBookCommentReplyMapper">
+
+    <select id="listCommentReplyByPage"  resultType="com.java2nb.novel.vo.BookCommentReplyVO">
+        select t1.id,t1.reply_content,t1.location,t1.create_time,t2.username create_user_name,t2.user_photo create_user_photo
+        from book_comment_reply t1 inner join user t2 on t1.create_user_id = t2.id
+        <trim>
+            <if test="commentId != null">
+                and t1.comment_id = #{commentId}
+            </if>
+            <if test="userId != null">
+                and t1.create_user_id = #{userId}
+            </if>
+        </trim>
+        order by t1.create_time desc
+
+    </select>
+
+
+
+</mapper>

@@ -4,7 +4,7 @@
 <mapper namespace="com.java2nb.novel.mapper.FrontBookCommentMapper">
 
     <select id="listCommentByPage"  resultType="com.java2nb.novel.vo.BookCommentVO">
-        select t1.id,t1.book_id,t1.comment_content,t1.reply_count,t1.create_time,t2.username create_user_name,t2.user_photo create_user_photo
+        select t1.id,t1.book_id,t1.comment_content,t1.location,t1.reply_count,t1.create_time,t2.username create_user_name,t2.user_photo create_user_photo
         from book_comment t1 inner join user t2 on t1.create_user_id = t2.id
         <trim>
             <if test="bookId != null">
@@ -14,9 +14,16 @@
                 and t1.create_user_id = #{userId}
             </if>
         </trim>
-
+        order by t1.create_time desc
 
     </select>
+
+
+    <update id="addReplyCount" parameterType="long">
+        update book_comment
+        set reply_count = reply_count + 1
+        where id = #{commentId}
+    </update>
 
 
 

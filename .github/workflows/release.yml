@@ -1,0 +1,79 @@
+name: Create novel-plus Maven Release with ZIPs
+
+on:
+  push:
+    # 匹配所有以'v'开头的标签
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          # 可选，默认是 temurin，也可以选择其他发行版
+          distribution: 'temurin'
+
+      - name: Build project with Maven
+        run: mvn clean install -DskipTests=true -Pcentral-repo
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # 使用 tag_name 而不是 github.ref
+          tag_name: ${{ github.ref_name }}
+          release_name: novel-plus ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+
+      # 使用 action 来替代直接 curl 进行上传
+      - name: Upload sql.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/novel-common/target/build/sql.zip
+          asset_name: sql.zip
+          asset_content_type: application/zip
+
+      - name: Upload novel-crawl.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/novel-crawl/target/build/novel-crawl.zip
+          asset_name: novel-crawl.zip
+          asset_content_type: application/zip
+
+      - name: Upload novel-front.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/novel-front/target/build/novel-front.zip
+          asset_name: novel-front.zip
+          asset_content_type: application/zip
+
+      - name: Upload novel-admin.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/novel-admin/target/build/novel-admin.zip
+          asset_name: novel-admin.zip
+          asset_content_type: application/zip

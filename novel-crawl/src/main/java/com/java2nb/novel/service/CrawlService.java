@@ -47,13 +47,15 @@ public interface CrawlService {
 
     /**
      * 采集并保存小说
-     * @param catId 分类ID
-     * @param bookId 小说ID
-     * @param sourceId 源ID
+     *
+     * @param catId    分类ID
      * @param ruleBean 采集规则\
+     * @param sourceId 源ID
+     * @param bookId   小说ID
+     * @param task
      * @return true:成功，false:失败
-     * */
-    boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId);
+     */
+    boolean parseBookAndSave(int catId, RuleBean ruleBean, Integer sourceId, String bookId, CrawlSingleTask task) throws InterruptedException;
 
     /**
      * 根据爬虫状态查询爬虫源集合
@@ -117,4 +119,9 @@ public interface CrawlService {
      * @return
      */
     CrawlSource getCrawlSource(Integer id);
+
+    /**
+     * 采集任务进度查询
+     * */
+    Integer getTaskProgress(Long taskId);
 }

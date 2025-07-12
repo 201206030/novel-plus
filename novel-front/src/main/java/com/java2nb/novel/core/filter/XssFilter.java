@@ -1,11 +1,11 @@
 package com.java2nb.novel.core.filter;
 
 import com.java2nb.novel.core.wrapper.XssHttpServletRequestWrapper;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

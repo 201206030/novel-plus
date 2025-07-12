@@ -114,9 +114,9 @@
             $('#txtComment').val($('#txtComment').val().substring(0, 1000));
         }
     });
-    searchComments(1, 20);
+    loadCommentList(1, 20);
 
-    function searchComments(curr, limit) {
+    function loadCommentList(curr, limit) {
 
         $.ajax({
             type: "get",
@@ -135,12 +135,15 @@
                                 "<div class=\"user_heads fl\" vals=\"389\">" +
                                 "<img src=\""+(comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png')+"\" class=\"user_head\" alt=\"\">" +
                                 "<span class=\"user_level1\" style=\"display: none;\">见习</span></div>" +
-                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">"+(comment.createUserName.substr(0, 4) + "****" + comment.createUserName.substr(comment.createUserName.length - 3, 3))+"</li><li class=\"dec\">" +
+                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">"+(comment.createUserName)+"<span style='padding-left: 10px' class=\"other\">"+(comment.location ? comment.location + "读者" : '')+"</span></li><li class=\"dec\">" +
                                 comment.commentContent+
                                 "</li><li class=\"other cf\">" +
                                 "<span class=\"time fl\">"+comment.createTime+"</span>" +
-                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:BookDetail.AddAgreeTotal(77,this);\" class=\"zan\" style=\"display: none;\">赞<i class=\"num\">(0)</i></a>" +
-                                "</span></li>\t\t</ul>\t</div>");
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentUnLike('"+comment.id+"')\"  class=\"zan\"  style=\"padding-left: 10px\">踩<i class=\"num\" id='unLikeCount"+comment.id+"'>("+comment.unLikesCount+")</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentLike('"+comment.id+"')\"  class=\"zan\" style=\"padding-left: 10px\">赞<i class=\"num\" id='likeCount"+comment.id+"'>("+comment.likesCount+")</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"/book/reply-"+comment.id+".html\" class=\"zan\" style=\"padding-left: 10px\">回复<i class=\"num\">("+comment.replyCount+
+                                ")</i></a></span>" +
+                                "</li>\t\t</ul>\t</div>");
                         }
                         $("#commentPanel").html(commentListHtml);
 
@@ -175,6 +178,56 @@
 
 
                 } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentLike(commentId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleCommentLike",
+            data: {'commentId': commentId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#likeCount"+commentId).text("("+data.data+")")
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                }  else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentUnLike(commentId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleCommentUnLike",
+            data: {'commentId': commentId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#unLikeCount"+commentId).text("("+data.data+")")
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                }  else {
                     layer.alert(data.msg);
                 }
 

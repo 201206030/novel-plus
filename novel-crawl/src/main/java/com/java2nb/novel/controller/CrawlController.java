@@ -153,6 +153,14 @@ public class CrawlController {
         return RestResult.ok();
     }
 
+    /**
+     * 采集任务进度查询
+     * */
+    @GetMapping("getTaskProgress/{id}")
+    public RestResult<Integer> getTaskProgress(@PathVariable("id") Long id){
+        return RestResult.ok(crawlService.getTaskProgress(id));
+    }
+
 
 
 

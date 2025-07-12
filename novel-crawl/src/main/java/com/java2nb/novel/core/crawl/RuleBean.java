@@ -1,29 +1,37 @@
 package com.java2nb.novel.core.crawl;
 
+import com.java2nb.novel.utils.Constants;
 import lombok.Data;
 
 import java.util.Map;
 
 /**
  * 爬虫解析规则bean
+ *
  * @author Administrator
  */
 @Data
 public class RuleBean {
 
     /**
+     * 网页字符编码
+     */
+    private String charset = Constants.CRAWL_DEFAULT_CHARSET;
+
+
+    /**
      * 小说更新列表url
-     * */
+     */
     private String updateBookListUrl;
 
     /**
      * 分类列表页URL规则
-     * */
+     */
     private String bookListUrl;
 
-    private Map<String,String> catIdRule;
+    private Map<String, String> catIdRule;
 
-    private Map<String,Byte> bookStatusRule;
+    private Map<String, Byte> bookStatusRule;
 
     private String bookIdPatten;
     private String pagePatten;
@@ -37,6 +45,7 @@ public class RuleBean {
     private String visitCountPatten;
     private String descStart;
     private String descEnd;
+    private String filterDesc;
     private String upadateTimePatten;
     private String upadateTimeFormatPatten;
     private String bookIndexUrl;
@@ -50,6 +59,8 @@ public class RuleBean {
     private String picUrlPrefix;
 
     private String bookIndexStart;
+
+    private String filterContent;
 
 
 }

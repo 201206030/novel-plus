@@ -7,6 +7,6 @@ import com.java2nb.novel.entity.Book;
  * */
 public interface CrawlBookHandler {
 
-    void handle(Book book);
+    void handle(Book book) throws InterruptedException;
 
 }

@@ -1,23 +1,15 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import io.github.xxyopen.model.page.PageBean;
-import com.java2nb.novel.core.cache.CacheKey;
-import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.enums.ResponseStatus;
-import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
-import io.github.xxyopen.web.exception.BusinessException;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
-import com.java2nb.novel.entity.FriendLink;
 import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.AuthorService;
-import com.java2nb.novel.service.FriendLinkService;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.java2nb.novel.mapper.AuthorCodeDynamicSqlSupport.authorCode;
-import static com.java2nb.novel.mapper.BookDynamicSqlSupport.book;
-import static com.java2nb.novel.mapper.BookDynamicSqlSupport.id;
-import static com.java2nb.novel.mapper.BookDynamicSqlSupport.updateTime;
-import static com.java2nb.novel.mapper.FriendLinkDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
@@ -52,7 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Boolean checkPenName(String penName) {
         return authorMapper.count(c ->
-                c.where(AuthorDynamicSqlSupport.penName, isEqualTo(penName))) > 0;
+            c.where(AuthorDynamicSqlSupport.penName, isEqualTo(penName))) > 0;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -61,21 +49,21 @@ public class AuthorServiceImpl implements AuthorService {
         Date currentDate = new Date();
         //判断邀请码是否有效
         if (authorCodeMapper.count(c ->
-                c.where(AuthorCodeDynamicSqlSupport.inviteCode, isEqualTo(author.getInviteCode()))
-                        .and(AuthorCodeDynamicSqlSupport.isUse, isEqualTo((byte) 0))
-                        .and(AuthorCodeDynamicSqlSupport.validityTime, isGreaterThan(currentDate))) > 0) {
-             //邀请码有效
+            c.where(AuthorCodeDynamicSqlSupport.inviteCode, isEqualTo(author.getInviteCode()))
+                .and(AuthorCodeDynamicSqlSupport.isUse, isEqualTo((byte) 0))
+                .and(AuthorCodeDynamicSqlSupport.validityTime, isGreaterThan(currentDate))) > 0) {
+            //邀请码有效
             //保存作家信息
             author.setUserId(userId);
             author.setCreateTime(currentDate);
             authorMapper.insertSelective(author);
             //设置邀请码状态为已使用
             authorCodeMapper.update(update(authorCode)
-                    .set(AuthorCodeDynamicSqlSupport.isUse)
-                    .equalTo((byte) 1)
-                    .where(AuthorCodeDynamicSqlSupport.inviteCode,isEqualTo(author.getInviteCode()))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3));
+                .set(AuthorCodeDynamicSqlSupport.isUse)
+                .equalTo((byte) 1)
+                .where(AuthorCodeDynamicSqlSupport.inviteCode, isEqualTo(author.getInviteCode()))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
             return "";
         } else {
             //邀请码无效
@@ -87,15 +75,15 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Boolean isAuthor(Long userId) {
         return authorMapper.count(c ->
-                c.where(AuthorDynamicSqlSupport.userId, isEqualTo(userId))) > 0;
+            c.where(AuthorDynamicSqlSupport.userId, isEqualTo(userId))) > 0;
     }
 
     @Override
     public Author queryAuthor(Long userId) {
         return authorMapper.selectMany(
-        select(AuthorDynamicSqlSupport.id,AuthorDynamicSqlSupport.penName,AuthorDynamicSqlSupport.status)
-        .from(AuthorDynamicSqlSupport.author)
-        .where(AuthorDynamicSqlSupport.userId,isEqualTo(userId))
+            select(AuthorDynamicSqlSupport.id, AuthorDynamicSqlSupport.penName, AuthorDynamicSqlSupport.status)
+                .from(AuthorDynamicSqlSupport.author)
+                .where(AuthorDynamicSqlSupport.userId, isEqualTo(userId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3)).get(0);
     }
@@ -103,12 +91,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<Author> queryAuthorList(int needAuthorNumber, Date maxAuthorCreateTime) {
         return authorMapper.selectMany(select(AuthorDynamicSqlSupport.id, AuthorDynamicSqlSupport.userId)
-                .from(AuthorDynamicSqlSupport.author)
-                .where(AuthorDynamicSqlSupport.createTime, isLessThan(maxAuthorCreateTime))
-                .orderBy(AuthorDynamicSqlSupport.createTime.descending())
-                .limit(needAuthorNumber)
-                .build()
-                .render(RenderingStrategies.MYBATIS3));
+            .from(AuthorDynamicSqlSupport.author)
+            .where(AuthorDynamicSqlSupport.createTime, isLessThan(maxAuthorCreateTime))
+            .orderBy(AuthorDynamicSqlSupport.createTime.descending())
+            .limit(needAuthorNumber)
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
     }
 
 
@@ -116,11 +104,11 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean queryIsStatisticsDaily(Long bookId, Date date) {
 
         return authorIncomeDetailMapper.selectMany(select(AuthorIncomeDetailDynamicSqlSupport.id)
-                .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
-                .where(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
-                .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isEqualTo(date))
-                .build()
-                .render(RenderingStrategies.MYBATIS3)).size() > 0;
+            .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
+            .where(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isEqualTo(date))
+            .build()
+            .render(RenderingStrategies.MYBATIS3)).size() > 0;
 
     }
 
@@ -133,24 +121,35 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public boolean queryIsStatisticsMonth(Long bookId, Date incomeDate) {
         return authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.id)
-                .from(AuthorIncomeDynamicSqlSupport.authorIncome)
-                .where(AuthorIncomeDynamicSqlSupport.bookId, isEqualTo(bookId))
-                .and(AuthorIncomeDynamicSqlSupport.incomeMonth, isEqualTo(incomeDate))
-                .build()
-                .render(RenderingStrategies.MYBATIS3)).size() > 0;
+            .from(AuthorIncomeDynamicSqlSupport.authorIncome)
+            .where(AuthorIncomeDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .and(AuthorIncomeDynamicSqlSupport.incomeMonth, isEqualTo(incomeDate))
+            .build()
+            .render(RenderingStrategies.MYBATIS3)).size() > 0;
+    }
+
+    @Override
+    public boolean queryIsStatisticsMonth(Long authorId, Long bookId, Date incomeDate) {
+        return authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.id)
+            .from(AuthorIncomeDynamicSqlSupport.authorIncome)
+            .where(AuthorIncomeDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .and(AuthorIncomeDynamicSqlSupport.authorId, isEqualTo(authorId))
+            .and(AuthorIncomeDynamicSqlSupport.incomeMonth, isEqualTo(incomeDate))
+            .build()
+            .render(RenderingStrategies.MYBATIS3)).size() > 0;
     }
 
     @Override
     public Long queryTotalAccount(Long userId, Long bookId, Date startTime, Date endTime) {
 
         return authorIncomeDetailMapper.selectStatistic(select(sum(AuthorIncomeDetailDynamicSqlSupport.incomeAccount))
-                .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
-                .where(AuthorIncomeDetailDynamicSqlSupport.userId, isEqualTo(userId))
-                .and(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
-                .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isGreaterThanOrEqualTo(startTime))
-                .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isLessThanOrEqualTo(endTime))
-                .build()
-                .render(RenderingStrategies.MYBATIS3));
+            .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
+            .where(AuthorIncomeDetailDynamicSqlSupport.userId, isEqualTo(userId))
+            .and(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isGreaterThanOrEqualTo(startTime))
+            .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isLessThanOrEqualTo(endTime))
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
     }
 
 
@@ -162,29 +161,30 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public boolean queryIsStatisticsDaily(Long authorId, Long bookId, Date date) {
         return authorIncomeDetailMapper.selectMany(select(AuthorIncomeDetailDynamicSqlSupport.id)
-                .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
-                .where(AuthorIncomeDetailDynamicSqlSupport.authorId, isEqualTo(authorId))
-                .and(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
-                .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isEqualTo(date))
-                .build()
-                .render(RenderingStrategies.MYBATIS3)).size() > 0;
+            .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
+            .where(AuthorIncomeDetailDynamicSqlSupport.authorId, isEqualTo(authorId))
+            .and(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isEqualTo(date))
+            .build()
+            .render(RenderingStrategies.MYBATIS3)).size() > 0;
     }
 
 
     @Override
-    public PageBean<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId, Date startTime, Date endTime) {
+    public PageBean<AuthorIncomeDetail> listIncomeDailyByPage(int page, int pageSize, Long userId, Long bookId,
+        Date startTime, Date endTime) {
         PageHelper.startPage(page, pageSize);
         return PageBuilder.build(authorIncomeDetailMapper.selectMany(
-                select(AuthorIncomeDetailDynamicSqlSupport.incomeDate, AuthorIncomeDetailDynamicSqlSupport.incomeAccount
-                        , AuthorIncomeDetailDynamicSqlSupport.incomeCount, AuthorIncomeDetailDynamicSqlSupport.incomeNumber)
-                        .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
-                        .where(AuthorIncomeDetailDynamicSqlSupport.userId, isEqualTo(userId))
-                        .and(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
-                        .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isGreaterThanOrEqualTo(startTime))
-                        .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isLessThanOrEqualTo(endTime))
-                        .orderBy(AuthorIncomeDetailDynamicSqlSupport.incomeDate.descending())
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)));
+            select(AuthorIncomeDetailDynamicSqlSupport.incomeDate, AuthorIncomeDetailDynamicSqlSupport.incomeAccount
+                , AuthorIncomeDetailDynamicSqlSupport.incomeCount, AuthorIncomeDetailDynamicSqlSupport.incomeNumber)
+                .from(AuthorIncomeDetailDynamicSqlSupport.authorIncomeDetail)
+                .where(AuthorIncomeDetailDynamicSqlSupport.userId, isEqualTo(userId))
+                .and(AuthorIncomeDetailDynamicSqlSupport.bookId, isEqualTo(bookId))
+                .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isGreaterThanOrEqualTo(startTime))
+                .and(AuthorIncomeDetailDynamicSqlSupport.incomeDate, isLessThanOrEqualTo(endTime))
+                .orderBy(AuthorIncomeDetailDynamicSqlSupport.incomeDate.descending())
+                .build()
+                .render(RenderingStrategies.MYBATIS3)));
     }
 
 
@@ -192,15 +192,15 @@ public class AuthorServiceImpl implements AuthorService {
     public PageBean<AuthorIncome> listIncomeMonthByPage(int page, int pageSize, Long userId, Long bookId) {
         PageHelper.startPage(page, pageSize);
         return PageBuilder.build(authorIncomeMapper.selectMany(select(AuthorIncomeDynamicSqlSupport.incomeMonth
-                , AuthorIncomeDynamicSqlSupport.preTaxIncome
-                , AuthorIncomeDynamicSqlSupport.afterTaxIncome
-                , AuthorIncomeDynamicSqlSupport.payStatus
-                , AuthorIncomeDynamicSqlSupport.confirmStatus)
-                .from(AuthorIncomeDynamicSqlSupport.authorIncome)
-                .where(AuthorIncomeDynamicSqlSupport.userId, isEqualTo(userId))
-                .and(AuthorIncomeDynamicSqlSupport.bookId, isEqualTo(bookId))
-                .orderBy(AuthorIncomeDynamicSqlSupport.incomeMonth.descending())
-                .build()
-                .render(RenderingStrategies.MYBATIS3)));
+            , AuthorIncomeDynamicSqlSupport.preTaxIncome
+            , AuthorIncomeDynamicSqlSupport.afterTaxIncome
+            , AuthorIncomeDynamicSqlSupport.payStatus
+            , AuthorIncomeDynamicSqlSupport.confirmStatus)
+            .from(AuthorIncomeDynamicSqlSupport.authorIncome)
+            .where(AuthorIncomeDynamicSqlSupport.userId, isEqualTo(userId))
+            .and(AuthorIncomeDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .orderBy(AuthorIncomeDynamicSqlSupport.incomeMonth.descending())
+            .build()
+            .render(RenderingStrategies.MYBATIS3)));
     }
 }

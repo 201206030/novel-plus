@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.Charsets;
-import org.apache.http.client.utils.DateUtils;
+import org.apache.hc.client5.http.utils.DateUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +14,15 @@ import org.springframework.http.ResponseEntity;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.Objects;
 
@@ -37,10 +45,13 @@ public class FileUtil {
             //本地图片保存
             HttpHeaders headers = new HttpHeaders();
             HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-            ResponseEntity<Resource> resEntity = RestTemplateUtil.getInstance(Charsets.ISO_8859_1.name()).exchange(picSrc, HttpMethod.GET, requestEntity, Resource.class);
+            ResponseEntity<Resource> resEntity = RestTemplates.newInstance(Charsets.ISO_8859_1.name())
+                .exchange(picSrc, HttpMethod.GET, requestEntity, Resource.class);
             input = Objects.requireNonNull(resEntity.getBody()).getInputStream();
             Date currentDate = new Date();
-            picSrc = visitPrefix + DateUtils.formatDate(currentDate, "yyyy") + "/" + DateUtils.formatDate(currentDate, "MM") + "/" + DateUtils.formatDate(currentDate, "dd") + "/"
+            picSrc =
+                visitPrefix + DateUtils.formatDate(currentDate, "yyyy") + "/" + DateUtils.formatDate(currentDate, "MM")
+                    + "/" + DateUtils.formatDate(currentDate, "dd") + "/"
                     + UUIDUtil.getUUID32()
                     + picSrc.substring(picSrc.lastIndexOf("."));
             File picFile = new File(picSavePath + picSrc);
@@ -66,7 +77,6 @@ public class FileUtil {
         } finally {
             closeStream(input, out);
         }
-
 
         return picSrc;
     }
@@ -120,5 +130,23 @@ public class FileUtil {
 
     }
 
+    /**
+     * 下载文件
+     *
+     * @param downloadUrl 下载的URL
+     * @param savePath    保存的路径
+     */
+    @SneakyThrows
+    public void downloadFile(String downloadUrl, String savePath) {
+        Path path = Paths.get(savePath);
+        Path parentPath = path.getParent();
+        if (Files.notExists(parentPath)) {
+            Files.createDirectories(parentPath);
+        }
+        URL url = new URL(downloadUrl);
+        try (InputStream in = url.openStream()) {
+            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
 
 }

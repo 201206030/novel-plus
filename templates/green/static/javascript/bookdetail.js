@@ -91,7 +91,7 @@
     },
     SaveComment: function (cmtBId, cmtCId, cmtDetail) {
         if (!isLogin) {
-            layer.alert('请先登陆');
+            layer.alert('请先登录');
             return;
         }
         var cmtDetailTemp = cmtDetail.replace(/(^\s*)/g, "");

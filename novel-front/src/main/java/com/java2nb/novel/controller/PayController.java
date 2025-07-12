@@ -12,6 +12,8 @@ import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.config.AlipayProperties;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class PayController extends BaseController {
 
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
-            //未登录，跳转到登陆页面
+            //未登录，跳转到登录页面
             httpResponse.sendRedirect("/user/login.html?originUrl=/pay/index.html");
         } else {
             //创建充值订单

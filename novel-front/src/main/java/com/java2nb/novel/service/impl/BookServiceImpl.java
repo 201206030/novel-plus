@@ -7,6 +7,7 @@ import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.config.BookPriceProperties;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.Constants;
+import com.java2nb.novel.core.utils.FileUtil;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.*;
@@ -14,10 +15,8 @@ import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FileService;
-import com.java2nb.novel.vo.BookCommentVO;
-import com.java2nb.novel.vo.BookSettingVO;
-import com.java2nb.novel.vo.BookSpVO;
-import com.java2nb.novel.vo.BookVO;
+import com.java2nb.novel.service.LikeService;
+import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import io.github.xxyopen.util.IdWorker;
@@ -27,28 +26,34 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.DateUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.springframework.ai.image.Image;
+import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.image.ImageResponse;
+import org.springframework.ai.openai.OpenAiImageModel;
+import org.springframework.ai.openai.OpenAiImageOptions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.orderbyhelper.OrderByHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import static com.java2nb.novel.mapper.BookCategoryDynamicSqlSupport.bookCategory;
+import static com.java2nb.novel.mapper.BookCategoryDynamicSqlSupport.sort;
 import static com.java2nb.novel.mapper.BookCommentDynamicSqlSupport.bookComment;
 import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.bookContent;
 import static com.java2nb.novel.mapper.BookContentDynamicSqlSupport.content;
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.*;
+import static com.java2nb.novel.mapper.BookDynamicSqlSupport.book;
 import static com.java2nb.novel.mapper.BookIndexDynamicSqlSupport.bookIndex;
 import static com.java2nb.novel.mapper.BookSettingDynamicSqlSupport.bookSetting;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -80,6 +85,8 @@ public class BookServiceImpl implements BookService {
 
     private final FrontBookCommentMapper bookCommentMapper;
 
+    private final FrontBookCommentReplyMapper bookCommentReplyMapper;
+
     private final BookAuthorMapper bookAuthorMapper;
 
     private final CacheService cacheService;
@@ -88,7 +95,13 @@ public class BookServiceImpl implements BookService {
 
     private final FileService fileService;
 
+    private final LikeService likeService;
+
     private final BookPriceProperties bookPriceConfig;
+
+    private final OpenAiImageModel openAiImageModel;
+
+    private final ThreadPoolExecutor threadPoolExecutor;
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
 
@@ -105,7 +118,7 @@ public class BookServiceImpl implements BookService {
             }
             result = new ObjectMapper().writeValueAsString(
                 list.stream().collect(Collectors.groupingBy(BookSettingVO::getType)));
-            cacheService.set(CacheKey.INDEX_BOOK_SETTINGS_KEY, result);
+            cacheService.set(CacheKey.INDEX_BOOK_SETTINGS_KEY, result, 3600 * 24);
         }
         return new ObjectMapper().readValue(result, Map.class);
     }
@@ -201,9 +214,6 @@ public class BookServiceImpl implements BookService {
 
         PageHelper.startPage(page, pageSize);
 
-        if (StringUtils.isNotBlank(params.getSort())) {
-            OrderByHelper.orderBy(params.getSort() + " desc");
-        }
         return PageBuilder.build(bookMapper.searchByPage(params));
 
     }
@@ -231,23 +241,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer page, Integer pageSize) {
-        if (StringUtils.isNotBlank(orderBy)) {
-            OrderByHelper.orderBy(orderBy);
-        }
         if (page != null && pageSize != null) {
             PageHelper.startPage(page, pageSize);
         }
-
-        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id,
+        QueryExpressionDSL<org.mybatis.dynamic.sql.select.SelectModel>.QueryExpressionWhereBuilder where = select(
+            BookIndexDynamicSqlSupport.id,
             BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum,
             BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime,
             BookIndexDynamicSqlSupport.isVip)
             .from(bookIndex)
-            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId));
+        if ("index_num desc".equals(orderBy)) {
+            where.orderBy(BookIndexDynamicSqlSupport.indexNum.descending());
+        }
+        return bookIndexMapper.selectMany(where
             .build()
-            .render(RenderingStrategies.MYBATIS3);
-
-        return bookIndexMapper.selectMany(selectStatement);
+            .render(RenderingStrategies.MYBATIS3));
     }
 
 
@@ -384,8 +393,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        OrderByHelper.orderBy("t1.create_time desc");
-        return PageBuilder.build(bookCommentMapper.listCommentByPage(userId, bookId));
+        PageBean<BookCommentVO> pageBean = PageBuilder.build(bookCommentMapper.listCommentByPage(userId, bookId));
+        for (BookCommentVO bookCommentVO : pageBean.getList()) {
+            bookCommentVO.setLikesCount(likeService.getCommentLikesCount(bookCommentVO.getId()));
+            bookCommentVO.setUnLikesCount(likeService.getCommentUnLikesCount(bookCommentVO.getId()));
+        }
+        return pageBean;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -510,6 +523,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void addBook(Book book, Long authorId, String penName) {
+        book.setId(IdWorker.INSTANCE.nextId());
         //判断小说名是否存在
         if (queryIdByNameAndAuthor(book.getBookName(), penName) != null) {
             //该作者发布过此书名的小说
@@ -524,7 +538,37 @@ public class BookServiceImpl implements BookService {
         book.setCreateTime(new Date());
         book.setUpdateTime(book.getCreateTime());
         bookMapper.insertSelective(book);
-
+        if (Objects.isNull(book.getPicUrl()) || !book.getPicUrl().startsWith(Constants.LOCAL_PIC_PREFIX)) {
+            // 用户没有上传封面图片，AI自动生成封面图片
+            threadPoolExecutor.execute(() -> {
+                String prompt = String.format("生成一本小说的封面图片，图片中间显示书名《%s》，书名下方显示作者“%s 著”。",
+                    book.getBookName(), book.getAuthorName());
+                log.debug("prompt:{}", prompt);
+                ImageResponse response = openAiImageModel.call(
+                    new ImagePrompt(prompt,
+                        OpenAiImageOptions.builder()
+                            .quality("hd")
+                            .height(800)
+                            .width(600).build())
+                );
+                Image output = response.getResult().getOutput();
+                Date currentDate = new Date();
+                String picUrl = Constants.LOCAL_PIC_PREFIX +
+                    "aiGen/" + DateUtils.formatDate(currentDate, "yyyy") + "/" +
+                    DateUtils.formatDate(currentDate, "MM") + "/" +
+                    DateUtils.formatDate(currentDate, "dd") + "/" + book.getId() + ".png";
+                FileUtil.downloadFile(output.getUrl(), picSavePath + picUrl);
+                bookMapper.update(update(BookDynamicSqlSupport.book)
+                    .set(BookDynamicSqlSupport.picUrl)
+                    .equalTo(picUrl)
+                    .set(updateTime)
+                    .equalTo(currentDate)
+                    .where(id, isEqualTo(book.getId()))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3));
+                cacheService.set(CacheKey.AI_GEN_PIC + book.getId(), picUrl, 60 * 60);
+            });
+        }
     }
 
     @Override
@@ -844,6 +888,39 @@ public class BookServiceImpl implements BookService {
             .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
             .build()
             .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public String queryAiGenPic(Long bookId) {
+        return cacheService.get(CacheKey.AI_GEN_PIC + bookId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addBookCommentReply(Long userId, BookCommentReply commentReply) {
+        //增加回复
+        commentReply.setCreateUserId(userId);
+        commentReply.setCreateTime(new Date());
+        bookCommentReplyMapper.insertSelective(commentReply);
+        //增加评论回复数
+        bookCommentMapper.addReplyCount(commentReply.getCommentId());
+    }
+
+    @Override
+    public PageBean<BookCommentReplyVO> listCommentReplyByPage(Long userId, Long commentId, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        PageBean<BookCommentReplyVO> pageBean = PageBuilder.build(
+            bookCommentReplyMapper.listCommentReplyByPage(userId, commentId));
+        pageBean.getList().forEach(commentReply -> {
+            commentReply.setLikesCount(likeService.getReplyLikesCount(commentReply.getId()));
+            commentReply.setUnLikesCount(likeService.getReplyUnLikesCount(commentReply.getId()));
+        });
+        return pageBean;
+    }
+
+    @Override
+    public BookComment getBookComment(Long commentId) {
+        return bookCommentMapper.selectByPrimaryKey(commentId).orElse(null);
     }
 
 

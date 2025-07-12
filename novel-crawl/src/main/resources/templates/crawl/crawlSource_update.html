@@ -55,6 +55,8 @@
                                 <!--示例：<b>https://m.xdingdiann.com/sort/0/1.html</b>
                                 <li><input type="text" id="updateBookListUrl" class="s_input icon_key"
                                            placeholder="小说更新列表url"></li>-->
+                                示例：<b>utf-8</b>
+                                <li><input type="text" id="charset" class="s_input icon_name" placeholder="网站编码"></li>
                                 示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
                                 <li><input type="text" id="bookListUrl" class="s_input icon_key"
                                            placeholder="分类列表页URL规则"></li>
@@ -117,6 +119,9 @@
                                 示例：<b>&lt;/p&gt;</b>
                                 <li><input type="text" id="descEnd" class="s_input icon_key" placeholder="小说简介结束截取字符串：">
                                 </li>
+                                示例：<b>&lt;span\s+class="allshow"&gt;([^/]+)&lt;/span&gt;</b>
+                                <li><textarea id="filterDesc"
+                                              placeholder="过滤简介（多个内容换行）" rows="5" cols="52"></textarea></li>
                                 示例：<b>更新：(\d+-\d+-\d+\s\d+:\d+:\d+)&lt;/a&gt;</b>
                                 <li><input type="text" id="upadateTimePatten" class="s_input icon_key"
                                            placeholder="小说更新时间的正则表达式："></li>
@@ -145,6 +150,10 @@
                                 示例：<b>&lt;script&gt;</b>
                                 <li><input type="text" id="contentEnd" class="s_input icon_key"
                                            placeholder="小说内容结束截取字符串："></li>
+                                示例：<b>&lt;div\s+id=&quot;content_tip&quot;&gt;\s*&lt;b&gt;([^/]+)&lt;/b&gt;\s*&lt;/div&gt;</b>
+                                <li><textarea id="filterContent"
+                                              placeholder="过滤内容（多个内容换行）" rows="5" cols="52"></textarea></li>
+
 
                                 <li><input type="button" onclick="updateCrawlSource()" name="btnRegister" value="提交"
                                            id="btnRegister" class="btn_red"></li>
@@ -208,7 +217,7 @@
                         loadPage(data.data);
                     } else if (data.code == 1001) {
                         //未登录
-                        location.href = '/user/login.html?originUrl=' + decodeURIComponent(location.href);
+                        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                     } else {
                         layer.alert(data.msg);
@@ -260,6 +269,7 @@
             $("#visitCountPatten").val(crawlRule.visitCountPatten);
             $("#descStart").val(crawlRule.descStart);
             $("#descEnd").val(crawlRule.descEnd);
+            $("#filterDesc").val(crawlRule.filterDesc);
             $("#upadateTimePatten").val(crawlRule.upadateTimePatten);
             $("#upadateTimeFormatPatten").val(crawlRule.upadateTimeFormatPatten);
             $("#bookIndexUrl").val(crawlRule.bookIndexUrl);
@@ -269,6 +279,8 @@
             $("#bookContentUrl").val(crawlRule.bookContentUrl);
             $("#contentStart").val(crawlRule.contentStart);
             $("#contentEnd").val(crawlRule.contentEnd);
+            $("#filterContent").val(crawlRule.filterContent);
+            $("#charset").val(crawlRule.charset);
 
         }
     }
@@ -416,6 +428,9 @@
 
         crawlRule.descEnd = descEnd;
 
+        var filterDesc = $("#filterDesc").val();
+        crawlRule.filterDesc = filterDesc;
+
         var upadateTimePatten = $("#upadateTimePatten").val();
 
         if (upadateTimePatten.length > 0) {
@@ -487,6 +502,14 @@
         }
 
         crawlRule.contentEnd = contentEnd;
+
+        var filterContent = $("#filterContent").val();
+        crawlRule.filterContent = filterContent;
+
+        var charset = $('#charset').val();
+        if (charset) {
+            crawlRule.charset = charset;
+        }
 
 
         $.ajax({

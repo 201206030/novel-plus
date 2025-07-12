@@ -42,11 +42,6 @@ public interface CacheKey {
     String TEMPLATE_DIR_KEY =  "templateDirKey";;
 
     /**
-     * 正在运行的爬虫线程存储KEY前缀
-     * */
-    String RUNNING_CRAWL_THREAD_KEY_PREFIX = "runningCrawlTreadDataKeyPrefix";
-
-    /**
      * 上一次搜索引擎更新的时间
      * */
     String ES_LAST_UPDATE_TIME = "esLastUpdateTime";
@@ -69,4 +64,8 @@ public interface CacheKey {
      * 测试爬虫规则缓存
      */
     String BOOK_TEST_PARSE = "testParse";
+    /**
+     * AI生成图片
+     * */
+    String AI_GEN_PIC = "aiGenPic";
 }

@@ -79,7 +79,7 @@ function update() {
         },
         success: function (data) {
             if (data.code == 0) {
-                layer.msg("操作成功");
+                layer.msg("操作成功，重启 novel-front 后生效");
             } else {
                 layer.alert(data.msg)
             }

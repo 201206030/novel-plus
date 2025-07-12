@@ -1,14 +1,15 @@
 spring:
-  profiles:
-    include: [ common-prod ]
+  config:
+    import: classpath:application-common-prod.yml
 
   #静态文件路径配置
-  resources:
-    static-locations: file:${user.dir}/templates/${templates.name}/static/
   #thymeleaf模版路径配置
   thymeleaf:
     prefix: file:${user.dir}/templates/${templates.name}/html/
     suffix: .html
+  web:
+    resources:
+      static-locations: file:${user.dir}/templates/${templates.name}/static/
 
 #模版配置
 templates:

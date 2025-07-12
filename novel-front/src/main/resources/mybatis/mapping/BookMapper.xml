@@ -31,6 +31,9 @@
         <if test="updateTimeMin != null">
             and last_index_update_time >= #{updateTimeMin}
         </if>
+        <if test="sort != null">
+            order by ${sort} desc
+        </if>
 
     </select>
 

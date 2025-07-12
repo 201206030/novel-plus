@@ -44,9 +44,21 @@ book:
     value: 5
 
 
-
-
-
-
+--- #--------------------- Spring AI 配置----------------------
+spring:
+  ai:
+    openai:
+      image:
+        enabled: true
+        base-url: https://api.siliconflow.cn
+        api-key: sk-jjtixmivxaccndqgkqfkbgkzvmbctdxogcrfbjzfttbouitt
+        options:
+          model: Kwai-Kolors/Kolors
+          response_format: URL
+      api-key: sk-jjtixmivxaccndqgkqfkbgkzvmbctdxogcrfbjzfttbouitt
+      base-url: https://api.siliconflow.cn
+      chat:
+        options:
+          model: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
 
 

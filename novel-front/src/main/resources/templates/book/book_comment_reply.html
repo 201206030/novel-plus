@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+    <title th:text="'评论回复区'"></title>
+    <link href="/css/main.css" rel="stylesheet"/>
+    <link href="/css/book.css" rel="stylesheet"/>
+</head>
+<body>
+
+<input type="hidden" id="commentId" th:value="${commentId}"/>
+
+<div th:replace="common/top :: top('')">
+</div>
+
+<div class="main box_center cf mb50">
+    <div class="channelBookContent cf">
+        <!--left start-->
+        <div class="wrap_left fl">
+            <div class="wrap_bg">
+                <div class="pad20">
+
+                    <div class="bookComment">
+                        <div class="book_tit">
+                            <div class="fl">
+                                <h3>评论回复区</h3><span id="bookCommentTotal">(0条)</span>
+                            </div>
+                            <a class="fr" href="#txtComment">发表回复</a>
+                        </div>
+                        <blockquote class="layui-elem-quote" th:utext="${commentContent}">
+                        </blockquote>
+                        <div class="no_comment" id="noCommentPanel" style="display: none;">
+                            <img src="/images/no_comment.png" alt=""/>
+                            <span class="block">暂无回复</span>
+                        </div>
+                        <div class="commentBar" id="commentPanel">
+
+                        </div>
+                        <div class="pageBox cf mt15 mr10" id="commentPage">
+                        </div>
+
+                        <div class="reply_bar" id="reply_bar">
+                            <div class="tit">
+                                <span class="fl font16">发表回复</span>
+                                <!--未登录状态下不可发表评论，显示以下链接-->
+                                <span class="fr black9" style="display:none; ">请先 <a class="orange"
+                                                                                       href="/user/login.html">登录</a><em
+                                        class="ml10 mr10">|</em><a class="orange"
+                                                                   href="/user/register.html">注册</a></span>
+                            </div>
+                            <textarea name="txtComment" rows="2" cols="20" id="txtComment" class="replay_text"
+                                      placeholder="我来说两句..."></textarea>
+                            <div class="reply_btn">
+                                <span class="fl black9"><em class="ml5" id="emCommentNum">0/1000</em> 字</span>
+                                <span class="fr"><a class="btn_ora" href="javascript:void(0);"
+                                                    onclick="javascript:BookDetail.SaveCommentReply(37,0,$('#txtComment').val());">发表</a></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--left end-->
+
+        <!--right start-->
+
+        <!--right end-->
+    </div>
+</div>
+
+<div th:replace="common/footer :: footer">
+</div>
+<div th:replace="common/js :: js"></div>
+<script src="/javascript/bookdetail.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $('#txtComment').on('input propertychange', function () {
+        var count = $(this).val().length;
+        $('#emCommentNum').html(count + "/1000");
+        if (count > 1000) {
+            $('#txtComment').val($('#txtComment').val().substring(0, 1000));
+        }
+    });
+    loadCommentList(1, 20);
+
+    function loadCommentList(curr, limit) {
+
+        $.ajax({
+            type: "get",
+            url: "/book/listCommentReplyByPage",
+            data: {'commentId': $("#commentId").val(), 'curr': curr, 'limit': limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    if (data.data.total == 0) {
+                        $("#noCommentPanel").css("display", "block");
+                        $("#commentPanel").css("display", "none");
+                        return;
+                    }
+                    $("#noCommentPanel").css("display", "none");
+                    $("#commentPanel").css("display", "block");
+                    var commentList = data.data.list;
+                    if (commentList.length > 0) {
+                        $("#bookCommentTotal").html("(" + data.data.total + "条)");
+                        var commentListHtml = "";
+                        for (var i = 0; i < commentList.length; i++) {
+                            var comment = commentList[i];
+                            commentListHtml += ("<div class=\"comment_list cf\">" +
+                                "<div class=\"user_heads fl\" vals=\"389\">" +
+                                "<img src=\"" + (comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png') + "\" class=\"user_head\" alt=\"\">" +
+                                "<span class=\"user_level1\" style=\"display: none;\">见习</span></div>" +
+                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">" + (comment.createUserName) + "<span style='padding-left: 10px' class=\"other\">" + (comment.location ? comment.location + "读者" : '') + "</span></li><li class=\"dec\">" +
+                                comment.replyContent +
+                                "</li><li class=\"other cf\">" +
+                                "<span class=\"time fl\" style='padding-right: 10px'>" + (data.data.total - ((curr - 1) * limit + i)) + "楼</span>" +
+                                "<span class=\"time fl\">" + comment.createTime + "</span>" +
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentUnLike('"+comment.id+"')\"  class=\"zan\"  style=\"padding-left: 10px\">踩<i class=\"num\" id='unLikeCount"+comment.id+"'>("+comment.unLikesCount+")</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentLike('"+comment.id+"')\"  class=\"zan\" style=\"padding-left: 10px\">赞<i class=\"num\" id='likeCount"+comment.id+"'>("+comment.likesCount+")</i></a></span>" +
+                                "</li>\t\t</ul>\t</div>");
+                        }
+                        $("#commentPanel").html(commentListHtml);
+
+                        layui.use('laypage', function () {
+                            var laypage = layui.laypage;
+
+                            //执行一个laypage实例
+                            laypage.render({
+                                elem: 'commentPage' //注意，这里的 test1 是 ID，不用加 # 号
+                                , count: data.data.total //数据总数，从服务端得到,
+                                , curr: data.data.pageNum
+                                , limit: data.data.pageSize
+                                , jump: function (obj, first) {
+
+
+                                    //obj包含了当前分页的所有参数，比如：
+                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                    console.log(obj.limit); //得到每页显示的条数
+
+
+                                    //首次不执行
+                                    if (!first) {
+                                        loadCommentList(obj.curr, obj.limit);
+                                    } else {
+
+                                    }
+                                }
+                            });
+                        });
+
+                    }
+
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentLike(replyId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleReplyLike",
+            data: {'replyId': replyId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#likeCount"+replyId).text("("+data.data+")")
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                }  else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentUnLike(replyId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleReplyUnLike",
+            data: {'replyId': replyId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#unLikeCount"+replyId).text("("+data.data+")")
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                }  else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

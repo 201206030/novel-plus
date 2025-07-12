@@ -32,6 +32,9 @@ public class CrawlSingleTask {
     private Byte excCount;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer crawlChapters;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date createTime;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,6 +125,16 @@ public class CrawlSingleTask {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExcCount(Byte excCount) {
         this.excCount = excCount;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getCrawlChapters() {
+        return crawlChapters;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCrawlChapters(Integer crawlChapters) {
+        this.crawlChapters = crawlChapters;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

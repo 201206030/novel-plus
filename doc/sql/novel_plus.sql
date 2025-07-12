@@ -1,7 +1,5 @@
-CREATE
-    database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
-use
-    `novel_plus`;
+CREATE database if NOT EXISTS `novel_plus` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use `novel_plus`;
 
 SET NAMES utf8mb4;
 
@@ -3106,3 +3104,74 @@ update website_info
 set logo     = '/images/logo.png',
     logo_dark='/images/logo.png'
 where id = 1;
+
+
+INSERT INTO crawl_source (source_name, crawl_rule, source_status, create_time, update_time)
+VALUES ('香书小说网', '{
+  "bookListUrl": "http://www.xbiqugu.net/fenlei/{catId}_{page}.html",
+  "catIdRule": {
+    "catId1": "1",
+    "catId2": "2",
+    "catId3": "3",
+    "catId4": "4",
+    "catId5": "6",
+    "catId6": "5"
+  },
+  "bookIdPatten": "<a\\\\s+href=\\"http://www.xbiqugu.net/(\\\\d+/\\\\d+)/\\"\\\\s+target=\\"_blank\\">",
+  "pagePatten": "<em\\\\s+id=\\"pagestats\\">(\\\\d+)/\\\\d+</em>",
+  "totalPagePatten": "<em\\\\s+id=\\"pagestats\\">\\\\d+/(\\\\d+)</em>",
+  "bookDetailUrl": "http://www.xbiqugu.net/{bookId}/",
+  "bookNamePatten": "<h1>([^/]+)</h1>",
+  "authorNamePatten": "者：([^/]+)</p>",
+  "picUrlPatten": "src=\\"(http://www.xbiqugu.net/files/article/image/\\\\d+/\\\\d+/\\\\d+s\\\\.jpg)\\"",
+  "bookStatusRule": {},
+  "descStart": "<div id=\\"intro\\">",
+  "descEnd": "</div>",
+  "upadateTimePatten": "<p>最后更新：(\\\\d+-\\\\d+-\\\\d+\\\\s\\\\d+:\\\\d+:\\\\d+)</p>",
+  "upadateTimeFormatPatten": "yyyy-MM-dd HH:mm:ss",
+  "bookIndexUrl": "http://www.xbiqugu.net/{bookId}/",
+  "indexIdPatten": "<a\\\\s+href=''/\\\\d+/\\\\d+/(\\\\d+)\\\\.html''\\\\s+>[^/]+</a>",
+  "indexNamePatten": "<a\\\\s+href=''/\\\\d+/\\\\d+/\\\\d+\\\\.html''\\\\s+>([^/]+)</a>",
+  "bookContentUrl": "http://www.xbiqugu.net/{bookId}/{indexId}.html",
+  "contentStart": "<div id=\\"content\\">",
+  "contentEnd": "<p>",
+  "filterContent":"<div\\\\s+id=\\"content_tip\\">\\\\s*<b>([^/]+)</b>\\\\s*</div>"
+}', 0, '2024-06-01 10:11:39', '2024-06-01 10:11:39');
+
+
+update crawl_source
+set crawl_rule = replace(crawl_rule, 'ibiquzw.org', 'biquxs.info')
+where id = 16;
+
+
+update crawl_source
+set crawl_rule = replace(crawl_rule, 'xbiqugu.net', 'xbiqugu.la');
+
+delete
+from sys_menu
+where menu_id = 104;
+
+delete
+from sys_menu
+where menu_id = 57;
+
+
+alter table book_comment add column location varchar(50) DEFAULT NULL COMMENT '地理位置' after comment_content ;
+
+
+alter table crawl_single_task add column crawl_chapters int DEFAULT 0 COMMENT '采集章节数量' after exc_count ;
+
+
+DROP TABLE IF EXISTS `book_comment_reply`;
+CREATE TABLE `book_comment_reply`
+(
+    `id`             bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `comment_id`     bigint(20)   DEFAULT NULL COMMENT '评论ID',
+    `reply_content`  varchar(512) DEFAULT NULL COMMENT '回复内容',
+    `location` varchar(50) DEFAULT NULL COMMENT '地理位置',
+    `audit_status`   tinyint(1)   DEFAULT '0' COMMENT '审核状态，0：待审核，1：审核通过，2：审核不通过',
+    `create_time`    datetime     DEFAULT NULL COMMENT '回复用户ID',
+    `create_user_id` bigint(20)   DEFAULT NULL COMMENT '回复时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='小说评论回复表';
