@@ -115,10 +115,10 @@
                                     <li class="dec" th:utext="${comment.commentContent}"></li>
                                     <li class="other cf"><span class="time fl"
                                                                th:text="${#calendars.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span><span
-                                            class="fr"><a href="javascript:void(0);" onclick="javascript:;" class="zan"
-                                                          style="padding-left: 10px">踩<i class="num">(0)</i></a></span><span
-                                            class="fr"><a href="javascript:void(0);" onclick="javascript:;" class="zan"
-                                                          style="padding-left: 10px">赞<i class="num">(0)</i></a></span><span
+                                            class="fr"><a th:href="'javascript:toggleCommentUnLike(\''+${comment.id}+'\')'" onclick="javascript:;" class="zan"
+                                                          style="padding-left: 10px">踩<i class="num" th:id="'unLikeCount'+${comment.id}">([[${comment.unLikesCount}]])</i></a></span><span
+                                            class="fr"><a th:href="'javascript:toggleCommentLike(\''+${comment.id}+'\')'"  class="zan"
+                                                          style="padding-left: 10px">赞<i class="num" th:id="'likeCount'+${comment.id}">([[${comment.likesCount}]])</i></a></span><span
                                             class="fr"><a th:href="'/book/reply-'+${comment.id}+'.html'" class="zan"
                                                           style="padding-left: 10px">回复<i class="num">([[${comment.replyCount}]])</i></a></span>
                                     </li>
@@ -350,8 +350,8 @@
                                 comment.commentContent +
                                 "</li><li class=\"other cf\">" +
                                 "<span class=\"time fl\">" + comment.createTime + "</span>" +
-                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:;\" class=\"zan\"  style=\"padding-left: 10px\">踩<i class=\"num\">(0)</i></a></span>" +
-                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:;\" class=\"zan\" style=\"padding-left: 10px\">赞<i class=\"num\">(0)</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentUnLike('"+comment.id+"')\"  class=\"zan\"  style=\"padding-left: 10px\">踩<i class=\"num\" id='unLikeCount"+comment.id+"'>("+comment.unLikesCount+")</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentLike('"+comment.id+"')\"  class=\"zan\" style=\"padding-left: 10px\">赞<i class=\"num\" id='likeCount"+comment.id+"'>("+comment.likesCount+")</i></a></span>" +
                                 "<span class=\"fr\"><a href=\"/book/reply-"+comment.id+".html\" class=\"zan\" style=\"padding-left: 10px\">回复<i class=\"num\">("+comment.replyCount+
                             ")</i></a></span>" +
                             "</li>\t\t</ul>\t</div>"
@@ -379,6 +379,47 @@
                 layer.alert('网络异常');
             }
         })
+    }
+    function toggleCommentLike(commentId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleCommentLike",
+            data: {'commentId': commentId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#likeCount"+commentId).text("("+data.data+")")
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentUnLike(commentId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleCommentUnLike",
+            data: {'commentId': commentId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#unLikeCount"+commentId).text("("+data.data+")")
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
     }
 </script>
 </body>

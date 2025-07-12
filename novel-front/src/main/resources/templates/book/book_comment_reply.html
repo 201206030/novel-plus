@@ -114,8 +114,9 @@
                                 "</li><li class=\"other cf\">" +
                                 "<span class=\"time fl\" style='padding-right: 10px'>" + (data.data.total - ((curr - 1) * limit + i)) + "楼</span>" +
                                 "<span class=\"time fl\">" + comment.createTime + "</span>" +
-                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:BookDetail.AddAgreeTotal(77,this);\" class=\"zan\" style=\"display: none;\">赞<i class=\"num\">(0)</i></a>" +
-                                "</span></li>\t\t</ul>\t</div>");
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentUnLike('"+comment.id+"')\"  class=\"zan\"  style=\"padding-left: 10px\">踩<i class=\"num\" id='unLikeCount"+comment.id+"'>("+comment.unLikesCount+")</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"javascript:toggleCommentLike('"+comment.id+"')\"  class=\"zan\" style=\"padding-left: 10px\">赞<i class=\"num\" id='likeCount"+comment.id+"'>("+comment.likesCount+")</i></a></span>" +
+                                "</li>\t\t</ul>\t</div>");
                         }
                         $("#commentPanel").html(commentListHtml);
 
@@ -149,6 +150,48 @@
                     }
 
 
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentLike(replyId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleReplyLike",
+            data: {'replyId': replyId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#likeCount"+replyId).text("("+data.data+")")
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    function toggleCommentUnLike(replyId) {
+        $.ajax({
+            type: "post",
+            url: "/book/toggleReplyUnLike",
+            data: {'replyId': replyId},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#unLikeCount"+replyId).text("("+data.data+")")
                 } else {
                     layer.alert(data.msg);
                 }

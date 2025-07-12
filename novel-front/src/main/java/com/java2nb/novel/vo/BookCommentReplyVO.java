@@ -23,6 +23,10 @@ public class BookCommentReplyVO extends BookCommentReply {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    private Long likesCount;
+
+    private Long unLikesCount;
+
     @Override
     public String toString() {
         return super.toString();

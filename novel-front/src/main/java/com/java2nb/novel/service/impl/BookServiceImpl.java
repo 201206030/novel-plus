@@ -15,6 +15,7 @@ import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FileService;
+import com.java2nb.novel.service.LikeService;
 import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
@@ -93,6 +94,8 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
 
     private final FileService fileService;
+
+    private final LikeService likeService;
 
     private final BookPriceProperties bookPriceConfig;
 
@@ -390,7 +393,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public PageBean<BookCommentVO> listCommentByPage(Long userId, Long bookId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        return PageBuilder.build(bookCommentMapper.listCommentByPage(userId, bookId));
+        PageBean<BookCommentVO> pageBean = PageBuilder.build(bookCommentMapper.listCommentByPage(userId, bookId));
+        for (BookCommentVO bookCommentVO : pageBean.getList()) {
+            bookCommentVO.setLikesCount(likeService.getCommentLikesCount(bookCommentVO.getId()));
+            bookCommentVO.setUnLikesCount(likeService.getCommentUnLikesCount(bookCommentVO.getId()));
+        }
+        return pageBean;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -901,7 +909,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public PageBean<BookCommentReplyVO> listCommentReplyByPage(Long userId, Long commentId, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        return PageBuilder.build(bookCommentReplyMapper.listCommentReplyByPage(userId, commentId));
+        PageBean<BookCommentReplyVO> pageBean = PageBuilder.build(
+            bookCommentReplyMapper.listCommentReplyByPage(userId, commentId));
+        pageBean.getList().forEach(commentReply -> {
+            commentReply.setLikesCount(likeService.getReplyLikesCount(commentReply.getId()));
+            commentReply.setUnLikesCount(likeService.getReplyUnLikesCount(commentReply.getId()));
+        });
+        return pageBean;
     }
 
     @Override

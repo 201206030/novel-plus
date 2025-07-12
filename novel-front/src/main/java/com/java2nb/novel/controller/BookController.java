@@ -7,6 +7,7 @@ import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.BookContentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.IpLocationService;
+import com.java2nb.novel.service.LikeService;
 import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
@@ -34,6 +35,8 @@ public class BookController extends BaseController {
     private final Map<String, BookContentService> bookContentServiceMap;
 
     private final IpLocationService ipLocationService;
+
+    private final LikeService likeService;
 
     /**
      * 查询首页小说设置列表数据
@@ -172,6 +175,30 @@ public class BookController extends BaseController {
     }
 
     /**
+     * 评价点赞/取消点赞
+     */
+    @PostMapping("toggleCommentLike")
+    public RestResult<?> toggleCommentLike(Long commentId, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(likeService.toggleCommentLike(commentId, userDetails.getId()));
+    }
+
+    /**
+     * 评价点踩/取消点踩
+     */
+    @PostMapping("toggleCommentUnLike")
+    public RestResult<?> toggleCommentUnLike(Long commentId, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(likeService.toggleCommentUnLike(commentId, userDetails.getId()));
+    }
+
+    /**
      * 新增回复
      */
     @PostMapping("addCommentReply")
@@ -183,6 +210,30 @@ public class BookController extends BaseController {
         commentReply.setLocation(ipLocationService.getLocation(IpUtil.getRealIp(request)));
         bookService.addBookCommentReply(userDetails.getId(), commentReply);
         return RestResult.ok();
+    }
+
+    /**
+     * 回复点赞/取消点赞
+     */
+    @PostMapping("toggleReplyLike")
+    public RestResult<?> toggleReplyLike(Long replyId, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(likeService.toggleReplyLike(replyId, userDetails.getId()));
+    }
+
+    /**
+     * 回复点赞/取消点赞
+     */
+    @PostMapping("toggleReplyUnLike")
+    public RestResult<?> toggleReplyUnLike(Long replyId, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(likeService.toggleReplyUnLike(replyId, userDetails.getId()));
     }
 
     /**
