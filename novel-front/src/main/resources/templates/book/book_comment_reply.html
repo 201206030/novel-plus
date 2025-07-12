@@ -171,7 +171,11 @@
             success: function (data) {
                 if (data.code == 200) {
                     $("#likeCount"+replyId).text("("+data.data+")")
-                } else {
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                }  else {
                     layer.alert(data.msg);
                 }
 
@@ -192,7 +196,11 @@
             success: function (data) {
                 if (data.code == 200) {
                     $("#unLikeCount"+replyId).text("("+data.data+")")
-                } else {
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                }  else {
                     layer.alert(data.msg);
                 }
 
