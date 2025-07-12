@@ -114,7 +114,7 @@
                                             th:text="${comment.location} + '读者'"></span></span></li>
                                     <li class="dec" th:utext="${comment.commentContent}"></li>
                                     <li class="other cf"><span class="time fl"
-                                                               th:text="${#calendars.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span><span
+                                                               th:text="${comment.createTimeFormat}"></span><span
                                             class="fr"><a th:href="'javascript:toggleCommentUnLike(\''+${comment.id}+'\')'" onclick="javascript:;" class="zan"
                                                           style="padding-left: 10px">踩<i class="num" th:id="'unLikeCount'+${comment.id}">([[${comment.unLikesCount}]])</i></a></span><span
                                             class="fr"><a th:href="'javascript:toggleCommentLike(\''+${comment.id}+'\')'"  class="zan"

@@ -1,9 +1,8 @@
 package com.java2nb.novel.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.java2nb.novel.core.serialize.CommentUserNameSerialize;
-import com.java2nb.novel.entity.BookComment;
+import com.java2nb.novel.core.serialize.TimeAgoFormatSerialize;
 import com.java2nb.novel.entity.BookCommentReply;
 import lombok.Data;
 
@@ -20,7 +19,7 @@ public class BookCommentReplyVO extends BookCommentReply {
 
     private String createUserPhoto;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = TimeAgoFormatSerialize.class)
     private Date createTime;
 
     private Long likesCount;

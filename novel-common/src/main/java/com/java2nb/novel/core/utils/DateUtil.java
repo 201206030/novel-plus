@@ -106,6 +106,47 @@ public class DateUtil {
     }
 
 
+    /**
+     * 将日期格式化成"多久之前"的格式
+     * */
+    public static String formatTimeAgo(Date date){
+        if (date == null) {
+            return null;
+        }
+
+        long now = new Date().getTime();
+        long then = date.getTime();
+
+        long diff = now - then;
+
+        if (diff < 0) {
+            // 未来时间
+            DateUtil.formatDate(date, DateUtil.DATE_TIME_PATTERN);
+        }
+
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        long months = days / 30;
+        long years = months / 12;
+
+        if (seconds < 60) {
+            return "刚刚";
+        } else if (minutes < 60) {
+            return minutes + "分钟前";
+        } else if (hours < 24) {
+            return hours + "小时前";
+        } else if (days < 30) {
+            return days + "天前";
+        } else if (months < 12) {
+            return months + "个月前";
+        } else {
+            return years + "年前";
+        }
+    }
+
+
     public static void main(String[] args) {
         System.out.println(formatDate(getYesterday(),DATE_TIME_PATTERN));
         System.out.println(formatDate(getDateStartTime(getYesterday()),DATE_TIME_PATTERN));
