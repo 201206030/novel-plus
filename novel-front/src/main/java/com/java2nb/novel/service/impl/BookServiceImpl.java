@@ -15,10 +15,7 @@ import com.java2nb.novel.mapper.*;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FileService;
-import com.java2nb.novel.vo.BookCommentVO;
-import com.java2nb.novel.vo.BookSettingVO;
-import com.java2nb.novel.vo.BookSpVO;
-import com.java2nb.novel.vo.BookVO;
+import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import io.github.xxyopen.util.IdWorker;
@@ -86,6 +83,8 @@ public class BookServiceImpl implements BookService {
     private final BookContentMapper bookContentMapper;
 
     private final FrontBookCommentMapper bookCommentMapper;
+
+    private final FrontBookCommentReplyMapper bookCommentReplyMapper;
 
     private final BookAuthorMapper bookAuthorMapper;
 
@@ -886,6 +885,28 @@ public class BookServiceImpl implements BookService {
     @Override
     public String queryAiGenPic(Long bookId) {
         return cacheService.get(CacheKey.AI_GEN_PIC + bookId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addBookCommentReply(Long userId, BookCommentReply commentReply) {
+        //增加回复
+        commentReply.setCreateUserId(userId);
+        commentReply.setCreateTime(new Date());
+        bookCommentReplyMapper.insertSelective(commentReply);
+        //增加评论回复数
+        bookCommentMapper.addReplyCount(commentReply.getCommentId());
+    }
+
+    @Override
+    public PageBean<BookCommentReplyVO> listCommentReplyByPage(Long userId, Long commentId, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        return PageBuilder.build(bookCommentReplyMapper.listCommentReplyByPage(userId, commentId));
+    }
+
+    @Override
+    public BookComment getBookComment(Long commentId) {
+        return bookCommentMapper.selectByPrimaryKey(commentId).orElse(null);
     }
 
 

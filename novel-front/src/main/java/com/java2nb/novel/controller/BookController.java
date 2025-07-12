@@ -3,17 +3,11 @@ package com.java2nb.novel.controller;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.IpUtil;
-import com.java2nb.novel.entity.Book;
-import com.java2nb.novel.entity.BookCategory;
-import com.java2nb.novel.entity.BookComment;
-import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.BookContentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.IpLocationService;
-import com.java2nb.novel.vo.BookCommentVO;
-import com.java2nb.novel.vo.BookSettingVO;
-import com.java2nb.novel.vo.BookSpVO;
-import com.java2nb.novel.vo.BookVO;
+import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import io.github.xxyopen.model.resp.RestResult;
@@ -154,6 +148,16 @@ public class BookController extends BaseController {
     }
 
     /**
+     * 分页查询评论回复列表
+     */
+    @GetMapping("listCommentReplyByPage")
+    public RestResult<PageBean<BookCommentReplyVO>> listCommentReplyByPage(@RequestParam("commentId") Long commentId,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "5") int pageSize) {
+        return RestResult.ok(bookService.listCommentReplyByPage(null, commentId, page, pageSize));
+    }
+
+    /**
      * 新增评价
      */
     @PostMapping("addBookComment")
@@ -164,6 +168,20 @@ public class BookController extends BaseController {
         }
         comment.setLocation(ipLocationService.getLocation(IpUtil.getRealIp(request)));
         bookService.addBookComment(userDetails.getId(), comment);
+        return RestResult.ok();
+    }
+
+    /**
+     * 新增回复
+     */
+    @PostMapping("addCommentReply")
+    public RestResult<?> addCommentReply(BookCommentReply commentReply, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        commentReply.setLocation(ipLocationService.getLocation(IpUtil.getRealIp(request)));
+        bookService.addBookCommentReply(userDetails.getId(), commentReply);
         return RestResult.ok();
     }
 

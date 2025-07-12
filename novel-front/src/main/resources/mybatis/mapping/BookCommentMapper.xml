@@ -19,5 +19,12 @@
     </select>
 
 
+    <update id="addReplyCount" parameterType="long">
+        update book_comment
+        set reply_count = reply_count + 1
+        where id = #{commentId}
+    </update>
+
+
 
 </mapper>

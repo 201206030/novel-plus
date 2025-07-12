@@ -114,9 +114,9 @@
             $('#txtComment').val($('#txtComment').val().substring(0, 1000));
         }
     });
-    searchComments(1, 20);
+    loadCommentList(1, 20);
 
-    function searchComments(curr, limit) {
+    function loadCommentList(curr, limit) {
 
         $.ajax({
             type: "get",
@@ -139,8 +139,11 @@
                                 comment.commentContent+
                                 "</li><li class=\"other cf\">" +
                                 "<span class=\"time fl\">"+comment.createTime+"</span>" +
-                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:BookDetail.AddAgreeTotal(77,this);\" class=\"zan\" style=\"display: none;\">赞<i class=\"num\">(0)</i></a>" +
-                                "</span></li>\t\t</ul>\t</div>");
+                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:;\" class=\"zan\"  style=\"padding-left: 10px\">踩<i class=\"num\">(0)</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"javascript:void(0);\" onclick=\"javascript:;\" class=\"zan\" style=\"padding-left: 10px\">赞<i class=\"num\">(0)</i></a></span>" +
+                                "<span class=\"fr\"><a href=\"/book/reply-"+comment.id+".html\" class=\"zan\" style=\"padding-left: 10px\">回复<i class=\"num\">("+comment.replyCount+
+                                ")</i></a></span>" +
+                                "</li>\t\t</ul>\t</div>");
                         }
                         $("#commentPanel").html(commentListHtml);
 

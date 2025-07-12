@@ -134,6 +134,52 @@
 
 
     },
+
+    SaveCommentReply: function (cmtBId, cmtCId, cmtDetail) {
+        if (!isLogin) {
+            layer.alert('请先登陆');
+            return;
+        }
+        var cmtDetailTemp = cmtDetail.replace(/(^\s*)/g, "");
+        if (cmtDetailTemp == '') {
+            layer.alert('回复内容必须填写');
+            return;
+        }
+        if (cmtDetailTemp.length < 5) {
+            layer.alert('回复内容必须大于5个字');
+            return;
+        }
+        if (cmtDetail.length < 5) {
+            layer.alert('回复内容必须大于5个字');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/book/addCommentReply",
+            data: {'commentId': $("#commentId").val(), 'replyContent': cmtDetail},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $('#txtComment').val("")
+                    layer.alert('回复成功！');
+                    loadCommentList(1, 20);
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+
+    },
     GetFavoritesBook: function (BId) {
     },
     GetMoneyFlower: function () {

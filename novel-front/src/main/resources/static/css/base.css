@@ -965,3 +965,13 @@ i.vip_b {
 .userBox {
     margin: 0 auto
 }
+
+
+.layui-elem-quote {
+    margin-bottom: 10px;
+    padding: 15px;
+    line-height: 1.8;
+    border-left: 5px solid #16b777;
+    border-radius: 0 2px 2px 0;
+    background-color: #fafafa;
+}

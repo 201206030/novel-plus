@@ -314,6 +314,16 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 评论回复页面
+     */
+    @RequestMapping("/book/reply-{commentId}.html")
+    public String commentReplyList(@PathVariable("commentId") Long commentId, Model model) {
+        model.addAttribute("commentId", commentId);
+        model.addAttribute("commentContent", bookService.getBookComment(commentId).getCommentContent());
+        return "book/book_comment_reply";
+    }
+
+    /**
      * 新闻内容页面
      */
     @RequestMapping("/about/newsInfo-{newsId}.html")
