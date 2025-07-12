@@ -18,7 +18,7 @@ public enum ResponseStatus implements IResultCode {
     /**
      * 用户相关错误
      * */
-   NO_LOGIN(1001, "未登录或登陆失效！"),
+   NO_LOGIN(1001, "未登录或登录失效！"),
     VEL_CODE_ERROR(1002, "验证码错误！"),
     USERNAME_EXIST(1003,"该手机号已注册！"),
     USERNAME_PASS_ERROR(1004,"手机号或密码错误！"),

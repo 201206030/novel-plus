@@ -40,12 +40,12 @@ public class UserController extends BaseController {
     private final BookService bookService;
 
     /**
-     * 登陆
+     * 登录
      */
     @PostMapping("login")
     public RestResult<Map<String, Object>> login(User user) {
 
-        //登陆
+        //登录
         UserDetails userDetails = userService.login(user);
 
         Map<String, Object> data = new HashMap<>(1);

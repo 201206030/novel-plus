@@ -50,7 +50,7 @@ public class PayController extends BaseController {
 
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
-            //未登录，跳转到登陆页面
+            //未登录，跳转到登录页面
             httpResponse.sendRedirect("/user/login.html?originUrl=/pay/index.html");
         } else {
             //创建充值订单
