@@ -100,7 +100,7 @@ public class CrawlServiceImpl implements CrawlService {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider render = select(id, sourceName, sourceStatus, createTime, updateTime)
             .from(crawlSource)
-            .orderBy(updateTime)
+            .orderBy(updateTime.descending())
             .build()
             .render(RenderingStrategies.MYBATIS3);
         List<CrawlSource> crawlSources = crawlSourceMapper.selectMany(render);
