@@ -43,7 +43,7 @@
                             <th class="style">
                                 序号
                             </th>
-                            <th class="chapter">
+                            <th class="name">
                                 爬虫源
                             </th>
                             <th class="name">
@@ -51,6 +51,9 @@
                             </th>
                             <th class="name">
                                 更新时间
+                            </th>
+                            <th class="goread">
+                                采集数量
                             </th>
                             <th class="goread">
                                 状态
@@ -111,11 +114,17 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
-    search(1, 10);
+    let curr = 1;
+    let limit = 10;
+
+    search();
+    setInterval(function(){
+        search();
+    }, 10000);
 
     var pageCrawlSourceList = null;
 
-    function search(curr, limit) {
+    function search() {
 
         $.ajax({
             type: "get",
@@ -134,13 +143,15 @@
                                 "                            <td class=\"style bookclass\">\n" +
                                 "                                [" + (i + 1) + "]\n" +
                                 "                            </td>\n" +
-                                "                            <td class=\"chapter\">\n" +
+                                "                            <td class=\"name\">\n" +
                                 "                                " + crawlSource.sourceName + "</td>\n" +
                                 "                            <td class=\"name\" valsc=\"291|2037554|1\">"
                                 + crawlSource.createTime + "</td>\n" +
                                 "                            <td class=\"name\">\n" +
                                 "                                " + crawlSource.updateTime + "\n" +
                                 "                            </td>\n" +
+                                "                            <td class=\"goread\">\n" +
+                                "                                " + crawlSource.chapterCount + "章</td>\n" +
                                 "                            <td class=\"goread\" id='sourceStatus" + crawlSource.id + "'>" + (crawlSource.sourceStatus == 0 ? '停止运行' : '正在运行') +
                                 "                            </td>\n" +
 
@@ -169,7 +180,9 @@
 
                                     //首次不执行
                                     if (!first) {
-                                        search(obj.curr, obj.limit);
+                                        curr = obj.curr;
+                                        limit = obj.limit;
+                                        search();
                                     } else {
 
                                     }
@@ -216,11 +229,11 @@
                     if (status == 0) {
                         //开启
                         $("#sourceStatus" + sourceId).html("正在运行");
-                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 1 + ")'>关闭</a>");
+                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 1 + ")'>关闭 </a>"+"<a href='javascript:updateCrawlSource(" + sourceId + ")'>修改  </a>");
                     } else {
                         //关闭
                         $("#sourceStatus" + sourceId).html("停止运行");
-                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 0 + ")'>开启</a>");
+                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 0 + ")'>开启 </a>"+"<a href='javascript:updateCrawlSource(" + sourceId + ")'>修改  </a>");
                     }
 
 
