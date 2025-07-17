@@ -18,7 +18,7 @@ public interface ${className}Dao {
 
 	${className}DO get(${pk.javaType} ${pk.attrname});
 	
-	List<${className}DO> list(Map<String,Object> map);
+	List<${className}DO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

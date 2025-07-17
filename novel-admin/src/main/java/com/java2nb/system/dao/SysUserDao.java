@@ -1,5 +1,7 @@
 package com.java2nb.system.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.system.domain.UserDO;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface SysUserDao {
 
 	UserDO get(Long userId);
 	
-	List<UserDO> list(Map<String,Object> map);
+	List<UserDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

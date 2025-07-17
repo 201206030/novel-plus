@@ -1,5 +1,7 @@
 package com.java2nb.system.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.system.domain.DeptDO;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface DeptDao {
 
 	DeptDO get(Long deptId);
 	
-	List<DeptDO> list(Map<String,Object> map);
+	List<DeptDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

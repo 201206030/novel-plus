@@ -3,6 +3,7 @@ package com.java2nb.common.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
 import com.java2nb.common.domain.GenColumnsDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +20,7 @@ public interface GenColumnsDao {
 
 	GenColumnsDO get(Long id);
 
-	List<GenColumnsDO> list(Map<String,Object> map);
+	List<GenColumnsDO> list(@ValidateSortOrder Map<String,Object> map);
 
 	int count(Map<String,Object> map);
 
