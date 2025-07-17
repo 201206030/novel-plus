@@ -100,14 +100,19 @@ public class CrawlServiceImpl implements CrawlService {
         PageHelper.startPage(page, pageSize);
         SelectStatementProvider render = select(id, sourceName, sourceStatus, createTime, updateTime)
             .from(crawlSource)
-            .orderBy(updateTime)
+            .orderBy(updateTime.descending())
             .build()
             .render(RenderingStrategies.MYBATIS3);
         List<CrawlSource> crawlSources = crawlSourceMapper.selectMany(render);
-        crawlSources.forEach(crawlSource -> crawlSource.setSourceStatus(
-            Optional.ofNullable(crawlSourceStatusMap.get(crawlSource.getId())).orElse((byte) 0)));
         PageBean<CrawlSource> pageBean = PageBuilder.build(crawlSources);
-        pageBean.setList(BeanUtil.copyList(crawlSources, CrawlSourceVO.class));
+        List<CrawlSourceVO> crawlSourceVOS = BeanUtil.copyList(crawlSources, CrawlSourceVO.class);
+        crawlSourceVOS.forEach(crawlSource -> {
+                crawlSource.setSourceStatus(
+                    Optional.ofNullable(crawlSourceStatusMap.get(crawlSource.getId())).orElse((byte) 0));
+                crawlSource.setChapterCount(crawlParser.getCrawlSourceChapterCount(crawlSource.getId()));
+            }
+        );
+        pageBean.setList(crawlSourceVOS);
         return pageBean;
     }
 
@@ -386,7 +391,7 @@ public class CrawlServiceImpl implements CrawlService {
                 book.setCrawlLastTime(new Date());
                 book.setId(idWorker.nextId());
                 //解析章节目录
-                boolean parseIndexContentResult = crawlParser.parseBookIndexAndContent(bookId, book, ruleBean,
+                boolean parseIndexContentResult = crawlParser.parseBookIndexAndContent(bookId, book, ruleBean, sourceId,
                     new HashMap<>(0), chapter -> {
                         bookService.saveBookAndIndexAndContent(book, chapter.getBookIndexList(),
                             chapter.getBookContentList());

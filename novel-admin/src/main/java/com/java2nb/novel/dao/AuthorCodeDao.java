@@ -1,5 +1,7 @@
 package com.java2nb.novel.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.novel.domain.AuthorCodeDO;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface AuthorCodeDao {
 
 	AuthorCodeDO get(Long id);
 	
-	List<AuthorCodeDO> list(Map<String,Object> map);
+	List<AuthorCodeDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

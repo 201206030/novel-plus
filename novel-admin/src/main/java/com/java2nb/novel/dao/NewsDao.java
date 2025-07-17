@@ -1,5 +1,7 @@
 package com.java2nb.novel.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.novel.domain.NewsDO;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface NewsDao {
 
 	NewsDO get(Long id);
 	
-	List<NewsDO> list(Map<String,Object> map);
+	List<NewsDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

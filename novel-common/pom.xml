@@ -5,7 +5,7 @@
     <parent>
         <artifactId>novel</artifactId>
         <groupId>com.java2nb</groupId>
-        <version>5.2.1</version>
+        <version>5.2.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,6 +20,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Aop 相关 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <dependency>

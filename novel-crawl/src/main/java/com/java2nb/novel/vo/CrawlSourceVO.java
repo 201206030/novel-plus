@@ -20,7 +20,7 @@ public class CrawlSourceVO extends CrawlSource{
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm")
     private Date updateTime;
 
-
+    private Long chapterCount;
 
     @Override
     public String toString() {

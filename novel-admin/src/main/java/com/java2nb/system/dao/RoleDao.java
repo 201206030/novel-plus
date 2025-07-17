@@ -1,5 +1,7 @@
 package com.java2nb.system.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.system.domain.RoleDO;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface RoleDao {
 
 	RoleDO get(Long roleId);
 	
-	List<RoleDO> list(Map<String,Object> map);
+	List<RoleDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

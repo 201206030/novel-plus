@@ -1,5 +1,7 @@
 package com.java2nb.novel.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.novel.domain.PayDO;
 
 import java.util.Date;
@@ -19,7 +21,7 @@ public interface PayDao {
 
 	PayDO get(Long id);
 	
-	List<PayDO> list(Map<String,Object> map);
+	List<PayDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

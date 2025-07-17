@@ -1,5 +1,7 @@
 package com.java2nb.system.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.system.domain.RoleDataPermDO;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface RoleDataPermDao {
 
 	RoleDataPermDO get(Long id);
 	
-	List<RoleDataPermDO> list(Map<String,Object> map);
+	List<RoleDataPermDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

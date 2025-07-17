@@ -1,5 +1,7 @@
 package com.java2nb.novel.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.novel.domain.BookContentDO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,7 +20,7 @@ public interface BookContentDao {
 
     BookContentDO get(Long id);
 
-    List<BookContentDO> list(Map<String, Object> map);
+    List<BookContentDO> list(@ValidateSortOrder Map<String, Object> map);
 
     int count(Map<String, Object> map);
 

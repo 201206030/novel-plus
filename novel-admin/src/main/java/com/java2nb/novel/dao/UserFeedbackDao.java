@@ -1,5 +1,7 @@
 package com.java2nb.novel.dao;
 
+import com.java2nb.common.annotation.ValidateSortOrder;
+
 import com.java2nb.novel.domain.UserFeedbackDO;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface UserFeedbackDao {
 
 	UserFeedbackDO get(Long id);
 	
-	List<UserFeedbackDO> list(Map<String,Object> map);
+	List<UserFeedbackDO> list(@ValidateSortOrder  Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

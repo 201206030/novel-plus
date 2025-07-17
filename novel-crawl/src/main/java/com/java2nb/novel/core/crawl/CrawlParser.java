@@ -12,6 +12,8 @@ import io.github.xxyopen.util.IdWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -34,6 +36,13 @@ public class CrawlParser {
 
     private final CrawlHttpClient crawlHttpClient;
 
+    private final StringRedisTemplate stringRedisTemplate;
+
+    /**
+     * 爬虫源采集章节数量缓存key
+     */
+    private static final String CRAWL_SOURCE_CHAPTER_COUNT_CACHE_KEY = "crawlSource:chapterCount:";
+
     /**
      * 爬虫任务进度
      */
@@ -51,6 +60,20 @@ public class CrawlParser {
      */
     public void removeCrawlTaskProgress(Long taskId) {
         crawlTaskProgress.remove(taskId);
+    }
+
+    /**
+     * 获取爬虫源采集的章节数量
+     */
+    public Long getCrawlSourceChapterCount(Integer sourceId) {
+        return Optional.ofNullable(
+            stringRedisTemplate.opsForValue().get(CRAWL_SOURCE_CHAPTER_COUNT_CACHE_KEY + sourceId)).map(v -> {
+            try {
+                return Long.parseLong(v);
+            } catch (NumberFormatException e) {
+                return 0L;
+            }
+        }).orElse(0L);
     }
 
     public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler)
@@ -182,7 +205,7 @@ public class CrawlParser {
         handler.handle(book);
     }
 
-    public boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean,
+    public boolean parseBookIndexAndContent(String sourceBookId, Book book, RuleBean ruleBean, Integer sourceId,
         Map<Integer, BookIndex> existBookIndexMap, CrawlBookChapterHandler handler, CrawlSingleTask task)
         throws InterruptedException {
 
@@ -314,10 +337,12 @@ public class CrawlParser {
                         bookIndex.setUpdateTime(currentDate);
 
                         if (task != null) {
-                            // 更新采集进度
+                            // 更新单本任务采集进度
                             crawlTaskProgress.put(task.getId(), indexList.size());
                         }
 
+                        // 更新爬虫源采集章节数量
+                        stringRedisTemplate.opsForValue().increment(CRAWL_SOURCE_CHAPTER_COUNT_CACHE_KEY + sourceId);
 
                     }
 
