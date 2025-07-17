@@ -2,6 +2,7 @@ package com.java2nb.novel.core.aspect;
 
 import com.java2nb.novel.core.annotation.ValidateSortOrder;
 import com.java2nb.novel.core.utils.SortWhitelistUtil;
+import com.java2nb.novel.core.vo.SortOrderVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -29,7 +30,7 @@ public class SortOrderValidationAspect {
      */
     @SneakyThrows
     @Around("execution(* com.java2nb.novel.mapper.*Mapper.*(..))")
-    public Object validateSortAndOrder(ProceedingJoinPoint joinPoint) {
+    public Object processSortOrderFields(ProceedingJoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -41,7 +42,7 @@ public class SortOrderValidationAspect {
                 .anyMatch(a -> a.annotationType().equals(ValidateSortOrder.class));
 
             if (hasAnnotation && args[i] != null) {
-                processArgument(args[i]);
+                handleAnnotatedParameter(args[i]);
             }
         }
 
@@ -49,16 +50,36 @@ public class SortOrderValidationAspect {
     }
 
     @SneakyThrows
-    private void processArgument(Object obj) {
-        if (obj instanceof Map<?,?> map) {
+    private void handleAnnotatedParameter(Object obj) {
+        if (obj instanceof SortOrderVO sortOrderVO){
+            processSortOrderVO(sortOrderVO);
+        } else if (obj instanceof Map<?, ?> map) {
             processMap(map);
         } else {
-            traverseAndSanitize(obj);
+            processGenericObject(obj);
+        }
+    }
+
+    private void processSortOrderVO(SortOrderVO sortOrderVO) {
+        if(sortOrderVO.getSort() != null){
+            sortOrderVO.setSort(SortWhitelistUtil.sanitizeColumn(sortOrderVO.getSort()));
+        }
+        if(sortOrderVO.getOrder() != null){
+            sortOrderVO.setOrder(SortWhitelistUtil.sanitizeOrder(sortOrderVO.getOrder()));
+        }
+    }
+
+    private void processMap(Map map) {
+        if (map.get("sort") instanceof String sortStr) {
+            map.put("sort", SortWhitelistUtil.sanitizeColumn(sortStr));
+        }
+        if (map.get("order") instanceof String orderStr) {
+            map.put("order", SortWhitelistUtil.sanitizeOrder(orderStr));
         }
     }
 
     @SneakyThrows
-    private void traverseAndSanitize(Object obj) {
+    private void processGenericObject(Object obj) {
         for (Field field : obj.getClass().getDeclaredFields()) {
             switch (field.getName()) {
                 case "sort", "order" -> {
@@ -74,15 +95,6 @@ public class SortOrderValidationAspect {
                 default -> {
                 }
             }
-        }
-    }
-
-    private void processMap(Map map) {
-        if (map.get("sort") instanceof String sortStr) {
-            map.put("sort", SortWhitelistUtil.sanitizeColumn(sortStr));
-        }
-        if (map.get("order") instanceof String orderStr) {
-            map.put("order", SortWhitelistUtil.sanitizeOrder(orderStr));
         }
     }
 

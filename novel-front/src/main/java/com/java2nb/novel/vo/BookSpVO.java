@@ -1,5 +1,6 @@
 package com.java2nb.novel.vo;
 
+import com.java2nb.novel.core.vo.SortOrderVO;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author 11797
  */
 @Data
-public class BookSpVO {
+public class BookSpVO extends SortOrderVO {
 
     private String keyword;
 
@@ -28,10 +29,6 @@ public class BookSpVO {
     private Date updateTimeMin;
 
     private Long updatePeriod;
-
-    private String sort;
-
-
 
 
 }
