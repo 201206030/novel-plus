@@ -15,6 +15,7 @@ import io.github.xxyopen.model.resp.RestResult;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class BookController extends BaseController {
      * 分页搜索
      */
     @GetMapping("searchByPage")
-    public RestResult<?> searchByPage(BookSpVO bookSP, @RequestParam(value = "curr", defaultValue = "1") int page,
+    public RestResult<?> searchByPage(@Validated BookSpVO bookSP, @RequestParam(value = "curr", defaultValue = "1") int page,
         @RequestParam(value = "limit", defaultValue = "20") int pageSize) {
         return RestResult.ok(bookService.searchByPage(bookSP, page, pageSize));
     }

@@ -21,7 +21,7 @@ import java.util.*;
  * @date 2025/7/17
  */
 @Aspect
-@Component
+//@Component
 @RequiredArgsConstructor
 public class SortOrderValidationAspect {
 

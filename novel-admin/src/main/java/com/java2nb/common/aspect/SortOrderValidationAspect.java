@@ -25,10 +25,10 @@ import java.util.Map;
 public class SortOrderValidationAspect {
 
     /**
-     * 拦截所有的mapper方法
+     * 拦截mapper的所有list方法
      */
     @SneakyThrows
-    @Around("execution(* com.java2nb.*.dao.*Dao.*(..))")
+    @Around("execution(* com.java2nb.*.dao.*Dao.list*(..))")
     public Object validateSortAndOrder(ProceedingJoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

@@ -14,8 +14,7 @@ import java.util.Set;
 public class SortWhitelistUtil {
 
     private final Set<String> allowedColumns = new HashSet<>(
-        Arrays.asList("id", "name", "create_time", "update_time", "order_num", "last_index_update_time", "word_count",
-            "visit_count"));
+        Arrays.asList("id", "name", "order_num"));
     private final Set<String> allowedOrders = new HashSet<>(Arrays.asList("asc", "desc"));
 
     public String sanitizeColumn(String input) {

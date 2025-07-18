@@ -14,7 +14,7 @@ import java.util.List;
 public interface FrontBookMapper extends BookMapper {
 
 
-    List<BookVO> searchByPage(@ValidateSortOrder BookSpVO params);
+    List<BookVO> searchByPage(BookSpVO params);
 
     void addVisitCount(@Param("bookId") Long bookId, @Param("visitCount") Integer visitCount);
 
