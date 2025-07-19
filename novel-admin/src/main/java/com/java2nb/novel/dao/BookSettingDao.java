@@ -1,6 +1,6 @@
 package com.java2nb.novel.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 
 import com.java2nb.novel.domain.BookSettingDO;
 
@@ -20,7 +20,7 @@ public interface BookSettingDao {
 
 	BookSettingDO get(Long id);
 	
-	List<BookSettingDO> list(@ValidateSortOrder  Map<String,Object> map);
+	List<BookSettingDO> list(@SanitizeMap Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

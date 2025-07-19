@@ -1,6 +1,6 @@
 package com.java2nb.novel.vo;
 
-import com.java2nb.novel.core.vo.SortOrderVO;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.Date;
  * @author 11797
  */
 @Data
-public class BookSpVO extends SortOrderVO {
+public class BookSpVO {
 
     private String keyword;
 
@@ -29,6 +29,9 @@ public class BookSpVO extends SortOrderVO {
     private Date updateTimeMin;
 
     private Long updatePeriod;
+
+    @Pattern(regexp = "^(last_index_update_time|word_count|visit_count)$")
+    private String sort;
 
 
 }

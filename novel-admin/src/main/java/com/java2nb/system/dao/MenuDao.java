@@ -1,6 +1,6 @@
 package com.java2nb.system.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 
 import com.java2nb.system.domain.MenuDO;
 
@@ -20,7 +20,7 @@ public interface MenuDao {
 
 	MenuDO get(Long menuId);
 	
-	List<MenuDO> list(@ValidateSortOrder  Map<String,Object> map);
+	List<MenuDO> list(@SanitizeMap Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

@@ -1,6 +1,6 @@
 package com.java2nb.system.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 
 import com.java2nb.system.domain.RoleMenuDO;
 
@@ -20,7 +20,7 @@ public interface RoleMenuDao {
 
 	RoleMenuDO get(Long id);
 	
-	List<RoleMenuDO> list(@ValidateSortOrder  Map<String,Object> map);
+	List<RoleMenuDO> list(@SanitizeMap Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

@@ -1,6 +1,6 @@
 package com.java2nb.novel.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 
 import com.java2nb.novel.domain.FriendLinkDO;
 
@@ -20,7 +20,7 @@ public interface FriendLinkDao {
 
 	FriendLinkDO get(Integer id);
 	
-	List<FriendLinkDO> list(@ValidateSortOrder  Map<String,Object> map);
+	List<FriendLinkDO> list(@SanitizeMap Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

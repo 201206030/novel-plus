@@ -3175,3 +3175,42 @@ CREATE TABLE `book_comment_reply`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='小说评论回复表';
+
+
+INSERT INTO crawl_source (source_name, crawl_rule, source_status, create_time
+                         , update_time)
+VALUES ('飘天文学网（海外专用）', '{
+    "bookListUrl": "https://www.piaotia.com/booksort{catId}/{page}.html",
+    "catIdRule": {
+        "catId1": "1/0",
+        "catId2": "2/0",
+        "catId3": "3/0",
+        "catId4": "4/0",
+        "catId5": "6/0",
+        "catId6": "5/0"
+    },
+    "bookIdPatten": "href=\\"https://www.piaotia.com/bookinfo/(\\\\d+/\\\\d+).html\\"",
+    "pagePatten": "<em\\\\s+id=\\"pagestats\\">(\\\\d+)/\\\\d+</em>",
+    "totalPagePatten": "<em\\\\s+id=\\"pagestats\\">\\\\d+/(\\\\d+)</em>",
+    "bookDetailUrl": "https://www.piaotia.com/bookinfo/{bookId}.html",
+    "bookNamePatten": "<h1>([^/]+)</h1>",
+    "authorNamePatten": "<td\\\\s+width=\\"\\\\d+%\\">作&nbsp;&nbsp;&nbsp; 者：([^/]+)<",
+    "picUrlPatten": "<img\\\\s+src=\\"(https://www.piaotia.com/files/article/image/[^\\"]+)\\"",
+    "statusPatten": "<td>文章状态：([^/]+)</td>",
+    "bookStatusRule": {
+        "连载中": 0,
+        "已完成": 1
+    },
+    "descStart": " <span class=\\"hottext\\">内容简介：</span><br />",
+    "descEnd": "</td>",
+    "filterDesc": "",
+    "bookIndexUrl": "https://www.piaotia.com/html/{bookId}/index.html",
+    "indexIdPatten": "<li><a href=\\"(\\\\d+).html\\">[^/]+</a></li>",
+    "indexNamePatten": "<li><a href=\\"\\\\d+.html\\">([^/]+)</a></li>",
+    "bookContentUrl": "https://www.piaotia.com/html/{bookId}/{indexId}.html",
+    "contentStart": "<br>",
+    "contentEnd": "</div>",
+    "filterContent": "",
+    "charset": "gbk"
+}', 0, '2025-07-13 18:57:39'
+       , '2025-07-13 18:57:39');

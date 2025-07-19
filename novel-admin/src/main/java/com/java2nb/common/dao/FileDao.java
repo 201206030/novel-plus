@@ -1,6 +1,6 @@
 package com.java2nb.common.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 import com.java2nb.common.domain.FileDO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface FileDao {
 
 	FileDO get(Long id);
 	
-	List<FileDO> list(@ValidateSortOrder Map<String,Object> map);
+	List<FileDO> list(@SanitizeMap Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

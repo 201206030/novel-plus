@@ -5,7 +5,7 @@
     <parent>
         <artifactId>novel</artifactId>
         <groupId>com.java2nb</groupId>
-        <version>5.2.2</version>
+        <version>5.2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -59,7 +59,7 @@
         <!-- AI -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
 
         <dependency>
