@@ -44,7 +44,7 @@ public interface ${className}Mapper {
 			"limit #{offset}, #{limit}" + 
 			"</if>"+
 			"</script>")
-	List<${className}DO> list(@ValidateSortOrder  Map<String,Object> map);
+	List<${className}DO> list(@SanitizeMap Map<String,Object> map);
 	
 	@Select("<script>" +
 	"select count(*) from ${tableName} " + 

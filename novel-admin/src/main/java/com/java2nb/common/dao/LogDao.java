@@ -1,6 +1,6 @@
 package com.java2nb.common.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 import com.java2nb.common.domain.LogDO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface LogDao {
 
 	LogDO get(Long id);
 	
-	List<LogDO> list(@ValidateSortOrder Map<String,Object> map);
+	List<LogDO> list(@SanitizeMap Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	

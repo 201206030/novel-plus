@@ -1,6 +1,6 @@
 package com.java2nb.novel.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 
 import com.java2nb.novel.domain.UserDO;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,7 +19,7 @@ public interface UserDao {
 
     UserDO get(Long id);
 
-    List<UserDO> list(@ValidateSortOrder Map<String, Object> map);
+    List<UserDO> list(@SanitizeMap Map<String, Object> map);
 
     int count(Map<String, Object> map);
 

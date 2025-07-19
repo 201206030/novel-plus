@@ -1,6 +1,5 @@
 package com.java2nb.novel.vo;
 
-import com.java2nb.novel.core.vo.SortOrderVO;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 

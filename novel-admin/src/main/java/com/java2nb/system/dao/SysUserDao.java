@@ -1,6 +1,6 @@
 package com.java2nb.system.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 
 import com.java2nb.system.domain.UserDO;
 
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author xiongxy
@@ -20,7 +19,7 @@ public interface SysUserDao {
 
     UserDO get(Long userId);
 
-    List<UserDO> list(@ValidateSortOrder Map<String, Object> map);
+    List<UserDO> list(@SanitizeMap Map<String, Object> map);
 
     int count(Map<String, Object> map);
 
@@ -34,7 +33,7 @@ public interface SysUserDao {
 
     Long[] listAllDept();
 
-    List<UserDO> listByPerm(@ValidateSortOrder Map<String, Object> map);
+    List<UserDO> listByPerm(@SanitizeMap Map<String, Object> map);
 
     int countByPerm(Map<String, Object> map);
 }

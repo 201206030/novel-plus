@@ -1,6 +1,6 @@
 package com.java2nb.common.dao;
 
-import com.java2nb.common.annotation.ValidateSortOrder;
+import com.java2nb.common.annotation.SanitizeMap;
 import com.java2nb.common.domain.DictDO;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface DictDao {
 
 	DictDO get(Long id);
 
-	List<DictDO> list(@ValidateSortOrder Map<String, Object> map);
+	List<DictDO> list(@SanitizeMap Map<String, Object> map);
 
 	int count(Map<String, Object> map);
 
