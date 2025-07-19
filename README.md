@@ -81,7 +81,7 @@ novel-plus 5.x 已集成 Spring 官方最新发布的 Spring AI 框架，并推�
 
 我们将持续关注 AI 技术的发展，并致力于将其与小说创作场景深度融合，为用户带来更智能、更便捷的创作工具。
 
-novel-plus 项目默认使用的是第三方大模型服务平台[硅基流动](https://cloud.siliconflow.cn/i/DOgMRH9S)提供的 API（兼容 OpenAI 的相关接口，可直接通过 Spring AI 框架调用），采用的 AI 模型有对话模型`deepseek-ai/DeepSeek-R1-Distill-Llama-8B`（DeepSeek-R1 的蒸馏版本，免费使用）和生图模型`Kwai-Kolors/Kolors`（快手 Kolors 团队开发的文本到图像生成模型，免费使用）。只需注册一个硅基流动账号，创建一个 API 密钥，并将其添加到 novel-plus 项目 novel-front 模块的 yaml 配置文件中，即可体验 novel-plus 项目的 AI 写作功能。
+novel-plus 项目默认使用的是第三方大模型服务平台[硅基流动](https://cloud.siliconflow.cn/i/DOgMRH9S)提供的 API（兼容 OpenAI 的相关接口，可直接通过 Spring AI 框架调用），采用的 AI 模型有对话模型`deepseek-ai/DeepSeek-R1-0528-Qwen3-8B`（DeepSeek-R1 的蒸馏版本，免费使用）和生图模型`Kwai-Kolors/Kolors`（快手 Kolors 团队开发的文本到图像生成模型，免费使用）。只需注册一个硅基流动账号，创建一个 API 密钥，并将其添加到 novel-plus 项目 novel-front 模块的 yaml 配置文件中，即可体验 novel-plus 项目的 AI 写作功能。
 
 ```yaml
 spring:
@@ -98,7 +98,7 @@ spring:
       base-url: https://api.siliconflow.cn
       chat:
         options:
-          model: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
+          model: deepseek-ai/DeepSeek-R1-0528-Qwen3-8B
 ```
 
 ⚠️ novel-plus 项目默认使用的都是免费 AI 模型，生成效果有限。如果对生成内容有更高的要求，建议选用付费的 AI 模型。
