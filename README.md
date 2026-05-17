@@ -6,6 +6,8 @@
     <a href='https://github.com/201206030/novel-plus'><img alt="Github forks" src="https://img.shields.io/github/forks/201206030/novel-plus?logo=github"></a>
     <a href='https://gitee.com/novel_dev_team/novel-plus'><img alt="Gitee stars" src="https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=gitee"></a>
     <a href='https://gitee.com/novel_dev_team/novel-plus'><img alt="Gitee forks" src="https://gitee.com/novel_dev_team/novel-plus/badge/fork.svg?theme=gitee"></a>
+    <a href='https://github.com/201206030/novel-plus/releases'><img alt="GitHub downloads" src="https://img.shields.io/github/downloads/201206030/novel-plus/total.svg"></a>
+    <a href='https://hub.docker.com/u/201206030'><img alt="Docker pull" src="https://img.shields.io/docker/pulls/201206030/novel-front"></a>
 </p>
 
 <p align="center">

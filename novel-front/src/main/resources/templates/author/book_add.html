@@ -49,20 +49,14 @@
                             <ul class="log_list">
                                 <li><span id="LabErr"></span></li>
                                 <b>作品方向：</b>
-                                <li><select class="s_input" id="workDirection" name="workDirection">
+                                <li><select class="s_input" id="workDirection" name="workDirection" onchange="changeCatSelect(this.value)">
                                     <option value="0">男频</option>
                                     <option value="1">女频</option>
                                 </select>
                                 </li>
                                 <b>分类：</b>
                                 <li><select class="s_input" id="catId" name="catId">
-                                    <option value="1">玄幻奇幻</option>
-                                    <option value="2">武侠仙侠</option>
-                                    <option value="3">都市言情</option>
-                                    <option value="4">历史军事</option>
-                                    <option value="5">科幻灵异</option>
-                                    <option value="6">网游竞技</option>
-                                    <option value="7">女生频道</option>
+
                                 </select></li>
                                 <input type="hidden" id="catName" name="catName" value="玄幻奇幻"/>
                                 <b>小说名：</b>
@@ -133,6 +127,10 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script src="/javascript/common.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
+
+    var categoryList = [];
+
+    changeCatSelect(0);
 
     function picChange() {
         var file = $("#file0").val(); //文件名称
@@ -205,8 +203,8 @@
             type: "POST",
             url: "/author/addBook",
             data: {'workDirection': $("#workDirection").val(),
-            'catId':$("#catId").val(),'catName':$("#catId").find("option[value="+$("#catId").val()+"]").html(),
-            'bookName':bookName,'picUrl':picUrl,'bookDesc':bookDesc},
+                'catId':$("#catId").val(),'catName':$("#catId").find("option[value="+$("#catId").val()+"]").html(),
+                'bookName':bookName,'picUrl':picUrl,'bookDesc':bookDesc},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -226,6 +224,42 @@
             }
         })
 
+    }
+    
+    function renderCategoryOptions(workdirection) {
+        var categoryListHtml = "";
+        for (var i = 0; i < categoryList.length; i++) {
+            var category = categoryList[i];
+            if (category.workDirection == workdirection) {
+                categoryListHtml += ("<option value=\"" + category.id + "\">" + category.name + "</option>");
+            }
+        }
+        $("#catId").html(categoryListHtml);
+    }
+
+    function changeCatSelect(workdirection){
+        if(categoryList.length > 0){
+            renderCategoryOptions(workdirection);
+            return;
+        }
+        $.ajax({
+            type: "get",
+            url: "/book/listBookCategory",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    categoryList = data.data;
+                    renderCategoryOptions(workdirection);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
     }
 
 </script>
