@@ -95,6 +95,19 @@ public class AuthorController extends BaseController {
         return RestResult.ok();
     }
 
+    /**
+     * 完结小说
+     */
+    @PostMapping("finishBook")
+    public RestResult<Void> finishBook(Long bookId, HttpServletRequest request) {
+        Author author = checkAuthor(request);
+
+        //完结小说
+        bookService.finishBook(bookId, author.getId());
+
+        return RestResult.ok();
+    }
+
 
     /**
      * 删除章节

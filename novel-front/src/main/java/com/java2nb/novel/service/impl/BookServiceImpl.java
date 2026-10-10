@@ -507,7 +507,7 @@ public class BookServiceImpl implements BookService {
         PageHelper.startPage(page, pageSize);
 
         SelectStatementProvider selectStatement = select(id, bookName, picUrl, catName, visitCount, yesterdayBuy,
-            lastIndexUpdateTime, updateTime, wordCount, lastIndexName, status)
+            lastIndexUpdateTime, updateTime, wordCount, lastIndexName, bookStatus, status)
             .from(book)
             .where(authorId, isEqualTo(author.getId()))
             .orderBy(BookDynamicSqlSupport.createTime.descending())
@@ -917,6 +917,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookComment getBookComment(Long commentId) {
         return bookCommentMapper.selectByPrimaryKey(commentId).orElse(null);
+    }
+
+    @Override
+    public void finishBook(Long bookId, Long authorId) {
+        bookMapper.update(update(book)
+            .set(bookStatus)
+            .equalTo((byte) 1)
+            .set(updateTime)
+            .equalTo(new Date())
+            .where(id, isEqualTo(bookId))
+            .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
     }
 
 
