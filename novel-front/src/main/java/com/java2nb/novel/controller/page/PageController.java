@@ -153,7 +153,7 @@ public class PageController extends BaseController {
      */
     @RequestMapping("book/bookclass.html")
     public String bookClass() {
-        return "book/bookclass";
+        return ThreadLocalUtil.getTemplateDir() + "book/bookclass";
     }
 
     /**
