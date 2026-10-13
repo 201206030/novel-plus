@@ -1,5 +1,6 @@
 package com.java2nb.novel.service.impl;
 
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
@@ -411,6 +412,9 @@ public class BookServiceImpl implements BookService {
             throw new BusinessException(ResponseStatus.HAS_COMMENTS);
         }
         //增加评论
+        if(comment.getCommentContent() != null){
+            comment.setCommentContent(SensitiveWordHelper.replace(comment.getCommentContent()));
+        }
         comment.setCreateUserId(userId);
         comment.setCreateTime(new Date());
         bookCommentMapper.insertSelective(comment);
@@ -895,6 +899,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addBookCommentReply(Long userId, BookCommentReply commentReply) {
         //增加回复
+        if(commentReply.getReplyContent() != null){
+            commentReply.setReplyContent(SensitiveWordHelper.replace(commentReply.getReplyContent()));
+        }
         commentReply.setCreateUserId(userId);
         commentReply.setCreateTime(new Date());
         bookCommentReplyMapper.insertSelective(commentReply);
