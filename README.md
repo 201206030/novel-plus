@@ -18,7 +18,7 @@
 
 novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS
 系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和
-TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、AI写作、会员充值、订阅模式、新闻发布和实时统计报表。
+TXT 文本存储）、阅读主题切换、自动采集和更新测试数据、AI写作、会员充值、订阅模式、新闻发布和实时统计报表。
 
 ## 项目地址
 
@@ -67,7 +67,6 @@ novel-plus -- 父工程
 [![点击查看大图](https://www.xxyopen.com/images/green_novel.png)](https://www.xxyopen.com/images/green_novel.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)
-[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/crawler.png)](https://www.xxyopen.com/images/resource/os/novel-plus/crawler.png)
 
 ## 演示视频
 
