@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV18e41197xs'>演示视频</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> |  👉 <a href='https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console'>特惠服务器</a>
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> |  👉 <a href='https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console'>特惠服务器</a>
 </p> 
 
 ## 项目介绍
@@ -68,10 +68,6 @@ novel-plus -- 父工程
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)
 
-## 演示视频
-
-https://www.bilibili.com/video/BV18e41197xs
-
 ## AI 功能
 
 novel-plus 5.x 已集成 Spring 官方最新发布的 Spring AI 框架，并推出多项 AI 功能：
@@ -105,26 +101,9 @@ spring:
 
 ⚠️ novel-plus 项目默认使用的都是免费 AI 模型，生成效果有限。如果对生成内容有更高的要求，建议选用付费的 AI 模型。
 
-## 增值服务
 
-👉 [了解详情](https://novel.xxyopen.com/service.htm)
 
-## 微信公众号
 
-发布最新更新动态、最新前端模版、最新爬虫规则、文档教程等。
-
-![](https://youdoc.github.io/img/qrcode_for_gh.jpg)
-
-## 赞赏支持
-
-开源项目不易，若此项目能得到你的青睐，那么你可以赞赏支持作者持续开发与维护。
-
-- 服务器的费用也是一笔开销
-- 编写更完备的文档教程
-- 发布更多前端模版和爬虫规则
-- 一杯咖啡
-
-![](https://s1.ax1x.com/2020/10/31/BUQJwq.png)
 
 ## 免责声明
 
