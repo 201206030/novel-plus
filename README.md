@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console"><img src="https://youdoc.github.io/img/tencent.jpg" alt="AD" ></a>
+    <a href="https://sx.org/c/NOVEL4"><img src="https://www.xxyopen.com/images/ad3.jpg" alt="SX.ORG" ></a>
 </p>
 <p align="center">
     <a href='https://github.com/201206030/novel-plus'><img alt="Github stars" src="https://img.shields.io/github/stars/201206030/novel-plus?logo=github"></a>
@@ -11,20 +11,20 @@
 </p>
 
 <p align="center">
-      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='http://117.72.165.13:8888'>演示站点</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a>
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV18e41197xs'>演示视频</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> |  👉 <a href='https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console'>特惠服务器</a>
 </p> 
 
 ## 项目介绍
 
 novel-plus 是一个多端（PC、WAP）阅读，功能完善的原创文学 CMS
 系统。由前台门户系统、作家后台管理系统、平台后台管理系统和爬虫管理系统等多个子系统构成，包括小说推荐、作品检索、小说排行、小说阅读、小说评论、会员中心、作家专区等功能，支持自定义多模版、可拓展的多种小说内容存储方式（内置数据库分表存储和
-TXT 文本存储）、阅读主题切换、多爬虫源自动采集和更新数据、AI写作、会员充值、订阅模式、新闻发布和实时统计报表。
+TXT 文本存储）、阅读主题切换、自动采集和更新测试数据、AI写作、会员充值、订阅模式、新闻发布和实时统计报表。
 
 ## 项目地址
 
 - 学习版：[GitHub](https://github.com/201206030/novel) ｜ [码云](https://gitee.com/novel_dev_team/novel)
   ｜ [保姆级教程](https://docs.xxyopen.com) 
-- **应用版**：[GitHub](https://github.com/201206030/novel-plus) ｜ [码云](https://gitee.com/novel_dev_team/novel-plus) ｜ [演示站点](http://117.72.165.13:8888)
+- **应用版**：[GitHub](https://github.com/201206030/novel-plus) ｜ [码云](https://gitee.com/novel_dev_team/novel-plus) 
 - 微服务版：[GitHub](https://github.com/201206030/novel-cloud) ｜ [码云](https://gitee.com/novel_dev_team/novel-cloud)
 
 ## 项目结构

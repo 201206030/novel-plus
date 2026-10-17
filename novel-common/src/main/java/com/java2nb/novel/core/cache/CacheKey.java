@@ -68,4 +68,10 @@ public interface CacheKey {
      * AI生成图片
      * */
     String AI_GEN_PIC = "aiGenPic";
+
+    /**
+     * 网站根目录地址
+     * */
+    String WEB_SITE_ROOT_URL = "websiteRootUrl";
+
 }

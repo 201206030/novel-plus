@@ -304,4 +304,9 @@ public interface BookService {
     PageBean<BookCommentReplyVO> listCommentReplyByPage(Long userId, Long commentId, int page, int pageSize);
 
     BookComment getBookComment(Long commentId);
+
+    /**
+     * 完结小说
+     * */
+    void finishBook(Long bookId, Long authorId);
 }

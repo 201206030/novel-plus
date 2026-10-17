@@ -8,6 +8,7 @@ import com.java2nb.novel.service.BookContentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.utils.Constants;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -84,8 +85,11 @@ public class BookServiceImpl implements BookService {
             if (bookIndexList.size() > 0) {
 
                 //保存小说主表
-
                 book.setCreateTime(new Date());
+                if(StringUtils.isBlank(book.getPicUrl())) {
+                    //设置默认封面图片
+                    book.setPicUrl("/images/default.gif");
+                }
                 bookMapper.insertSelective(book);
 
                 //批量保存目录和内容

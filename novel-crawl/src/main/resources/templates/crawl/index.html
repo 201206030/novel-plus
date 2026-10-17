@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>爬虫采集统计-小说精品屋</title>
+        <link rel="stylesheet" href="/css/base.css?v=1"/>
+        <link rel="stylesheet" href="/css/user.css"/>
+        <style type="text/css">
+            .stat-panel { margin: 15px 0; padding: 18px 20px; background: linear-gradient(135deg, #0c2137 0%, #081120 60%, #0b1a33 100%); border: 1px solid rgba(0, 229, 255, .25); border-radius: 10px; box-shadow: 0 0 30px rgba(0, 229, 255, .12), inset 0 0 40px rgba(0, 60, 120, .15); }
+            .stat-head { font-size: 16px; font-weight: bold; color: #dff6ff; letter-spacing: 1px; margin-bottom: 14px; }
+            .stat-head em { float: right; font-size: 12px; font-style: normal; font-weight: normal; color: rgba(143, 199, 232, .7); line-height: 24px; }
+            .stat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #00e5ff; margin-right: 8px; vertical-align: middle; box-shadow: 0 0 8px #00e5ff; animation: pulse 1.5s infinite; }
+            @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+            .kpi-card { float: left; width: 33.3%; text-align: center; padding: 10px 0; }
+            .kpi-num { font-size: 26px; font-weight: bold; font-family: Arial; color: #7df9ff; text-shadow: 0 0 12px rgba(0, 229, 255, .6); }
+            .kpi-num.kpi-top { font-size: 18px; line-height: 32px; }
+            .kpi-label { margin-top: 6px; font-size: 12px; color: #8fc7e8; }
+            .stat-body { margin-top: 10px; }
+            .stat-chart { float: left; height: 320px; }
+            #barChart { width: 60%; }
+            #pieChart { width: 38%; margin-left: 2%; }
+            /* 左侧菜单美化 */
+            .my_l { width: 168px; margin: 15px 0 0 30px; padding: 12px 0 16px; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .12); }
+            .my_l .log_list { margin: 0; }
+            .my_l li a { height: 42px; line-height: 42px; padding-left: 0; text-align: center; margin: 0 10px 8px; border-left: 3px solid transparent; border-radius: 0 8px 8px 0; color: #5c6b64; font-size: 14px; transition: all .25s ease; }
+            .my_l li a:hover { color: #2e8b62; background-color: #f2faf6; border-left-color: #8fd6b8; transform: translateX(2px); }
+            .my_l li .on { background: linear-gradient(90deg, #e9f7f0, #f6fbf8); border-left: 3px solid #3eaf7c; color: #2c8a61; font-weight: 600; box-shadow: inset 0 0 0 1px rgba(62, 175, 124, .1); }
+            .my_l li .on:hover { transform: none; background: linear-gradient(90deg, #e9f7f0, #f6fbf8); }
+        </style>
+    </head>
+</head>
+<body class="">
+
+<div th:replace="crawl/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+
+            <ul class="log_list">
+                <li><a class="link_1" href="/crawl/crawlSource_list.html">爬虫源管理</a></li>
+                <li><a class="link_1" href="/crawl/crawlSingleTask_list.html">单本采集管理</a></li>
+                <li><a class="link_1" href="/crawl/crawlSource_test.html" target="_blank">规则测试</a></li>
+            </ul>
+
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+
+                <div class="stat-panel cf">
+                    <div class="stat-head"><span class="stat-dot"></span>爬虫源采集章节数统计<em>REAL-TIME · 每10秒自动刷新</em></div>
+                    <div class="stat-kpi cf">
+                        <div class="kpi-card"><p class="kpi-num" id="kpiSource">0</p><p class="kpi-label">爬虫源总数</p></div>
+                        <div class="kpi-card"><p class="kpi-num" id="kpiChapter">0</p><p class="kpi-label">章节总数</p></div>
+                        <div class="kpi-card"><p class="kpi-num kpi-top" id="kpiTop">-</p><p class="kpi-label">采集最多爬虫源</p></div>
+                    </div>
+                    <div class="stat-body cf">
+                        <div class="stat-chart" id="barChart"></div>
+                        <div class="stat-chart" id="pieChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js" type="text/javascript"></script>
+<script src="/javascript/header.js" type="text/javascript"></script>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    let isUpdate = false;
+    let barChart = null;
+    let pieChart = null;
+
+    search();
+    setInterval(function () {
+        search();
+    }, 10000);
+
+    function search() {
+
+        $.ajax({
+            type: "get",
+            url: "/crawl/listCrawlByPage",
+            data: {'curr': 1, 'limit': 100},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var crawlSourceList = data.data.list;
+                    if (crawlSourceList.length > 0) {
+                        renderStats(crawlSourceList);
+                    }
+
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                } else if (!isUpdate) {
+                    layer.alert(data.msg);
+                }
+                isUpdate = true;
+
+            },
+            error: function () {
+                if (!isUpdate) {
+                    layer.alert('网络异常');
+                }
+                isUpdate = true;
+            }
+        })
+
+    }
+
+    // 初始化 ECharts 实例
+    function initChart() {
+        if (typeof echarts === 'undefined') {
+            return;
+        }
+        barChart = echarts.init(document.getElementById('barChart'));
+        pieChart = echarts.init(document.getElementById('pieChart'));
+        window.addEventListener('resize', function () {
+            barChart.resize();
+            pieChart.resize();
+        });
+    }
+
+    // 千分位格式化
+    function formatNum(num) {
+        return (num || 0).toString().replace(/\B(?=(\d{3})+$)/g, ',');
+    }
+
+    // 根据列表数据渲染统计图
+    function renderStats(crawlSourceList) {
+        if (!barChart) {
+            initChart();
+            if (!barChart) {
+                return;
+            }
+        }
+        // chapterCount 在 JSON 中是字符串（Long 序列化为 String），统一转成 number 再参与累加和比较
+        for (var m = 0; m < crawlSourceList.length; m++) {
+            crawlSourceList[m].chapterCount = Number(crawlSourceList[m].chapterCount) || 0;
+        }
+        // 从100条中筛选章节数最多的前10条，后续图表统计均基于这10条计算
+        var top10Desc = crawlSourceList.slice().sort(function (a, b) {
+            return (b.chapterCount || 0) - (a.chapterCount || 0);
+        }).slice(0, 10);
+        // 反转成升序展示，柱状图更有阶梯感
+        var top10 = top10Desc.slice().reverse();
+        var names = [];
+        var counts = [];
+        var pieData = [];
+        var total = 0;
+        for (var j = 0; j < top10.length; j++) {
+            var count = top10[j].chapterCount || 0;
+            total += count;
+            names.push(top10[j].sourceName);
+            counts.push(count);
+            // 饼图只统计章节数不为0的爬虫源，避免空数据干扰占比
+            if (count > 0) {
+                pieData.push({name: top10[j].sourceName, value: count});
+            }
+        }
+
+        // KPI 卡片
+        $("#kpiSource").text(crawlSourceList.length);
+        $("#kpiChapter").text(formatNum(total));
+        var best = top10Desc.length > 0 ? top10Desc[0] : null;
+        $("#kpiTop").text(best ? best.sourceName + '（' + formatNum(best.chapterCount) + '章）' : '-');
+
+        var tooltipCfg = {
+            backgroundColor: 'rgba(6, 24, 44, .92)',
+            borderColor: '#00e5ff',
+            textStyle: {color: '#dff6ff'}
+        };
+
+        // 柱状图：渐变 + 发光 + 弹性错峰入场动画
+        barChart.setOption({
+            backgroundColor: 'transparent',
+            tooltip: $.extend({trigger: 'axis', formatter: function (params) {
+                var p = params[0];
+                return '<b>' + p.name + '</b><br/>采集章节：<span style="color:#00e5ff;font-weight:bold">' + formatNum(p.value) + '</span> 章';
+            }}, tooltipCfg),
+            grid: {left: 60, right: 25, top: 40, bottom: 70},
+            xAxis: {
+                type: 'category',
+                data: names,
+                axisLine: {lineStyle: {color: 'rgba(0, 229, 255, .4)'}},
+                axisTick: {show: false},
+                axisLabel: {color: '#8fc7e8', interval: 0, rotate: names.length > 4 ? 30 : 0, fontSize: 11, formatter: function (v) { return v.length > 8 ? v.substring(0, 8) + '...' : v; }}
+            },
+            yAxis: {
+                type: 'value',
+                name: '章节数',
+                nameTextStyle: {color: '#8fc7e8'},
+                axisLabel: {color: '#8fc7e8'},
+                splitLine: {lineStyle: {color: 'rgba(0, 229, 255, .1)', type: 'dashed'}}
+            },
+            series: [{
+                name: '采集章节数',
+                type: 'bar',
+                data: counts,
+                barWidth: '45%',
+                label: {show: true, position: 'top', color: '#00e5ff', fontWeight: 'bold', formatter: function (p) { return formatNum(p.value); }},
+                itemStyle: {
+                    borderRadius: [4, 4, 0, 0],
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        {offset: 0, color: '#00e5ff'},
+                        {offset: 0.6, color: '#2f80ff'},
+                        {offset: 1, color: '#123a8f'}
+                    ]),
+                    shadowColor: 'rgba(0, 229, 255, .6)',
+                    shadowBlur: 12
+                },
+                animationDuration: 1500,
+                animationDelay: function (idx) { return idx * 150; },
+                animationEasing: 'elasticOut'
+            }]
+        }, true);
+
+        // 饼图：发光霓虹环形玫瑰图（环形居中 + 图例置底，避免文字与扇区重叠）
+        pieChart.setOption({
+            backgroundColor: 'transparent',
+            color: ['#00e5ff', '#2f80ff', '#7b5cff', '#ff5ca8', '#ffb547', '#3ee6a0', '#ff7a5c', '#5cc8ff'],
+            tooltip: $.extend({trigger: 'item', formatter: '{b}<br/>采集章节：<b>{c}</b> 章（{d}%）'}, tooltipCfg),
+            legend: {type: 'scroll', orient: 'vertical', right: 0, top: 'middle', icon: 'circle', itemWidth: 8, itemHeight: 8, itemGap: 8, padding: 0, textStyle: {color: '#8fc7e8', fontSize: 11}, formatter: function (name) { return name.length > 6 ? name.substring(0, 6) + '...' : name; }},
+            title: {
+                text: formatNum(total),
+                subtext: '总章节数',
+                left: '32%', top: '41%',
+                textAlign: 'center',
+                textVerticalAlign: 'middle',
+                itemGap: 6,
+                textStyle: {color: '#00e5ff', fontSize: 18, fontWeight: 'bold', align: 'center'},
+                subtextStyle: {color: '#8fc7e8', fontSize: 12, align: 'center'}
+            },
+            series: [{
+                name: '章节占比',
+                type: 'pie',
+                radius: ['30%', '50%'],
+                center: ['32%', '48%'],
+                avoidLabelOverlap: true,
+                itemStyle: {borderColor: '#0a1a2f', borderWidth: 3, shadowBlur: 20, shadowColor: 'rgba(0, 229, 255, .4)'},
+                label: {show: false},
+                emphasis: {label: {show: true, position: 'center', color: '#fff', fontSize: 13, lineHeight: 20, formatter: '{b}\n{d}%'}},
+                data: pieData,
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animationDelay: function (idx) { return idx * 100; }
+            }]
+        }, true);
+    }
+</script>
+</html>

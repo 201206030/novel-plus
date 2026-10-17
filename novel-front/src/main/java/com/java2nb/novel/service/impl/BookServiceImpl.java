@@ -1,5 +1,6 @@
 package com.java2nb.novel.service.impl;
 
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
@@ -411,6 +412,9 @@ public class BookServiceImpl implements BookService {
             throw new BusinessException(ResponseStatus.HAS_COMMENTS);
         }
         //增加评论
+        if(comment.getCommentContent() != null){
+            comment.setCommentContent(SensitiveWordHelper.replace(comment.getCommentContent()));
+        }
         comment.setCreateUserId(userId);
         comment.setCreateTime(new Date());
         bookCommentMapper.insertSelective(comment);
@@ -507,7 +511,7 @@ public class BookServiceImpl implements BookService {
         PageHelper.startPage(page, pageSize);
 
         SelectStatementProvider selectStatement = select(id, bookName, picUrl, catName, visitCount, yesterdayBuy,
-            lastIndexUpdateTime, updateTime, wordCount, lastIndexName, status)
+            lastIndexUpdateTime, updateTime, wordCount, lastIndexName, bookStatus, status)
             .from(book)
             .where(authorId, isEqualTo(author.getId()))
             .orderBy(BookDynamicSqlSupport.createTime.descending())
@@ -895,6 +899,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addBookCommentReply(Long userId, BookCommentReply commentReply) {
         //增加回复
+        if(commentReply.getReplyContent() != null){
+            commentReply.setReplyContent(SensitiveWordHelper.replace(commentReply.getReplyContent()));
+        }
         commentReply.setCreateUserId(userId);
         commentReply.setCreateTime(new Date());
         bookCommentReplyMapper.insertSelective(commentReply);
@@ -917,6 +924,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookComment getBookComment(Long commentId) {
         return bookCommentMapper.selectByPrimaryKey(commentId).orElse(null);
+    }
+
+    @Override
+    public void finishBook(Long bookId, Long authorId) {
+        bookMapper.update(update(book)
+            .set(bookStatus)
+            .equalTo((byte) 1)
+            .set(updateTime)
+            .equalTo(new Date())
+            .where(id, isEqualTo(bookId))
+            .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
     }
 
 

@@ -2,6 +2,8 @@ package com.java2nb.novel.controller.page;
 
 import com.java2nb.novel.controller.BaseController;
 import com.java2nb.novel.core.bean.UserDetails;
+import com.java2nb.novel.core.cache.CacheKey;
+import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.*;
@@ -43,6 +45,8 @@ public class PageController extends BaseController {
 
     private final Map<String, BookContentService> bookContentServiceMap;
 
+    private final CacheService cacheService;
+
     @RequestMapping("{url}.html")
     public String module(@PathVariable("url") String url) {
         return url;
@@ -80,7 +84,10 @@ public class PageController extends BaseController {
      */
     @SneakyThrows
     @RequestMapping(path = {"/", "/index", "/index.html"})
-    public String index(Model model) {
+    public String index(HttpServletRequest request, Model model) {
+        // 将网站根目录地址保存起来
+        String rootUrl = getRootUrl(request);
+        cacheService.set(CacheKey.WEB_SITE_ROOT_URL, rootUrl);
         //加载小说首页小说基本信息线程
         CompletableFuture<Map<String, List<BookSettingVO>>> bookCompletableFuture = CompletableFuture.supplyAsync(
             bookService::listBookSettingVO, threadPoolExecutor);
@@ -146,7 +153,7 @@ public class PageController extends BaseController {
      */
     @RequestMapping("book/bookclass.html")
     public String bookClass() {
-        return "book/bookclass";
+        return ThreadLocalUtil.getTemplateDir() + "book/bookclass";
     }
 
     /**
@@ -357,6 +364,22 @@ public class PageController extends BaseController {
             model.addAttribute("author", author);
         }
         return "author/register";
+    }
+
+    private String getRootUrl(HttpServletRequest request) {
+        String scheme = request.getScheme();          // http 或 https
+        String serverName = request.getServerName();  // ibiqugu.net
+        int serverPort = request.getServerPort();     // 80 / 443 / 8080
+
+        StringBuilder root = new StringBuilder();
+        root.append(scheme).append("://").append(serverName);
+
+        if (("http".equals(scheme) && serverPort != 80)
+
+            || ("https".equals(scheme) && serverPort != 443)) {
+            root.append(":").append(serverPort);
+        }
+        return root.toString();
     }
 
 

@@ -141,7 +141,7 @@
             <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'">
                 <div style=";color: #444;" th:utext="'作者：'+ ${book.authorName}"></div>
             </a>
-            <a th:href="'/book/book_ranking.html?catId='+${book.catId}">
+            <a th:href="'/book/bookclass.html?catId='+${book.catId}">
                 <div style="margin-top: 5px;color: #444;" th:text="'类别：'+ ${book.catName}"></div>
             </a>
             <div style="margin-top: 5px;color: #444;" th:text="'状态：'+ ${book.bookStatus==0?'连载':'完结'}"></div>
@@ -350,7 +350,7 @@
     }
 
     function searchBooks(keyword) {
-        window.location.href = "/book/book_ranking.html?keyword=" + encodeURI(keyword);
+        window.location.href = "/book/bookclass.html?keyword=" + encodeURI(keyword);
     }
 
     $.post("/book/addVisitCount", {"bookId": $("#bookIdHidden").val()}, function () {
