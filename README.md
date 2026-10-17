@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV18e41197xs'>演示视频</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> |  👉 <a href='https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console'>特惠服务器</a>
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> |  👉 <a href='https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console'>特惠服务器</a>
 </p> 
 
 ## 项目介绍
@@ -67,10 +67,6 @@ novel-plus -- 父工程
 [![点击查看大图](https://www.xxyopen.com/images/green_novel.png)](https://www.xxyopen.com/images/green_novel.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)
-
-## 演示视频
-
-https://www.bilibili.com/video/BV18e41197xs
 
 ## AI 功能
 
