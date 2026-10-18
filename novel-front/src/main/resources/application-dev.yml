@@ -2,6 +2,10 @@ spring:
   config:
     import: classpath:application-common-dev.yml
 
+jwt:
+  # Development only; production requires an explicit JWT_SECRET.
+  secret: ${JWT_SECRET:novel!#20191230}
+
 
 pic:
   save:
