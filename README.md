@@ -58,6 +58,14 @@ novel-plus -- 父工程
 | Thymeleaf           | 模板引擎                
 | Layui               | 前端 UI 框架            
 
+## 前台 JWT 签名密钥
+
+启动 `novel-front` 前，通过 `JWT_SECRET` 提供 Base64 编码的随机密钥（至少 64 字节），不要将密钥提交到仓库：
+
+```bash
+export JWT_SECRET="$(openssl rand -base64 64)"
+```
+
 ## 项目截图
 
 ### 绿色主题模版

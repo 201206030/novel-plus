@@ -7,7 +7,7 @@ spring:
     include: website,alipay,oss
 
 jwt:
-  secret: novel!#20191230
+  secret: ${JWT_SECRET}
   expiration: 604800
 
 #缓存管理密码
