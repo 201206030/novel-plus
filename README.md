@@ -60,11 +60,14 @@ novel-plus -- 父工程
 
 ## 前台 JWT 签名密钥
 
-启动 `novel-front` 前，通过 `JWT_SECRET` 提供 Base64 编码的随机密钥（至少 64 字节），不要将密钥提交到仓库：
+生产安装包的启动脚本会启用 `prod` 环境。解压 `novel-front.zip` 后，在启动前配置独立的 JWT 签名密钥：
 
 ```bash
-export JWT_SECRET="$(openssl rand -base64 64)"
+export JWT_SECRET="$(openssl rand -base64 64 | tr -d '\n')"
+bin/novel-front.sh start
 ```
+
+建议生成至少 64 字节的随机密钥，只生成一次并安全保存，在重启和同一部署的多个实例间复用。`prod` 环境未设置或仅设置空白 `JWT_SECRET` 时，会记录明确错误并终止应用启动。默认 `dev` 环境保留原有开发配置，无需额外设置；不要将开发环境用于生产。更换密钥会使原 token 失效。
 
 ## 项目截图
 
