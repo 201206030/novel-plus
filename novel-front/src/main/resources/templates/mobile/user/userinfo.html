@@ -160,7 +160,7 @@
             href="/user/read_history.html">
 
         <div
-                style="background-color:#fafafa;text-align: left;padding:30px 10px 50px;color: #000;font-size: 16px">
+                style="background-color:#fafafa;text-align: left;padding:30px 10px;color: #000;font-size: 16px">
             <div style="float: left;">
                 <svg t="1693621172669" class="icon" viewBox="0 0 1024 1024" version="1.1"
                      xmlns="http://www.w3.org/2000/svg"
@@ -191,6 +191,21 @@
         </blockquote>
     </a>-->
 
+
+    <a
+            href="/user/setup.html">
+
+        <div
+                style="background-color:#fafafa;text-align: left;padding:30px 10px 50px;color: #000;font-size: 16px">
+            <div style="float: left;">
+                <i style="font-size: 25px;color:#3eaf7c" class="layui-icon">&#xe716;</i>
+            </div>
+            <div style="float: left; margin-left: 20px">账号设置</div>
+            <div style="float: right; margin-right: 20px"><i style="font-size: 14px;color:#666"
+                                                             class="layui-icon">&#xe602;</i>
+            </div>
+        </div>
+    </a>
 
     <a
             href="javascript:logout()">
@@ -231,11 +246,11 @@
                     $("#my_name").html(data.data.username);
                 }
 
-                if (data.data.userSex === '0') {
+                if (String(data.data.userSex) === '0') {
                     $("#boyIcon").css("display", "inline")
                 }
 
-                if (data.data.userSex === '1') {
+                if (String(data.data.userSex) === '1') {
                     $("#girlIcon").css("display", "inline")
                 }
 

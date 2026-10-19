@@ -140,6 +140,38 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 账号设置页
+     */
+    @RequestMapping("user/setup.html")
+    public String setup() {
+        return ThreadLocalUtil.getTemplateDir() + "user/setup";
+    }
+
+    /**
+     * 修改昵称页
+     */
+    @RequestMapping("user/set_name.html")
+    public String setName() {
+        return ThreadLocalUtil.getTemplateDir() + "user/set_name";
+    }
+
+    /**
+     * 修改性别页
+     */
+    @RequestMapping("user/set_sex.html")
+    public String setSex() {
+        return ThreadLocalUtil.getTemplateDir() + "user/set_sex";
+    }
+
+    /**
+     * 修改密码页
+     */
+    @RequestMapping("user/set_password.html")
+    public String setPassword() {
+        return ThreadLocalUtil.getTemplateDir() + "user/set_password";
+    }
+
+    /**
      * 充值页
      */
     @RequestMapping("pay/index.html")
