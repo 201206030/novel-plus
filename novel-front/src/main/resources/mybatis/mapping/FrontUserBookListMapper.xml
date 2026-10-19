@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontUserBookListMapper">
+
+    <insert id="insertBookList" parameterType="com.java2nb.novel.entity.UserBookList"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into user_book_list (user_id, list_name, description, book_count, status, create_time, update_time)
+        values (#{userId}, #{listName}, #{description}, #{bookCount}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateBookList" parameterType="com.java2nb.novel.entity.UserBookList">
+        update user_book_list
+        set list_name = #{listName},
+            description = #{description},
+            update_time = #{updateTime}
+        where id = #{id}
+    </update>
+
+    <update id="softDeleteById">
+        update user_book_list
+        set status = 0, update_time = now()
+        where id = #{id}
+    </update>
+
+    <update id="addBookCount">
+        update user_book_list
+        set book_count = case when book_count + #{delta} &lt; 0 then 0 else book_count + #{delta} end,
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <select id="getById" resultType="com.java2nb.novel.vo.BookListVO">
+        select t1.id, t1.user_id, t1.list_name, t1.description, t1.book_count, t1.status,
+               t1.create_time, t1.update_time, t2.username create_user_name, t2.user_photo create_user_photo
+        from user_book_list t1
+        inner join user t2 on t1.user_id = t2.id
+        where t1.id = #{id}
+    </select>
+
+    <select id="countByName" resultType="int">
+        select count(1)
+        from user_book_list
+        where user_id = #{userId}
+          and list_name = #{listName}
+          and status = 1
+        <if test="excludeId != null">
+            and id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="listMine" resultType="com.java2nb.novel.vo.BookListVO">
+        select t1.id, t1.user_id, t1.list_name, t1.description, t1.book_count, t1.status,
+               t1.create_time, t1.update_time, t2.username create_user_name, t2.user_photo create_user_photo
+        from user_book_list t1
+        inner join user t2 on t1.user_id = t2.id
+        where t1.user_id = #{userId}
+          and t1.status = 1
+        order by t1.update_time desc
+    </select>
+
+    <select id="listPlaza" resultType="com.java2nb.novel.vo.BookListVO">
+        select t1.id, t1.user_id, t1.list_name, t1.description, t1.book_count, t1.status,
+               t1.create_time, t1.update_time, t2.username create_user_name, t2.user_photo create_user_photo
+        from user_book_list t1
+        inner join user t2 on t1.user_id = t2.id
+        where t1.status = 1
+        order by t1.book_count desc, t1.create_time desc
+    </select>
+
+    <insert id="insertItem" parameterType="com.java2nb.novel.entity.UserBookListItem"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into user_book_list_item (list_id, book_id, remark, create_time)
+        values (#{listId}, #{bookId}, #{remark}, #{createTime})
+    </insert>
+
+    <delete id="deleteItem">
+        delete from user_book_list_item
+        where list_id = #{listId} and book_id = #{bookId}
+    </delete>
+
+    <select id="existsItem" resultType="int">
+        select count(1)
+        from user_book_list_item
+        where list_id = #{listId} and book_id = #{bookId}
+    </select>
+
+    <select id="listItems" resultType="com.java2nb.novel.vo.BookListItemVO">
+        select t1.book_id, t1.remark, t1.create_time, t2.book_name, t2.author_name, t2.pic_url,
+               t2.cat_name, t2.book_status
+        from user_book_list_item t1
+        inner join book t2 on t1.book_id = t2.id
+        where t1.list_id = #{listId}
+        order by t1.create_time desc
+    </select>
+
+</mapper>

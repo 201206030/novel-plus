@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'书单详情_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        .bl-head {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px;
+        }
+
+        .bl-head .bl-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            line-height: 24px;
+        }
+
+        .bl-head .bl-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .bl-head .bl-meta .bl-count {
+            color: #3eaf7c;
+            margin-right: 10px;
+        }
+
+        .bl-head .bl-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+            line-height: 20px;
+            white-space: pre-wrap;
+        }
+
+        .bl-head .bl-edit-btn {
+            float: right;
+            font-size: 13px;
+            color: #3eaf7c;
+            border: 1px solid rgba(62, 175, 124, 0.35);
+            background: rgba(62, 175, 124, 0.08);
+            border-radius: 12px;
+            padding: 3px 12px;
+        }
+
+        .bl-head .bl-name-wrap::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .bl-wrap {
+            padding: 10px 15px 30px 15px;
+        }
+
+        .bl-book-item {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+            display: flex;
+        }
+
+        .bl-book-item .bl-cover {
+            width: 70px;
+            height: 92px;
+            object-fit: cover;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            flex-shrink: 0;
+        }
+
+        .bl-book-item .bl-cover-blank {
+            width: 70px;
+            height: 92px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            color: #ccc;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bl-book-item .bl-info {
+            flex: 1;
+            margin-left: 12px;
+            overflow: hidden;
+        }
+
+        .bl-book-item .bl-info .bl-book-name {
+            font-size: 15px;
+            color: #000;
+            font-weight: bold;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bl-book-item .bl-info .bl-author {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .bl-book-item .bl-info .bl-remark {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            background-color: #fafafa;
+            border-radius: 4px;
+            padding: 5px 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: pre-wrap;
+        }
+
+        .bl-book-item .bl-info .bl-ops {
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .bl-empty {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            padding: 60px 0;
+        }
+
+        .bl-form {
+            padding: 20px 20px 0 20px;
+        }
+
+        .bl-form .layui-form-item {
+            margin-bottom: 12px;
+        }
+
+        .bl-form input[name=listName] {
+            height: 38px;
+            line-height: 38px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 0 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .bl-form textarea[name=description] {
+            height: 80px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 8px 10px;
+            width: 100%;
+            box-sizing: border-box;
+            resize: none;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body">
+
+    <input type="hidden" id="listIdHidden" th:value="${listId}">
+
+    <div style="height: 50px;line-height: 50px;text-align: center"
+         class="layui-header header header-doc  layui-bg-cyan">
+
+        <div style="width:10%;float: left;margin-left: 10px">
+            <a href="javascript:history.go(-1)">
+                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+        </div>
+        <b class="layui-icon">书单详情</b>
+        <div style="width:10%;float: right;margin-right: 10px"><a href="/">
+            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
+        </a>
+        </div>
+    </div>
+
+    <div class="bl-head" id="blHead" style="display: none">
+        <div class="bl-name-wrap">
+            <a href="/booklist/mine.html" class="bl-edit-btn" id="editBtn" style="display: none">编辑书单</a>
+            <div class="bl-name" id="blName"></div>
+        </div>
+        <div class="bl-meta"><span class="bl-count" id="blCount"></span><span id="blAuthor"></span></div>
+        <div class="bl-desc" id="blDesc" style="display: none"></div>
+    </div>
+
+    <div class="bl-wrap">
+        <div id="blList"></div>
+        <div id="blEmpty" class="bl-empty" style="display: none">书单空空如也</div>
+    </div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+<script>
+    var listId = $("#listIdHidden").val();
+    var submitting = false;
+    var bookListData = null;
+
+    loadDetail();
+
+    //加载书单详情
+    function loadDetail() {
+        var loadIndex = layer.load(2);
+        $.ajax({
+            type: "get",
+            url: "/bookList/detail",
+            data: {'listId': listId},
+            dataType: "json",
+            success: function (data) {
+                layer.close(loadIndex);
+                if (data.code == 200) {
+                    bookListData = data.data;
+                    renderDetail(data.data);
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.msg(data.msg, {
+                        icon: 2, time: 1500, end: function () {
+                            location.href = '/booklist/plaza.html';
+                        }
+                    });
+                }
+
+            },
+            error: function () {
+                layer.close(loadIndex);
+                layer.alert('网络异常');
+            }
+        })
+    }
+
+    function renderDetail(bookList) {
+        $("#blHead").show();
+        $("#blName").text(bookList.listName);
+        $("#blCount").text(bookList.bookCount + '本书');
+        $("#blAuthor").text('by ' + (bookList.createUserName || '匿名') + ' · ' + (bookList.createTime || ''));
+        if (bookList.description) {
+            $("#blDesc").text(bookList.description).show();
+        } else {
+            $("#blDesc").hide();
+        }
+        //仅书主显示编辑/移除入口
+        var isMyList = bookList.isMyList === true;
+        $("#editBtn").toggle(isMyList);
+
+        var items = bookList.items || [];
+        var html = "";
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            html += '<div class="bl-book-item">';
+            if (item.picUrl) {
+                html += '<img class="bl-cover" src="' + escapeBlAttr(item.picUrl) + '" alt="' + escapeBlAttr(item.bookName) + '"/>';
+            } else {
+                html += '<div class="bl-cover-blank">无封面</div>';
+            }
+            html += '<div class="bl-info">';
+            html += '<a href="/book/' + item.bookId + '.html" class="bl-book-name">' + escapeBlHtml(item.bookName) + '</a>';
+            html += '<div class="bl-author">' + escapeBlHtml(item.authorName || '') + ' · '
+                + escapeBlHtml(item.catName || '')
+                + (item.bookStatus == 1 ? ' · 已完结' : ' · 连载中') + '</div>';
+            if (item.remark) {
+                html += '<div class="bl-remark">' + escapeBlHtml(item.remark) + '</div>';
+            }
+            html += '<div class="bl-ops">';
+            html += '<a class="layui-btn layui-btn-xs" href="/book/' + item.bookId + '.html">去看书</a>';
+            if (isMyList) {
+                html += '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="removeBook(' + item.bookId + ', this)">移除</button>';
+            }
+            html += '</div></div></div>';
+        }
+        $("#blList").html(html);
+        $("#blEmpty").toggle(items.length == 0);
+    }
+
+    //编辑书单（名称与简介）
+    $("#editBtn").click(function () {
+        if (!bookListData) {
+            return;
+        }
+        var html = '<div class="bl-form">'
+            + '<div class="layui-form-item"><input type="text" name="listName" maxlength="50" placeholder="书单名（必填，50字以内）" value="' + escapeBlAttr(bookListData.listName) + '"></div>'
+            + '<div class="layui-form-item"><textarea name="description" maxlength="300" placeholder="书单简介（选填，300字以内）">' + escapeBlHtml(bookListData.description || '') + '</textarea></div>'
+            + '</div>';
+        layer.open({
+            type: 1,
+            title: '编辑书单',
+            area: ['90%', 'auto'],
+            content: html,
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                submitEdit(index, layero);
+            }
+        });
+    });
+
+    //提交编辑（防重复提交）
+    function submitEdit(layerIndex, layero) {
+        if (submitting) {
+            return;
+        }
+        var listName = $.trim(layero.find('input[name=listName]').val());
+        if (listName.length == 0 || listName.length > 50) {
+            layer.alert('书单名不能为空且不能超过50个字！');
+            return;
+        }
+        var description = $.trim(layero.find('textarea[name=description]').val());
+        if (description.length > 300) {
+            layer.alert('书单简介不能超过300个字！');
+            return;
+        }
+        submitting = true;
+        var $yesBtn = layero.find('.layui-layer-btn0');
+        $yesBtn.addClass('layui-btn-disabled').css('pointer-events', 'none').text('提交中...');
+        $.ajax({
+            type: "POST",
+            url: "/bookList/update",
+            data: {'listId': listId, 'listName': listName, 'description': description},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    layer.close(layerIndex);
+                    loadDetail();
+                } else if (data.code == 1001) {
+                    layer.close(layerIndex);
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            },
+            complete: function () {
+                submitting = false;
+                $yesBtn.removeClass('layui-btn-disabled').css('pointer-events', '').text('确定');
+            }
+        })
+    }
+
+    //从书单移除书籍
+    function removeBook(bookId, btn) {
+        layer.confirm('确定将该书从书单中移除吗？', {
+            btn: ['移除', '取消'],
+            title: '移除书籍'
+        }, function (index) {
+            layer.close(index);
+            $(btn).addClass('layui-btn-disabled').css('pointer-events', 'none');
+            var loadIndex = layer.load(2);
+            $.ajax({
+                type: "POST",
+                url: "/bookList/removeBook",
+                data: {'listId': listId, 'bookId': bookId},
+                dataType: "json",
+                success: function (data) {
+                    layer.close(loadIndex);
+                    if (data.code == 200) {
+                        loadDetail();
+                    } else if (data.code == 1001) {
+                        //未登录
+                        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                    } else {
+                        layer.alert(data.msg);
+                        $(btn).removeClass('layui-btn-disabled').css('pointer-events', '');
+                    }
+
+                },
+                error: function () {
+                    layer.close(loadIndex);
+                    layer.alert('网络异常');
+                    $(btn).removeClass('layui-btn-disabled').css('pointer-events', '');
+                }
+            })
+        });
+    }
+
+    //HTML转义，防止内容破坏页面结构
+    function escapeBlHtml(str) {
+        if (str == null) {
+            return '';
+        }
+        return $('<div></div>').text(String(str)).html();
+    }
+
+    //属性值转义
+    function escapeBlAttr(str) {
+        return escapeBlHtml(str).replace(/"/g, '&quot;');
+    }
+</script>
+
+
+</body>
+</html>

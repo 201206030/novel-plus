@@ -179,6 +179,31 @@ public class PageController extends BaseController {
         return ThreadLocalUtil.getTemplateDir() + "pay/index.html";
     }
 
+    /**
+     * 书单广场页
+     */
+    @RequestMapping("booklist/plaza.html")
+    public String bookListPlaza() {
+        return ThreadLocalUtil.getTemplateDir() + "booklist/plaza";
+    }
+
+    /**
+     * 我的书单页
+     */
+    @RequestMapping("booklist/mine.html")
+    public String bookListMine() {
+        return ThreadLocalUtil.getTemplateDir() + "booklist/mine";
+    }
+
+    /**
+     * 书单详情页
+     */
+    @RequestMapping("booklist/detail-{listId}.html")
+    public String bookListDetail(@PathVariable("listId") Long listId, Model model) {
+        model.addAttribute("listId", listId);
+        return ThreadLocalUtil.getTemplateDir() + "booklist/detail";
+    }
+
 
     /**
      * 作品页

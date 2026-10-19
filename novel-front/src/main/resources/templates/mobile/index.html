@@ -91,6 +91,36 @@
             white-space: pre-wrap;
         }
 
+        /* 书单广场入口条 */
+        .bl-entry {
+            display: block;
+            background-color: #fff;
+            border: 1px solid rgba(62, 175, 124, 0.35);
+            border-radius: 6px;
+            padding: 12px 15px;
+            color: #000;
+            font-size: 15px;
+        }
+
+        .bl-entry .layui-icon {
+            font-size: 20px;
+            color: #3eaf7c;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        .bl-entry .bl-entry-sub {
+            color: #999;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .bl-entry .bl-entry-go {
+            float: right;
+            color: #3eaf7c;
+            font-size: 13px;
+        }
+
     </style>
 
 
@@ -139,6 +169,13 @@
 
 </div>
 <div style="height: 1px" class="layui-col-lg1"></div>
+<div style="padding: 0 2% 10px 2%">
+    <a href="/booklist/plaza.html" class="bl-entry">
+        <i class="layui-icon">&#xe60a;</i>书单广场
+        <span class="bl-entry-sub">看看大家都在推什么书</span>
+        <span class="bl-entry-go">去浏览 <i class="layui-icon" style="font-size:13px;">&#xe602;</i></span>
+    </a>
+</div>
 <div class="layui-collapse layui-col-lg10">
     <div class="layui-colla-item">
         <blockquote class="layui-elem-quote" style="text-align: left;font-size: 16px">

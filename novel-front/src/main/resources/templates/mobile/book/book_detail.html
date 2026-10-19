@@ -102,6 +102,38 @@
 
         }
 
+        /* 加书单弹层的书单单选行 */
+        .bl-list-radio {
+            display: block;
+            padding: 10px 12px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .bl-list-radio.checked {
+            border-color: #3eaf7c;
+            background: rgba(62, 175, 124, 0.08);
+        }
+
+        .bl-list-radio input {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .bl-list-radio .bl-list-name {
+            vertical-align: middle;
+        }
+
+        .bl-list-radio .bl-list-count {
+            float: right;
+            color: #999;
+            font-size: 12px;
+            line-height: 20px;
+        }
+
     </style>
 
 
@@ -163,6 +195,10 @@
         <button type="button" id="cFavs" onclick="addInShell()"
                 style="border: 1px solid #3eaf7c;color: #3eaf7c;background-color:#fff!important"
                 class="layui-btn layui-btn-sm layui-btn-radius ">加入书架
+        </button>
+        <button type="button" onclick="openAddToList()"
+                style="border: 1px solid #3eaf7c;color: #3eaf7c;background-color:#fff!important"
+                class="layui-btn layui-btn-sm layui-btn-radius">加书单
         </button>
 
         <!--
@@ -530,6 +566,129 @@
     function toggleCommentLike(commentId) {
         toggleLike(commentId, "/book/toggleCommentLike", "likeCount");
     }
+
+    //加书单 start -----------------------------------------------------------------
+    var addToListSubmitting = false;
+
+    //弹出加书单面板：选择书单+推荐语
+    function openAddToList() {
+        if (!isLogin) {
+            location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+            return;
+        }
+        var loadIndex = layer.load(2);
+        $.ajax({
+            type: "get",
+            url: "/bookList/mine",
+            data: {'curr': 1, 'limit': 200},
+            dataType: "json",
+            success: function (data) {
+                layer.close(loadIndex);
+                if (data.code == 200) {
+                    var lists = data.data.list;
+                    if (!lists || lists.length == 0) {
+                        layer.confirm('你还没有创建书单，前往创建？', {
+                            title: '加书单'
+                        }, function (index) {
+                            layer.close(index);
+                            location.href = '/booklist/mine.html';
+                        });
+                        return;
+                    }
+                    renderAddToListPanel(lists);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.close(loadIndex);
+                layer.alert('网络异常');
+            }
+        })
+    }
+
+    function renderAddToListPanel(lists) {
+        var html = '<div style="padding:10px 15px;max-height:320px;overflow-y:auto;">';
+        for (var i = 0; i < lists.length; i++) {
+            var item = lists[i];
+            html += '<label class="bl-list-radio" data-id="' + item.id + '">';
+            html += '<input type="radio" name="blListRadio" value="' + item.id + '">';
+            html += '<span class="bl-list-name">' + escapeBlHtml(item.listName) + '</span>';
+            html += '<span class="bl-list-count">' + item.bookCount + '本</span></label>';
+        }
+        html += '<textarea id="blRemark" class="layui-textarea" style="margin-top:10px;height:60px;" maxlength="100" placeholder="推荐语（选填，100字以内）"></textarea>';
+        html += '</div>';
+        layer.open({
+            type: 1,
+            title: '加入到我的书单',
+            area: ['92%', 'auto'],
+            content: html,
+            btn: ['加入', '取消'],
+            success: function (layero) {
+                layero.on('click', '.bl-list-radio', function () {
+                    layero.find('.bl-list-radio').removeClass('checked');
+                    $(this).addClass('checked');
+                    $(this).find('input').prop('checked', true);
+                });
+            },
+            yes: function (index, layero) {
+                submitAddToList(index, layero);
+            }
+        });
+    }
+
+    //提交加书单（防重复提交）
+    function submitAddToList(layerIndex, layero) {
+        if (addToListSubmitting) {
+            return;
+        }
+        var listId = layero.find('input[name=blListRadio]:checked').val();
+        if (!listId) {
+            layer.alert('请先选择一个书单');
+            return;
+        }
+        var remark = $.trim(layero.find('#blRemark').val());
+        addToListSubmitting = true;
+        var $yesBtn = layero.find('.layui-layer-btn0');
+        $yesBtn.addClass('layui-btn-disabled').css('pointer-events', 'none').text('提交中...');
+        $.ajax({
+            type: "POST",
+            url: "/bookList/addBook",
+            data: {'listId': listId, 'bookId': $("#bookIdHidden").val(), 'remark': remark},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    layer.close(layerIndex);
+                    layer.msg('已加入书单！');
+                } else if (data.code == 1001) {
+                    layer.close(layerIndex);
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            },
+            complete: function () {
+                addToListSubmitting = false;
+                $yesBtn.removeClass('layui-btn-disabled').css('pointer-events', '').text('加入');
+            }
+        })
+    }
+
+    //HTML转义，防止内容破坏页面结构
+    function escapeBlHtml(str) {
+        if (str == null) {
+            return '';
+        }
+        return $('<div></div>').text(String(str)).html();
+    }
+    //加书单 end -------------------------------------------------------------------
 
     function toggleCommentUnLike(commentId) {
         toggleLike(commentId, "/book/toggleCommentUnLike", "unLikeCount");

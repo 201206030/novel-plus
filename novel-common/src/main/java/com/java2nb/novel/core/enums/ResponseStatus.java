@@ -41,9 +41,19 @@ public enum ResponseStatus implements IResultCode {
     /**
      * 小说相关错误
      */
-    BOOK_EXISTS(5001,"该小说已存在")
+    BOOK_EXISTS(5001,"该小说已存在"),
 
-            ,
+    /**
+     * 书单相关错误
+     * */
+    LIST_NOT_EXISTS(6001, "书单不存在或已删除！"),
+    NOT_MY_LIST(6002, "只能操作自己创建的书单！"),
+    BOOK_IN_LIST(6003, "该书籍已在书单中！"),
+    LIST_NAME_EXISTS(6004, "已创建过同名书单！"),
+    LIST_NAME_INVALID(6005, "书单名不能为空且不能超过50个字！"),
+    LIST_DESC_TOO_LONG(6006, "书单简介不能超过300个字！"),
+    BOOK_NOT_EXISTS(6007, "书籍不存在！"),
+
     /**
      * 搜索引擎相关错误
      * */
