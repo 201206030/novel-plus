@@ -317,7 +317,7 @@ public class PageController extends BaseController {
         //查询书籍
         Book book = bookService.queryBookDetail(bookId);
         model.addAttribute("book", book);
-        return "book/book_comment";
+        return ThreadLocalUtil.getTemplateDir() + "book/book_comment";
     }
 
     /**
@@ -327,7 +327,7 @@ public class PageController extends BaseController {
     public String commentReplyList(@PathVariable("commentId") Long commentId, Model model) {
         model.addAttribute("commentId", commentId);
         model.addAttribute("commentContent", bookService.getBookComment(commentId).getCommentContent());
-        return "book/book_comment_reply";
+        return ThreadLocalUtil.getTemplateDir() + "book/book_comment_reply";
     }
 
     /**
