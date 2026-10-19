@@ -5,6 +5,7 @@ import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.BookContentService;
+import com.java2nb.novel.service.BookParagraphCommentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.IpLocationService;
 import com.java2nb.novel.service.LikeService;
@@ -38,6 +39,8 @@ public class BookController extends BaseController {
     private final IpLocationService ipLocationService;
 
     private final LikeService likeService;
+
+    private final BookParagraphCommentService bookParagraphCommentService;
 
     /**
      * 查询首页小说设置列表数据
@@ -197,6 +200,37 @@ public class BookController extends BaseController {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
         return RestResult.ok(likeService.toggleCommentUnLike(commentId, userDetails.getId()));
+    }
+
+    /**
+     * 查询章节内各段落评论数（key：段落序号，value：评论数）
+     */
+    @GetMapping("listParagraphCommentCounts")
+    public RestResult<Map<Integer, Integer>> listParagraphCommentCounts(@RequestParam("bookIndexId") Long bookIndexId) {
+        return RestResult.ok(bookParagraphCommentService.listParagraphCommentCounts(bookIndexId));
+    }
+
+    /**
+     * 查询某段落评论列表
+     */
+    @GetMapping("listParagraphComment")
+    public RestResult<List<BookParagraphCommentVO>> listParagraphComment(@RequestParam("bookIndexId") Long bookIndexId,
+        @RequestParam("paragraphIdx") Integer paragraphIdx) {
+        return RestResult.ok(bookParagraphCommentService.listParagraphComment(bookIndexId, paragraphIdx));
+    }
+
+    /**
+     * 新增段落评论
+     */
+    @PostMapping("addParagraphComment")
+    public RestResult<Void> addParagraphComment(BookParagraphComment comment, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        comment.setLocation(ipLocationService.getLocation(IpUtil.getRealIp(request)));
+        bookParagraphCommentService.addParagraphComment(userDetails.getId(), comment);
+        return RestResult.ok();
     }
 
     /**

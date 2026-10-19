@@ -30,6 +30,8 @@ public enum ResponseStatus implements IResultCode {
      * 评论相关错误
      * */
     HAS_COMMENTS(3001, "已评价过该书籍！"),
+    PARA_COMMENT_CONTENT_INVALID(3002, "段落评论不能为空且不能超过200个字！"),
+    PARA_COMMENT_PARAM_INVALID(3003, "段落评论参数有误！"),
 
     /**
      * 作者相关错误

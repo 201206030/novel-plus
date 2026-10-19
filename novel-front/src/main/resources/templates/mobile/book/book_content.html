@@ -161,6 +161,225 @@
             text-align: center;
         }
 
+        /* ---------- 段落评论 ---------- */
+        /* 正文段落左右留白由段落列表自己控制，右侧留给气泡 */
+        #paragraphList {
+            padding: 0 18px;
+        }
+
+        .para-item {
+            position: relative;
+            padding: 2px 0 6px;
+        }
+
+        .para-text {
+            text-indent: 2em;
+        }
+
+        /* 段落入口：纯气泡+数字，绝对定位在段落底部最右侧（挂进右侧留白区） */
+        .para-comment-btn {
+            position: absolute;
+            right: -24px;
+            bottom: 6px;
+            display: inline-flex;
+            align-items: center;
+            font-size: 13px;
+            line-height: 22px;
+            color: #c9c9c9;
+            background: transparent;
+            border: none;
+            padding: 0 4px;
+            cursor: pointer;
+        }
+
+        .para-comment-btn .layui-icon {
+            font-size: 26px;
+        }
+
+        /* 评论数嵌在气泡图标内部居中 */
+        .para-comment-btn .para-comment-num {
+            position: absolute;
+            top: 46%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-style: normal;
+            font-weight: bold;
+            font-size: 11px;
+            line-height: 1;
+        }
+
+        .para-comment-btn.has {
+            color: #3eaf7c;
+        }
+
+        .pc-panel {
+            padding: 10px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pc-list {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .pc-empty {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            padding: 30px 0;
+        }
+
+        .pc-item {
+            padding: 10px 2px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .pc-item .pc-user {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .pc-item .pc-user .pc-name {
+            color: #3eaf7c;
+            margin-right: 8px;
+        }
+
+        .pc-item .pc-user .pc-loc {
+            color: #bbb;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .pc-item .pc-content {
+            font-size: 15px;
+            color: #333;
+            line-height: 22px;
+            word-break: break-all;
+        }
+
+        .pc-item .pc-op-bar {
+            margin-top: 4px;
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .pc-item .pc-reply-btn {
+            color: #3eaf7c;
+            cursor: pointer;
+        }
+
+        .pc-item .pc-reply-num {
+            float: left;
+            color: #999;
+            line-height: 24px;
+        }
+
+        /* 回复列表（嵌在顶层评论下） */
+        .pc-reply-list {
+            margin-top: 6px;
+            background-color: #fafafa;
+            border-radius: 6px;
+            padding: 2px 10px;
+        }
+
+        .pc-reply-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .pc-reply-item:last-child {
+            border-bottom: none;
+        }
+
+        .pc-reply-item .pc-r-user {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 3px;
+        }
+
+        .pc-reply-item .pc-r-user .pc-name {
+            color: #3eaf7c;
+            margin-right: 6px;
+        }
+
+        .pc-reply-item .pc-r-user .pc-to {
+            color: #666;
+            margin-right: 6px;
+        }
+
+        .pc-reply-item .pc-r-content {
+            color: #333;
+            line-height: 20px;
+            word-break: break-all;
+        }
+
+        .pc-reply-item .pc-op-bar {
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .pc-reply-item .pc-reply-btn {
+            color: #3eaf7c;
+            cursor: pointer;
+        }
+
+        /* 回复目标提示条 */
+        #pcReplyHint {
+            display: none;
+            background-color: rgba(62, 175, 124, 0.08);
+            border-radius: 4px;
+            padding: 5px 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #3eaf7c;
+        }
+
+        #pcReplyHint .pc-cancel-reply {
+            float: right;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .pc-input-box {
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+
+        .pc-textarea {
+            width: 100%;
+            height: 60px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 6px 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+        }
+
+        .pc-input-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .pc-input-bar #pcNum {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .pc-input-bar .layui-btn {
+            background-color: #3eaf7c !important;
+            border-color: #3eaf7c !important;
+        }
+
 
     </style>
 </head>
@@ -199,33 +418,6 @@
     </div>
 
 
-    <p class="Readpage" style="background:#FFFFFF;padding:2px;">
-        <a id="lightdiv" class="button lightoff" onclick="nr_setbg('light')">关灯</a>
-        <a id="huyandiv" class="button huyanon" onclick="nr_setbg('huyan')">护眼</a>&nbsp;&nbsp;&nbsp;&nbsp;
-        字体：<a id="fontbig" class="sizebg" onclick="nr_setbg('big')">大</a> <a id="fontmiddle" class="button sizebgon"
-                                                                             onclick="nr_setbg('middle')">中</a> <a
-            id="fontsmall" class="sizebg" onclick="nr_setbg('small')">小</a>
-        <a href="javascript:speakChapter()" style="margin-left: 10px">
-            <svg t="1707099868768" class="icon" viewBox="0 0 800 800" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                 p-id="1783" id="mx_n_1707099868769" width="22" height="22">
-                <path d="M393.707231 292.571429L343.13933 487.619048l46.955908 234.779541-97.523809-45.149912-66.82187-108.359788-21.671958-86.687831 66.82187-113.777778z"
-                      fill="#3eaf7c" p-id="1784"></path>
-                <path d="M451.499118 509.291005a104.747795 61.40388 90 1 0 122.80776 0 104.747795 61.40388 90 1 0-122.80776 0Z"
-                      fill="#3eaf7c" p-id="1785"></path>
-                <path d="M426.215168 781.996473c-3.611993 0-7.223986-1.805996-10.835979-3.611993l-117.389771-86.687831c-36.119929-23.477954-65.015873-57.791887-83.075838-99.329806-10.835979-25.283951-16.253968-52.373898-16.253968-81.269841s5.417989-55.985891 16.253968-81.269842c16.253968-41.537919 45.149912-74.045855 83.075838-97.523809l110.165785-77.657848c9.029982-5.417989 19.865961-3.611993 25.28395 3.611993 5.417989 9.029982 3.611993 19.865961-3.611993 25.28395L319.661376 361.199295c-32.507937 19.865961-55.985891 48.761905-70.433863 81.269841-9.029982 21.671958-14.447972 45.149912-14.447972 68.627866 0 23.477954 3.611993 45.149912 12.641976 66.821869 14.447972 34.313933 37.925926 63.209877 68.627866 83.075838l117.38977 86.687831c7.223986 5.417989 9.029982 18.059965 3.611993 25.28395 0 5.417989-5.417989 9.029982-10.835978 9.029983z"
-                      fill="#3eaf7c" p-id="1786"></path>
-                <path d="M523.738977 830.758377c-108.359788 0-193.241623-140.867725-193.241623-317.855379S415.379189 193.241623 523.738977 193.241623c25.283951 0 50.567901 7.223986 74.045855 23.477954 9.029982 5.417989 10.835979 16.253968 5.41799 25.28395s-16.253968 10.835979-25.283951 5.41799c-18.059965-10.835979-34.313933-18.059965-54.179894-18.059965-84.881834 0-157.121693 130.031746-157.121693 281.73545S438.857143 794.638448 523.738977 794.638448s157.121693-130.031746 157.121693-281.73545c0-74.045855-16.253968-146.285714-46.955908-198.659612-5.417989-9.029982-1.805996-19.865961 7.223986-25.28395 9.029982-5.417989 19.865961-1.805996 25.28395 7.223986 32.507937 59.597884 50.567901 135.449735 50.567902 216.719576C718.786596 689.890653 633.904762 830.758377 523.738977 830.758377z"
-                      fill="#3eaf7c" p-id="1787"></path>
-                <path d="M523.738977 646.546737c-48.761905 0-86.687831-59.597884-86.687831-133.643739S474.977072 379.259259 523.738977 379.259259s86.687831 59.597884 86.687831 133.643739-37.925926 133.643739-86.687831 133.643739z m0-232.973545c-23.477954 0-50.567901 39.731922-50.567901 97.52381s27.089947 97.52381 50.567901 97.523809 50.567901-39.731922 50.567901-97.523809-27.089947-97.52381-50.567901-97.52381z"
-                      fill="#3eaf7c" p-id="1788"></path>
-                <path d="M523.738977 413.573192h-1.805996l-92.105821-10.835979c-9.029982-1.805996-16.253968-10.835979-16.253968-19.865961 1.805996-9.029982 10.835979-16.253968 19.865961-16.253968l92.105821 10.835979c9.029982 1.805996 16.253968 10.835979 16.253968 19.865961 0 9.029982-9.029982 16.253968-18.059965 16.253968zM372.035273 662.800705c-9.029982 0-16.253968-7.223986-18.059964-16.253968-1.805996-9.029982 5.417989-18.059965 16.253968-19.865961l153.5097-16.253968c9.029982-1.805996 18.059965 5.417989 19.865961 16.253968 1.805996 9.029982-5.417989 18.059965-16.253968 19.865961l-153.5097 16.253968h-1.805997z"
-                      fill="#3eaf7c" p-id="1789"></path>
-                <path d="M763.936508 364.811287c-5.417989 0-9.029982-1.805996-12.641975-5.417989-7.223986-7.223986-7.223986-18.059965 0-25.283951l25.28395-25.28395c7.223986-7.223986 18.059965-7.223986 25.283951 0s7.223986 18.059965 0 25.28395L776.578483 359.393298c-3.611993 3.611993-9.029982 5.417989-12.641975 5.417989zM771.160494 720.592593c-5.417989 0-9.029982-1.805996-12.641975-5.41799l-25.283951-25.28395c-7.223986-7.223986-7.223986-18.059965 0-25.283951s18.059965-7.223986 25.283951 0l25.28395 25.283951c7.223986 7.223986 7.223986 18.059965 0 25.28395-3.611993 3.611993-7.223986 5.417989-12.641975 5.41799zM819.922399 529.156966h-54.179895c-10.835979 0-18.059965-7.223986-18.059964-18.059964s7.223986-18.059965 18.059964-18.059965h54.179895c10.835979 0 18.059965 7.223986 18.059964 18.059965s-9.029982 18.059965-18.059964 18.059964z"
-                      fill="#3eaf7c" p-id="1790"></path>
-            </svg>
-        </a>
-
-    </p>
     <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
 
         <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
@@ -256,9 +448,8 @@
     </div>
     <div id="chaptercontent" class="Readarea ReadAjax_content screen_container"
          style="color: rgb(0, 0, 0); font-size: 20px;" th:if="${!needBuy}">
-        <p style="width:100%;text-alight:center; overflow: auto;-webkit-overflow-scrolling:touch;">
-            <span
-                    th:utext="${bookContent.content}"></span></p>
+        <div id="contentRaw" style="display: none" th:utext="${bookContent.content}"></div>
+        <div id="paragraphList"></div>
     </div>
     <div class="Readarea ReadAjax_content screen_container"
          style="color: rgb(0, 0, 0); font-size: 20px;background-color: #fff" th:if="${needBuy}">
@@ -321,9 +512,6 @@
 
 </script>
 
-<script src="/mobile/js/read.js"></script>
-<script language="javascript">getset()</script>
-<script language="javascript">getset1()</script>
 <script language="javascript">
     var books = localStorage.getItem("historyBooks");
     var item = parseInt($("#bookIdHidden").val());
@@ -422,7 +610,7 @@
             speechSynthesis.resume();
         }
         speak({
-            'text': $('#chaptercontent').text(),
+            'text': getSpeakText(),
             'speechRate': 0.5,
             'pitch': 1,
             'lang': 'zh-CN'
@@ -474,6 +662,377 @@
 
         return speechUtterance;
     }
+
+    /**
+     * 朗读只取正文段落文本，排除段落评论入口等附加元素
+     */
+    function getSpeakText() {
+        var $paras = $('#paragraphList .para-text');
+        if ($paras.length > 0) {
+            return $paras.map(function () {
+                return $(this).text();
+            }).get().join('\n');
+        }
+        return $('#chaptercontent').text();
+    }
+
+
+    /************************************ 段落评论 ************************************/
+    // 接口：/book/listParagraphCommentCounts、/book/listParagraphComment、/book/addParagraphComment
+    // 段落序号 paragraphIdx 由前端拆分正文顺序确定，同一章节内容不变则稳定
+    var BPC_BOOK_ID = $("#bookIdHidden").val();
+    var BPC_INDEX_ID = $("#contentIdHidden").val();
+    var paraCountMap = {};
+
+    // 段落评论接口层（统一返回 Promise）
+    var ParagraphApi = {
+        // 拉取各段落评论数 {paragraphIdx: count}
+        loadCounts: function () {
+            var dfd = $.Deferred();
+            $.ajax({
+                type: "get",
+                url: "/book/listParagraphCommentCounts",
+                data: {'bookIndexId': BPC_INDEX_ID},
+                dataType: "json",
+                success: function (data) {
+                    dfd.resolve(data.code == 200 && data.data ? data.data : {});
+                },
+                error: function () {
+                    dfd.resolve({});
+                }
+            });
+            return dfd.promise();
+        },
+        // 拉取某段评论列表（服务端按时间倒序返回）
+        list: function (idx) {
+            var dfd = $.Deferred();
+            $.ajax({
+                type: "get",
+                url: "/book/listParagraphComment",
+                data: {'bookIndexId': BPC_INDEX_ID, 'paragraphIdx': idx},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        dfd.resolve(data.data || []);
+                    } else {
+                        layer.alert(data.msg);
+                        dfd.resolve([]);
+                    }
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                    dfd.resolve([]);
+                }
+            });
+            return dfd.promise();
+        },
+        // 发表段落评论/回复（rootId>0表示回复），resolve 完整 RestResult
+        add: function (idx, content, rootId, replyUserName) {
+            var dfd = $.Deferred();
+            $.ajax({
+                type: "POST",
+                url: "/book/addParagraphComment",
+                data: {
+                    'bookId': BPC_BOOK_ID,
+                    'bookIndexId': BPC_INDEX_ID,
+                    'paragraphIdx': idx,
+                    'rootId': rootId || 0,
+                    'replyUserName': replyUserName || '',
+                    'commentContent': content
+                },
+                dataType: "json",
+                success: function (data) {
+                    dfd.resolve(data);
+                },
+                error: function () {
+                    dfd.resolve({code: 500, msg: '网络异常，发表失败'});
+                }
+            });
+            return dfd.promise();
+        }
+    };
+
+    // 把整章HTML拆成段落（正文中的<br>、<p>、<div>均作为段落分隔，其余标签剥除）
+    function splitParagraphs() {
+        var rawHtml = $('#contentRaw').html() || '';
+        var text = rawHtml
+            .replace(/<\s*\/?\s*(p|div)[^>]*>/gi, '<br>')
+            .replace(/<\s*br\s*\/?>|<\/\s*p\s*>/gi, '\n')
+            .replace(/&nbsp;/gi, '\u00A0')
+            .replace(/<[^>]+>/g, '');
+        var lines = text.split(/\n+/);
+        var paras = [];
+        for (var i = 0; i < lines.length; i++) {
+            var line = $.trim(lines[i]);
+            if (line !== '') {
+                paras.push(line);
+            }
+        }
+        return paras;
+    }
+
+    // 渲染段落列表，每段尾部挂评论入口
+    function renderParagraphs() {
+        var paras = splitParagraphs();
+        var $list = $('#paragraphList').empty();
+        for (var i = 0; i < paras.length; i++) {
+            var $item = $('<div class="para-item"></div>');
+            // 用.text()插入，避免正文内容作为HTML二次解析
+            var $p = $('<p class="para-text"></p>').text(paras[i]).appendTo($item);
+            var $btn = $('<span class="para-comment-btn" data-idx="' + i + '"></span>');
+            // 纯气泡图标，数字角标由 refreshCountChips 填充；float:right 贴在段落最后一行右侧
+            $btn.append('<i class="layui-icon">&#xe606;</i>');
+            $btn.append('<em class="para-comment-num"></em>');
+            $p.append($btn);
+            $list.append($item);
+        }
+        refreshCountChips();
+    }
+
+    // 刷新每段气泡角标：有评论高亮并显示总数（含回复），无评论置灰无数字
+    function refreshCountChips() {
+        ParagraphApi.loadCounts().then(function (counts) {
+            paraCountMap = counts || {};
+            $('.para-comment-btn').each(function () {
+                var num = paraCountMap[String($(this).data('idx'))] || 0;
+                $(this).toggleClass('has', num > 0);
+                $(this).find('.para-comment-num').text(num > 0 ? num : '');
+            });
+        });
+    }
+
+    // 当前回复目标 {rootId, name}，null表示发表顶层评论
+    var pcReplyTarget = null;
+
+    // 打开底部评论面板
+    function openCommentPanel(idx) {
+        pcReplyTarget = null;
+        var panelHtml = '' +
+            '<div class="pc-panel">' +
+            '  <div class="pc-list" id="pcList"><div class="pc-empty">加载中...</div></div>' +
+            '  <div class="pc-input-box">' +
+            '    <div id="pcReplyHint"><span class="pc-cancel-reply">取消</span><span id="pcReplyHintText"></span></div>' +
+            '    <textarea id="pcContent" class="pc-textarea" maxlength="200" placeholder="说说你对这段话的看法~（至少5个字）"></textarea>' +
+            '    <div class="pc-input-bar">' +
+            '      <span id="pcNum">0/200</span>' +
+            '      <button type="button" id="pcSubmitBtn" class="layui-btn layui-btn-sm">发表</button>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>';
+        layer.open({
+            type: 1,
+            title: '段落评论',
+            closeBtn: 1,
+            offset: 'b',
+            area: ['100%', '60%'],
+            content: panelHtml,
+            success: function (layero) {
+                lockBodyScroll();
+                loadCommentList(idx);
+                $('#pcContent').on('input propertychange', function () {
+                    $('#pcNum').html($(this).val().length + '/200');
+                });
+                $('#pcSubmitBtn').on('click', function () {
+                    submitParagraphComment(idx);
+                });
+                // 事件委派：点任意层级的“回复”设为回复目标
+                $('#pcList').on('click', '.pc-reply-btn', function () {
+                    pcReplyTarget = {
+                        rootId: $(this).data('root'),
+                        name: String($(this).data('name') || '')
+                    };
+                    $('#pcReplyHintText').text('回复 @' + pcReplyTarget.name);
+                    $('#pcReplyHint').show();
+                    focusNoScroll($('#pcContent'));
+                });
+                $('#pcReplyHint .pc-cancel-reply').on('click', function () {
+                    clearReplyTarget();
+                });
+                kbFixCleanup = fixPanelKeyboard(layero);
+            },
+            end: function () {
+                // 面板销毁：解除页面锁定并移除键盘监听
+                unlockBodyScroll();
+                if (kbFixCleanup) {
+                    kbFixCleanup();
+                    kbFixCleanup = null;
+                }
+            }
+        });
+    }
+
+    // 面板打开期间锁定body滚动：部分浏览器(iOS/WebView)聚焦输入框会强行滚动document去"露出"输入框，
+    // 锁住后document不可滚，页面位置不会变；关闭时用记录的scrollTop还原
+    var pcBodyLockTop = 0;
+
+    function lockBodyScroll() {
+        pcBodyLockTop = $(window).scrollTop();
+        $('body').css({
+            position: 'fixed',
+            top: -pcBodyLockTop + 'px',
+            left: 0,
+            right: 0,
+            width: '100%',
+            overflow: 'hidden'
+        });
+    }
+
+    function unlockBodyScroll() {
+        $('body').css({position: '', top: '', left: '', right: '', width: '', overflow: ''});
+        $(window).scrollTop(pcBodyLockTop);
+    }
+
+    // 软键盘弹出时把评论面板整体上提，保证输入框不被键盘遮挡（页面已被锁定不会跟着动）
+    var kbFixCleanup = null;
+
+    function fixPanelKeyboard(layero) {
+        var vv = window.visualViewport;
+        if (!vv) {
+            return null;
+        }
+        var handler = function () {
+            // 键盘高度 = 布局视口高 - 可视化视口高 - 视口偏移
+            var kbH = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+            layero.css('transform', kbH > 80 ? 'translateY(-' + kbH + 'px)' : '');
+        };
+        vv.addEventListener('resize', handler);
+        vv.addEventListener('scroll', handler);
+        handler();
+        return function () {
+            vv.removeEventListener('resize', handler);
+            vv.removeEventListener('scroll', handler);
+            layero.css('transform', '');
+        };
+    }
+
+    function clearReplyTarget() {
+        pcReplyTarget = null;
+        $('#pcReplyHint').hide();
+    }
+
+    // 聚焦但不滚动：focus默认会把元素滚进视野，导致页面下移；旧内核不支持preventScroll时手动恢复滚动位置
+    function focusNoScroll($el) {
+        var st = $(window).scrollTop();
+        try {
+            $el[0].focus({preventScroll: true});
+        } catch (e) {
+            $el.focus();
+        }
+        if ($(window).scrollTop() !== st) {
+            $(window).scrollTop(st);
+        }
+    }
+
+    // 加载某段评论列表（后端返回两级树：顶层倒序，replies正序；createTime已格式化为相对时间）
+    function loadCommentList(idx) {
+        ParagraphApi.list(idx).then(function (list) {
+            var $box = $('#pcList').empty();
+            if (!list || list.length == 0) {
+                $box.append('<div class="pc-empty">还没有人评论这段话，抢占沙发~</div>');
+                return;
+            }
+            for (var i = 0; i < list.length; i++) {
+                $box.append(buildPcItem(list[i]));
+            }
+        });
+    }
+
+    // 构建单条顶层评论（含回复子列表），全部用jQuery .text()填充避免HTML注入
+    function buildPcItem(item) {
+        var $item = $('<div class="pc-item"></div>');
+        var $user = $('<div class="pc-user"></div>');
+        $user.append($('<span class="pc-name"></span>').text(item.createUserName));
+        if (item.location) {
+            $user.append($('<span class="pc-loc"></span>').text(item.location + '读者'));
+        }
+        $user.append($('<span class="pc-time" style="float:right"></span>').text(item.createTime));
+        $item.append($user);
+        $item.append($('<div class="pc-content"></div>').text(item.commentContent));
+
+        var replies = item.replies || [];
+        if (replies.length > 0) {
+            var $rep = $('<div class="pc-reply-list"></div>');
+            for (var j = 0; j < replies.length; j++) {
+                $rep.append(buildPcReplyItem(item.id, replies[j]));
+            }
+            $item.append($rep);
+        }
+        var $op = $('<div class="pc-op-bar"></div>');
+        if (replies.length > 0) {
+            $op.append($('<span class="pc-reply-num"></span>').text(replies.length + '条回复'));
+        }
+        $op.append($('<span class="pc-reply-btn">回复</span>').data('root', item.id).data('name', item.createUserName));
+        $item.append($op);
+        return $item;
+    }
+
+    // 构建单条回复（回复目标始终是所属顶层评论）
+    function buildPcReplyItem(rootId, r) {
+        var $ri = $('<div class="pc-reply-item"></div>');
+        var $ru = $('<div class="pc-r-user"></div>');
+        $ru.append($('<span class="pc-name"></span>').text(r.createUserName));
+        if (r.replyUserName) {
+            $ru.append($('<span class="pc-to"></span>').text('回复 ' + r.replyUserName));
+        }
+        $ru.append($('<span style="float:right"></span>').text(r.createTime));
+        $ri.append($ru);
+        $ri.append($('<div class="pc-r-content"></div>').text(r.commentContent));
+        $ri.append($('<div class="pc-op-bar"></div>')
+            .append($('<span class="pc-reply-btn">回复</span>').data('root', rootId).data('name', r.createUserName)));
+        return $ri;
+    }
+
+    // 防重复提交标志
+    var pcSubmitting = false;
+
+    // 发表段落评论
+    function submitParagraphComment(idx) {
+        if (pcSubmitting) {
+            return;
+        }
+        if (!isLogin) {
+            location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+            return;
+        }
+        var content = $.trim($('#pcContent').val());
+        if (content == '') {
+            layer.alert('评论内容必须填写');
+            return;
+        }
+        if (content.length < 5) {
+            layer.alert('评论内容必须大于5个字');
+            return;
+        }
+        pcSubmitting = true;
+        var $btn = $('#pcSubmitBtn');
+        $btn.addClass('layui-btn-disabled').attr('disabled', 'disabled').text('提交中...');
+        var rootId = pcReplyTarget ? pcReplyTarget.rootId : 0;
+        var replyUserName = pcReplyTarget ? pcReplyTarget.name : '';
+        ParagraphApi.add(idx, content, rootId, replyUserName).then(function (res) {
+            pcSubmitting = false;
+            $btn.removeClass('layui-btn-disabled').removeAttr('disabled').text('发表');
+            if (res.code == 200) {
+                $('#pcContent').val('');
+                $('#pcNum').html('0/200');
+                clearReplyTarget();
+                loadCommentList(idx);
+                // 重新拉取各段气泡角标
+                refreshCountChips();
+            } else if (res.code == 1001) {
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+            } else {
+                layer.alert(res.msg || '发表失败');
+            }
+        });
+    }
+
+    // 评论入口事件委派
+    $('#paragraphList').on('click', '.para-comment-btn', function () {
+        openCommentPanel(parseInt($(this).data('idx')));
+    });
+
+    // 页面加载：拆分段落并初始化评论入口（VIP未购买章节无正文，自动跳过）
+    renderParagraphs();
 
 </script>
 

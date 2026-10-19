@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontBookParagraphCommentMapper">
+
+    <insert id="insert" parameterType="com.java2nb.novel.entity.BookParagraphComment"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into book_paragraph_comment (book_id, book_index_id, paragraph_idx, root_id, reply_user_name,
+                                            comment_content, location, create_user_id, create_time)
+        values (#{bookId}, #{bookIndexId}, #{paragraphIdx}, #{rootId}, #{replyUserName},
+                #{commentContent}, #{location}, #{createUserId}, #{createTime})
+    </insert>
+
+    <select id="listByParagraph" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
+        select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
+               t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
+               t2.username create_user_name, t2.user_photo create_user_photo
+        from book_paragraph_comment t1
+        inner join user t2 on t1.create_user_id = t2.id
+        where t1.book_index_id = #{bookIndexId}
+          and t1.paragraph_idx = #{paragraphIdx}
+        order by t1.create_time asc
+        limit 200
+    </select>
+
+    <select id="getById" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
+        select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
+               t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
+               t2.username create_user_name, t2.user_photo create_user_photo
+        from book_paragraph_comment t1
+        inner join user t2 on t1.create_user_id = t2.id
+        where t1.id = #{id}
+    </select>
+
+    <update id="addReplyCount">
+        update book_paragraph_comment
+        set reply_count = reply_count + 1
+        where id = #{id}
+    </update>
+
+    <select id="countGroupByParagraph" resultType="java.util.Map">
+        select paragraph_idx as idx, count(1) as num
+        from book_paragraph_comment
+        where book_index_id = #{bookIndexId}
+        group by paragraph_idx
+    </select>
+
+</mapper>
