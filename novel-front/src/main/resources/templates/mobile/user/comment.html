@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'我的书评_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        body {
+            background: #f5f7f6;
+        }
+
+        #commentList {
+            padding-top: 10px;
+        }
+
+        /* 书评卡片 */
+        .comment-item {
+            margin: 0 12px 10px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .comment-item .ci-head {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f5f7f6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .comment-item .ci-head:active {
+            opacity: .88;
+        }
+
+        .comment-item .ci-cover {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 36px;
+            height: 50px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #f0f2f1;
+        }
+
+        .comment-item .ci-book {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 10px;
+        }
+
+        .comment-item .ci-book-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .comment-item .ci-go {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 7px;
+            height: 7px;
+            border-right: 1.5px solid #c4cec9;
+            border-top: 1.5px solid #c4cec9;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            margin-left: 8px;
+        }
+
+        .comment-item .ci-content {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+            line-height: 21px;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
+        .comment-item .ci-foot {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        .comment-item .ci-meta {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .comment-item .ci-num {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            margin-left: 12px;
+            color: #8a968f;
+        }
+
+        .comment-item .ci-num.zan {
+            color: #2e8b62;
+        }
+
+        /* 空态 */
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        /* 分页 */
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('我的书评', null)"></div>
+
+    <div id="commentList"></div>
+    <div id="commentPage" class="page-box"></div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer"></div>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+    search(1, 10);
+
+    function search(curr, limit) {
+        $.ajax({
+            type: "get",
+            url: "/user/listCommentByPage",
+            data: {'curr': curr, 'limit': limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderCommentList(data.data);
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function renderCommentList(pageBean) {
+        var commentList = pageBean.list;
+        if (!commentList || commentList.length == 0) {
+            $("#commentList").html("<div class=\"empty-tip\">还没有发表过书评，快去写下你的阅读感悟吧~<br><a href=\"/\" class=\"empty-link\">去书城逛逛</a></div>");
+            $("#commentPage").html("");
+            return;
+        }
+        var html = "";
+        for (var i = 0; i < commentList.length; i++) {
+            html += buildCommentItem(commentList[i]);
+        }
+        $("#commentList").html(html);
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'commentPage'
+                , count: pageBean.total
+                , curr: pageBean.pageNum
+                , limit: pageBean.pageSize
+                , layout: ['prev', 'page', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        search(obj.curr, obj.limit);
+                    }
+                }
+            });
+        });
+    }
+
+    function buildCommentItem(comment) {
+        var cover = comment.picUrl ? comment.picUrl : '/images/default.gif';
+        var bookName = comment.bookName ? comment.bookName : '书籍已下架';
+        var meta = comment.createTime + (comment.location ? ' · ' + comment.location : '');
+        return ('<div class="comment-item">' +
+            '<div class="ci-head" onclick="toBookComment(\'' + comment.bookId + '\')">' +
+            '<img class="ci-cover" src="' + cover + '" onerror="this.src=\'/images/default.gif\'" alt="">' +
+            '<div class="ci-book">' +
+            '<div class="ci-book-name">' + bookName + '</div>' +
+            '<div style="font-size:11px;color:#98a8a1;margin-top:2px;">点击查看该书评区</div>' +
+            '</div>' +
+            '<span class="ci-go"></span>' +
+            '</div>' +
+            '<div class="ci-content">' + comment.commentContent + '</div>' +
+            '<div class="ci-foot">' +
+            '<span class="ci-meta">' + meta + '</span>' +
+            '<span class="ci-num zan">赞 ' + comment.likesCount + '</span>' +
+            '<span class="ci-num">回复 ' + comment.replyCount + '</span>' +
+            '</div>' +
+            '</div>');
+    }
+
+    function toBookComment(bookId) {
+        location.href = '/book/comment-' + bookId + '.html';
+    }
+</script>
+
+</body>
+</html>

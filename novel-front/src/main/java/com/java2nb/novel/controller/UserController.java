@@ -8,6 +8,7 @@ import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.entity.UserBuyRecord;
+import com.java2nb.novel.service.BookParagraphCommentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.UserService;
 import io.github.xxyopen.model.resp.RestResult;
@@ -38,6 +39,8 @@ public class UserController extends BaseController {
     private final UserService userService;
 
     private final BookService bookService;
+
+    private final BookParagraphCommentService bookParagraphCommentService;
 
     /**
      * 登录
@@ -264,6 +267,19 @@ public class UserController extends BaseController {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
         return RestResult.ok(bookService.listCommentByPage(userDetails.getId(), null, page, pageSize));
+    }
+
+    /**
+     * 分页查询用户段评
+     */
+    @GetMapping("listParagraphCommentByPage")
+    public RestResult<?> listParagraphCommentByPage(@RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            return RestResult.fail(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(bookParagraphCommentService.listMyParagraphCommentByPage(userDetails.getId(), page, pageSize));
     }
 
 

@@ -33,6 +33,11 @@ public interface FrontBookParagraphCommentMapper {
     BookParagraphCommentVO getById(@Param("id") Long id);
 
     /**
+     * 查询用户发布的全部段评（含回复，带书名/封面/章节名，按时间倒序）
+     */
+    List<BookParagraphCommentVO> listMyParagraphComment(@Param("userId") Long userId);
+
+    /**
      * 顶层评论回复数+1
      */
     int addReplyCount(@Param("id") Long id);

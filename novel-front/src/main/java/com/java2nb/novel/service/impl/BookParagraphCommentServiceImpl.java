@@ -1,11 +1,14 @@
 package com.java2nb.novel.service.impl;
 
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
+import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.entity.BookParagraphComment;
 import com.java2nb.novel.mapper.FrontBookParagraphCommentMapper;
 import com.java2nb.novel.service.BookParagraphCommentService;
 import com.java2nb.novel.vo.BookParagraphCommentVO;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import io.github.xxyopen.web.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -127,5 +130,11 @@ public class BookParagraphCommentServiceImpl implements BookParagraphCommentServ
         comment.setParagraphIdx(root.getParagraphIdx());
         bookParagraphCommentMapper.insert(comment);
         bookParagraphCommentMapper.addReplyCount(rootId);
+    }
+
+    @Override
+    public PageBean<BookParagraphCommentVO> listMyParagraphCommentByPage(Long userId, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        return PageBuilder.build(bookParagraphCommentMapper.listMyParagraphComment(userId));
     }
 }

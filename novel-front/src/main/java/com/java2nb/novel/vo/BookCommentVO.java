@@ -27,6 +27,16 @@ public class BookCommentVO extends BookComment {
 
     private Long unLikesCount;
 
+    /**
+     * 所属书籍名称
+     */
+    private String bookName;
+
+    /**
+     * 所属书籍封面
+     */
+    private String picUrl;
+
     public String getCreateTimeFormat() {
         return DateUtil.formatTimeAgo(getCreateTime());
     }

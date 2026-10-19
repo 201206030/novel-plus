@@ -2,6 +2,7 @@ package com.java2nb.novel.service;
 
 import com.java2nb.novel.entity.BookParagraphComment;
 import com.java2nb.novel.vo.BookParagraphCommentVO;
+import io.github.xxyopen.model.page.PageBean;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +30,9 @@ public interface BookParagraphCommentService {
      * 新增段落评论
      */
     void addParagraphComment(Long userId, BookParagraphComment comment);
+
+    /**
+     * 分页查询我的段评（含回复，按时间倒序）
+     */
+    PageBean<BookParagraphCommentVO> listMyParagraphCommentByPage(Long userId, int page, int pageSize);
 }

@@ -140,6 +140,22 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 我的书评页
+     */
+    @RequestMapping("user/comment.html")
+    public String userComment() {
+        return ThreadLocalUtil.getTemplateDir() + "user/comment";
+    }
+
+    /**
+     * 我的段评页
+     */
+    @RequestMapping("user/paragraph_comment.html")
+    public String userParagraphComment() {
+        return ThreadLocalUtil.getTemplateDir() + "user/paragraph_comment";
+    }
+
+    /**
      * 账号设置页
      */
     @RequestMapping("user/setup.html")

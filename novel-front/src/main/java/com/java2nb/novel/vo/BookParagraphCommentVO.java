@@ -36,6 +36,21 @@ public class BookParagraphCommentVO extends BookParagraphComment {
      */
     private List<BookParagraphCommentVO> replies;
 
+    /**
+     * 所属书籍名称
+     */
+    private String bookName;
+
+    /**
+     * 所属书籍封面
+     */
+    private String picUrl;
+
+    /**
+     * 所属章节名称
+     */
+    private String indexName;
+
     @Override
     public String toString() {
         return super.toString();
