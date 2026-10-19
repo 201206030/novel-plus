@@ -182,55 +182,85 @@
             return;
         }
         var loadIndex = layer.load(2);
-        //移动端用原生FormData上传，替代PC端的ajaxfileupload.js
-        var formData = new FormData();
-        formData.append("file", fileInput.files[0]);
+        //完全比照PC端ajaxfileupload的做法：隐藏iframe + 原生form multipart提交，
+        //不走XHR，绕开部分手机内核发送FormData会丢失multipart Content-Type的问题
+        var frameId = "picUploadFrame";
+        var $oldFrame = $("#" + frameId);
+        if ($oldFrame.length) {
+            $oldFrame.remove();
+        }
+        var iframe = document.createElement('iframe');
+        iframe.name = frameId;
+        iframe.id = frameId;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.enctype = 'multipart/form-data';
+        form.action = '/file/picUpload';
+        form.target = frameId;
+        form.style.display = 'none';
+        document.body.appendChild(form);
+        //把真实的文件输入搬进表单（只有原元素才携带已选文件）
+        form.appendChild(fileInput);
+
+        var submitted = false;
+        iframe.onload = function () {
+            if (!submitted) {
+                return;
+            }
+            //同源iframe，可直接读出响应文本（浏览器会把JSON包在pre里展示）
+            var text = '';
+            try {
+                var doc = iframe.contentWindow.document;
+                text = doc.body ? (doc.body.innerText || doc.body.textContent) : '';
+            } catch (e) {
+            }
+            var data = null;
+            try {
+                data = JSON.parse($.trim(text || ''));
+            } catch (e) {
+            }
+            layer.close(loadIndex);
+            if (data && data.code == 200) {
+                saveUserPhoto(data.data);
+            } else {
+                //归还输入框到原容器，方便重新选择
+                document.getElementById('body').appendChild(fileInput);
+                layer.alert(data ? data.msg : '头像上传失败');
+            }
+            $(iframe).remove();
+            $(form).remove();
+        };
+        form.submit();
+        submitted = true;
+    }
+
+    //保存头像地址到用户信息
+    function saveUserPhoto(photoUrl) {
         $.ajax({
-            url: "/file/picUpload",
             type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
+            url: "/user/updateUserInfo",
+            data: {'userPhoto': photoUrl},
+            dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/user/updateUserInfo",
-                        data: {'userPhoto': data.data},
-                        dataType: "json",
-                        success: function (data) {
-                            layer.close(loadIndex);
-                            if (data.code == 200) {
-                                window.location.href = '/user/setup.html';
+                    window.location.href = '/user/setup.html';
 
-                            } else if (data.code == 1001) {
-                                //未登录
-                                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
-
-                            } else {
-                                layer.alert(data.msg);
-                            }
-
-                        },
-                        error: function () {
-                            layer.close(loadIndex);
-                            layer.alert('网络异常');
-                        }
-                    })
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
 
                 } else {
-                    layer.close(loadIndex);
                     layer.alert(data.msg);
                 }
 
             },
             error: function () {
-                layer.close(loadIndex);
-                layer.alert('头像上传失败');
+                layer.alert('网络异常');
             }
-        });
-        //清空选择，允许重复选择同一文件
-        fileInput.value = '';
+        })
     }
 </script>
 
