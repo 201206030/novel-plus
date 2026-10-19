@@ -387,7 +387,9 @@
         keyword = "";
     }
 
-    if (bookStatus !== null && bookStatus !== "") {
+    // getQueryVariable 未命中时返回 false，若用 !==null/!=="" 判断会误入同步逻辑，
+    // 导致所有状态胶囊被移除 active，「不限」初始值不选中；改用真值判断（'0'/'1' 为非空字符串不受影响）
+    if (bookStatus) {
         $("#status").val(bookStatus);
         $('#statusPills .pill').removeClass('active')
             .filter('[data-val="' + bookStatus + '"]').addClass('active');
