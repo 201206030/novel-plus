@@ -395,7 +395,7 @@
             .filter('[data-val="' + bookStatus + '"]').addClass('active');
     }
 
-    function search(curr, limit) {
+    function search(curr, limit, fromPage) {
 
 
         var searchData = {};
@@ -481,6 +481,11 @@
                     }
                     $("#bookList").html(bookListHtml);
 
+                    // 分页跳页后自动滚到列表第一行（首屏加载不触发）
+                    if (fromPage) {
+                        scrollToFirstBook();
+                    }
+
                     layui.use('laypage', function () {
                         var laypage = layui.laypage;
 
@@ -500,7 +505,7 @@
 
                                 //首次不执行
                                 if (!first) {
-                                    search(obj.curr, obj.limit);
+                                    search(obj.curr, obj.limit, true);
                                 } else {
 
                                 }
@@ -517,6 +522,12 @@
             }
         })
 
+    }
+
+    // 滚动到小说列表首行，需扣除吸顶头部高度（44px）避免首条卡片被头部遮挡
+    function scrollToFirstBook() {
+        var top = $("#bookList").offset().top - 50;
+        $('html,body').animate({scrollTop: top > 0 ? top : 0}, 200);
     }
 
     var categoryList;
