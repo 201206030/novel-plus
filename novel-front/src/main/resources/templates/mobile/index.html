@@ -96,42 +96,233 @@
             box-shadow: 0 2px 8px rgba(62, 175, 124, .10);
         }
 
-        .container {
-            display: flex;
-            overflow-x: auto; /* 允许内容水平滚动 */
-            white-space: nowrap; /* 禁止换行 */
-            scroll-snap-type: x mandatory; /* 在滚动时强制对齐 snap-points */
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
-            scrollbar-width: none; /* Firefox */
+        /* 区块卡片 */
+        .sec-block {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            margin: 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
         }
 
-        .container::-webkit-scrollbar {
+        .sec-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 20px;
+            margin-bottom: 12px;
+        }
+
+        .sec-title:before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background: #3eaf7c;
+            border-radius: 2px;
+            margin-right: 8px;
+            vertical-align: -2px;
+        }
+
+        /* 「更多」胶囊按钮：仅作用于链接自身 */
+        .sec-title .sec-more {
+            float: right;
+            font-size: 12px;
+            font-weight: normal;
+            color: #2e8b62;
+            background: rgba(62, 175, 124, .08);
+            border-radius: 12px;
+            padding: 2px 10px;
+        }
+
+        .sec-title .sec-more .layui-icon {
+            font-size: 12px;
+            margin-left: 2px;
+        }
+
+        a.sec-title {
+            display: block;
+            color: #1f2d26;
+        }
+
+        /* 按压反馈 */
+        a.sec-title:active .sec-more {
+            background: rgba(62, 175, 124, .18);
+        }
+
+        /* 精品推荐：横向滚动封面条 */
+        .rec-scroll {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .rec-scroll::-webkit-scrollbar {
             width: 0;
             height: 0;
         }
 
-        .container::-webkit-scrollbar-track,
-        .container::-webkit-scrollbar-thumb {
-            display: none;
+        .rec-item {
+            flex: 0 0 auto;
+            width: 90px;
+            text-align: center;
+            margin-right: 10px;
         }
 
+        .rec-item:last-child {
+            margin-right: 0;
+        }
 
-        .item {
-            flex: 0 0 calc(100% / 10); /* 每个元素宽度为容器的十分之一 */
-            scroll-snap-align: start;
-            box-sizing: border-box;
+        .rec-item .rec-cover {
+            width: 90px;
+            height: 118px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+        }
+
+        .rec-item .rec-name {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #5c6b64;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 书籍卡片（热门推荐） */
+        .book-card {
+            display: -webkit-flex;
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f7f6;
+        }
+
+        .book-card:first-child {
+            padding-top: 0;
+        }
+
+        .book-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .book-card .book-cover img {
+            width: 88px;
+            height: 116px;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .book-card .book-info {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 12px;
+        }
+
+        .book-card .book-name {
+            color: #000;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 22px;
+        }
+
+        .book-card .book-author {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        /* 更新日期榜列表 */
+        .ur-item {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid #f5f7f6;
+        }
+
+        .ur-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .ur-item:first-child {
+            padding-top: 0;
+        }
+
+        .ur-num {
+            flex: 0 0 auto;
+            -webkit-flex: 0 0 auto;
+            width: 20px;
             text-align: center;
-            border-radius: 5px;
-            margin-right: 5px;
+            font-size: 14px;
+            font-style: italic;
+            font-weight: 700;
+            color: #c0cac5;
+        }
+
+        .ur-num-1 {
+            color: #e05c6e;
+        }
+
+        .ur-num-2 {
+            color: #ff9e57;
+        }
+
+        .ur-num-3 {
+            color: #3eaf7c;
+        }
+
+        .ur-info {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 8px;
+        }
+
+        .ur-top {
+            display: block;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .ur-top .ur-author {
+            font-size: 12px;
+            color: #98a8a1;
+            margin-left: 8px;
+        }
+
+        .ur-sub {
+            margin-top: 3px;
+            font-size: 12px;
+            color: #b8c4bf;
+        }
+
+        .ur-time {
+            flex: 0 0 auto;
+            -webkit-flex: 0 0 auto;
+            font-size: 12px;
+            color: #b8c4bf;
+            margin-left: 10px;
         }
 
         .book_desc {
-            overflow: hidden;
-            text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
             white-space: pre-wrap;
+            margin-top: 4px;
+            font-size: 12px;
+            line-height: 18px;
+            color: #98a8a1;
         }
 
         /* 快捷入口：上图标下文字，包裹在卡片内 */
@@ -261,89 +452,43 @@
     </a>
     </div>
 </div>
-<div class="layui-collapse layui-col-lg10">
-    <div class="layui-colla-item">
-        <blockquote class="layui-elem-quote" style="text-align: left;font-size: 16px">
-            精品推荐
-        </blockquote>
+<div class="sec-block">
+    <div class="sec-title">精品推荐</div>
 
-        <div class="container" style="padding-bottom: 10px">
+    <div class="rec-scroll" th:if="${bookMap['4']}">
+        <div class="rec-item" th:each="book,iterStat:${bookMap['4']}">
+            <a th:href="'/book/'+${book.bookId}+'.html'">
+                <img class="rec-cover" th:src="${book.picUrl}" alt="">
+                <div class="rec-name" th:text="${book.bookName}"></div>
+            </a>
+        </div>
+    </div>
+</div>
 
-            <div class="item" style="position: relative;padding:1%;" th:if="${bookMap['4']}" th:each="book,iterStat:${bookMap['4']}">
+<div class="sec-block">
+    <div class="sec-title">热门推荐</div>
+
+    <div id="hotRecBooks" th:if="${bookMap['3']}">
+        <div class="book-card" th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}">
+            <a class="book-cover" th:href="'/book/'+${book.bookId}+'.html'">
+                <img th:src="${book.picUrl}" alt="">
+            </a>
+            <div class="book-info">
                 <a th:href="'/book/'+${book.bookId}+'.html'">
-
-                    <img style=" width:100px; height:125px; max-width:100%; max-height:100%;"
-                         th:src="${book.picUrl}">
-                    <br>
-                    <span style="width: 100px" class="book_name" th:text="${book.bookName}"></span>
-
+                    <div class="book-name line-limit-length" th:text="${book.bookName}"></div>
                 </a>
-
+                <div class="book-author line-limit-length" th:text="'作者：'+${book.authorName}"></div>
+                <div class="book_desc" th:utext="${book.bookDesc}"></div>
             </div>
         </div>
     </div>
-
-
-</div>
-<div style="clear: both"></div>
-<div class="layui-colla-item">
-    <blockquote class="layui-elem-quote" style="text-align: left;font-size: 16px">
-        热门推荐
-    </blockquote>
-
-    <div class="layui-container">
-        <div class="layui-row" id="hotRecBooks" th:if="${bookMap['3']}">
-            <div th:each="book,iterStat : ${bookMap['3']}" th:if="${iterStat.index<6}" style="margin-bottom: 5px"
-                 class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                <a th:href="'/book/'+${book.bookId}+'.html'">
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
-                        <img style=" width:100px; height:125px;" th:src="${book.picUrl}">
-
-                    </div>
-                    <div class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
-                        <ul>
-                            <li style="padding-bottom: 5px" class="line-limit-length"
-                                th:text="${book.bookName}"></li>
-                            <li style="padding-bottom: 5px;color: #a6a6a6" th:text="'作者：'+${book.authorName}"></li>
-                            <li class='book_desc' style="color: #a6a6a6;padding-right:10px;"
-                                th:utext="${book.bookDesc}"></li>
-                        </ul>
-                    </div>
-                    <div style="font-style: italic;color: red"
-                         class="layui-col-xs2 layui-col-sm2 layui-col-md2 layui-col-lg2"></div>
-                </a>
-            </div>
-
-
-        </div>
-
-    </div>
-
-</div>
-<div style="clear: both"></div>
-<div style="height: 1px" class="layui-col-lg1"></div>
-<div class="layui-colla-item layui-col-lg10"
-     style="border-width: 1px;border-style: solid;border-radius: 2px;border-top-width: 0px"><a
-        href="javascript:moreNewBooks()">
-    <blockquote class="layui-elem-quote" style="text-align: left;color: #000;font-size: 16px">最新更新
-        <div style="float: right; margin-right: 20px"><i style="font-size: 14px;color:#666"
-                                                         class="layui-icon">更多&#xe65b;</i>
-        </div>
-    </blockquote>
-</a>
-    <div class="layui-colla-content layui-show">
-
-        <div class="layui-container" style="padding-left: 2px;padding-right: 5px">
-            <div class="layui-row" id="updateRankBooks">
-
-
-            </div>
-        </div>
-
-    </div>
 </div>
 
-<div style="clear: both"></div>
+<div class="sec-block">
+    <a class="sec-title" href="javascript:moreNewBooks()">最新更新<span class="sec-more">更多</span></a>
+    <div id="updateRankBooks"></div>
+</div>
+
 <div th:replace="mobile/common/footer :: footer">
 </div>
 <div th:replace="mobile/common/js :: js">
@@ -372,20 +517,14 @@
                         updateRankBook.bookDesc = updateRankBook.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "");
                     }
 
-                    updateRankBookHtml += ("<div style=\"padding-bottom: 30px\"\n" +
-                        "                     class=\"layui-col-xs12 layui-col-sm6 layui-col-md6 layui-col-lg6\">\n" +
-                        "\n" +
-                        "                    <a href=\"/book/" + updateRankBook.id + ".html\">\n" +
-                        "                        <div class=\"line-limit-length layui-col-xs8 layui-col-sm6 layui-col-md6 layui-col-lg6\"><span '>" + (i + 1) + "." + updateRankBook.bookName + "</span> - <span class=\"layui-elip\" style='color: #a6a6a6;'>" + updateRankBook.authorName + "</span>\n" +
-                        "                        </div>\n" +
-                        "                        <div class=\"layui-col-sm3 layui-col-md3 layui-col-lg3\"\n" +
-                        "                             style=\"color: #FF5722;float: right;margin-right:5px\"><i>" + updateRankBook.lastIndexUpdateTime + "</i></div>\n" +
-                        "\n" +
-                        "                        <div style=\"clear: both\"></div>\n" +
-                        "                        <div style=\"color: #a6a6a6;padding-left: 5px;padding-top: 5px\"\n" +
-                        "                             class=\"layui-elip layui-col-md11 layui-col-sm11 layui-col-lg11\">简介：" + updateRankBook.bookDesc + "" +
-                        "                    </div></a>\n" +
-                        "                </div>");
+                    updateRankBookHtml += ("<div class=\"ur-item\">\n" +
+                        "        <span class=\"ur-num" + (i < 3 ? " ur-num-" + (i + 1) : "") + "\">" + (i + 1) + "</span>\n" +
+                        "        <div class=\"ur-info\">\n" +
+                        "            <a class=\"ur-top line-limit-length\" href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookName + "<span class=\"ur-author\">" + updateRankBook.authorName + "</span></a>\n" +
+                        "            <div class=\"ur-sub line-limit-length\">" + (updateRankBook.bookDesc || "") + "</div>\n" +
+                        "        </div>\n" +
+                        "        <span class=\"ur-time\">" + updateRankBook.lastIndexUpdateTime.substr(0, 11) + "</span>\n" +
+                        "    </div>");
 
 
                 }

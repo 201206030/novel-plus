@@ -11,17 +11,7 @@
 <div id="content">
     <input type="hidden" id="commentIdHidden" th:value="${commentId}"/>
 
-    <div style="height: 50px;line-height: 50px;text-align: center"
-         class="layui-header header header-doc  layui-bg-cyan">
-        <div style="float: left;margin-left: 10px">
-            <a href="javascript:history.go(-1)">
-                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-        </div>
-        <b class="layui-icon">评论回复区</b>
-        <div style="float: right;margin-right: 10px">
-            <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
-        </div>
-    </div>
+    <div th:replace="mobile/common/header :: pageHeader('评论回复区', null)"></div>
 
     <blockquote class="layui-elem-quote" style="margin: 12px;" th:utext="${commentContent}"></blockquote>
 

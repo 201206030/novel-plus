@@ -99,19 +99,7 @@
 <body>
 <div id="body">
 
-    <div style="height: 50px;line-height: 50px;text-align: center"
-         class="layui-header header header-doc  layui-bg-cyan">
-
-        <div style="width:10%;float: left;margin-left: 10px">
-            <a href="javascript:history.go(-1)">
-                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-        </div>
-        <b class="layui-icon">书单广场</b>
-        <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-        </a>
-        </div>
-    </div>
+    <div th:replace="mobile/common/header :: pageHeader('书单广场', null)"></div>
 
     <div class="bl-tip-bar">
         发现好书单

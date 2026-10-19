@@ -16,17 +16,7 @@
 <div id="content">
     <input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
 
-    <div style="height: 50px;line-height: 50px;text-align: center"
-         class="layui-header header header-doc  layui-bg-cyan">
-        <div style="float: left;margin-left: 10px">
-            <a href="javascript:history.go(-1)">
-                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-        </div>
-        <b class="layui-icon">作品评论区</b>
-        <div style="float: right;margin-right: 10px">
-            <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
-        </div>
-    </div>
+    <div th:replace="mobile/common/header :: pageHeader('作品评论区', null)"></div>
 
     <div style="padding: 10px 12px 0;">
         <span id="bookCommentTotal" style="color:#999;font-size:13px;">(0条)</span>

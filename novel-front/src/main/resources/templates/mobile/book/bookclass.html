@@ -88,8 +88,55 @@
             border-top: 1px solid #f0f5f2;
         }
 
-        .layui-collapse .layui-form-label {
+        /* 筛选区：标签胶囊组，替代原生下拉框 */
+        .filter-body {
+            padding: 12px 14px 14px;
+        }
+
+        .filter-row {
+            display: -webkit-flex;
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 56px;
+            font-size: 13px;
             color: #5c6b64;
+            line-height: 26px;
+            margin-right: 8px;
+        }
+
+        .filter-pills {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            display: inline-block;
+            line-height: 26px;
+            padding: 0 12px;
+            border-radius: 13px;
+            font-size: 12px;
+            background: #f2f6f4;
+            color: #5c6b64;
+            cursor: pointer;
+        }
+
+        .pill.active {
+            background: #3eaf7c;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(62, 175, 124, .25);
         }
 
         /* 书籍列表卡片 */
@@ -199,17 +246,7 @@
 <input type="hidden" id="sortBy" th:value="${sortBy}"/>
 <input type="hidden" id="sort" th:value="${sort}"/>
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
-
-    <div style="float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-    </div>
-    <b class="layui-icon">小说列表</b>
-    <div style="float: right;margin-right: 10px">
-        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
-    </div>
-</div>
+<div th:replace="mobile/common/header :: pageHeader('书库', null)"></div>
 
 <div class="search-bar">
     <input id="title" type="text" name="title" required lay-verify="required" placeholder="请输入书名·作者"
@@ -221,73 +258,93 @@
     <div class="layui-colla-item" style="margin-bottom: 0px">
         <h2 class="layui-colla-title">小说筛选</h2>
         <div class="layui-colla-content ">
-            <div class="layui-container" style="padding: 10px 15px 0px 10px">
-                <div class="layui-form">
-                    <div class="layui-form-item" id="channelItem">
-                        <label class="layui-form-label">作品频道</label>
-                        <div class="layui-input-block">
-                            <select id="channel" lay-filter="channel">
-                                <option value="0">男频</option>
-                                <option value="1">女频</option>
-                            </select>
-                        </div>
-                    </div>
+            <div class="filter-body">
 
-                    <div class="layui-form-item" id="categoryItem">
-                        <label class="layui-form-label">作品分类</label>
-                        <div class="layui-input-block">
-                            <select id="category">
-                            </select>
-                        </div>
-                    </div>
+                <!-- 保留隐藏 select 作为取值容器，胶囊点击同步写入，search() 读取逻辑不变 -->
+                <select id="channel" hidden>
+                    <option value="0">男频</option>
+                    <option value="1">女频</option>
+                </select>
+                <select id="category" hidden></select>
+                <select id="status" hidden>
+                    <option value="">不限</option>
+                    <option value="0">连载中</option>
+                    <option value="1">已完结</option>
+                </select>
+                <select id="wordCount" hidden>
+                    <option value="">不限</option>
+                    <option value="-300000">30万字以下</option>
+                    <option value="300000-500000">30-50万字</option>
+                    <option value="500000-1000000">50-100万字</option>
+                    <option value="1000000-">100万字以上</option>
+                </select>
+                <select id="updateTime" hidden>
+                    <option value="">不限</option>
+                    <option value="3">3日内</option>
+                    <option value="7">7日内</option>
+                    <option value="15">半月内</option>
+                    <option value="30">一月内</option>
+                </select>
+                <select id="by" hidden>
+                    <option value="">不限</option>
+                    <option value="last_index_update_time">更新时间</option>
+                    <option value="word_count">总字数</option>
+                    <option value="visit_count">点击量</option>
+                </select>
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">是否完结</label>
-                        <div class="layui-input-block">
-                            <select id="status">
-                                <option value="">不限</option>
-                                <option value="0">连载中</option>
-                                <option value="1">已完结</option>
-                            </select>
-                        </div>
+                <div class="filter-row" id="channelItem">
+                    <div class="filter-label">频道</div>
+                    <div class="filter-pills" id="channelPills" data-target="channel">
+                        <span class="pill active" data-val="0">男频</span>
+                        <span class="pill" data-val="1">女频</span>
                     </div>
+                </div>
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">作品字数</label>
-                        <div class="layui-input-block">
-                            <select id="wordCount">
-                                <option value="">不限</option>
-                                <option value="-300000">30万字以下</option>
-                                <option value="300000-500000">30-50万字</option>
-                                <option value="500000-1000000">50-100万字</option>
-                                <option value="1000000-">100万字以上</option>
-                            </select>
-                        </div>
+                <div class="filter-row" id="categoryItem">
+                    <div class="filter-label">分类</div>
+                    <div class="filter-pills" id="categoryPills" data-target="category">
+                        <span class="pill active" data-val="">不限</span>
                     </div>
+                </div>
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">更新时间</label>
-                        <div class="layui-input-block">
-                            <select id="updateTime">
-                                <option value="">不限</option>
-                                <option value="3">3日内</option>
-                                <option value="7">7日内</option>
-                                <option value="15">半月内</option>
-                                <option value="30">一月内</option>
-                            </select>
-                        </div>
+                <div class="filter-row">
+                    <div class="filter-label">状态</div>
+                    <div class="filter-pills" id="statusPills" data-target="status">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="0">连载中</span>
+                        <span class="pill" data-val="1">已完结</span>
                     </div>
+                </div>
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">排序方式</label>
-                        <div class="layui-input-block">
-                            <select id="by">
-                                <option value="">不限</option>
-                                <option value="last_index_update_time">更新时间</option>
-                                <option value="word_count">总字数</option>
-                                <option value="visit_count">点击量</option>
-                            </select>
-                        </div>
+                <div class="filter-row">
+                    <div class="filter-label">字数</div>
+                    <div class="filter-pills" data-target="wordCount">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="-300000">30万字以下</span>
+                        <span class="pill" data-val="300000-500000">30-50万字</span>
+                        <span class="pill" data-val="500000-1000000">50-100万字</span>
+                        <span class="pill" data-val="1000000-">100万字以上</span>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-label">更新</div>
+                    <div class="filter-pills" data-target="updateTime">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="3">3日内</span>
+                        <span class="pill" data-val="7">7日内</span>
+                        <span class="pill" data-val="15">半月内</span>
+                        <span class="pill" data-val="30">一月内</span>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-label">排序</div>
+                    <div class="filter-pills" data-target="by">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="last_index_update_time">更新时间</span>
+                        <span class="pill" data-val="word_count">总字数</span>
+                        <span class="pill" data-val="visit_count">点击量</span>
                     </div>
                 </div>
 
@@ -330,9 +387,10 @@
         keyword = "";
     }
 
-    if (bookStatus) {
+    if (bookStatus !== null && bookStatus !== "") {
         $("#status").val(bookStatus);
-        layui.form.render('select');
+        $('#statusPills .pill').removeClass('active')
+            .filter('[data-val="' + bookStatus + '"]').addClass('active');
     }
 
     function search(curr, limit) {
@@ -463,9 +521,6 @@
     $.ajax({
         type: 'get', url: '/book/listBookCategory', data: {}, success: function (data) {
             categoryList = data.data;
-            layui.form.on('select(channel)', function (data) {
-                changeChannel(data.value);
-            });
             var workdirection = "0";
             for (var i = 0; i < categoryList.length; i++) {
                 var category = categoryList[i];
@@ -473,6 +528,10 @@
                     workdirection = category.workDirection;
                     break;
                 }
+            }
+            if (workdirection != "0") {
+                $('#channelPills .pill').removeClass('active')
+                    .filter('[data-val="' + workdirection + '"]').addClass('active');
             }
             $("#channel").val(workdirection);
             changeChannel(workdirection);
@@ -482,23 +541,40 @@
         }
     });
 
-    layui.form.on('select', function (data) {
-        search(1, 20)
+    // 胶囊点击：同步写入隐藏 select 后触发检索，原逻辑不变
+    $(".filter-pills").on("click", ".pill", function () {
+        var $pill = $(this);
+        if ($pill.hasClass('active')) {
+            return;
+        }
+        $pill.addClass('active').siblings('.active').removeClass('active');
+        var targetId = $pill.closest('.filter-pills').attr('data-target');
+        if (targetId === 'channel') {
+            changeChannel($pill.attr('data-val'));
+            return;
+        }
+        $("#" + targetId).val($pill.attr('data-val'));
+        search(1, 20);
     });
 
     function changeChannel(selected) {
+        $("#channel").val(selected);
         var options = '<option value="">不限</option>';
+        // 有 catId 时「不限」不置选中，避免和具体分类双高亮
+        var pills = '<span class="pill' + (catId ? '' : ' active') + '" data-val="">不限</span>';
         for (var i = 0; i < categoryList.length; i++) {
             var category = categoryList[i];
             if (category.workDirection == selected) {
                 options += ('<option value="' + category.id + '">' + category.name + '</option>');
+                pills += ('<span class="pill" data-val="' + category.id + '">' + category.name + '</span>');
             }
         }
         $('#category').html(options);
+        $('#categoryPills').html(pills);
         if (catId) {
             $('#category').val(catId);
+            $('#categoryPills .pill[data-val="' + catId + '"]').addClass('active');
         }
-        layui.form.render('select');
         search(1, 20)
     }
 

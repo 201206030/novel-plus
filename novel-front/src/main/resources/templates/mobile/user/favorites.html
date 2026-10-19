@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -16,46 +14,19 @@
 
     <div th:include="mobile/common/css :: css"></div>
 
-    </div>
-
     <style type="text/css">
 
         body {
-
-            -webkit-user-select: none; /* Chrome, Safari, Opera */
-
-
-            -moz-user-select: none; /* Firefox */
-
-
-            -ms-user-select: none; /* Internet Explorer/Edge */
-
-
-            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Firefox */
-
-
+            background: #f5f7f6;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
 
-        .line-limit-length {
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-        }
-
-        .indexP p a {
-            color: #4c6978;
-        }
-
-        .Readarea {
-            font-size: 18px;
-            line-height: 35px;
-            padding: 10px;
-            color: #333;
+        #bookList {
+            padding-top: 10px;
         }
 
         div, p {
@@ -63,30 +34,146 @@
             word-break: break-all;
             word-wrap: break-word;
             word-break: normal;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
             box-sizing: border-box;
-            -ms-box-sizing: border-box;
         }
 
-        .indexDiv a {
-            margin-left: 20px;
+        /* 书架书卡片 */
+        .shelf-item {
+            display: -webkit-flex;
+            display: flex;
+            margin: 0 12px 10px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        img {
-            width: 130px;
-            height: 180px;
+        .shelf-item:active {
+            opacity: .88;
         }
 
-        #tipLayer {
-            display: none;
-            position: absolute;
-            background-color: rgba(255, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
+        .shelf-item .cover {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 64px;
+            height: 88px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #f0f2f1;
+        }
+
+        .shelf-item .info {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 10px;
+        }
+
+        .shelf-item .book-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 22px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .shelf-item .meta-row {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .shelf-item .tag-pill {
+            font-size: 10px;
+            line-height: 16px;
+            padding: 0 7px;
+            border-radius: 8px;
+            background: rgba(62, 175, 124, .12);
+            color: #2e8b62;
+            margin-right: 6px;
+        }
+
+        .shelf-item .tag-pill.gray {
+            background: #f0f2f1;
+            color: #8a968f;
+        }
+
+        .shelf-item .update-time {
+            margin-left: auto;
+            font-size: 11px;
+            color: #98a8a1;
+        }
+
+        .shelf-item .author {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #8a968f;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .shelf-item .desc {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #98a8a1;
+            line-height: 17px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 空书架 */
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        /* 分页 */
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
+
+        /* 固定移出按钮 */
+        .shelf-item .card-foot {
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .btn-remove {
+            display: inline-block;
+            font-size: 11px;
+            line-height: 20px;
+            padding: 0 12px;
+            border-radius: 11px;
+            border: 1px solid #eabfc6;
+            color: #e05c6e;
+            background: #fff;
             cursor: pointer;
-            z-index: 1000;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-remove:active {
+            background: rgba(224, 92, 110, .08);
         }
 
     </style>
@@ -104,30 +191,13 @@
 <input type="hidden" id="sortBy" th:value="${sortBy}"/>
 <input type="hidden" id="sort" th:value="${sort}"/>
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
-
-    <div style="width:10%;float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-    </div>
-    <b class="layui-icon">我的书架</b>
-    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-    </a>
-    </div>
-</div>
+<div th:replace="mobile/common/header :: pageHeader('我的书架', null)"></div>
 <div id="body">
     <div id="bookList">
 
 
     </div>
-    <div id="tipLayer"
-         style="display:none; position:absolute; background-color:rgba(255, 0, 0, 0.8); color:white; padding:5px; border-radius:3px; cursor:pointer;">
-        移出书架
-    </div>
-
-
-    <div id="books" style="text-align: center;"></div>
+    <div id="books" class="page-box"></div>
 
 </div>
 <div th:replace="mobile/common/footer :: footer">
@@ -138,8 +208,6 @@
 <div th:replace="mobile/common/js :: js"></div>
 
 <script>
-
-    var timeout, isLongPress = false;
 
     search(1, 20);
 
@@ -167,61 +235,30 @@
                             book.bookDesc = book.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "").replace(/&nbsp;/g, "");
                         }
 
-                        bookListHtml += ("<div id='" + book.bookId + "' onclick='read(\"" + book.bookId + "\",\"" + book.preContentId + "\")' class=\"item layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
-                            "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
-                            "                <img style='width: 130px;height: 180px' align=\"center\"\n" +
-                            "                     src=\"" + book.picUrl + "\"/>\n" +
-                            "            </div>\n" +
-                            "        \n" +
-                            "        <div style=\"padding: 10px\" class=\"layui-col-xs6 layui-col-sm8 layui-col-md8 layui-col-lg8\">\n" +
-                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">" + book.bookName + "</div>\n" +
-                            "            <div style=\";color: #4c6978;float: right;\"><i style=\"color: red\"></i></div>\n" +
-                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者：" + book.authorName + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别：" + book.catName + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态：" + (book.bookStatus == 0 ? '连载' : '完结') + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>" + book.lastIndexUpdateTime.substr(0, 11) + "</i>\n" +
-                            "            </div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">简介：" + (book.bookDesc ? (book.bookDesc.length > 15 ? (book.bookDesc.substr(0, 15) + "...") : book.bookDesc) : book.bookDesc) + "</div>\n" +
-                            "\n" +
-                            "\n" +
+                        bookListHtml += ("<div id='" + book.bookId + "' class=\"item shelf-item\" onclick='read(\"" + book.bookId + "\",\"" + book.preContentId + "\")'" +
+                            ">\n" +
+                            "    <img class=\"cover\" src=\"" + book.picUrl + "\"/>\n" +
+                            "    <div class=\"info\">\n" +
+                            "        <div class=\"book-name\">" + book.bookName + "</div>\n" +
+                            "        <div class=\"meta-row\">\n" +
+                            "            <span class=\"tag-pill\">" + book.catName + "</span>\n" +
+                            "            <span class=\"tag-pill gray\">" + (book.bookStatus == 0 ? '连载' : '完结') + "</span>\n" +
+                            "            <span class=\"update-time\">" + book.lastIndexUpdateTime.substr(0, 11) + " 更新</span>\n" +
                             "        </div>\n" +
-                            "\n" +
-                            "    </div>");
+                            "        <div class=\"author\">作者：" + book.authorName + "</div>\n" +
+                            "        <div class=\"desc\">简介：" + (book.bookDesc ? book.bookDesc : '暂无简介') + "</div>\n" +
+                            "        <div class=\"card-foot\"><span class=\"btn-remove\">移出书架</span></div>\n" +
+                            "    </div>\n" +
+                            "</div>");
                     }
-                    $("#bookList").html(bookListHtml);
+                    $("#bookList").html(bookListHtml || "<div class=\"empty-tip\">书架空空如也，先去书城挑几本好书吧~<br><a href=\"/\" class=\"empty-link\">去书城逛逛</a></div>");
 
 
-                    $(".item").on('touchstart', function (e) {
-                        var element = $(this);
-                        // 清除可能存在的定时器
-                        clearTimeout(timeout);
-                        isLongPress = false;
-
-                        // 获取触摸点位置
-                        var touch = e.originalEvent.touches[0];
-
-                        // 设置一个定时器，在500ms后触发（可以根据需要调整时间）
-                        timeout = setTimeout(function () {
-                            e.preventDefault();
-                            showTip(touch, element);
-                        }, 1000);
-                    }).on('touchend', function (e) {
-                        if (!isLongPress) {
-                            // 如果没有发生长按，则执行点击事件的逻辑
-                            clearTimeout(timeout);
-                        }
-                    }).on('touchmove', function () {
-                        clearTimeout(timeout);
-                        hideTip();
-                    }).on('contextmenu', function (e) {
-                        e.preventDefault();
-                    });
-
-                    $('#tipLayer').click(function () {
-                        // 点击tips层时删除对应的.item元素
-                        removeFromBookShelf($(this).data('target').attr("id"));
-                        $(this).data('target').remove();
-                        hideTip();
+                    $(".btn-remove").on('click', function (e) {
+                        e.stopPropagation(); // 不触发卡片的继续阅读跳转
+                        var $item = $(this).closest('.item');
+                        removeFromBookShelf($item.attr('id'));
+                        $item.remove();
                     });
 
 
@@ -262,24 +299,6 @@
         })
 
     }
-
-    function showTip(touchEvent, element) {
-        isLongPress = true;
-        // 根据触摸点位置设置弹出层的位置
-        $('#tipLayer')
-            .css({
-                top: touchEvent.pageY - 100, // 调整这个值以改变弹出层相对于触摸点的位置
-                left: touchEvent.pageX - ($('#tipLayer').outerWidth() / 2)
-            })
-            .data('target', element) // 存储目标元素以便后续操作
-            .show();
-    }
-
-    function hideTip() {
-        isLongPress = false;
-        $('#tipLayer').hide().removeData('target'); // 隐藏tips并清除数据
-    }
-
 
     function searchByAllCondition(curr, limit, newKeyword) {
         var toUrl = "/book/search?curr=" + curr + "&limit=" + limit;
@@ -326,11 +345,7 @@
     }
 
     function read(bookId, contentId) {
-        if (isLongPress) {
-            return false;
-        }
         location.href = '/book/' + bookId + "/" + contentId + ".html"
-        hideTip();
     }
 
 </script>

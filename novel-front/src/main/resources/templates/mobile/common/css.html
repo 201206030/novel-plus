@@ -35,14 +35,95 @@
             white-space: pre-wrap;
         }
 
+        /* ===== 全局页头（mobile/common/header 片段的样式）：主题绿渐变，吸顶 ===== */
+        .page-header {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            height: 44px;
+            padding: 0 4px;
+            background: linear-gradient(90deg, #3eaf7c, #2c8a61);
+            box-shadow: 0 2px 6px rgba(44, 138, 97, .25);
+            color: #fff;
+        }
+
+        .page-header .ph-btn {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 40px;
+            height: 44px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .page-header .ph-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .page-header .ph-btn:active {
+            opacity: .6;
+        }
+
+        .page-header .ph-title {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ===== 全局页尾：白底 flex 导航栏 ===== */
         #footer {
             position: absolute;
             bottom: 0px;
             left: 0;
             right: 0;
             height: 50px;
-            line-height: 48px;
-            text-align: center;
+            display: -webkit-flex;
+            display: flex;
+            background: #fff;
+            border-top: 1px solid #eef3f0;
+            box-shadow: 0 -2px 8px rgba(62, 175, 124, .06);
+        }
+
+        #footer .ft-item {
+            -webkit-flex: 1;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #5c6b64;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #footer .ft-item:active {
+            color: #3eaf7c;
+        }
+
+        #footer .ft-divider {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 1px;
+            background: #f0f5f2;
+            margin: 14px 0;
         }
     </style>
 </div>

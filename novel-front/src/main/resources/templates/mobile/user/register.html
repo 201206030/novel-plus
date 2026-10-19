@@ -13,18 +13,7 @@
 </head>
 <body id="read">
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
-
-    <div style="width:10%;float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-    </div>
-    <b class="layui-icon">注册</b>
-    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-    </a>
-    </div>
-</div>
+<div th:replace="mobile/common/header :: pageHeader('注册', null)"></div>
 <form lay-filter="loginForm" id="form1" style="height: 500px;padding-top:30px;padding-right: 20px" class="layui-form"
       action="">
     <input type="hidden" id="bookIdHidden" name="bookId" th:value="${bookId}"/>

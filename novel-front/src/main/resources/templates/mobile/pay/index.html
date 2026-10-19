@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -17,68 +15,105 @@
     <div th:include="mobile/common/css :: css"></div>
 
     <style type="text/css">
-
-
-        .line-limit-length {
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-        }
-
-        .indexP p a {
-            color: #4c6978;
-        }
-
-        .Readarea {
-            font-size: 18px;
-            line-height: 35px;
-            padding: 10px;
-            color: #333;
+        body {
+            background: #f5f7f6;
         }
 
         div, p {
-            wrap-work: break-word;
             word-break: break-all;
             word-wrap: break-word;
-            word-break: normal;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
             box-sizing: border-box;
-            -ms-box-sizing: border-box;
         }
 
-        .indexDiv a {
-            margin-left: 20px;
+        /* 账户卡片 */
+        .account-card {
+            margin: 12px;
+            padding: 16px;
+            background: linear-gradient(135deg, #3eaf7c, #2c8a61);
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(62, 175, 124, .25);
         }
 
-        img {
-            width: 130px;
-            height: 180px;
+        .account-card .acc-row {
+            font-size: 13px;
+            opacity: .9;
         }
 
-        .payHead {
-            height: 36px;
-            line-height: 36px;
-            padding: 20px 0 50px;
-            margin: 0 24px;
-            font-size: 16px;
-            border-bottom: 1px solid #eaeaea;
-            zoom: 1;
+        .account-card .acc-bal {
+            margin-top: 14px;
+            font-size: 12px;
+            opacity: .85;
         }
 
-        .pay_way li {
+        .account-card .acc-num {
+            margin-top: 2px;
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 34px;
+        }
+
+        /* 区块标题 */
+        .section-label {
+            margin: 16px 12px 4px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2d26;
+        }
+
+        /* 金额九宫格 */
+        .amount-grid {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            padding: 4px 8px;
+        }
+
+        .amount-item {
+            -webkit-flex: 0 0 31%;
+            flex: 0 0 31%;
+            width: 31%;
+            margin: 8px 1.16%;
+            padding: 14px 0 12px;
+            background: #fff;
+            border: 1px solid #e6ece9;
+            border-radius: 10px;
             text-align: center;
             cursor: pointer;
-            border: 2px solid #eee;
-            margin: 20px 0px 3px 43px;
-            padding-top: 20px;
-            padding-bottom: 20px;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        .amount-item strong {
+            display: block;
+            font-size: 17px;
+            font-weight: 600;
+            color: #1f2d26;
+        }
+
+        .amount-item .pay_mn {
+            display: block;
+            margin-top: 4px;
+            font-size: 11px;
+            color: #98a8a1;
+        }
+
+        .amount-item:active {
+            border-color: #3eaf7c;
+            background: rgba(62, 175, 124, .06);
+        }
+
+        .amount-item:active strong {
+            color: #2e8b62;
+        }
+
+        /* 汇率提示 */
+        .pay-tip {
+            margin: 10px 12px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #98a8a1;
+        }
     </style>
 </head>
 <body>
@@ -95,59 +130,24 @@
 <input type="hidden" id="sortBy" th:value="${sortBy}"/>
 <input type="hidden" id="sort" th:value="${sort}"/>
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
+<div th:replace="mobile/common/header :: pageHeader('充值', null)"></div>
+<div id="body">
+    <div class="account-card">
+        <div class="acc-row">充值账号：<span id="my_name">-</span></div>
+        <div class="acc-bal">当前余额（屋币）</div>
+        <div class="acc-num"><span id="accountBalance">0</span></div>
+    </div>
 
-    <div style="width:10%;float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
+    <div class="section-label">选择充值金额</div>
+    <div id="payAmount" class="amount-grid">
+        <div class="amount-item" vals="10"><strong>10元</strong><span class="pay_mn">1000屋币</span></div>
+        <div class="amount-item" vals="30"><strong>30元</strong><span class="pay_mn">3000屋币</span></div>
+        <div class="amount-item" vals="50"><strong>50元</strong><span class="pay_mn">5000屋币</span></div>
+        <div class="amount-item" vals="100"><strong>100元</strong><span class="pay_mn">10000屋币</span></div>
+        <div class="amount-item" vals="200"><strong>200元</strong><span class="pay_mn">20000屋币</span></div>
+        <div class="amount-item" vals="500"><strong>500元</strong><span class="pay_mn">50000屋币</span></div>
     </div>
-    <b class="layui-icon">充值</b>
-    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-    </a>
-    </div>
-</div>
-<div id="body" class="layui-row">
-    <div class="payHead cf">
-        <div class="fl">
-            充值账号：<span class="user_name" id="my_name">13560421324</span>&nbsp;&nbsp;&nbsp;&nbsp;余额：<em
-                style="color: #3eaf7c" id="accountBalance">10</em> 屋币<!--<em class="red">+0</em>代金券-->
-        </div>
-    </div>
-    <div id="payAmount" class="pay_way layui-row" style="text-align: center;padding-top: 20px;">
-        <h5>选择充值金额</h5>
-        <li vals="10" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
-            <div class="layui-panel">
-                <div><strong>10元</strong><br><span class="pay_mn">1000屋币</span></div>
-            </div>
-        </li>
-        <li vals="30" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
-            <div class="layui-panel">
-                <div><strong>30元</strong><br><span class="pay_mn">3000屋币</span></div>
-            </div>
-        </li>
-        <li vals="50" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
-            <div class="layui-panel">
-                <div><strong>50元</strong><br><span class="pay_mn">5000屋币</span></div>
-            </div>
-        </li>
-        <li vals="100" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
-            <div class="layui-panel">
-                <div><strong>100元</strong><br><span class="pay_mn">10000屋币</span></div>
-            </div>
-        </li>
-        <li vals="200" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
-            <div class="layui-panel">
-                <div><strong>200元</strong><br><span class="pay_mn">20000屋币</span></div>
-            </div>
-        </li>
-        <li vals="500" class="layui-col-xs4 layui-col-sm3 layui-col-md2">
-            <div class="layui-panel">
-                <div><strong>500元</strong><br><span class="pay_mn">50000屋币</span></div>
-            </div>
-        </li>
-
-    </div>
+    <div class="pay-tip">当前汇率：1元 = 100屋币，点击金额即可通过支付宝支付</div>
 
     <form action="/pay/aliPay" method="post" id="payform" name="payform">
 
@@ -196,7 +196,7 @@
         }
     })
 
-    $("#payAmount").find("li").click(function () {
+    $("#payAmount").find(".amount-item").click(function () {
 
         $("#pValue").val($(this).attr("vals"));
 

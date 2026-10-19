@@ -29,7 +29,6 @@
     </script>
     <script th:fragment="js" src="/mobile/js/jquery-1.9.1.js"></script>
     <script th:fragment="js" src="/mobile/layui/layui.all.js"></script>
-    </div>
 
     <style type="text/css">
         .line-limit-length {
@@ -42,39 +41,101 @@
 
         }
 
-        .indexP p a {
-            color: #4c6978;
+        /* 上一章/目录/下一章导航 */
+        .read-nav {
+            display: -webkit-flex;
+            display: flex;
+            padding: 10px 8px;
         }
 
+        .read-nav a {
+            -webkit-flex: 1;
+            flex: 1;
+            height: 36px;
+            line-height: 36px;
+            margin: 0 4px;
+            text-align: center;
+            background: #f2f6f4;
+            color: #5c6b64;
+            font-size: 14px;
+            border-radius: 18px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .read-nav a:active {
+            background: rgba(62, 175, 124, .15);
+            color: #2e8b62;
+        }
+
+        /* 章节标题 */
+        .chapter-title {
+            padding: 6px 18px 14px;
+            border-bottom: 1px solid #f0f5f2;
+            margin-bottom: 6px;
+        }
+
+        .chapter-title h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 28px;
+        }
+
+        .chapter-title .ct-sub {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        /* 正文 */
         .Readarea {
             font-size: 18px;
-            line-height: 35px;
-            padding: 10px;
+            line-height: 2em;
             color: #333;
+            padding: 0 0 16px;
         }
 
-        div, p {
-            wrap-work: break-word;
-            word-break: break-all;
-            word-wrap: break-word;
-            word-break: normal;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            -ms-box-sizing: border-box;
-        }
-
-        .indexDiv a {
-            margin-left: 20px;
-        }
-
-        .Readpage {
-            font-size: 14px;
-            padding: 0;
-            background: #d4eaf2;
-            height: 40px;
-            line-height: 40px;
+        /* VIP 购买块 */
+        .vip-panel {
+            margin: 24px 12px;
+            padding: 26px 16px;
+            background: #fbf8ef;
+            border: 1px solid #f0e2c8;
+            border-radius: 10px;
             text-align: center;
+            font-size: 14px;
+            color: #5c6b64;
+        }
+
+        .vip-panel .vip-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #8a6d1a;
+            margin-bottom: 8px;
+        }
+
+        .vip-panel .vip-price {
+            color: #e05c6e;
+        }
+
+        .btn-buy {
+            display: inline-block;
+            margin-top: 16px;
+            min-width: 120px;
+            height: 38px;
+            line-height: 38px;
+            text-align: center;
+            background: #3eaf7c;
+            color: #fff;
+            font-size: 14px;
+            border-radius: 19px;
+            box-shadow: 0 4px 10px rgba(62, 175, 124, .25);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-buy:active {
+            opacity: .85;
         }
 
         div, p {
@@ -82,60 +143,12 @@
             word-break: break-all;
             word-wrap: break-word;
             word-break: normal;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
             box-sizing: border-box;
-            -ms-box-sizing: border-box;
         }
 
         * {
             margin: 0;
             padding: 0;
-            /* background-attachment: fixed; */
-        }
-
-        user agent stylesheet
-        p {
-            display: block;
-            -webkit-margin-before: 1em;
-            -webkit-margin-after: 1em;
-            -webkit-margin-start: 0px;
-            -webkit-margin-end: 0px;
-        }
-
-        .huyanon {
-            border: 1px solid #64c878;
-            box-shadow: 0 1px 2px #b9ecc4 inset, 0 -1px 0 #6c9f76 inset, 0 -2px 3px #b9ecc4 inset;
-            background: -webkit-linear-gradient(top, #90dfa2, #84d494);
-            background: -moz-linear-gradient(top, #90dfa2, #84d494);
-            background: linear-gradient(top, #90dfa2, #84d494);
-        }
-
-        .Readpage a {
-            font-size: 16px;
-            padding: 2px 2px;
-            line-height: 35px;
-        }
-
-        .lightoff, .huyanoff, .sizebgon {
-            border: 1px solid #333;
-            box-shadow: 0 1px 2px #8b8b8b inset, 0 -1px 0 #3d3d3d inset, 0 -2px 3px #8b8b8b inset;
-            background: -webkit-linear-gradient(top, #656565, #4c4c4c);
-            background: -moz-linear-gradient(top, #656565, #4a4a4a);
-            background: linear-gradient(top, #656565, #4a4a4a);
-        }
-
-        .button {
-            width: 40px;
-            line-height: 38px;
-            text-align: center;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 1px 1px 1px #333;
-            border-radius: 5px;
-            margin: 3px 0px 0px 0;
-            position: relative;
-            overflow: hidden;
         }
 
         a {
@@ -145,20 +158,9 @@
             cursor: pointer;
         }
 
-        .lighton {
-            border: 1px solid #d2a000;
-            box-shadow: 0 1px 2px #fedd71 inset, 0 -1px 0 #a38b39 inset, 0 -2px 3px #fedd71 inset;
-            background: -webkit-linear-gradient(top, #fece34, #d8a605);
-            background: -moz-linear-gradient(top, #fece34, #d8a605);
-            background: linear-gradient(top, #fece34, #d8a605);
-        }
-
-        .screen_toolbar {
-            position: fixed;
-            width: 100%;
-            left: 0px;
-            bottom: 100px;
-            text-align: center;
+        /* 禁止左右滑动：气泡等元素允许挂在正文外，但页面整体横向裁剪 */
+        html, body {
+            overflow-x: hidden;
         }
 
         /* ---------- 段落评论 ---------- */
@@ -401,29 +403,18 @@
         var token = localStorage.getItem("token");
     </script>
 
-    <div style="height: 50px;line-height: 50px;text-align: center"
-         class="layui-header header header-doc  layui-bg-cyan">
-
-        <div style="width:10%;float: left;margin-left: 10px">
-            <a href="javascript:history.go(-1)">
-                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-        </div>
-        <a style="color: #ffffff;" th:href="'/book/'+ ${book.id} + '.html'"><b
-                style="padding-left: 5%;float: left;width: 69%" class="line-limit-length"
-                th:utext="${bookIndex.indexName}+' '+${book.bookName}"></b></a>
-        <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-        </a>
-        </div>
+    <div th:replace="mobile/common/header :: pageHeader(${bookIndex.indexName} + ' ' + ${book.bookName}, '/book/'+${book.id}+'.html')"></div>
+    
+    
+    <div class="read-nav">
+        <a th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
+        <a th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
+        <a th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
     </div>
-
-
-    <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
-
-        <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
-        <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-        <a style="color: #333"
-           th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
+    
+    <div class="chapter-title">
+        <h1 th:utext="${bookIndex.indexName}"></h1>
+        <span class="ct-sub" th:utext="${book.bookName}"></span>
     </div>
     <!--<div id="screenInput" class="screen_toolbar" style="display: none">
         <div style="height: 5px" class="layui-col-xs2 layui-col-sm3 layui-col-md3 layui-col-lg3"></div>
@@ -446,25 +437,21 @@
     </form>-->
     <div th:replace="mobile/common/js :: js">
     </div>
-    <div id="chaptercontent" class="Readarea ReadAjax_content screen_container"
-         style="color: rgb(0, 0, 0); font-size: 20px;" th:if="${!needBuy}">
+    <div id="chaptercontent" class="Readarea ReadAjax_content screen_container" th:if="${!needBuy}">
         <div id="contentRaw" style="display: none" th:utext="${bookContent.content}"></div>
         <div id="paragraphList"></div>
     </div>
-    <div class="Readarea ReadAjax_content screen_container"
-         style="color: rgb(0, 0, 0); font-size: 20px;background-color: #fff" th:if="${needBuy}">
-        <h5>此章为VIP章节，需要订阅后才能继续阅读</h5>
-        价格：<span style="color: red" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span><br/>
-        <a href="javascript:buyBookIndex()" type="button" class="layui-btn layui-btn-sm layui-btn-radius">购买</a>
-
+    <div class="vip-panel" th:if="${needBuy}">
+        <div class="vip-title">此章为VIP章节，需要订阅后才能继续阅读</div>
+        价格：<span class="vip-price" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span>
+        <br/>
+        <a href="javascript:buyBookIndex()" class="btn-buy">购买</a>
     </div>
-    <div class="indexDiv" style="height: 42px;line-height: 42px;text-align:center;background: #f2f2f2">
-
-        <a style="color: #333" th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
-        <a style="color: #333" th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
-        <a style="color: #333"
-           th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
-
+    
+    <div class="read-nav">
+        <a th:href="'javascript:enterPreIndexPage(\''+${book.id}+'\',\''+${preBookIndexId}+'\');'">上一章</a>
+        <a th:href="'/book/indexList-'+${book.id}+'.html'">目录</a>
+        <a th:href="'javascript:enterNextIndexPage(\''+${book.id}+'\',\''+${nextBookIndexId}+'\');'">下一章</a>
     </div>
 
 

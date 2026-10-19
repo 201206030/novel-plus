@@ -177,19 +177,7 @@
 
     <input type="hidden" id="listIdHidden" th:value="${listId}">
 
-    <div style="height: 50px;line-height: 50px;text-align: center"
-         class="layui-header header header-doc  layui-bg-cyan">
-
-        <div style="width:10%;float: left;margin-left: 10px">
-            <a href="javascript:history.go(-1)">
-                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-        </div>
-        <b class="layui-icon">书单详情</b>
-        <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-        </a>
-        </div>
-    </div>
+    <div th:replace="mobile/common/header :: pageHeader('书单详情', null)"></div>
 
     <div class="bl-head" id="blHead" style="display: none">
         <div class="bl-name-wrap">

@@ -16,8 +16,219 @@
 
     <style type="text/css">
 
-        .indexP p a {
-            color: #4c6978;
+        body {
+            background: #f5f7f6;
+        }
+
+        /* 书籍信息卡 */
+        .book-info-card {
+            display: -webkit-flex;
+            display: flex;
+            background: #fff;
+            margin: 12px;
+            padding: 14px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+        }
+
+        .book-info-card .cover {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 92px;
+            height: 124px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+            display: block;
+        }
+
+        .book-info-card .info {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 12px;
+        }
+
+        .book-info-card .book-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 24px;
+        }
+
+        .book-info-card .author {
+            display: inline-block;
+            margin-top: 4px;
+            font-size: 13px;
+            color: #5c6b64;
+        }
+
+        .book-info-card .tag-row {
+            margin-top: 8px;
+        }
+
+        .book-info-card .tag-pill {
+            display: inline-block;
+            font-size: 11px;
+            line-height: 18px;
+            padding: 0 8px;
+            border-radius: 9px;
+            background: rgba(62, 175, 124, .12);
+            color: #2e8b62;
+            margin-right: 6px;
+        }
+
+        .book-info-card .tag-pill.gray {
+            background: #f0f2f1;
+            color: #8a968f;
+        }
+
+        .book-info-card .data-row {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        .book-info-card .data-row span {
+            margin-right: 12px;
+        }
+
+        .book-info-card .data-row b {
+            color: #e05c6e;
+            font-weight: 600;
+        }
+
+        /* 操作按钮栏 */
+        .action-bar {
+            display: -webkit-flex;
+            display: flex;
+            margin: 0 12px 12px;
+        }
+
+        .action-bar .btn-read {
+            -webkit-flex: 2;
+            flex: 2;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            border-radius: 21px;
+            background: #3eaf7c;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(62, 175, 124, .25);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .action-bar .btn-read:active {
+            opacity: .85;
+        }
+
+        .action-bar .btn-ghost {
+            -webkit-flex: 1;
+            flex: 1;
+            height: 42px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 21px;
+            background: #fff;
+            border: 1px solid #3eaf7c;
+            color: #2e8b62;
+            font-size: 14px;
+            margin-left: 10px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .action-bar .btn-ghost:active {
+            background: rgba(62, 175, 124, .08);
+        }
+
+        .action-bar .btn-ghost.in-shelf {
+            border-color: #d5ded9;
+            color: #98a8a1;
+            background: #f7f9f8;
+        }
+
+        /* 区块卡片 */
+        .sec-card {
+            background: #fff;
+            margin: 0 12px 12px;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+        }
+
+        .sec-title {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 20px;
+            margin-bottom: 10px;
+        }
+
+        .sec-title:before {
+            content: "";
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 4px;
+            height: 16px;
+            background: #3eaf7c;
+            border-radius: 2px;
+            margin-right: 8px;
+        }
+
+        .sec-title .sec-sub {
+            margin-left: 8px;
+            font-size: 12px;
+            font-weight: normal;
+            color: #98a8a1;
+        }
+
+        .sec-title .sec-more {
+            margin-left: auto;
+            font-size: 12px;
+            font-weight: normal;
+            color: #2e8b62;
+            background: rgba(62, 175, 124, .08);
+            border-radius: 12px;
+            padding: 2px 10px;
+        }
+
+        .desc-text {
+            font-size: 13px;
+            line-height: 22px;
+            color: #5c6b64;
+        }
+
+        /* 最新章节列表 */
+        .idx-item {
+            display: block;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #f5f7f6;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .idx-item:last-child {
+            border-bottom: none;
+        }
+
+        .to-index-all {
+            display: block;
+            margin-top: 6px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 14px;
+            color: #2e8b62;
+            border-top: 1px solid #f0f5f2;
         }
 
         .tag-list {
@@ -150,94 +361,56 @@
     <input type="hidden" id="bookNamedHidden" th:value="${book.bookName}"/>
     <input type="hidden" id="preContentId" th:value="${firstBookIndexId}"/>
 
-    <div style="height: 50px;line-height: 50px;text-align: center"
-         class="layui-header header header-doc  layui-bg-cyan">
+    <div th:replace="mobile/common/header :: pageHeader(${book.bookName}, null)"></div>
 
-        <div style="float: left;margin-left: 10px">
-            <a href="javascript:history.go(-1)">
-                <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-        </div>
-        <b class="layui-icon" th:utext="${book.bookName}"></b>
-        <div style="float: right;margin-right: 10px">
-            <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
-        </div>
-    </div>
-
-    <div class="layui-row" style="background: #f2f2f2">
-        <div style="padding: 3px" class="layui-col-xs4 layui-col-sm2 layui-col-md2 layui-col-lg2">
-            <img style=" width:130px; height:auto; max-width:100%; max-height:100%;" th:src="${book.picUrl}"/>
-
-        </div>
-        <div style="position:relative;padding: 3px 10px 0px"
-             class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
-            <a th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'">
-                <div style=";color: #444;" th:utext="'作者：'+ ${book.authorName}"></div>
+    <div class="book-info-card">
+        <img class="cover" th:src="${book.picUrl}" alt="">
+        <div class="info">
+            <div class="book-name" th:utext="${book.bookName}"></div>
+            <a class="author" th:href="'javascript:searchBooks(\''+ ${book.authorName}+'\')'">
+                <span th:text="'作者：'+ ${book.authorName}"></span>
             </a>
-            <a th:href="'/book/bookclass.html?catId='+${book.catId}">
-                <div style="margin-top: 5px;color: #444;" th:text="'类别：'+ ${book.catName}"></div>
-            </a>
-            <div style="margin-top: 5px;color: #444;" th:text="'状态：'+ ${book.bookStatus==0?'连载':'完结'}"></div>
-            <div style="margin-top: 5px;color: #444;">更新：<i
-                    th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd')}"></i></div>
-            <div style="margin-top: 5px;color: #444;">评分：<i style="font-weight:bold;color: red"
-                                                            th:text="${book.score} + '分'"></i></div>
-            <div style="margin-top: 5px;color: #444;">点击：<i style="font-weight:bold;color: red"
-                                                            th:text="${book.visitCount}"></i></div>
-
-
-        </div>
-    </div>
-
-
-    <div style="text-align: center;height: 45px;line-height: 45px">
-        <a th:href="'/book/'+${book.id}+'/'+${firstBookIndexId}+'.html'" type="button"
-           style="background-color:#3eaf7c!important" class="layui-btn layui-btn-sm layui-btn-radius">开始阅读</a>
-        <button type="button" id="cFavs" onclick="addInShell()"
-                style="border: 1px solid #3eaf7c;color: #3eaf7c;background-color:#fff!important"
-                class="layui-btn layui-btn-sm layui-btn-radius ">加入书架
-        </button>
-        <button type="button" onclick="openAddToList()"
-                style="border: 1px solid #3eaf7c;color: #3eaf7c;background-color:#fff!important"
-                class="layui-btn layui-btn-sm layui-btn-radius">加书单
-        </button>
-
-        <!--
-            <button type="button" onclick="downloadFile()" class="layui-btn layui-btn-sm layui-btn-radius layui-bg-normal">下载TXT</button>
-        -->
-    </div>
-    <p style="line-height: 23px;padding: 10px;font-size: 14px;color: #333;" th:utext="${book.bookDesc}">
-
-    </p>
-
-    <div class="layui-collapse">
-        <div class="layui-colla-item">
-            <h2 class="layui-colla-title">
-                <span>最新章节</span>
-                <span style="margin-left: 30px">
-                更新： <i th:text="${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd HH:mm:ss')}"></i>
-            </span>
-            </h2>
-            <div class="layui-colla-content layui-show indexP layui-row" id="indexList">
-
-
+            <div class="tag-row">
+                <a class="tag-pill" th:href="'/book/bookclass.html?catId='+${book.catId}" th:text="${book.catName}"></a>
+                <span class="tag-pill gray" th:text="${book.bookStatus==0?'连载中':'已完结'}"></span>
+            </div>
+            <div class="data-row">
+                <span>点击 <b th:text="${book.visitCount}"></b></span>
+                <span th:text="'更新：'+${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd')}"></span>
             </div>
         </div>
     </div>
-    <div style="height: 42px;color:#4c6978;line-height: 42px;padding-left: 30px;background: #f2f2f2">
 
-        <a th:href="'/book/indexList-'+${book.id}+'.html'">查看完整目录</a>
+
+    <div class="action-bar">
+        <a class="btn-read" th:href="'/book/'+${book.id}+'/'+${firstBookIndexId}+'.html'">开始阅读</a>
+        <button type="button" id="cFavs" class="btn-ghost" onclick="addInShell()">加入书架</button>
+        <button type="button" class="btn-ghost" onclick="openAddToList()">加书单</button>
+
+        <!--
+            <button type="button" onclick="downloadFile()" class="btn-ghost">下载TXT</button>
+        -->
+    </div>
+
+    <div class="sec-card">
+        <div class="sec-title">简介</div>
+        <div class="desc-text" th:utext="${book.bookDesc}"></div>
+    </div>
+
+    <div class="sec-card">
+        <div class="sec-title">最新章节<span class="sec-sub"
+                                           th:text="'更新于 '+${#dates.format(book.lastIndexUpdateTime, 'yy-MM-dd HH:mm')}"></span></div>
+        <div id="indexList"></div>
+        <a class="to-index-all" th:href="'/book/indexList-'+${book.id}+'.html'">查看完整目录</a>
     </div>
 
     <!--作品评论区 start-->
-    <div class="layui-collapse" style="margin-top: 10px">
-        <div class="layui-colla-item">
-            <h2 class="layui-colla-title">
-                <span>作品评论区</span>
-                <span id="bookCommentTotal" th:text="'('+${bookCommentPageBean.total}+'条)'"></span>
-                <a th:href="'/book/comment-'+${book.id}+'.html'"
-                   style="float:right;color:#3eaf7c;">查看全部</a>
-            </h2>
-            <div class="layui-colla-content layui-show">
+    <div class="sec-card">
+        <div class="sec-title">作品评论区<span id="bookCommentTotal" class="sec-sub"
+                                              th:text="'('+${bookCommentPageBean.total}+'条)'"></span><a class="sec-more"
+                                                                                                        th:href="'/book/comment-'+${book.id}+'.html'">查看全部</a></div>
+        <div>
+            <div>
                 <div id="noCommentPanel"
                      th:style="${bookCommentPageBean.total > 0}? 'display:none'">
                     <p style="text-align:center;color:#999;padding:20px 0;">暂无评论，快来抢沙发~</p>
@@ -311,7 +484,7 @@
         success: function (data) {
             if (data.code == 200) {
                 if (data.data) {
-                    $("#cFavs").replaceWith("<button type=\"button\" id=\"cFavs\" style=\"border: 1px solid #3eaf7c;color: #3eaf7c;background-color:#fff!important\"  class=\"layui-btn layui-btn-sm layui-btn-radius layui-btn-warm\">已在书架</button>");
+                    $("#cFavs").replaceWith("<button type=\"button\" id=\"cFavs\" class=\"btn-ghost in-shelf\">已在书架</button>");
                 }
 
 
@@ -339,7 +512,7 @@
                 var indexListHtml = "";
                 for (var i = 0; i < data.data.length; i++) {
                     var bookIndex = data.data[i];
-                    indexListHtml += ("<p class=\"line-limit-length layui-col-xs12 layui-col-sm4 layui-col-md3 layui-col-lg2\" style=\"padding-left:10px;height: 50px;line-height: 50px;\"><a href=\"/book/" + $("#bookIdHidden").val() + "/" + bookIndex.id + ".html\" style='color: #333'>" + bookIndex.indexName + "</a></p>");
+                    indexListHtml += ("<a class=\"idx-item\" href=\"/book/" + $("#bookIdHidden").val() + "/" + bookIndex.id + ".html\">" + bookIndex.indexName + "</a>");
                 }
 
                 $("#indexList").html(indexListHtml);
@@ -366,7 +539,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    $("#cFavs").replaceWith("<button type=\"button\" id=\"cFavs\" style=\"border: 1px solid #3eaf7c;color: #3eaf7c;background-color:#fff!important\"  class=\"layui-btn layui-btn-sm layui-btn-radius layui-btn-warm\">已在书架</button>");
+                    $("#cFavs").replaceWith("<button type=\"button\" id=\"cFavs\" class=\"btn-ghost in-shelf\">已在书架</button>");
 
 
                 } else if (data.code == 1001) {
