@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java2nb.novel.mapper.FrontAiChapterPlanMapper">
+
+    <sql id="baseColumns">
+        id, plan_id, chapter_no, index_name, chapter_outline, status, index_id, word_count, summary, create_time, update_time
+    </sql>
+
+    <insert id="batchInsert">
+        insert into ai_chapter_plan (plan_id, chapter_no, index_name, chapter_outline, status, create_time, update_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.planId}, #{item.chapterNo}, #{item.indexName}, #{item.chapterOutline}, 0, now(), now())
+        </foreach>
+    </insert>
+
+    <select id="listByPlanId" resultType="com.java2nb.novel.entity.AiChapterPlan">
+        select <include refid="baseColumns"/>
+        from ai_chapter_plan
+        where plan_id = #{planId}
+        order by chapter_no
+    </select>
+
+    <select id="selectByPlanAndNo" resultType="com.java2nb.novel.entity.AiChapterPlan">
+        select <include refid="baseColumns"/>
+        from ai_chapter_plan
+        where plan_id = #{planId} and chapter_no = #{chapterNo}
+    </select>
+
+    <update id="casMarkSaving">
+        update ai_chapter_plan
+        set status = 3, update_time = now()
+        where plan_id = #{planId} and chapter_no = #{chapterNo} and status in (0, 1)
+    </update>
+
+    <update id="markSaved">
+        update ai_chapter_plan
+        set status = 2, index_id = #{indexId}, word_count = #{wordCount}, update_time = now()
+        where plan_id = #{planId} and chapter_no = #{chapterNo} and status = 3
+    </update>
+
+    <update id="markDraft">
+        update ai_chapter_plan
+        set status = 1, update_time = now()
+        where plan_id = #{planId} and chapter_no = #{chapterNo} and status = 0
+    </update>
+
+    <update id="updateOutline">
+        update ai_chapter_plan
+        set index_name = #{indexName}, chapter_outline = #{chapterOutline}, update_time = now()
+        where plan_id = #{planId} and chapter_no = #{chapterNo} and status in (0, 1)
+    </update>
+
+    <update id="updateSummary">
+        update ai_chapter_plan
+        set summary = #{summary}, update_time = now()
+        where plan_id = #{planId} and chapter_no = #{chapterNo}
+    </update>
+
+    <delete id="deleteUnsaved">
+        delete from ai_chapter_plan
+        where plan_id = #{planId} and status in (0, 1)
+    </delete>
+
+    <select id="selectLatestIndexIdByBook" resultType="java.lang.Long">
+        select id
+        from book_index
+        where book_id = #{bookId}
+        order by index_num desc
+        limit 1
+    </select>
+
+</mapper>

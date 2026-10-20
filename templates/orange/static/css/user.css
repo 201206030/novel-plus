@@ -45,6 +45,9 @@
 .my_l .link_4 { background-position:32px -314px }
 .my_l .link_5 { background-position:32px -356px }
 .my_l .link_6 { background-position:32px -397px }
+.my_l .link_ai { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8820a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='8' width='14' height='11' rx='3'/%3E%3Ccircle cx='12' cy='4.6' r='1.4' fill='%23f8820a' stroke='none'/%3E%3Cpath d='M12 6v2'/%3E%3Ccircle cx='9.4' cy='13' r='1' fill='%23f8820a' stroke='none'/%3E%3Ccircle cx='14.6' cy='13' r='1' fill='%23f8820a' stroke='none'/%3E%3Cpath d='M10 16.2h4'/%3E%3Cpath d='M3.4 12.4v2.2M20.6 12.4v2.2'/%3E%3C/svg%3E"); background-position:31px center; background-size:22px 22px }
+.my_l .link_book { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8820a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 7.5C10.5 6 8 5.4 4.5 5.7v12C8 17.5 10.5 18 12 19.5M12 7.5c1.5-1.5 4-2.1 7.5-1.8v12c-3.5-.2-6 .3-7.5 1.8'/%3E%3C/svg%3E"); background-position:31px center; background-size:22px 22px }
+.my_l .link_income { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8820a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='18' height='12' rx='2'/%3E%3Cpath d='M9.3 9.3l2.7 3.2 2.7-3.2M12 12.5v2.8M9.9 13.9h4.2'/%3E%3C/svg%3E"); background-position:31px center; background-size:22px 22px }
 .my_l .link_7 { background-position:32px -440px }
 .my_l .link_8 { background-position:32px -481px }
 .my_r { width:739px; padding:0 30px 30px; float:right; border-left:1px solid #efefef; min-height:470px }

@@ -57,6 +57,20 @@ public enum ResponseStatus implements IResultCode {
     BOOK_NOT_EXISTS(6007, "书籍不存在！"),
 
     /**
+     * AI创作助手相关错误
+     * */
+    AI_PLAN_NOT_EXISTS(7001, "创作方案不存在或无权访问！"),
+    AI_TASK_RUNNING(7002, "该创作任务正在执行中，请勿重复提交！"),
+    AI_GEN_FAILED(7003, "AI生成失败，请重试！"),
+    AI_PLAN_INVALID(7004, "创作方案内容格式有误！"),
+    AI_PARAMS_INVALID(7005, "创作参数不合法！"),
+    AI_CHAPTER_SAVED(7006, "该章节已保存，请前往章节管理修改！"),
+    AI_PLAN_NOT_CONFIRMED(7007, "请先确认创作方案后再创作章节！"),
+    AI_CHAPTER_PLAN_NOT_EXISTS(7008, "该章节不在章节规划中，请先检查创作方案！"),
+    AI_DRAFT_NOT_EXISTS(7009, "暂无章节草稿，请先生成正文！"),
+    AI_GEN_TIMEOUT(7010, "AI生成超时，请重试或适当调低单章目标字数！"),
+
+    /**
      * 搜索引擎相关错误
      * */
     ES_SEARCH_FAIL(9001,"搜索引擎查询错误！"),

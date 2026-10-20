@@ -1,0 +1,816 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>AI创作助手-作家管理系统</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <style type="text/css">
+        .ai-wrap { padding-bottom: 40px; }
+        .ai-steps { border-bottom: 1px solid #e5e5e5; margin-bottom: 15px; padding: 0; overflow: hidden; }
+        .ai-steps li { float: left; list-style: none; padding: 10px 22px; color: #666; cursor: pointer; font-size: 15px; border-bottom: 2px solid transparent; }
+        .ai-steps li.on { color: #3eaf7c; border-bottom-color: #3eaf7c; font-weight: bold; }
+        .ai-panel { display: none; }
+        .ai-panel.show { display: block; }
+        .ai-form li { list-style: none; margin-bottom: 12px; }
+        .ai-form label { display: inline-block; width: 110px; vertical-align: top; color: #555; }
+        .ai-form input.t { width: 320px; height: 30px; line-height: 30px; border: 1px solid #dcdcdc; padding: 0 6px; }
+        .ai-form select { width: 334px; height: 32px; border: 1px solid #dcdcdc; }
+        .ai-form textarea { width: 620px; height: 70px; border: 1px solid #dcdcdc; padding: 6px; }
+        .ai-btn { display: inline-block; padding: 6px 16px; border-radius: 4px; background: #3eaf7c; color: #fff !important; border: 1px solid #3eaf7c; cursor: pointer; font-size: 14px; margin-right: 8px; }
+        .ai-btn:hover { opacity: .9; }
+        .ai-btn.gray { background: #fff; color: #3eaf7c !important; }
+        .ai-btn[disabled] { opacity: .5; cursor: not-allowed; }
+        .ai-chip { display: inline-block; padding: 4px 12px; margin: 4px 6px 4px 0; border: 1px solid #3eaf7c; border-radius: 16px; color: #3eaf7c; cursor: pointer; background: #fff; }
+        .ai-chip.sel { background: #3eaf7c; color: #fff !important; }
+        .ai-tip { color: #999; font-size: 13px; margin: 6px 0; }
+        .ai-running { display: none; padding: 10px 14px; margin-bottom: 12px; background: #f2fbf6; border: 1px solid #b7e5cd; border-radius: 4px; color: #3eaf7c; }
+        .ai-error { display: none; padding: 10px 14px; margin-bottom: 12px; background: #fff5f5; border: 1px solid #ffc9c9; border-radius: 4px; color: #d9534f; }
+        .ai-progress { padding: 8px 14px; margin-bottom: 12px; background: #f7f7f7; border-radius: 4px; color: #666; font-size: 13px; }
+        table.ai-table { width: 100%; border-collapse: collapse; }
+        table.ai-table th, table.ai-table td { border: 1px solid #e5e5e5; padding: 6px 8px; font-size: 13px; text-align: left; }
+        table.ai-table th { background: #f2fbf6; color: #3eaf7c; }
+        table.ai-table td input.t { width: 96%; height: 26px; border: 1px solid #dcdcdc; padding: 0 4px; }
+        table.ai-table td textarea { width: 96%; height: 48px; border: 1px solid #dcdcdc; padding: 4px; }
+        .st0 { color: #999; } .st1 { color: #e6a23c; } .st2 { color: #3eaf7c; } .st3 { color: #4a90d9; }
+        #editorArea { display: none; }
+        #editorArea input.t { width: 420px; }
+        #editorArea textarea { width: 96%; height: 420px; padding: 8px; font-size: 14px; line-height: 1.7; }
+        .sec-title { font-weight: bold; color: #3eaf7c; margin: 14px 0 6px; border-left: 3px solid #3eaf7c; padding-left: 8px; }
+        @media screen and (max-width: 720px) {
+            .ai-form textarea, .ai-form input.t, .ai-form select { width: 96%; }
+            #editorArea textarea { height: 320px; }
+            .ai-steps li { padding: 8px 10px; font-size: 13px; }
+            table.ai-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="mainNav" id="mainNav">
+        <div class="box_center cf" style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
+            小说精品屋作家管理
+        </div>
+    </div>
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div class="my_l">
+            <ul class="log_list">
+                <li><a class="link_book" href="/author/index.html">小说管理</a></li>
+                <li><a class="link_ai on" href="/author/ai_assistant.html">AI创作助手</a></li>
+                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
+            </ul>
+        </div>
+        <div class="my_r ai-wrap">
+            <ul class="ai-steps cf" id="stepNav">
+                <li data-step="1" class="on">① 创意问答</li>
+                <li data-step="2">② 设定与大纲</li>
+                <li data-step="3">③ 章节创作</li>
+            </ul>
+
+            <div class="ai-progress" id="progressBar">加载中…</div>
+            <div class="ai-running" id="runningTip"><span id="runningText"></span></div>
+            <div class="ai-error" id="errorTip"><span id="errorText"></span>
+                <a class="ai-btn gray" id="retryBtn" style="margin-left:10px;">重试</a>
+                <a style="cursor:pointer;color:#999;" onclick="$('#errorTip').hide();">忽略</a>
+            </div>
+
+            <!-- 第一步：创意问答 -->
+            <div class="ai-panel show" id="panel1">
+                <ul class="ai-form">
+                    <li><label>小说题材<span style="color:red">*</span></label>
+                        <select id="genre">
+                            <option value="">请选择</option>
+                            <option>玄幻</option><option>仙侠</option><option>都市</option>
+                            <option>历史</option><option>科幻</option><option>悬疑</option>
+                            <option>言情</option><option>武侠</option><option>现实</option><option>其他</option>
+                        </select></li>
+                    <li><label>核心创意<span style="color:red">*</span></label>
+                        <textarea id="coreIdea" placeholder="你希望讲一个什么样的故事？一两句话即可"></textarea></li>
+                    <li><label>主角设定<span style="color:red">*</span></label>
+                        <textarea id="protagonist" placeholder="身份、性格、能力、目标等"></textarea></li>
+                    <li><label>核心冲突<span style="color:red">*</span></label>
+                        <textarea id="conflict" placeholder="主角面临的主要矛盾或挑战"></textarea></li>
+                    <li><a class="ai-btn gray" onclick="randomIdea()">随机灵感</a>
+                        <a class="ai-btn gray" onclick="fillDefaultParams()">使用默认参数</a></li>
+                </ul>
+                <div class="sec-title">深度设定（可选，可跳过）</div>
+                <ul class="ai-form">
+                    <li><label>世界观/背景</label><textarea id="worldview" placeholder="选填，留空由AI按题材合理构建"></textarea></li>
+                    <li><label>视角与文风</label>
+                        <select id="style">
+                            <option value="">默认（第三人称，网文节奏）</option>
+                            <option>第三人称，轻松幽默</option><option>第三人称，严肃正剧</option>
+                            <option>第一人称，强代入感</option><option>多视角切换</option>
+                        </select></li>
+                    <li><label>核心主题</label><input class="t" id="theme" placeholder="如：成长与救赎"/></li>
+                    <li><label>目标读者</label><input class="t" id="targetReaders" placeholder="如：18-30岁男频读者"/></li>
+                    <li><label>预计总章节数</label><input class="t" id="totalChapters" value="60"/>
+                        <label style="width:90px;">每章目标字数</label><input class="t" id="chapterWords" value="3000" style="width:100px;"/></li>
+                    <li><label>补充要求</label><textarea id="extra" placeholder="其他想告诉AI的要求，选填"></textarea></li>
+                </ul>
+                <div class="sec-title">书名</div>
+                <div style="margin-bottom:10px;">
+                    <input class="t" id="bookName" placeholder="自行输入，或使用AI建议"/>
+                    <a class="ai-btn gray" onclick="genBookNames()">生成书名建议</a>
+                    <a class="ai-btn gray" onclick="genBookNames()">换一批</a>
+                </div>
+                <div id="nameChips" class="ai-tip">点击AI建议书名可直接填入</div>
+                <div style="margin-top:15px;">
+                    <a class="ai-btn" onclick="saveParams(true)">保存并去生成方案</a>
+                    <a class="ai-btn gray" onclick="saveParams(false)">仅保存参数</a>
+                </div>
+            </div>
+
+            <!-- 第二步：设定与大纲 -->
+            <div class="ai-panel" id="panel2">
+                <div style="margin-bottom:10px;">
+                    <a class="ai-btn" onclick="genPlan()">生成创作方案</a>
+                    <a class="ai-btn gray" onclick="genPlan()">重新生成方案</a>
+                    <span class="ai-tip">生成后可编辑、保存，确认前不会写入任何章节</span>
+                </div>
+                <ul class="ai-form">
+                    <li><label>书名</label><input class="t" id="pBookName"/></li>
+                    <li><label>核心卖点</label><input class="t" id="pSelling" style="width:520px;"/></li>
+                    <li><label>目标读者</label><input class="t" id="pReaders"/></li>
+                    <li><label>故事简介</label><textarea id="pIntro"></textarea></li>
+                    <li><label>世界观设定</label><textarea id="pWorld" style="height:100px;"></textarea></li>
+                </ul>
+                <div class="sec-title">结构化设定（JSON，可编辑）</div>
+                <ul class="ai-form">
+                    <li><label>人物档案</label><textarea id="pCharacters" style="height:120px;"></textarea></li>
+                    <li><label>故事总纲</label><textarea id="pMainOutline" style="height:90px;"></textarea></li>
+                    <li><label>分卷大纲</label><textarea id="pVolumes"></textarea></li>
+                    <li><label>伏笔记录</label><textarea id="pForeshadows"></textarea></li>
+                </ul>
+                <div class="sec-title">章节规划</div>
+                <div style="overflow-x:auto;">
+                    <table class="ai-table" id="chapterPlanTable">
+                        <thead><tr><th style="width:50px;">章号</th><th style="width:160px;">标题</th><th>本章规划（事件/冲突/变化/主线/结尾）</th><th style="width:60px;">操作</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="ai-tip" id="planTip"></div>
+                <div style="margin:10px 0;">
+                    <a class="ai-btn gray" onclick="genMoreChapters()">生成后续章节规划</a>
+                </div>
+                <div>
+                    <a class="ai-btn" onclick="savePlanContent()">保存方案草稿</a>
+                    <a class="ai-btn" onclick="openConfirmDialog()">确认方案</a>
+                </div>
+                <div class="ai-tip">确认后将按方案拆分章节规划；新建小说会同时创建小说记录（沿用现有发布流程，含自动生成封面）</div>
+            </div>
+
+            <!-- 第三步：章节创作 -->
+            <div class="ai-panel" id="panel3">
+                <div style="overflow-x:auto;">
+                    <table class="ai-table" id="chapterListTable">
+                        <thead><tr><th style="width:50px;">章号</th><th>标题</th><th style="width:80px;">状态</th><th style="width:70px;">字数</th><th style="width:230px;">操作</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="ai-tip" id="chapterTip">每次只生成一章，确认保存后才会写入正式章节</div>
+
+                <div id="editorArea">
+                    <div class="sec-title" id="editorTitle">章节正文</div>
+                    <div style="margin-bottom:8px;">
+                        <label>标题：</label><input class="t" id="eIndexName"/>
+                        <label style="width:auto;margin-left:10px;"><input type="checkbox" id="eIsVip"/> VIP章节</label>
+                    </div>
+                    <textarea id="eContent" placeholder="生成或手工输入正文…"></textarea>
+                    <div class="ai-tip" id="eMeta"></div>
+                    <div style="margin:10px 0;">
+                        <a class="ai-btn" id="saveBtn" onclick="saveChapter()">确认保存章节</a>
+                        <a class="ai-btn gray" onclick="checkRevise()">校验并修订</a>
+                        <a class="ai-btn gray" onclick="genChapter(curChapter)">重新生成正文</a>
+                        <a class="ai-btn gray" onclick="closeEditor()">暂不保存并退出</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/header.js" type="text/javascript"></script>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script src="/javascript/common.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+// ============================================================
+// AI创作助手页面逻辑：进度全部存服务端，刷新/重登后自动恢复
+// ============================================================
+var planId = null, bookId = null, plan = null;
+var chapterPlans = [], paramsObj = {}, planObj = {}, categoryList = [];
+var pollTimer = null, curChapter = 0, busyText = '';
+var STATUS_TXT = {0:'待创作', 1:'草稿', 2:'已保存', 3:'保存中'};
+var STATUS_CLS = {0:'st0', 1:'st1', 2:'st2', 3:'st3'};
+
+function getQuery(name) {
+    var m = location.search.match(new RegExp('[?&]' + name + '=([^&]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+}
+
+$(function () {
+    bookId = getQuery('bookId');
+    $('#stepNav li').click(function () {
+        switchStep($(this).data('step'));
+    });
+    $('#retryBtn').click(function () {
+        if (window._retryFn) { window._retryFn(); }
+    });
+    initPlan();
+});
+
+function switchStep(step) {
+    if (step === 3 && (!plan || plan.stage < 3)) {
+        layer.msg('请先确认创作方案'); return;
+    }
+    $('#stepNav li').removeClass('on');
+    $('#stepNav li[data-step=' + step + ']').addClass('on');
+    $('.ai-panel').removeClass('show');
+    $('#panel' + step).addClass('show');
+    if (step === 3) { renderChapterList(); }
+}
+
+function ajaxPost(url, data, cb) {
+    $.ajax({
+        type: 'POST', url: url, data: data, dataType: 'json',
+        success: function (res) {
+            if (res.code == 200) { cb(res.data); }
+            else if (res.code == 1001) {
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+            } else { layer.alert(res.msg); }
+        },
+        error: function () { layer.alert('网络异常'); }
+    });
+}
+function ajaxGet(url, data, cb) {
+    $.ajax({
+        type: 'GET', url: url, data: data, dataType: 'json',
+        success: function (res) {
+            if (res.code == 200) { cb(res.data); }
+            else if (res.code == 1001) {
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+            } else { layer.alert(res.msg); }
+        },
+        error: function () { layer.alert('网络异常'); }
+    });
+}
+
+// -------- 初始化与进度恢复 --------
+function initPlan() {
+    var data = {};
+    if (bookId) { data.bookId = bookId; }
+    ajaxPost('/author/aiAssistant/initPlan', data, function (p) {
+        plan = p; planId = p.id;
+        loadParamsForm();
+        loadProgress();
+    });
+}
+
+function loadParamsForm() {
+    paramsObj = plan.creativeParams ? JSON.parse(plan.creativeParams) : {};
+    if (paramsObj.genre) { $('#genre').val(paramsObj.genre); }
+    $('#coreIdea').val(paramsObj.coreIdea || '');
+    $('#protagonist').val(paramsObj.protagonist || '');
+    $('#conflict').val(paramsObj.conflict || '');
+    $('#worldview').val(paramsObj.worldview || '');
+    if (paramsObj.style) { $('#style').val(paramsObj.style); }
+    $('#theme').val(paramsObj.theme || '');
+    $('#targetReaders').val(paramsObj.targetReaders || '');
+    $('#totalChapters').val(paramsObj.totalChapters || 60);
+    $('#chapterWords').val(paramsObj.chapterWords || 3000);
+    $('#extra').val(paramsObj.extra || '');
+    $('#bookName').val(paramsObj.bookName || '');
+}
+
+function loadProgress() {
+    ajaxGet('/author/aiAssistant/progress', {planId: planId}, function (vo) {
+        plan = vo.plan;
+        chapterPlans = vo.chapterPlans || [];
+        renderProgressBar();
+        // 恢复执行中的任务轮询（刷新/中断后可继续）
+        var running = (vo.runningTasks || [])[0];
+        if (running) {
+            pollTask(running.id, taskDoneHandler(running), false);
+        } else if ((vo.latestTasks || []).length > 0) {
+            var latest = vo.latestTasks[0];
+            if (latest.status == 2) { showError(latest); }
+        }
+        if (plan.planContent) {
+            planObj = JSON.parse(plan.planContent);
+            fillPlanForm(planObj);
+        }
+        if (plan.stage >= 3) { renderChapterList(); }
+        if (plan.stage >= 2 && !plan.planContent) { switchStep(2); }
+    });
+}
+
+function renderProgressBar() {
+    var stageTxt = {1: '创作问答', 2: '方案草稿', 3: '章节创作', 4: '完成'}[plan.stage] || '';
+    var saved = 0, total = paramsObj.totalChapters || 0;
+    for (var i = 0; i < chapterPlans.length; i++) {
+        if (chapterPlans[i].status == 2) { saved++; }
+    }
+    var bookTxt = plan.bookId ? '已绑定小说ID:' + plan.bookId : '新建小说（确认方案后创建）';
+    $('#progressBar').html('当前阶段：<b>' + stageTxt + '</b>　' + bookTxt
+        + '　章节进度：<b>' + saved + '</b> / ' + total
+        + (plan.outlineVersion ? '　大纲版本：v' + plan.outlineVersion : ''));
+}
+
+function showError(task) {
+    var name = taskTypeName(task.taskType) + (task.chapterNo > 0 ? '（第' + task.chapterNo + '章）' : '');
+    $('#errorText').html('最近任务失败：' + name + '——' + (task.errorMsg || '未知错误'));
+    $('#errorTip').show();
+    window._retryFn = function () {
+        $('#errorTip').hide();
+        startTask(task.taskType, task.chapterNo);
+    };
+}
+
+function taskTypeName(t) {
+    return {1: '书名建议', 2: '创作方案', 3: '章节正文', 4: '校验修订', 5: '章节摘要', 6: '章节规划增量'}[t] || '任务';
+}
+
+// -------- 任务提交与轮询 --------
+function startTask(type, chapterNo) {
+    if (pollTimer) { layer.msg('已有任务执行中，请稍候'); return; }
+    var data = {planId: planId, taskType: type};
+    if (chapterNo) { data.chapterNo = chapterNo; }
+    ajaxPost('/author/aiAssistant/startTask', data, function (taskId) {
+        pollTask(taskId, taskDoneHandler({taskType: type, chapterNo: chapterNo || 0}), true);
+    });
+}
+
+function pollTask(taskId, onDone, isNew) {
+    busyText = '任务执行中（' + (isNew ? '生成' : '恢复') + '中），可稍后刷新页面，任务不会丢失…';
+    $('#runningText').text(busyText);
+    $('#runningTip').show();
+    if (pollTimer) { clearInterval(pollTimer); }
+    pollTimer = setInterval(function () {
+        ajaxGet('/author/aiAssistant/task/' + taskId, {}, function (task) {
+            if (task.status == 0) { return; }
+            clearInterval(pollTimer); pollTimer = null;
+            $('#runningTip').hide();
+            if (task.status == 2) {
+                showError(task);
+            } else {
+                onDone(task);
+            }
+        });
+    }, 2500);
+}
+
+function taskDoneHandler(task) {
+    return function (t) {
+        switch (task.taskType) {
+            case 1: renderNameChips(JSON.parse(t.result)); break;
+            case 2: fillPlanForm(JSON.parse(t.result)); switchStep(2);
+                layer.msg('方案已生成，请编辑后保存确认'); break;
+            case 6: appendChapters(JSON.parse(t.result).chapters || []); break;
+            case 3: loadDraftIntoEditor(task.chapterNo, t.result); break;
+            case 4: var r = JSON.parse(t.result);
+                loadDraftIntoEditor(task.chapterNo, r.content);
+                showCheckReport(r); break;
+            default: break;
+        }
+    };
+}
+
+// -------- 第一步：参数与书名 --------
+var IDEAS = [
+    {genre: '玄幻', coreIdea: '少年觉醒上古残缺血脉，在被宗门驱逐的绝境中踏上逆天之路', protagonist: '身世成谜的孤儿，性格坚韧重情，能力是吞噬他人法术化为己用，目标是查明身世', conflict: '血脉觉醒会逐步侵蚀神智，至亲之人可能成为第一个牺牲品'},
+    {genre: '都市', coreIdea: '被裁员的外卖员意外获得能看到他人剩余寿命的眼睛', protagonist: '落魄但乐观的退伍军人，能力是看见寿命但每次使用自身折寿，目标是拯救更多人', conflict: '拯救一个命，就要搭上半条命，而城市里正有一场收割寿命的阴谋'},
+    {genre: '仙侠', coreIdea: '门派覆灭后，末代弟子带着师门的炼丹炉穿越大荒重振山门', protagonist: '天赋平平但心细如发的药童，能力是过目不忘的丹方记忆，目标是复活师尊', conflict: '丹方最后一味药引，是仇人门主的道心'},
+    {genre: '科幻', coreIdea: '月球基地维修工发现殖民船名单里根本没有地球人类', protagonist: '较真的机械师，目标是带回真相，性格执拗不善言辞', conflict: '揭开真相意味着基地三万人失去生存配给'},
+    {genre: '悬疑', coreIdea: '小镇连续失踪案，每个失踪者失踪前都收到了十年前的自己寄来的信', protagonist: '返乡刑警，记忆力超群但患有发作性失忆，目标是揪出幕后寄信人', conflict: '线索一次指向自己，而失忆的十分钟无人能证明去了哪'},
+    {genre: '言情', coreIdea: '婚礼当天被逃婚的甜品师，与替新郎来道歉的伴郎协议恋爱一百天', protagonist: '独立要强的甜品师，目标是开自己的店，不再相信爱情', conflict: '协议到期那天，心动超出了协议范围'},
+    {genre: '历史', coreIdea: '抄家罪臣之后化名科举入仕，十年布局只为翻一桩旧案', protagonist: '隐忍谨慎的寒门学子，能力是过人的算学与心算，目标是为父昭雪', conflict: '复查旧案的钥匙，握在当年举荐他的恩师手里'},
+    {genre: '武侠', coreIdea: '天下第一剑的弟子，发现师父的成名剑谱是从死人手里抢来的', protagonist: '重情重义的年轻剑客，目标是既护师门之名又守心中之剑', conflict: '死者遗孤找上门来，剑下留不留得情面'}
+];
+
+function randomIdea() {
+    var it = IDEAS[Math.floor(Math.random() * IDEAS.length)];
+    $('#genre').val(it.genre); $('#coreIdea').val(it.coreIdea);
+    $('#protagonist').val(it.protagonist); $('#conflict').val(it.conflict);
+    layer.msg('已填入随机灵感，可自由修改');
+}
+
+function fillDefaultParams() {
+    $('#totalChapters').val(60); $('#chapterWords').val(3000);
+    layer.msg('已使用默认参数：60章 × 3000字/章');
+}
+
+function collectParams() {
+    var p = {
+        genre: $('#genre').val(), coreIdea: $('#coreIdea').val().trim(),
+        protagonist: $('#protagonist').val().trim(), conflict: $('#conflict').val().trim(),
+        worldview: $('#worldview').val().trim(), style: $('#style').val(),
+        theme: $('#theme').val().trim(), targetReaders: $('#targetReaders').val().trim(),
+        totalChapters: parseInt($('#totalChapters').val()) || 60,
+        chapterWords: parseInt($('#chapterWords').val()) || 3000,
+        extra: $('#extra').val().trim(), bookName: $('#bookName').val().trim()
+    };
+    if (!p.genre || !p.coreIdea || !p.protagonist || !p.conflict) {
+        layer.msg('题材、核心创意、主角设定、核心冲突为必填项'); return null;
+    }
+    return p;
+}
+
+function saveParams(goNext) {
+    var p = collectParams();
+    if (!p) { return; }
+    ajaxPost('/author/aiAssistant/saveParams', {planId: planId, creativeParams: JSON.stringify(p)}, function () {
+        paramsObj = p;
+        layer.msg('参数已保存');
+        if (goNext) { switchStep(2); }
+    });
+}
+
+function genBookNames() {
+    var p = collectParams();
+    if (!p) { return; }
+    ajaxPost('/author/aiAssistant/saveParams', {planId: planId, creativeParams: JSON.stringify(p)}, function () {
+        paramsObj = p;
+        startTask(1, 0);
+    });
+}
+
+function renderNameChips(data) {
+    var html = '';
+    var names = data.names || [];
+    for (var i = 0; i < names.length; i++) {
+        html += '<a class="ai-chip" title="' + esc(names[i].reason || '') + '" onclick="pickName(this,\'' + esc(names[i].name) + '\')">' + esc(names[i].name) + '</a>';
+    }
+    $('#nameChips').html(html || '暂无建议');
+}
+
+function pickName(el, name) {
+    $('#nameChips .ai-chip').removeClass('sel');
+    $(el).addClass('sel');
+    $('#bookName').val(name);
+    $('#pBookName').val(name);
+}
+
+function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// -------- 第二步：方案编辑 --------
+function genPlan() {
+    var p = collectParams();
+    if (!p) { return; }
+    ajaxPost('/author/aiAssistant/saveParams', {planId: planId, creativeParams: JSON.stringify(p)}, function () {
+        paramsObj = p;
+        startTask(2, 0);
+    });
+}
+
+function fillPlanForm(o) {
+    planObj = o;
+    $('#pBookName').val(o.bookName || $('#bookName').val() || '');
+    $('#pSelling').val(o.sellingPoints || '');
+    $('#pReaders').val(o.targetReaders || '');
+    $('#pIntro').val(o.intro || '');
+    $('#pWorld').val(o.worldview || '');
+    $('#pCharacters').val(JSON.stringify(o.characters || [], null, 1));
+    $('#pMainOutline').val(JSON.stringify(o.mainOutline || {}, null, 1));
+    $('#pVolumes').val(JSON.stringify(o.volumes || [], null, 1));
+    $('#pForeshadows').val(JSON.stringify(o.foreshadows || [], null, 1));
+    renderPlanChapterTable(o.chapters || []);
+    updatePlanTip();
+}
+
+function outlineToText(c) {
+    if (c.outline) { return typeof c.outline === 'string' ? c.outline : JSON.stringify(c.outline); }
+    var parts = [];
+    if (c.events) { parts.push('事件：' + c.events); }
+    if (c.conflict) { parts.push('冲突：' + c.conflict); }
+    if (c.charChange) { parts.push('变化：' + c.charChange); }
+    if (c.relation) { parts.push('主线：' + c.relation); }
+    if (c.ending) { parts.push('结尾：' + c.ending); }
+    return parts.join('；');
+}
+
+function renderPlanChapterTable(chapters) {
+    var html = '';
+    for (var i = 0; i < chapters.length; i++) {
+        var c = chapters[i];
+        html += '<tr data-no="' + c.chapterNo + '">'
+            + '<td>' + c.chapterNo + '</td>'
+            + '<td><input class="t cp-name" value="' + esc(c.indexName) + '"/></td>'
+            + '<td><textarea class="cp-outline">' + esc(outlineToText(c)) + '</textarea></td>'
+            + '<td><a style="cursor:pointer;color:#d9534f;" onclick="$(this).closest(\'tr\').remove();">删除</a></td></tr>';
+    }
+    $('#chapterPlanTable tbody').html(html);
+}
+
+function collectPlanContent() {
+    var o;
+    try {
+        o = {
+            bookName: $('#pBookName').val().trim(),
+            sellingPoints: $('#pSelling').val().trim(),
+            targetReaders: $('#pReaders').val().trim(),
+            intro: $('#pIntro').val().trim(),
+            worldview: $('#pWorld').val().trim(),
+            characters: JSON.parse($('#pCharacters').val() || '[]'),
+            mainOutline: JSON.parse($('#pMainOutline').val() || '{}'),
+            volumes: JSON.parse($('#pVolumes').val() || '[]'),
+            foreshadows: JSON.parse($('#pForeshadows').val() || '[]'),
+            chapters: []
+        };
+    } catch (e) {
+        layer.msg('结构化设定JSON格式有误，请检查人物/总纲/分卷/伏笔'); return null;
+    }
+    $('#chapterPlanTable tbody tr').each(function () {
+        var no = parseInt($(this).data('no'));
+        o.chapters.push({chapterNo: no, indexName: $(this).find('.cp-name').val().trim(), outline: $(this).find('.cp-outline').val().trim()});
+    });
+    if (!o.intro || o.characters.length === 0) {
+        layer.msg('简介与人物档案不能为空'); return null;
+    }
+    if (o.chapters.length === 0) {
+        layer.msg('章节规划不能为空'); return null;
+    }
+    return o;
+}
+
+function savePlanContent() {
+    var o = collectPlanContent();
+    if (!o) { return; }
+    ajaxPost('/author/aiAssistant/savePlanContent', {planId: planId, planContent: JSON.stringify(o)}, function () {
+        planObj = o;
+        layer.msg('方案草稿已保存');
+        loadProgress();
+    });
+}
+
+function genMoreChapters() {
+    var o = collectPlanContent();
+    if (!o) { return; }
+    if (o.chapters.length >= (paramsObj.totalChapters || 60)) {
+        layer.msg('章节规划数已达预计总章节数'); return;
+    }
+    ajaxPost('/author/aiAssistant/savePlanContent', {planId: planId, planContent: JSON.stringify(o)}, function () {
+        planObj = o;
+        startTask(6, o.chapters.length + 1);
+    });
+}
+
+function appendChapters(chapters) {
+    var html = '';
+    for (var i = 0; i < chapters.length; i++) {
+        var c = chapters[i];
+        html += '<tr data-no="' + c.chapterNo + '">'
+            + '<td>' + c.chapterNo + '</td>'
+            + '<td><input class="t cp-name" value="' + esc(c.indexName) + '"/></td>'
+            + '<td><textarea class="cp-outline">' + esc(outlineToText(c)) + '</textarea></td>'
+            + '<td><a style="cursor:pointer;color:#d9534f;" onclick="$(this).closest(\'tr\').remove();">删除</a></td></tr>';
+    }
+    $('#chapterPlanTable tbody').append(html);
+    updatePlanTip();
+    layer.msg('已追加章节规划，请检查后保存/确认方案');
+}
+
+function updatePlanTip() {
+    var n = $('#chapterPlanTable tbody tr').length;
+    $('#planTip').text('当前规划章节数：' + n + '（预计 ' + (paramsObj.totalChapters || 60) + ' 章，可分批继续生成）');
+}
+
+function openConfirmDialog() {
+    var o = collectPlanContent();
+    if (!o) { return; }
+    if (plan.bookId) {
+        layer.confirm('确认方案将按最新规划重建未保存章节（已保存章节不受影响），是否继续？', {btn: ['确认', '取消']}, function (idx) {
+            layer.close(idx);
+            doConfirm(o, {});
+        });
+        return;
+    }
+    // 新建小说：选择分类与方向
+    loadCategories(function () {
+        var html = buildConfirmBookForm(o);
+        layer.open({
+            type: 1, title: '确认方案并创建小说', area: ['420px', '330px'], content: html,
+            btn: ['确认创建', '取消'],
+            yes: function (idx) {
+                doConfirm(o, collectConfirmBookForm());
+            }
+        });
+    });
+}
+
+function loadCategories(cb) {
+    if (categoryList.length > 0) { cb(); return; }
+    ajaxGet('/book/listBookCategory', {}, function (data) {
+        categoryList = data || []; cb();
+    });
+}
+
+function buildConfirmBookForm(o) {
+    var wd = '<select id="cWorkDirection" onchange="renderConfirmCats()"><option value="0">男频</option><option value="1">女频</option></select>';
+    var html = '<div style="padding:15px;">'
+        + '<p style="margin-bottom:10px;">书名：<input class="t" id="cBookName" value="' + esc(o.bookName || $('#bookName').val() || '') + '" style="width:220px;"/></p>'
+        + '<p style="margin-bottom:10px;">方向：' + wd + '</p>'
+        + '<p style="margin-bottom:10px;">分类：<select id="cCatId"></select></p>'
+        + '<p class="ai-tip">简介将使用方案中的故事简介；封面沿用现有AI自动生成流程</p></div>';
+    setTimeout(renderConfirmCats, 50);
+    return html;
+}
+
+function renderConfirmCats() {
+    var wd = $('#cWorkDirection').val();
+    var html = '';
+    for (var i = 0; i < categoryList.length; i++) {
+        var c = categoryList[i];
+        if (c.workDirection == wd) {
+            var sel = (paramsObj.genre && c.name.indexOf(paramsObj.genre) >= 0) ? ' selected' : '';
+            html += '<option value="' + c.id + '" data-name="' + esc(c.name) + '"' + sel + '>' + esc(c.name) + '</option>';
+        }
+    }
+    $('#cCatId').html(html);
+}
+
+function collectConfirmBookForm() {
+    var bookName = $('#cBookName').val().trim();
+    if (!bookName) { layer.msg('书名不能为空'); return null; }
+    var opt = $('#cCatId').find('option:selected');
+    if (!opt.length) { layer.msg('请选择分类'); return null; }
+    return {bookName: bookName, workDirection: $('#cWorkDirection').val(), catId: opt.val(), catName: opt.text()};
+}
+
+function doConfirm(o, bookForm) {
+    if (bookForm === null) { return; }
+    var data = {planId: planId, planContent: JSON.stringify(o)};
+    if (!plan.bookId && bookForm.bookName) {
+        $.extend(data, bookForm);
+    }
+    layer.confirm('确认后进入逐章创作阶段，是否继续？', {btn: ['继续', '取消']}, function (idx) {
+        layer.close(idx);
+        ajaxPost('/author/aiAssistant/confirmPlan', data, function () {
+            layer.msg('方案已确认');
+            loadProgress();
+            switchStep(3);
+        });
+    });
+}
+
+// -------- 第三步：章节创作 --------
+function renderChapterList() {
+    if (!chapterPlans || chapterPlans.length === 0) {
+        $('#chapterListTable tbody').html('<tr><td colspan="5">暂无章节规划，请先在第二步确认方案</td></tr>');
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < chapterPlans.length; i++) {
+        var c = chapterPlans[i];
+        var ops = '';
+        if (c.status != 2) {
+            ops += '<a class="ai-btn" style="padding:2px 8px;" onclick="genChapter(' + c.chapterNo + ')">生成正文</a>';
+            ops += '<a class="ai-btn gray" style="padding:2px 8px;" onclick="checkReviseNo(' + c.chapterNo + ')">校验修订</a>';
+        }
+        ops += '<a style="color:#3eaf7c;cursor:pointer;" onclick="openEditor(' + c.chapterNo + ')">编辑/查看</a>';
+        if (c.status == 2 && c.indexId) {
+            ops += ' <a href="/author/content_update.html?indexId=' + c.indexId + '&bookId=' + plan.bookId + '" target="_blank" style="color:#999;">章节管理</a>';
+        }
+        html += '<tr><td>' + c.chapterNo + '</td><td>' + esc(c.indexName || '') + '</td>'
+            + '<td class="' + STATUS_CLS[c.status] + '">' + STATUS_TXT[c.status] + '</td>'
+            + '<td>' + (c.wordCount || 0) + '</td><td>' + ops + '</td></tr>';
+    }
+    $('#chapterListTable tbody').html(html);
+    renderProgressBar();
+}
+
+function genChapter(no) {
+    if (plan.stage < 3) { layer.msg('请先确认创作方案'); return; }
+    openEditor(no);
+    startTask(3, no);
+}
+
+function checkReviseNo(no) {
+    curChapter = no;
+    openEditor(no, true);
+    checkRevise();
+}
+
+function openEditor(no, skipDraftLoad) {
+    curChapter = no;
+    var c = findChapter(no);
+    if (!c) { return; }
+    $('#editorTitle').text('第' + no + '章 ' + (c.indexName || ''));
+    $('#eIndexName').val(c.indexName || '');
+    $('#eIsVip').prop('checked', false);
+    $('#editorArea').show();
+    if (!skipDraftLoad) { loadDraftIntoEditor(no, null); }
+    if (c.status == 2) {
+        // 已保存章节：只读展示正式正文
+        ajaxGet('/author/queryIndexContent/' + c.indexId, {}, function (content) {
+            $('#eContent').val(content);
+            $('#eMeta').html('该章节已保存（' + (c.wordCount || 0) + '字），如需修改请再次保存将产生新章节，建议直接使用章节管理更新');
+        });
+    }
+}
+
+function findChapter(no) {
+    for (var i = 0; i < chapterPlans.length; i++) {
+        if (chapterPlans[i].chapterNo == no) { return chapterPlans[i]; }
+    }
+    return null;
+}
+
+function loadDraftIntoEditor(no, content) {
+    var c = findChapter(no);
+    if (content !== null && content !== undefined) {
+        $('#eContent').val(content);
+        refreshWordCount(no);
+        if (c && c.status == 0) { c.status = 1; renderChapterList(); }
+        return;
+    }
+    if (c && c.status >= 1 && c.status != 2) {
+        // 从最近成功任务恢复草稿（正文或校验修订结果）
+        ajaxGet('/author/aiAssistant/progress', {planId: planId}, function (vo) {
+            var tasks = vo.latestTasks || [];
+            for (var i = 0; i < tasks.length; i++) {
+                var t = tasks[i];
+                if (t.chapterNo == no && (t.taskType == 3 || t.taskType == 4) && t.status == 1) {
+                    ajaxGet('/author/aiAssistant/task/' + t.id, {}, function (full) {
+                        var content = full.taskType == 4 ? JSON.parse(full.result).content : full.result;
+                        $('#eContent').val(content);
+                        refreshWordCount(no);
+                    });
+                    return;
+                }
+            }
+        });
+    }
+}
+
+function refreshWordCount(no) {
+    var content = $('#eContent').val();
+    if (!content) { $('#eMeta').html(''); return; }
+    ajaxPost('/author/aiAssistant/programCheck', {content: content, targetWords: paramsObj.chapterWords || 3000}, function (problems) {
+        var msg = '有效字数以作者后台统计规则为准';
+        if (problems && problems.length > 0) {
+            msg = '程序校验提示：' + problems.join('；') + '<br/>（字数达标不代表质量达标，可点击“校验并修订”做AI一致性检查）';
+        }
+        $('#eMeta').html(msg);
+    });
+}
+
+function showCheckReport(r) {
+    var msg = r.passed ? '校验通过（共' + r.rounds + '轮）' : '已修订' + r.rounds + '轮仍未完全通过，请人工处理';
+    var issues = r.issues || [];
+    if (issues.length > 0) {
+        msg += '<br/>问题清单：';
+        for (var i = 0; i < issues.length; i++) {
+            msg += '<br/>· [' + esc(issues[i].type || '') + '] ' + esc(issues[i].description || '');
+        }
+    }
+    $('#eMeta').html(msg);
+    layer.msg(msg.replace(/<br\/>/g, '\n').replace(/·/g, ''));
+}
+
+function checkRevise() {
+    if (!curChapter) { layer.msg('请先选择章节'); return; }
+    var content = $('#eContent').val();
+    if (!content) { layer.msg('请先生成正文再校验'); return; }
+    //先把编辑器当前内容（含作者手工修改）落为服务端草稿，再以该草稿校验修订
+    ajaxPost('/author/aiAssistant/saveDraft', {planId: planId, chapterNo: curChapter, content: content}, function () {
+        startTask(4, curChapter);
+    });
+}
+
+function saveChapter() {
+    var content = $('#eContent').val();
+    var indexName = $('#eIndexName').val().trim();
+    if (!indexName || !content) { layer.msg('标题与正文不能为空'); return; }
+    var c = findChapter(curChapter);
+    if (c && c.status == 2) {
+        layer.msg('该章节已保存，请使用章节管理更新，避免重复创建章节'); return;
+    }
+    layer.confirm('确认保存为正式章节？保存后不可被任务恢复覆盖', {btn: ['确认保存', '取消']}, function (idx) {
+        layer.close(idx);
+        ajaxPost('/author/aiAssistant/saveChapter', {
+            planId: planId, chapterNo: curChapter, indexName: indexName,
+            content: content, isVip: $('#eIsVip').is(':checked') ? 1 : 0
+        }, function () {
+            layer.msg('已保存，创作记忆摘要将异步更新');
+            loadProgress();
+            renderChapterList();
+        });
+    });
+}
+
+function closeEditor() {
+    $('#editorArea').hide();
+}
+</script>
+</html>

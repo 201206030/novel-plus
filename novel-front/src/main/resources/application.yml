@@ -23,7 +23,7 @@ xss:
   # 排除链接（多个用逗号分隔）
   excludes: /system/notice/*
   # 匹配链接 （多个用逗号分隔）
-  urlPatterns: /book/addCommentReply,/book/addBookComment,/book/addParagraphComment,/user/addFeedBack,/author/addBook,/author/addBookContent,/author/updateBookContent,/author/register.html,/bookList/create,/bookList/update,/bookList/addBook
+  urlPatterns: /book/addCommentReply,/book/addBookComment,/book/addParagraphComment,/user/addFeedBack,/author/addBook,/author/addBookContent,/author/updateBookContent,/author/register.html,/bookList/create,/bookList/update,/bookList/addBook,/author/aiAssistant/saveParams,/author/aiAssistant/savePlanContent,/author/aiAssistant/confirmPlan,/author/aiAssistant/updateChapterPlan,/author/aiAssistant/saveDraft,/author/aiAssistant/saveChapter,/author/aiAssistant/savePref
 
 
 author:
@@ -51,11 +51,11 @@ spring:
       image:
         enabled: true
         base-url: https://api.siliconflow.cn
-        api-key: sk-jjtixmivxaccndqgkqfkbgkzvmbctdxogcrfbjzfttbouitt
+        api-key: sk-uytoztqwpggppdrsfyuvkgztrmgxpktfqshpontczeefzqqi
         options:
           model: Kwai-Kolors/Kolors
           response_format: URL
-      api-key: sk-jjtixmivxaccndqgkqfkbgkzvmbctdxogcrfbjzfttbouitt
+      api-key: sk-uytoztqwpggppdrsfyuvkgztrmgxpktfqshpontczeefzqqi
       base-url: https://api.siliconflow.cn
       chat:
         options:

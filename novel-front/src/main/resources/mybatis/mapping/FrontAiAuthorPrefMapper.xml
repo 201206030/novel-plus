@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java2nb.novel.mapper.FrontAiAuthorPrefMapper">
+
+    <select id="selectByAuthorId" resultType="com.java2nb.novel.entity.AiAuthorPref">
+        select id, author_id, pref_content, create_time, update_time
+        from ai_author_pref
+        where author_id = #{authorId}
+    </select>
+
+    <insert id="upsert" parameterType="com.java2nb.novel.entity.AiAuthorPref">
+        insert into ai_author_pref (author_id, pref_content, create_time, update_time)
+        values (#{authorId}, #{prefContent}, now(), now())
+        on duplicate key update pref_content = values(pref_content), update_time = now()
+    </insert>
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java2nb.novel.mapper.FrontAiCreationPlanMapper">
+
+    <insert id="insert" parameterType="com.java2nb.novel.entity.AiCreationPlan" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_creation_plan (author_id, book_id, stage, creative_params, plan_content, outline_version, create_time, update_time)
+        values (#{authorId}, #{bookId}, #{stage}, #{creativeParams}, #{planContent}, #{outlineVersion}, now(), now())
+    </insert>
+
+    <select id="selectByIdAndAuthor" resultType="com.java2nb.novel.entity.AiCreationPlan">
+        select id, author_id, book_id, stage, creative_params, plan_content, outline_version, create_time, update_time
+        from ai_creation_plan
+        where id = #{id} and author_id = #{authorId}
+    </select>
+
+    <select id="selectByBookId" resultType="com.java2nb.novel.entity.AiCreationPlan">
+        select id, author_id, book_id, stage, creative_params, plan_content, outline_version, create_time, update_time
+        from ai_creation_plan
+        where book_id = #{bookId}
+    </select>
+
+    <select id="selectLatestUnboundByAuthor" resultType="com.java2nb.novel.entity.AiCreationPlan">
+        select id, author_id, book_id, stage, creative_params, plan_content, outline_version, create_time, update_time
+        from ai_creation_plan
+        where author_id = #{authorId} and book_id is null
+        order by id desc
+        limit 1
+    </select>
+
+    <update id="update" parameterType="com.java2nb.novel.entity.AiCreationPlan">
+        update ai_creation_plan
+        <set>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="stage != null">stage = #{stage},</if>
+            <if test="creativeParams != null">creative_params = #{creativeParams},</if>
+            <if test="planContent != null">plan_content = #{planContent},</if>
+            <if test="outlineVersion != null">outline_version = #{outlineVersion},</if>
+            update_time = now()
+        </set>
+        where id = #{id} and author_id = #{authorId}
+    </update>
+
+</mapper>

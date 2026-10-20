@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java2nb.novel.mapper.FrontAiCreationTaskMapper">
+
+    <sql id="baseColumns">
+        id, plan_id, author_id, task_type, chapter_no, status, running_flag, result, error_msg, create_time, update_time
+    </sql>
+
+    <insert id="insert" parameterType="com.java2nb.novel.entity.AiCreationTask" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_creation_task (plan_id, author_id, task_type, chapter_no, status, running_flag, create_time, update_time)
+        values (#{planId}, #{authorId}, #{taskType}, #{chapterNo}, 0, 1, now(), now())
+    </insert>
+
+    <insert id="insertDraft" parameterType="com.java2nb.novel.entity.AiCreationTask" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_creation_task (plan_id, author_id, task_type, chapter_no, status, running_flag, result, create_time, update_time)
+        values (#{planId}, #{authorId}, 3, #{chapterNo}, 1, null, #{result}, now(), now())
+    </insert>
+
+    <select id="selectByIdAndAuthor" resultType="com.java2nb.novel.entity.AiCreationTask">
+        select <include refid="baseColumns"/>
+        from ai_creation_task
+        where id = #{id} and author_id = #{authorId}
+    </select>
+
+    <select id="selectById" resultType="com.java2nb.novel.entity.AiCreationTask">
+        select <include refid="baseColumns"/>
+        from ai_creation_task
+        where id = #{id}
+    </select>
+
+    <update id="finish">
+        update ai_creation_task
+        set status = #{status},
+            running_flag = null,
+            result = #{result},
+            error_msg = #{errorMsg},
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <update id="failAllRunning">
+        update ai_creation_task
+        set status = 2,
+            running_flag = null,
+            error_msg = #{errorMsg},
+            update_time = now()
+        where status = 0 and running_flag = 1
+    </update>
+
+    <select id="listRunning" resultType="com.java2nb.novel.entity.AiCreationTask">
+        select <include refid="baseColumns"/>
+        from ai_creation_task
+        where plan_id = #{planId} and status = 0
+        order by id desc
+    </select>
+
+    <select id="listRecent" resultType="com.java2nb.novel.entity.AiCreationTask">
+        select <include refid="baseColumns"/>
+        from ai_creation_task
+        where plan_id = #{planId}
+        order by id desc
+        limit #{limit}
+    </select>
+
+    <select id="selectLatestSuccess" resultType="com.java2nb.novel.entity.AiCreationTask">
+        select <include refid="baseColumns"/>
+        from ai_creation_task
+        where plan_id = #{planId} and task_type = #{taskType} and chapter_no = #{chapterNo} and status = 1
+        order by id desc
+        limit 1
+    </select>
+
+</mapper>
