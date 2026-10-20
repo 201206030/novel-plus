@@ -16,6 +16,7 @@ import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.FileService;
 import com.java2nb.novel.service.LikeService;
+import com.java2nb.novel.service.UserMessageService;
 import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
@@ -94,6 +95,8 @@ public class BookServiceImpl implements BookService {
     private final FileService fileService;
 
     private final LikeService likeService;
+
+    private final UserMessageService userMessageService;
 
     private final BookPriceProperties bookPriceConfig;
 
@@ -907,6 +910,13 @@ public class BookServiceImpl implements BookService {
         bookCommentReplyMapper.insertSelective(commentReply);
         //增加评论回复数
         bookCommentMapper.addReplyCount(commentReply.getCommentId());
+        //书评被回复消息通知（回复者自己除外）
+        BookComment bookComment = getBookComment(commentReply.getCommentId());
+        if (bookComment != null) {
+            userMessageService.sendReplyMessage(userId, bookComment.getCreateUserId(),
+                UserMessage.TYPE_BOOK_COMMENT_REPLY, bookComment.getBookId(), null,
+                bookComment.getId(), commentReply.getReplyContent());
+        }
     }
 
     @Override

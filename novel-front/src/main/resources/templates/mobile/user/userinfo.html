@@ -139,6 +139,23 @@
             transform: rotate(45deg);
         }
 
+        /* 菜单未读消息角标：主题绿渐变，与首页消息角标同体系 */
+        .menu-item .mi-badge {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            display: none;
+            min-width: 18px;
+            padding: 0 5px;
+            margin-right: 8px;
+            line-height: 18px;
+            text-align: center;
+            font-size: 11px;
+            color: #fff;
+            background: linear-gradient(135deg, #3eaf7c, #6cc798);
+            border-radius: 9px;
+            box-shadow: 0 2px 4px rgba(62, 175, 124, .30);
+        }
+
         /* 退出登录 */
         .logout-card {
             display: block;
@@ -209,6 +226,13 @@
         <span class="mi-arrow"></span>
     </a>
 
+    <a class="menu-item" href="/user/message.html">
+        <span class="mi-icon"><i class="layui-icon">&#xe667;</i></span>
+        <span class="mi-text">我的消息</span>
+        <span class="mi-badge" id="msgUnreadBadge"></span>
+        <span class="mi-arrow"></span>
+    </a>
+
     <a class="menu-item" href="/user/comment.html">
         <span class="mi-icon"><i class="layui-icon">&#xe611;</i></span>
         <span class="mi-text">我的书评</span>
@@ -276,6 +300,8 @@
 
                 $("#accountBalance").html(data.data.accountBalance);
 
+                loadUnreadMsgCount();
+
             } else if (data.code == 1001) {
                 //未登录
                 location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
@@ -293,6 +319,21 @@
 
     function moreNewBooks(event) {
         window.location.href = "/book/bookclass.html?sortBy=last_index_update_time";
+    }
+
+    // 拉取未读消息数，在“我的消息”菜单展示角标（超过99显示 99+）
+    function loadUnreadMsgCount() {
+        $.ajax({
+            type: "get",
+            url: "/user/message/unreadCount",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200 && data.data > 0) {
+                    $("#msgUnreadBadge").text(data.data > 99 ? '99+' : data.data).show();
+                }
+            }
+        });
     }
 
     function searchBooks() {

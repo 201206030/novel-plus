@@ -59,5 +59,10 @@ public class BookParagraphComment {
      */
     private Long createUserId;
 
+    /**
+     * 被回复人用户ID（仅回复时前端传入，非表字段，用于消息通知）
+     */
+    private Long replyUserId;
+
     private Date createTime;
 }

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'我的消息_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        body {
+            background: #f5f7f6;
+        }
+
+        /* 顶部筛选标签 */
+        .msg-tabs {
+            display: -webkit-flex;
+            display: flex;
+            padding: 10px 12px 4px;
+        }
+
+        .msg-tab {
+            flex: 1;
+            text-align: center;
+            line-height: 30px;
+            font-size: 13px;
+            color: #5c6b64;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .msg-tab.active {
+            color: #2e8b62;
+            font-weight: 600;
+            border-bottom-color: #3eaf7c;
+        }
+
+        #msgList {
+            padding-top: 6px;
+        }
+
+        /* 消息卡片 */
+        .msg-item {
+            position: relative;
+            margin: 0 12px 10px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .msg-item .mi-top {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .msg-item .mi-avatar {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f0f2f1;
+        }
+
+        .msg-item .mi-head {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 10px;
+        }
+
+        .msg-item .mi-title {
+            font-size: 13px;
+            color: #1f2d26;
+            line-height: 18px;
+        }
+
+        .msg-item .mi-title b {
+            color: #2e8b62;
+            font-weight: 600;
+        }
+
+        .msg-item .mi-time {
+            font-size: 11px;
+            color: #98a8a1;
+            margin-top: 2px;
+        }
+
+        .msg-item .mi-content {
+            margin-top: 10px;
+            padding: 8px 10px;
+            background: #f5f7f6;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #5c6b64;
+            line-height: 19px;
+            word-break: break-all;
+        }
+
+        .msg-item .mi-from {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #98a8a1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 未读小圆点：主题绿主色，与消息角标同体系（圆点过小不施渐变） */
+        .msg-item .mi-dot {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3eaf7c;
+            box-shadow: 0 1px 3px rgba(62, 175, 124, .35);
+        }
+
+        .msg-item.readed .mi-dot {
+            display: none;
+        }
+
+        /* 全部已读 */
+        .msg-bar {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 6px 14px 0;
+        }
+
+        .msg-bar .read-all {
+            font-size: 12px;
+            color: #2e8b62;
+            padding: 4px 12px;
+            background: rgba(62, 175, 124, .1);
+            border-radius: 14px;
+            cursor: pointer;
+        }
+
+        /* 空态 */
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('我的消息', null)"></div>
+
+    <div class="msg-tabs">
+        <div class="msg-tab active" data-type="">全部</div>
+        <div class="msg-tab" data-type="1">书评回复</div>
+        <div class="msg-tab" data-type="2">段评回复</div>
+    </div>
+    <div class="msg-bar"><span class="read-all" onclick="readAll()">全部标为已读</span></div>
+
+    <div id="msgList"></div>
+    <div id="msgPage" class="page-box"></div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer"></div>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+    var curType = '';
+
+    search(1, 10);
+
+    // 顶部标签切换
+    $('.msg-tab').on('click', function () {
+        var $tab = $(this);
+        if ($tab.hasClass('active')) {
+            return;
+        }
+        $tab.addClass('active').siblings('.active').removeClass('active');
+        curType = $tab.attr('data-type');
+        search(1, 10);
+    });
+
+    function search(curr, limit) {
+        var params = {'curr': curr, 'limit': limit};
+        if (curType !== '') {
+            params.msgType = curType;
+        }
+        $.ajax({
+            type: "get",
+            url: "/user/message/listByPage",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderMsgList(data.data);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function renderMsgList(pageBean) {
+        var list = pageBean.list;
+        if (!list || list.length == 0) {
+            $("#msgList").html("<div class=\"empty-tip\">暂时没有新消息~<br><a href=\"/\" class=\"empty-link\">去书城逛逛</a></div>");
+            $("#msgPage").html("");
+            return;
+        }
+        var html = "";
+        for (var i = 0; i < list.length; i++) {
+            html += buildMsgItem(list[i]);
+        }
+        $("#msgList").html(html);
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'msgPage'
+                , count: pageBean.total
+                , curr: pageBean.pageNum
+                , limit: pageBean.pageSize
+                , layout: ['prev', 'page', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        search(obj.curr, obj.limit);
+                    }
+                }
+            });
+        });
+    }
+
+    function buildMsgItem(msg) {
+        var photo = msg.sendUserPhoto ? msg.sendUserPhoto : '/images/default.gif';
+        var sender = msg.sendUserName ? msg.sendUserName : '某用户';
+        // msgType：1书评被回复 2段评被回复
+        var action = msg.msgType == 2 ? '回复了你的段评' : '回复了你的书评';
+        var from = '';
+        if (msg.bookName) {
+            from += msg.bookName;
+            if (msg.indexName) {
+                from += ' · ' + msg.indexName;
+            }
+        }
+        var readed = (msg.readFlag == 1) ? ' readed' : '';
+        return ('<div class="msg-item' + readed + '" data-id="' + msg.id + '" data-type="' + msg.msgType + '"' +
+            ' data-book="' + (msg.bookId || '') + '" data-index="' + (msg.bookIndexId || '') + '"' +
+            ' data-target="' + (msg.targetId || '') + '" onclick="openMsg(this)">' +
+            '<span class="mi-dot"></span>' +
+            '<div class="mi-top">' +
+            '<img class="mi-avatar" src="' + photo + '" onerror="this.src=\'/images/default.gif\'" alt="">' +
+            '<div class="mi-head">' +
+            '<div class="mi-title"><b>' + sender + '</b> ' + action + '</div>' +
+            '<div class="mi-time">' + msg.createTime + '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="mi-content">' + (msg.content || '') + '</div>' +
+            (from ? '<div class="mi-from">来自：' + from + '</div>' : '') +
+            '</div>');
+    }
+
+    // 点击消息：标记已读并跳转到被回复内容
+    function openMsg(el) {
+        var $el = $(el);
+        var id = $el.attr('data-id');
+        var type = $el.attr('data-type');
+        var bookId = $el.attr('data-book');
+        var indexId = $el.attr('data-index');
+        var targetId = $el.attr('data-target');
+        // 先本地置已读，跳转返回后视觉即时反馈
+        $el.addClass('readed');
+        markRead(id);
+        var url;
+        if (type == 2) {
+            // 段评：跳章节阅读页
+            url = '/book/' + bookId + '/' + indexId + '.html';
+        } else {
+            // 书评：跳该书评的回复列表页
+            url = '/book/reply-' + targetId + '.html';
+        }
+        setTimeout(function () {
+            location.href = url;
+        }, 150);
+    }
+
+    function markRead(id) {
+        $.ajax({
+            type: "post",
+            url: "/user/message/read",
+            data: {'messageId': id},
+            dataType: "json"
+        });
+    }
+
+    function readAll() {
+        $.ajax({
+            type: "post",
+            url: "/user/message/readAll",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $('.msg-item').addClass('readed');
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

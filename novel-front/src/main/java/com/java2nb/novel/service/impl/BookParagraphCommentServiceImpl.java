@@ -4,8 +4,10 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.entity.BookParagraphComment;
+import com.java2nb.novel.entity.UserMessage;
 import com.java2nb.novel.mapper.FrontBookParagraphCommentMapper;
 import com.java2nb.novel.service.BookParagraphCommentService;
+import com.java2nb.novel.service.UserMessageService;
 import com.java2nb.novel.vo.BookParagraphCommentVO;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
@@ -42,6 +44,8 @@ public class BookParagraphCommentServiceImpl implements BookParagraphCommentServ
     private static final long ROOT_COMMENT = 0L;
 
     private final FrontBookParagraphCommentMapper bookParagraphCommentMapper;
+
+    private final UserMessageService userMessageService;
 
     @Override
     public Map<Integer, Integer> listParagraphCommentCounts(Long bookIndexId) {
@@ -130,6 +134,10 @@ public class BookParagraphCommentServiceImpl implements BookParagraphCommentServ
         comment.setParagraphIdx(root.getParagraphIdx());
         bookParagraphCommentMapper.insert(comment);
         bookParagraphCommentMapper.addReplyCount(rootId);
+        //段评被回复消息通知：优先通知被回复人（前端传 replyUserId），缺省回退顶层评论作者，自己回复自己除外
+        Long toUserId = comment.getReplyUserId() != null ? comment.getReplyUserId() : root.getCreateUserId();
+        userMessageService.sendReplyMessage(userId, toUserId, UserMessage.TYPE_PARAGRAPH_REPLY,
+            root.getBookId(), root.getBookIndexId(), rootId, comment.getCommentContent());
     }
 
     @Override

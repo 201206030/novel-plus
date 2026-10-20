@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java2nb.novel.mapper.FrontUserMessageMapper">
+
+    <insert id="insert" parameterType="com.java2nb.novel.entity.UserMessage">
+        insert into user_message (user_id, send_user_id, msg_type, book_id, book_index_id, target_id, content, read_flag, create_time)
+        values (#{userId}, #{sendUserId}, #{msgType}, #{bookId}, #{bookIndexId}, #{targetId}, #{content}, 0, now())
+    </insert>
+
+    <select id="listByPage" resultType="com.java2nb.novel.vo.UserMessageVO">
+        select t1.id, t1.user_id, t1.send_user_id, t1.msg_type, t1.book_id, t1.book_index_id, t1.target_id,
+               t1.content, t1.read_flag, t1.create_time,
+               t2.username send_user_name, t2.user_photo send_user_photo,
+               t3.book_name, t4.index_name
+        from user_message t1
+        inner join user t2 on t1.send_user_id = t2.id
+        left join book t3 on t1.book_id = t3.id
+        left join book_index t4 on t1.book_index_id = t4.id
+        where t1.user_id = #{userId}
+        <if test="msgType != null">and t1.msg_type = #{msgType}</if>
+        order by t1.read_flag, t1.create_time desc
+    </select>
+
+    <select id="countUnread" resultType="java.lang.Long">
+        select count(*) from user_message where user_id = #{userId} and read_flag = 0
+    </select>
+
+    <update id="markRead">
+        update user_message set read_flag = 1 where user_id = #{userId} and id = #{id} and read_flag = 0
+    </update>
+
+    <update id="markAllRead">
+        update user_message set read_flag = 1 where user_id = #{userId} and read_flag = 0
+    </update>
+
+</mapper>

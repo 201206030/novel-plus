@@ -714,7 +714,7 @@
             return dfd.promise();
         },
         // 发表段落评论/回复（rootId>0表示回复），resolve 完整 RestResult
-        add: function (idx, content, rootId, replyUserName) {
+        add: function (idx, content, rootId, replyUserName, replyUserId) {
             var dfd = $.Deferred();
             $.ajax({
                 type: "POST",
@@ -725,6 +725,7 @@
                     'paragraphIdx': idx,
                     'rootId': rootId || 0,
                     'replyUserName': replyUserName || '',
+                    'replyUserId': replyUserId || '',
                     'commentContent': content
                 },
                 dataType: "json",
@@ -826,7 +827,8 @@
                 $('#pcList').on('click', '.pc-reply-btn', function () {
                     pcReplyTarget = {
                         rootId: $(this).data('root'),
-                        name: String($(this).data('name') || '')
+                        name: String($(this).data('name') || ''),
+                        uid: $(this).data('uid')
                     };
                     $('#pcReplyHintText').text('回复 @' + pcReplyTarget.name);
                     $('#pcReplyHint').show();
@@ -948,7 +950,7 @@
         if (replies.length > 0) {
             $op.append($('<span class="pc-reply-num"></span>').text(replies.length + '条回复'));
         }
-        $op.append($('<span class="pc-reply-btn">回复</span>').data('root', item.id).data('name', item.createUserName));
+        $op.append($('<span class="pc-reply-btn">回复</span>').data('root', item.id).data('name', item.createUserName).data('uid', item.createUserId));
         $item.append($op);
         return $item;
     }
@@ -965,7 +967,7 @@
         $ri.append($ru);
         $ri.append($('<div class="pc-r-content"></div>').text(r.commentContent));
         $ri.append($('<div class="pc-op-bar"></div>')
-            .append($('<span class="pc-reply-btn">回复</span>').data('root', rootId).data('name', r.createUserName)));
+            .append($('<span class="pc-reply-btn">回复</span>').data('root', rootId).data('name', r.createUserName).data('uid', r.createUserId)));
         return $ri;
     }
 
@@ -995,7 +997,8 @@
         $btn.addClass('layui-btn-disabled').attr('disabled', 'disabled').text('提交中...');
         var rootId = pcReplyTarget ? pcReplyTarget.rootId : 0;
         var replyUserName = pcReplyTarget ? pcReplyTarget.name : '';
-        ParagraphApi.add(idx, content, rootId, replyUserName).then(function (res) {
+        var replyUserId = pcReplyTarget ? pcReplyTarget.uid : '';
+        ParagraphApi.add(idx, content, rootId, replyUserName, replyUserId).then(function (res) {
             pcSubmitting = false;
             $btn.removeClass('layui-btn-disabled').removeAttr('disabled').text('发表');
             if (res.code == 200) {

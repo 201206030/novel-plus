@@ -40,14 +40,56 @@
             -webkit-transition: all .3s;
         }
 
-        /* 顶部 Logo：等比缩放不溢出 */
+        /* 顶部 Logo：等比缩放不溢出；右侧消息入口 */
         .site-header {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            justify-content: space-between;
             padding: 10px 12px 0;
         }
 
         .site-logo {
             max-height: 40px;
             max-width: 140px;
+        }
+
+        /* 右上角未读消息：铃铛圆形入口 + 主题绿渐变角标，白描边与图标区分层 */
+        .header-msg {
+            position: relative;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .10);
+            color: #3eaf7c;
+        }
+
+        .header-msg .layui-icon {
+            font-size: 20px;
+        }
+
+        .header-msg .hm-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            display: none;
+            min-width: 16px;
+            padding: 0 4px;
+            line-height: 15px;
+            text-align: center;
+            font-size: 10px;
+            color: #fff;
+            background: linear-gradient(135deg, #3eaf7c, #6cc798);
+            border: 1.5px solid #fff;
+            border-radius: 9px;
+            box-shadow: 0 2px 4px rgba(62, 175, 124, .30);
         }
 
         /* 搜索条：胶囊输入框 + 主题色等高按钮 */
@@ -401,6 +443,10 @@
 <a name="top"></a>
 <div class="site-header">
     <img class="site-logo" th:src="${application.website.logo}" alt="logo">
+    <a class="header-msg" href="/user/message.html">
+        <i class="layui-icon">&#xe667;</i>
+        <span class="hm-badge" id="headerMsgBadge"></span>
+    </a>
 </div>
 
 <div class="search-bar">
@@ -499,6 +545,19 @@
 
 <script>
 
+
+    // 右上角未读消息角标（未登录或无未读时不显示，点击进消息页会自动引导登录）
+    $.ajax({
+        type: "get",
+        url: "/user/message/unreadCount",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200 && data.data > 0) {
+                $("#headerMsgBadge").text(data.data > 99 ? '99+' : data.data).show();
+            }
+        }
+    });
 
     //更新榜单查询
     $.ajax({

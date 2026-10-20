@@ -156,6 +156,14 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 我的消息页
+     */
+    @RequestMapping("user/message.html")
+    public String userMessage() {
+        return ThreadLocalUtil.getTemplateDir() + "user/message";
+    }
+
+    /**
      * 账号设置页
      */
     @RequestMapping("user/setup.html")
