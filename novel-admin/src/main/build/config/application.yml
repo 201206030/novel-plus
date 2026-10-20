@@ -1,6 +1,6 @@
 #端口号
 server:
-  port: 80
+  port: 8088
   servlet:
     session:
       timeout: 1D
