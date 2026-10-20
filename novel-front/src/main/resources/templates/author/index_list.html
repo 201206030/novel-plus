@@ -8,23 +8,10 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
-        <style type="text/css">
-            .redBtn {
-                padding: 5px;
-                border-radius: 20px;
-                border: 1px solid #3eaf7c;
-                background: #3eaf7c;
-                color: #fff;
-            }
-
-            a.redBtn:hover {
-
-                color: #fff;
-            }
-        </style>
+        <link rel="stylesheet" href="/css/author.css"/>
     </head>
 </head>
-<body class="">
+<body class="author_zone">
 
 <div class="header">
     <div class="mainNav" id="mainNav">
@@ -49,34 +36,45 @@
 
         </div>
         <div class="my_r">
+            <div class="book_brief cf" id="bookBrief">
+                <a href="/author/index.html" class="back_link">← 返回小说列表</a>
+                <img id="briefCover" src="" alt="封面"/>
+                <h3 id="briefName"></h3>
+                <p id="briefSub"></p>
+            </div>
             <div id="noContentDiv">
-                <div class="tc" style="margin-top: 200px"><a href="javascript:addContent()" class="btn_red">新建章节</a>
+                <div class="empty_box">
+                    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#3eaf7c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 4h9a2 2 0 0 1 2 2v13l-3-2-3 2-3-2-3 2V6a2 2 0 0 1 2-2z"/>
+                        <path d="M9.5 9h6M9.5 12.5h4"/>
+                    </svg>
+                    <p>还没有章节，从第一章开始创作吧～</p>
+                    <a href="javascript:addContent()" class="btn_main">新建章节</a>
                 </div>
-
             </div>
             <div class="my_bookshelf" id="hasContentDiv" style="display: none">
                 <div class="title cf">
-                    <h2 class="fl">章节列表</h2>
-                    <div class="fr"><a href="javascript:addContent()" class="btn_red">新建章节</a></div>
+                    <h2 class="fl">章节列表<span class="sub" id="indexTotal"></span></h2>
+                    <div class="fr"><a href="javascript:addContent()" class="btn_main">＋ 新建章节</a></div>
                 </div>
 
                 <div id="divData" class="updateTable">
                     <table cellpadding="0" cellspacing="0">
                         <thead>
                         <tr>
-                            <!-- <th class="style">
-                                 序号
-                             </th>-->
+                            <th class="goread col_idx">
+                                序号
+                            </th>
                             <th class="name">
                                 章节名
                             </th>
-                            <th class="goread">
+                            <th class="goread col_time">
                                 更新时间
                             </th>
-                            <th class="goread">
+                            <th class="goread col_vip">
                                 是否收费
                             </th>
-                            <th class="goread">
+                            <th class="goread col_opt">
                                 操作
                             </th>
                         </tr>
@@ -89,37 +87,6 @@
                     <div class="pageBox cf" id="shellPage">
                     </div>
                 </div>
-                <!--<div id="divData" class="updateTable">
-                    <table cellpadding="0" cellspacing="0">
-                        <thead>
-                        <tr>
-
-                            <th class="name">
-                                爬虫源（已开启的爬虫源）
-                            </th>
-                            <th class="chapter">
-                                成功爬取数量（websocket实现）
-                            </th>
-                            <th class="time">
-                            目标爬取数量
-                            </th>
-                            <th class="goread">
-                                状态（正在运行，已停止）（一次只能运行一个爬虫源）
-                            </th>
-                            <th class="goread">
-                                操作（启动，停止）
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody id="bookShelfList">
-
-
-
-                        </tbody>
-                    </table>
-                    <div class="pageBox cf" id="shellPage">
-                    </div>
-                </div>-->
             </div>
         </div>
     </div>
@@ -140,7 +107,45 @@
 
     var indexCount = 0;
 
-    search(1, 5);
+    //HTML转义，防止章节名破坏表格结构
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    //时间两行展示：日期 + 时刻
+    function fmtTime(t) {
+        var d = new Date(Date.parse(t));
+        return d.Format('yyyy-MM-dd') + '<br>' + d.Format('hh:mm');
+    }
+
+    //加载顶部作品信息栏
+    function loadBookBrief() {
+        if (!bookId) {
+            return;
+        }
+        $.ajax({
+            type: "get",
+            url: "/book/queryBookDetail/" + bookId,
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200 && data.data) {
+                    var book = data.data;
+                    $("#briefCover").attr("src", book.picUrl);
+                    $("#briefName").text(book.bookName);
+                    var sub = (book.catName ? book.catName + ' · ' : '')
+                        + (book.bookStatus == 0 ? '连载中' : '已完结')
+                        + ' · 已发布 ' + (data.data.wordCount || 0) + ' 字';
+                    $("#briefSub").text(sub);
+                    $("#bookBrief").show();
+                }
+            }
+        });
+    }
+
+    loadBookBrief();
+
+    search(1, 20);
 
     function search(curr, limit) {
 
@@ -153,32 +158,22 @@
                 if (data.code == 200) {
                     var bookList = data.data.list;
                     if (bookList.length > 0) {
-                        indexCount = bookList.length;
+                        indexCount = data.data.total;
+                        $("#indexTotal").text('共 ' + data.data.total + ' 章');
                         $("#hasContentDiv").css("display", "block");
                         $("#noContentDiv").css("display", "none");
                         var bookListHtml = "";
                         for (var i = 0; i < bookList.length; i++) {
                             var book = bookList[i];
-                            bookListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
-                                /*  "                            <td class=\"style bookclass\">\n" +
-                                  "                                ["+(i+1)+"]\n" +
-                                  "                            </td>\n" +*/
-
-                                "                            <td id='name" + book.id + "' class=\"name\">\n" +
-                                "                                " + book.indexName + "</td>\n" +
-
-
-                                "                            <td class=\"goread\">\n" +
-                                "                                " + new Date(Date.parse(book.updateTime)).Format("yyyy-MM-dd hh:mm") + "<br/>更新\n" +
-                                "                            </td>\n" +
-
-                                "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                + (book.isVip == 1 ? '收费' : '免费') + "</td>\n" +
-
-                                " <td class=\"goread\" id='opt" + book.id + "'>" +
-                                "<a  class='redBtn' href='javascript:updateIndex(\"" + book.id + "\"," + book.isVip + ")'>修改  </a><br/>" +
-                                "<a  href='javascript:deleteIndex(\"" + book.id + "\")'>删除  </a><br/>" +
-                                "</td>                     </tr>");
+                            bookListHtml += '<tr class="book_list">'
+                                + '<td class="goread"><span class="idx_no">' + book.indexNum + '</span></td>'
+                                + '<td class="name" id="name' + book.id + '" title="' + escapeHtml(book.indexName) + '">' + escapeHtml(book.indexName) + '</td>'
+                                + '<td class="goread time_cell">' + fmtTime(book.updateTime) + '</td>'
+                                + '<td class="goread">' + (book.isVip == 1 ? '<span class="tag tag_vip">收费</span>' : '<span class="tag tag_free">免费</span>') + '</td>'
+                                + '<td class="goread opt" id="opt' + book.id + '">'
+                                + '<a href="javascript:updateIndex(\'' + book.id + '\',' + book.isVip + ')">修改</a>'
+                                + '<a class="opt_del" href="javascript:deleteIndex(\'' + book.id + '\')">删除</a>'
+                                + '</td></tr>';
                         }
                         $("#bookList").html(bookListHtml);
 
@@ -188,22 +183,14 @@
                             //执行一个laypage实例
                             laypage.render({
                                 elem: 'shellPage' //注意，这里的 test1 是 ID，不用加 # 号
-                                , count: data.data.total //数据总数，从服务端得到,
+                                , count: data.data.total //数据总数，从服务端得到
                                 , curr: data.data.pageNum
                                 , limit: data.data.pageSize
+                                , theme: '#3eaf7c'
                                 , jump: function (obj, first) {
-
-
-                                    //obj包含了当前分页的所有参数，比如：
-                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-                                    console.log(obj.limit); //得到每页显示的条数
-
-
                                     //首次不执行
                                     if (!first) {
                                         search(obj.curr, obj.limit);
-                                    } else {
-
                                     }
                                 }
                             });
@@ -242,52 +229,6 @@
             + "&indexId=" + indexId
             + "&indexName=" + encodeURI(encodeURI(indexName))
             + "&isVip=" + isVip;
-
-
-        /*
-                var indexName = $("#name"+indexId).text();
-
-                var htmlStr = "<input type=\"text\" value=\""+$.trim(indexName)+"\">";
-
-                $("#name"+indexId).html(htmlStr);
-                $("#name"+indexId).find("input").focus();
-                $("#name"+indexId).find("input").select();
-
-                $("#name"+indexId).find("input").keyup(function(event){
-                    if(event.keyCode ==13){
-                        $(this).blur();
-                    }
-                });
-
-                $("#name"+indexId).find("input").blur(function () {
-                    var indexName = $(this).val();
-                    $.ajax({
-                        type: "POST",
-                        url: "/author/updateIndexName",
-                        data: {'indexId':indexId,'indexName':indexName},
-                        dataType: "json",
-                        success: function (data) {
-                            if (data.code == 200) {
-
-                                $("#name"+indexId).html(indexName);
-
-
-                            } else if (data.code == 1001) {
-                                //未登录
-                                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
-
-                            }else {
-                                layer.alert(data.msg);
-                            }
-
-                        },
-                        error: function () {
-                            layer.alert('网络异常');
-                        }
-                    })
-
-                });*/
-
 
     }
 
