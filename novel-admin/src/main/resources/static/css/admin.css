@@ -1,0 +1,168 @@
+/* 后台管理通用样式 */
+
+/* ---------------- 左侧菜单 ---------------- */
+.my_l .log_list li.menu_group { height: 32px; line-height: 32px; margin: 10px 10px 2px; padding-left: 4px; font-size: 14px; font-weight: bold; color: #2c8a61; border-bottom: 1px dashed #dfeede; }
+.my_l .log_list li.menu_group:first-child { margin-top: 0; }
+
+/* ---------------- 按钮系统（主题色 #3eaf7c） ---------------- */
+.layui-btn {
+    display: inline-block; height: 32px; line-height: 32px; padding: 0 18px;
+    font-size: 13px; color: #fff; text-align: center; vertical-align: middle;
+    background: linear-gradient(135deg, #47bd88, #35a06f); border: none; border-radius: 16px;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(62, 175, 124, .35);
+    transition: all .2s ease; text-decoration: none;
+}
+.layui-btn:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 5px 14px rgba(62, 175, 124, .45); text-decoration: none; }
+.layui-btn:active { transform: translateY(0); box-shadow: 0 1px 4px rgba(62, 175, 124, .3); }
+.layui-btn-sm { height: 30px; line-height: 30px; padding: 0 14px; font-size: 12px; border-radius: 15px; }
+.layui-btn-primary { background: #fff; color: #5c6b64; border: 1px solid #dfe8e3; box-shadow: none; }
+.layui-btn-primary:hover { color: #3eaf7c; border-color: #9fd8bd; background: #f6fbf8; box-shadow: 0 2px 8px rgba(62, 175, 124, .15); }
+.layui-btn-danger { background: linear-gradient(135deg, #ff8a65, #f0523c); box-shadow: 0 2px 8px rgba(240, 82, 60, .30); }
+.layui-btn-danger:hover { box-shadow: 0 5px 14px rgba(240, 82, 60, .42); }
+.layui-btn-disabled, .layui-btn-disabled:hover { background: #e2e2e2; color: #9a9a9a; border-color: #e2e2e2; box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* 新增按钮：+ 号 */
+.a_btn_add::before { content: '+'; display: inline-block; margin-right: 6px; font-size: 15px; font-weight: bold; transform: translateY(-1px); }
+/* 搜索按钮：放大镜 */
+.a_btn_search { position: relative; padding-left: 30px; }
+.a_btn_search::before {
+    content: ''; position: absolute; left: 12px; top: 50%; width: 12px; height: 12px; margin-top: -7px;
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='7'/%3E%3Cpath d='M15.5 15.5 21 21'/%3E%3C/svg%3E") no-repeat center/contain;
+}
+
+/* ---------------- 工具条 ---------------- */
+.a_toolbar { padding: 12px 0; overflow: hidden; }
+.a_toolbar .layui-btn { float: left; margin: 0 8px 6px 0; }
+.a_toolbar .layui-input {
+    float: left; width: 220px; height: 30px; line-height: 30px; margin: 0 8px 6px 0;
+    border: 1px solid #dfe8e3; border-radius: 15px; padding: 0 12px; font-size: 13px; color: #333;
+    box-sizing: border-box; background: #fff; transition: border-color .2s, box-shadow .2s;
+}
+.a_toolbar .layui-input:focus { outline: none; border-color: #3eaf7c; box-shadow: 0 0 0 3px rgba(62, 175, 124, .12); }
+.a_toolbar .a_filter {
+    float: left; height: 30px; margin: 0 8px 6px 0; padding: 0 8px;
+    border: 1px solid #dfe8e3; border-radius: 15px; background: #fff; color: #555; font-size: 12px; cursor: pointer;
+    transition: border-color .2s;
+}
+.a_toolbar .a_filter:hover, .a_toolbar .a_filter:focus { outline: none; border-color: #3eaf7c; }
+.a_tip { padding: 6px 0; color: #999; font-size: 12px; }
+
+/* 标题栏按钮（返回等）：覆盖旧的 btn_red 大红色 */
+.my_bookshelf .title .fr .btn_red, .my_bookshelf .title .fr .btn_ora {
+    display: inline-block; height: 30px; line-height: 30px; padding: 0 16px; margin-top: 6px;
+    font-size: 13px; color: #fff; background: linear-gradient(135deg, #47bd88, #35a06f);
+    border-radius: 15px; box-shadow: 0 2px 8px rgba(62, 175, 124, .30); transition: all .2s ease;
+}
+.my_bookshelf .title .fr .btn_red:hover, .my_bookshelf .title .fr .btn_ora:hover {
+    color: #fff; transform: translateY(-1px); box-shadow: 0 5px 14px rgba(62, 175, 124, .42);
+}
+
+/* ---------------- 表格 ---------------- */
+.updateTable { overflow-x: auto; }
+.updateTable table th { white-space: nowrap; }
+/* 所有列表单元格强制单行显示，超宽时随容器横向滚动 */
+.updateTable table td { white-space: nowrap; }
+/* 加宽并单行省略的文本列 */
+.updateTable .col_book { width: 230px; padding-right: 10px; }
+.updateTable .col_ell { width: 130px; padding-right: 10px; }
+/* 完整日期时间列（yyyy-MM-dd HH:mm:ss 单行显示） */
+.updateTable .col_time { width: 160px; padding-right: 10px; white-space: nowrap; }
+.cell-ell {
+    display: inline-block; max-width: 100%; vertical-align: bottom;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.updateTable .col_book .cell-ell { max-width: 218px; }
+.updateTable .col_ell .cell-ell { max-width: 118px; }
+/* 数字列居中对齐 */
+.updateTable .col_num { width: 86px; text-align: center; }
+
+/* ---------------- 表格行操作按钮（竖排，控制列宽） ---------------- */
+.updateTable .goread { width: 88px; text-align: center; }
+.updateTable td.goread a {
+    display: block; width: 66px; margin: 3px auto; padding: 2px 0;
+    font-size: 12px; line-height: 20px; color: #2c8a61; background: #f2faf6;
+    border: 1px solid #cfe8db; border-radius: 11px; transition: all .2s ease;
+}
+.updateTable td.goread a:hover { color: #fff; background: #3eaf7c; border-color: #3eaf7c; box-shadow: 0 2px 6px rgba(62, 175, 124, .35); }
+.updateTable td.goread a.a_del { color: #e05c3e; background: #fdf3f0; border-color: #f6d5cd; }
+.updateTable td.goread a.a_del:hover { color: #fff; background: #ef5a3a; border-color: #ef5a3a; box-shadow: 0 2px 6px rgba(239, 90, 58, .35); }
+
+/* ---------------- 分页组件（laypage 无 layui.css 时的皮肤） ---------------- */
+.pageBox { padding: 14px 0; text-align: center; }
+.layui-laypage { display: inline-block; vertical-align: middle; font-size: 12px; }
+.layui-laypage a, .layui-laypage span, .layui-laypage button, .layui-laypage input {
+    display: inline-block; height: 28px; line-height: 28px; margin: 0 3px; vertical-align: middle;
+    border: 1px solid #dfe8e3; border-radius: 14px; background: #fff; color: #5c6b64;
+    box-sizing: border-box; transition: all .2s ease;
+}
+.layui-laypage a { padding: 0 12px; cursor: pointer; }
+.layui-laypage a:hover { color: #3eaf7c; border-color: #3eaf7c; background: #f6fbf8; }
+.layui-laypage .layui-laypage-curr { position: relative; border: none; background: transparent; padding: 0; margin: 0 4px; }
+.layui-laypage .layui-laypage-curr em { display: block; height: 28px; line-height: 28px; padding: 0 12px; border-radius: 14px; font-style: normal; box-sizing: border-box; }
+.layui-laypage .layui-laypage-curr .layui-laypage-em { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #47bd88, #35a06f); border-radius: 14px; box-shadow: 0 2px 8px rgba(62, 175, 124, .35); }
+.layui-laypage .layui-laypage-curr em:last-child { position: relative; color: #fff; }
+.layui-laypage .layui-laypage-count, .layui-laypage .layui-laypage-skip, .layui-laypage .layui-laypage-total { border: none; background: transparent; color: #8a988f; padding: 0 6px; }
+.layui-laypage input.layui-input { width: 42px; height: 28px; text-align: center; padding: 0 4px; }
+.layui-laypage input.layui-input:focus { outline: none; border-color: #3eaf7c; }
+.layui-laypage button, .layui-laypage .layui-laypage-btn { padding: 0 12px; cursor: pointer; }
+.layui-laypage button:hover, .layui-laypage .layui-laypage-btn:hover { color: #fff; background: #3eaf7c; border-color: #3eaf7c; }
+.layui-laypage-limits select { height: 28px; border: 1px solid #dfe8e3; border-radius: 14px; background: #fff; color: #5c6b64; padding: 0 6px; }
+.layui-laypage-disabled, .layui-laypage .layui-laypage-prev.layui-laypage-disabled, .layui-laypage .layui-laypage-next.layui-laypage-disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------------- layer 弹层表单 ---------------- */
+.a_form { padding: 18px 25px 5px; }
+.a_form .form_row { margin-bottom: 12px; overflow: hidden; }
+.a_form .form_label { float: left; width: 90px; height: 32px; line-height: 32px; text-align: right; padding-right: 10px; color: #555; }
+.a_form .form_cell { margin-left: 105px; }
+.a_form .form_input {
+    width: 100%; height: 32px; line-height: 32px; border: 1px solid #dfe8e3; border-radius: 4px;
+    padding: 0 10px; box-sizing: border-box; color: #333; background: #fff; transition: border-color .2s, box-shadow .2s;
+}
+.a_form .form_input:focus { outline: none; border-color: #3eaf7c; box-shadow: 0 0 0 3px rgba(62, 175, 124, .12); }
+.a_form .form_input:disabled { background: #f5f7f6; color: #9aa8a0; border-color: #e4e9e6; cursor: not-allowed; box-shadow: none; }
+.a_form textarea.form_input { height: 90px; padding: 6px 10px; resize: vertical; }
+.a_form select.form_input { height: 34px; }
+/* 日期控件字段：点击唤起 laydate 面板 */
+.a_form .form_input.a_date { cursor: pointer; background: #fff; }
+/* 章节内容只读弹窗 */
+.content_view { padding: 20px 26px; line-height: 2; font-size: 14px; color: #42514a; height: 100%; overflow-y: auto; box-sizing: border-box; }
+.content_view img { max-width: 100%; }
+.a_form .remote_kw { margin-bottom: 6px; }
+/* wangEditor 富文本 */
+.rich_box { background: #fff; border: 1px solid #dfe8e3; border-radius: 4px; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.rich_box:focus-within { border-color: #3eaf7c; box-shadow: 0 0 0 3px rgba(62, 175, 124, .12); }
+.rich_toolbar { border-bottom: 1px solid #eaf2ec; }
+.rich_editor { height: 320px; overflow-y: hidden; }
+.rich_editor img { max-width: 100%; }
+.a_form .form_tip { color: #999; font-size: 12px; line-height: 20px; }
+.a_form .form_btns { text-align: center; padding: 12px 0 15px; }
+.a_form .form_btns .layui-btn { margin: 0 8px; min-width: 88px; }
+
+/* ---------------- 详情编辑页（章节内容） ---------------- */
+.a_detail textarea {
+    width: 100%; height: 480px; border: 1px solid #dfe8e3; border-radius: 8px; padding: 12px;
+    box-sizing: border-box; font-family: inherit; font-size: 14px; line-height: 26px; color: #333;
+    transition: border-color .2s, box-shadow .2s;
+}
+.a_detail textarea:focus { outline: none; border-color: #3eaf7c; box-shadow: 0 0 0 3px rgba(62, 175, 124, .12); }
+.a_detail .detail_btns { padding: 14px 0; text-align: center; }
+.a_detail .detail_btns .layui-btn { min-width: 120px; }
+
+/* ---------------- 首页模块卡片 ---------------- */
+.a_welcome { padding: 20px 0; }
+.a_welcome h3 { font-size: 18px; color: #333; margin-bottom: 16px; }
+/* 快捷入口卡片：grid 自适应列数，卡片高度互不影响，子菜单数量不均也不会错位 */
+.a_cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+/* 防误挂 clearfix：cf 的 before/after 伪元素在 grid 下会变成匿名网格项顶出空位 */
+.a_cards::before, .a_cards::after { content: normal; display: none; }
+.a_card { padding: 18px 20px; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .10); }
+.a_card b { display: block; font-size: 16px; color: #2c8a61; margin-bottom: 8px; }
+.a_card a { display: inline-block; margin: 0 12px 6px 0; color: #5c6b64; font-size: 13px; }
+.a_card a:hover { color: #3eaf7c; }
+
+/* 首页增长趋势图卡片 */
+.a_chart_box { margin-top: 20px; padding: 18px 20px; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .10); }
+.a_chart_head { display: flex; align-items: center; justify-content: space-between; }
+.a_chart_head b { font-size: 16px; color: #2c8a61; }
+.a_chart_days { height: 28px; line-height: 28px; border: 1px solid #d7e5dd; border-radius: 6px; color: #5c6b64; font-size: 13px; padding: 0 6px; background: #fff; outline: none; cursor: pointer; }
+.a_chart { height: 320px; margin-top: 10px; }

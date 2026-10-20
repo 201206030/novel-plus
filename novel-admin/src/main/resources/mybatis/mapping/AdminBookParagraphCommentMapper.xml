@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminBookParagraphCommentMapper">
+
+    <sql id="listColumns">
+        t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
+        t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
+        t2.book_name, t3.index_name, ifnull(t4.nick_name, t4.username) as create_user_name
+    </sql>
+
+    <select id="listAll" resultType="com.java2nb.novel.vo.AdminBookParagraphCommentVO">
+        select <include refid="listColumns"/>
+        from book_paragraph_comment t1
+        left join book t2 on t1.book_id = t2.id
+        left join book_index t3 on t1.book_index_id = t3.id
+        left join user t4 on t1.create_user_id = t4.id
+        <where>
+            <if test="bookId != null">
+                and t1.book_id = #{bookId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and t2.book_name = #{keyword}
+            </if>
+        </where>
+        order by t1.create_time desc
+    </select>
+
+    <select id="getById" resultType="com.java2nb.novel.vo.AdminBookParagraphCommentVO">
+        select <include refid="listColumns"/>
+        from book_paragraph_comment t1
+        left join book t2 on t1.book_id = t2.id
+        left join book_index t3 on t1.book_index_id = t3.id
+        left join user t4 on t1.create_user_id = t4.id
+        where t1.id = #{id}
+    </select>
+
+    <update id="updateContent">
+        update book_paragraph_comment set comment_content = #{commentContent} where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from book_paragraph_comment where id = #{id} or root_id = #{id}
+    </delete>
+
+    <delete id="batchDeleteByIds">
+        delete from book_paragraph_comment where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">#{item}</foreach>
+        or root_id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">#{item}</foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminUserBookListMapper">
+
+    <select id="listAll" resultType="com.java2nb.novel.vo.AdminUserBookListVO">
+        select t1.*, ifnull(t2.nick_name, t2.username) as user_name
+        from user_book_list t1
+        left join user t2 on t1.user_id = t2.id
+        <where>
+            and t1.status = 1
+            <if test="listName != null and listName != ''">
+                and t1.list_name like concat('%', #{listName}, '%')
+            </if>
+            <if test="userId != null">
+                and t1.user_id = #{userId}
+            </if>
+        </where>
+        order by t1.create_time desc
+    </select>
+
+    <select id="getById" resultType="com.java2nb.novel.entity.UserBookList">
+        select * from user_book_list where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.java2nb.novel.entity.UserBookList"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into user_book_list (user_id, list_name, description, book_count, status, create_time, update_time)
+        values (#{userId}, #{listName}, #{description}, #{bookCount}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.java2nb.novel.entity.UserBookList">
+        update user_book_list
+        <set>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="listName != null">list_name = #{listName},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            update_time = #{updateTime}
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="softDelete">
+        update user_book_list set status = 0, update_time = now() where id = #{id}
+    </update>
+
+    <update id="batchSoftDelete">
+        update user_book_list set status = 0, update_time = now() where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">#{item}</foreach>
+    </update>
+
+    <update id="refreshBookCount">
+        update user_book_list t1
+        set t1.book_count = (select count(1) from user_book_list_item t2 where t2.list_id = t1.id),
+            t1.update_time = now()
+        where t1.id = #{listId}
+    </update>
+
+</mapper>

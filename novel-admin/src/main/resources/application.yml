@@ -1,41 +1,23 @@
+#端口号
 server:
-  session-timeout: 18000
-  #    tomcat:
-  #        max-threads: 1000
-  #        min-spare-threads: 30
   port: 80
-#    uri-encoding: utf-8
-#security:
-#  basic:
-#    enabled: false
+  servlet:
+    session:
+      timeout: 1D
+
 spring:
-  datasource:
-    driverClassName: org.apache.shardingsphere.driver.ShardingSphereDriver
-    url: jdbc:shardingsphere:absolutepath:${user.dir}/config/shardingsphere-jdbc.yml
-  thymeleaf:
-    mode: LEGACYHTML5
-    cache: false
-  jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     active: dev
-  
-  #上传文件的最大值（100M）
+  jackson:
+    # Date 序列化按北京时间，避免列表时间显示比实际早 8 小时
+    time-zone: GMT+8
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+      #富文本图片上传大小限制
+      max-file-size: 5MB
+      max-request-size: 20MB
 
-  main:
-    allow-bean-definition-overriding: true
-
-mybatis:
-  configuration:
-    #自动将数据库带下划线的表字段值映射到Java类的驼峰字段上
-    map-underscore-to-camel-case: true
-  mapper-locations: mybatis/**/*Mapper.xml
-  typeAliasesPackage: com.java2nb.**.domain
-
-logging:
-  config: classpath:logback-boot.xml
+#登录用户名密码
+admin:
+  username: admin
+  password: admin

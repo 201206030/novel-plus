@@ -1,9 +1,15 @@
 #端口号
 server:
-  port: 8088
-spring:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    password: test123456
+  port: 80
+  servlet:
+    session:
+      timeout: 1D
 
+spring:
+  profiles:
+    active: prod
+
+#登录用户名密码
+admin:
+  username: admin
+  password: admin

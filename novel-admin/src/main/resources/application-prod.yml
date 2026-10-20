@@ -1,17 +1,3 @@
-java2nb:
-  uploadPath: /var/pic/
-  username: admin
-  password: 111111
-logging:
-  level:
-    root: error
-    com.java2nb: error
 spring:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    password: test123456
-    # 连接超时时间（毫秒）
-    timeout: 10000
-
-
+    config:
+        import: classpath:application-common-prod.yml

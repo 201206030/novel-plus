@@ -65,4 +65,9 @@ public class UserMessage {
      * 段评被回复
      */
     public static final byte TYPE_PARAGRAPH_REPLY = 2;
+
+    /**
+     * 系统通知（后台管理员发送，不关联小说）
+     */
+    public static final byte TYPE_SYSTEM_NOTICE = 3;
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminUserFeedbackQueryMapper">
+
+    <select id="listAll" resultType="com.java2nb.novel.vo.AdminUserFeedbackVO">
+        select t1.*, ifnull(t2.nick_name, t2.username) as user_name
+        from user_feedback t1
+        left join user t2 on t1.user_id = t2.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and t1.content like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by t1.create_time desc
+    </select>
+
+</mapper>

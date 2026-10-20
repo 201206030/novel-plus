@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminUserBookListItemMapper">
+
+    <select id="listByListId" resultType="com.java2nb.novel.vo.AdminUserBookListItemVO">
+        select t1.*, t2.book_name, t2.pic_url
+        from user_book_list_item t1
+        left join book t2 on t1.book_id = t2.id
+        where t1.list_id = #{listId}
+        order by t1.create_time asc
+    </select>
+
+    <select id="getByListIdAndBookId" resultType="com.java2nb.novel.entity.UserBookListItem">
+        select * from user_book_list_item where list_id = #{listId} and book_id = #{bookId}
+    </select>
+
+    <select id="getById" resultType="com.java2nb.novel.entity.UserBookListItem">
+        select * from user_book_list_item where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.java2nb.novel.entity.UserBookListItem"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into user_book_list_item (list_id, book_id, remark, create_time)
+        values (#{listId}, #{bookId}, #{remark}, #{createTime})
+    </insert>
+
+    <update id="update" parameterType="com.java2nb.novel.entity.UserBookListItem">
+        update user_book_list_item
+        <set>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            1 = 1
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from user_book_list_item where id = #{id}
+    </delete>
+
+    <delete id="deleteByListId">
+        delete from user_book_list_item where list_id = #{listId}
+    </delete>
+
+</mapper>

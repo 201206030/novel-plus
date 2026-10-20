@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>章节列表-小说精品屋后台管理</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body class="">
+
+<div th:replace="admin/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="admin/menu :: menu">
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div id="adminApp"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/admin.js" type="text/javascript"></script>
+<script th:inline="none">
+    var bookId = Admin.q('bookId');
+
+    Admin.crud({
+        api: '/book/bookIndex',
+        title: '章节列表',
+        searchPlaceholder: '输入章节名搜索',
+        selectable: true,
+        hasAdd: false,
+        hasEdit: false,
+        backUrl: '/book/book.html',
+        params: {bookId: bookId},
+        columns: [
+            {title: '章节号', thClass: 'col_num', render: function (row) {
+                return row.indexNum;
+            }},
+            {title: '章节名', field: 'indexName'},
+            {title: '字数', thClass: 'col_num', render: function (row) {
+                return row.wordCount || 0;
+            }},
+            {title: '是否VIP', thClass: 'time', render: function (row) {
+                return row.isVip == 1 ? '是' : '否';
+            }},
+            {title: '本章价格', thClass: 'time', render: function (row) {
+                return row.isVip == 1 ? (row.bookPrice || 0) + ' 书币' : '免费';
+            }},
+            {title: '更新时间', thClass: 'col_time', render: function (row) {
+                return Admin.fmt(row.updateTime);
+            }}
+        ],
+        rowActions: [
+            {title: '内容', fn: function (row) {
+                // 只读弹窗展示章节内容，不提供编辑
+                Admin.get('/book/bookContent/get', {indexId: row.id}, function (data) {
+                    var html = data && data.content ? String(data.content) : '';
+                    if (html === '') {
+                        html = '<span style="color:#999;">该章节暂无内容</span>';
+                    } else if (html.indexOf('<') === -1) {
+                        // 纯文本内容按换行渲染
+                        html = Admin.escape(html).replace(/\n/g, '<br/>');
+                    }
+                    layer.open({
+                        type: 1,
+                        title: '章节内容 - ' + row.indexName,
+                        area: ['720px', '620px'],
+                        content: '<div class="content_view">' + html + '</div>'
+                    });
+                });
+            }}
+        ]
+    });
+</script>
+</html>

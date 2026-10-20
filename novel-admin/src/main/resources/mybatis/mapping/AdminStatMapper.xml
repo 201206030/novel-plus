@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminStatMapper">
+
+    <select id="dailyCount" resultType="java.util.LinkedHashMap">
+        select date_format(create_time, '%Y-%m-%d') as d, count(*) as cnt
+        from ${table}
+        where create_time &gt;= #{start}
+        group by d
+        order by d
+    </select>
+
+</mapper>

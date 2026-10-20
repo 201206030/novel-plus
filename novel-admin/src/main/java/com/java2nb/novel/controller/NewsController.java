@@ -1,137 +1,107 @@
 package com.java2nb.novel.controller;
 
-import com.java2nb.common.config.CacheKey;
-import com.java2nb.common.utils.PageBean;
-import com.java2nb.common.utils.Query;
-import com.java2nb.common.utils.R;
-import com.java2nb.novel.domain.NewsDO;
+import com.java2nb.novel.entity.NewsCategory;
+import com.java2nb.novel.entity.News;
 import com.java2nb.novel.service.NewsService;
-import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.resp.RestResult;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 新闻表
+ * 新闻管理Controller：新闻列表/类别管理
  *
- * @author xiongxy
- * @email 1179705413@qq.com
- * @date 2020-12-01 10:05:51
+ * @author Administrator
  */
-
-@Controller
-@RequestMapping("/novel/news")
+@RestController
+@RequestMapping("news")
+@RequiredArgsConstructor
 public class NewsController {
 
-    @Autowired
-    private NewsService newsService;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    private final NewsService newsService;
 
-    @GetMapping()
-    @RequiresPermissions("novel:news:news")
-    String News() {
-        return "novel/news/news";
+    @GetMapping("news/list")
+    public RestResult<PageBean<News>> newsList(@RequestParam(required = false) String keyword,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(newsService.newsList(keyword, page, pageSize));
     }
 
-    @ApiOperation(value = "获取新闻表列表", notes = "获取新闻表列表")
-    @ResponseBody
-    @GetMapping("/list")
-    @RequiresPermissions("novel:news:news")
-    public R list(@RequestParam Map<String, Object> params) {
-        //查询列表数据
-        Query query = new Query(params);
-        List<NewsDO> newsList = newsService.list(query);
-        int total = newsService.count(query);
-        PageBean pageBean = new PageBean(newsList, total);
-        return R.ok().put("data", pageBean);
+    @GetMapping("news/get")
+    public RestResult<News> newsGet(@RequestParam Long id) {
+        return RestResult.ok(newsService.newsGet(id));
     }
 
-    @ApiOperation(value = "新增新闻表页面", notes = "新增新闻表页面")
-    @GetMapping("/add")
-    @RequiresPermissions("novel:news:add")
-    String add() {
-        return "novel/news/add";
+    @PostMapping("news/save")
+    public RestResult<Void> newsSave(News news) {
+        newsService.newsSave(news);
+        return RestResult.ok();
     }
 
-    @ApiOperation(value = "修改新闻表页面", notes = "修改新闻表页面")
-    @GetMapping("/edit/{id}")
-    @RequiresPermissions("novel:news:edit")
-    String edit(@PathVariable("id") Long id, Model model) {
-        NewsDO news = newsService.get(id);
-        model.addAttribute("news", news);
-        return "novel/news/edit";
+    @PostMapping("news/update")
+    public RestResult<Void> newsUpdate(News news) {
+        newsService.newsUpdate(news);
+        return RestResult.ok();
     }
 
-    @ApiOperation(value = "查看新闻表页面", notes = "查看新闻表页面")
-    @GetMapping("/detail/{id}")
-    @RequiresPermissions("novel:news:detail")
-    String detail(@PathVariable("id") Long id, Model model) {
-        NewsDO news = newsService.get(id);
-        model.addAttribute("news", news);
-        return "novel/news/detail";
+    @PostMapping("news/remove")
+    public RestResult<Void> newsRemove(@RequestParam Long id) {
+        newsService.newsRemove(id);
+        return RestResult.ok();
     }
 
-    /**
-     * 保存
-     */
-    @ApiOperation(value = "新增新闻表", notes = "新增新闻表")
-    @ResponseBody
-    @PostMapping("/save")
-    @RequiresPermissions("novel:news:add")
-    public R save(NewsDO news) {
-        if (newsService.save(news) > 0) {
-            redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
-            return R.ok();
-        }
-        return R.error();
+    @PostMapping("news/batchRemove")
+    public RestResult<Void> newsBatchRemove(@RequestParam String ids) {
+        newsService.newsBatchRemove(ids);
+        return RestResult.ok();
     }
 
-    /**
-     * 修改
-     */
-    @ApiOperation(value = "修改新闻表", notes = "修改新闻表")
-    @ResponseBody
-    @RequestMapping("/update")
-    @RequiresPermissions("novel:news:edit")
-    public R update(NewsDO news) {
-        newsService.update(news);
-        redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
-        return R.ok();
+    @GetMapping("category/list")
+    public RestResult<PageBean<NewsCategory>> categoryList(@RequestParam(required = false) String keyword,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(newsService.categoryList(keyword, page, pageSize));
+    }
+
+    @GetMapping("category/get")
+    public RestResult<NewsCategory> categoryGet(@RequestParam Integer id) {
+        return RestResult.ok(newsService.categoryGet(id));
+    }
+
+    @PostMapping("category/save")
+    public RestResult<Void> categorySave(NewsCategory category) {
+        newsService.categorySave(category);
+        return RestResult.ok();
+    }
+
+    @PostMapping("category/update")
+    public RestResult<Void> categoryUpdate(NewsCategory category) {
+        newsService.categoryUpdate(category);
+        return RestResult.ok();
+    }
+
+    @PostMapping("category/remove")
+    public RestResult<Void> categoryRemove(@RequestParam Integer id) {
+        newsService.categoryRemove(id);
+        return RestResult.ok();
+    }
+
+    @PostMapping("category/batchRemove")
+    public RestResult<Void> categoryBatchRemove(@RequestParam String ids) {
+        newsService.categoryBatchRemove(ids);
+        return RestResult.ok();
     }
 
     /**
-     * 删除
+     * 类别简化列表（新闻/小说选择分类用）
      */
-    @ApiOperation(value = "删除新闻表", notes = "删除新闻表")
-    @PostMapping("/remove")
-    @ResponseBody
-    @RequiresPermissions("novel:news:remove")
-    public R remove(Long id) {
-        if (newsService.remove(id) > 0) {
-            redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
-            return R.ok();
-        }
-        return R.error();
-    }
-
-    /**
-     * 删除
-     */
-    @ApiOperation(value = "批量删除新闻表", notes = "批量删除新闻表")
-    @PostMapping("/batchRemove")
-    @ResponseBody
-    @RequiresPermissions("novel:news:batchRemove")
-    public R remove(@RequestParam("ids[]") Long[] ids) {
-        newsService.batchRemove(ids);
-        redisTemplate.delete(CacheKey.INDEX_NEWS_KEY);
-        return R.ok();
+    @GetMapping("category/all")
+    public RestResult<PageBean<NewsCategory>> categoryAll() {
+        return RestResult.ok(newsService.categoryList(null, 1, 100));
     }
 
 }

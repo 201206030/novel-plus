@@ -1,135 +1,105 @@
 package com.java2nb.novel.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import com.java2nb.novel.entity.Author;
+import com.java2nb.novel.entity.AuthorCode;
+import com.java2nb.novel.service.AuthorService;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.resp.RestResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import io.swagger.annotations.ApiOperation;
-
-
-import com.java2nb.novel.domain.AuthorDO;
-import com.java2nb.novel.service.AuthorService;
-import com.java2nb.common.utils.PageBean;
-import com.java2nb.common.utils.Query;
-import com.java2nb.common.utils.R;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 作者表
+ * 作家管理Controller：作者列表/邀请码管理
  *
- * @author xiongxy
- * @email 1179705413@qq.com
- * @date 2020-05-13 11:16:51
+ * @author Administrator
  */
-
-@Controller
-@RequestMapping("/novel/author")
+@RestController
+@RequestMapping("author")
+@RequiredArgsConstructor
 public class AuthorController {
-    @Autowired
-    private AuthorService authorService;
 
-    @GetMapping()
-    @RequiresPermissions("novel:author:author")
-    String Author() {
-        return "novel/author/author";
+    private final AuthorService authorService;
+
+    @GetMapping("author/list")
+    public RestResult<PageBean<Author>> authorList(@RequestParam(required = false) String keyword,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(authorService.authorList(keyword, page, pageSize));
     }
 
-    @ApiOperation(value = "获取作者表列表", notes = "获取作者表列表")
-    @ResponseBody
-    @GetMapping("/list")
-    @RequiresPermissions("novel:author:author")
-    public R list(@RequestParam Map<String, Object> params) {
-        //查询列表数据
-        Query query = new Query(params);
-        List<AuthorDO> authorList = authorService.list(query);
-        int total = authorService.count(query);
-        PageBean pageBean = new PageBean(authorList, total);
-        return R.ok().put("data", pageBean);
+    @GetMapping("author/get")
+    public RestResult<Author> authorGet(@RequestParam Long id) {
+        return RestResult.ok(authorService.authorGet(id));
     }
 
-    @ApiOperation(value = "新增作者表页面", notes = "新增作者表页面")
-    @GetMapping("/add")
-    @RequiresPermissions("novel:author:add")
-    String add() {
-        return "novel/author/add";
+    @PostMapping("author/save")
+    public RestResult<Void> authorSave(Author author) {
+        authorService.authorSave(author);
+        return RestResult.ok();
     }
 
-    @ApiOperation(value = "修改作者表页面", notes = "修改作者表页面")
-    @GetMapping("/edit/{id}")
-    @RequiresPermissions("novel:author:edit")
-    String edit(@PathVariable("id") Long id, Model model) {
-            AuthorDO author = authorService.get(id);
-        model.addAttribute("author", author);
-        return "novel/author/edit";
+    @PostMapping("author/update")
+    public RestResult<Void> authorUpdate(Author author) {
+        authorService.authorUpdate(author);
+        return RestResult.ok();
     }
 
-    @ApiOperation(value = "查看作者表页面", notes = "查看作者表页面")
-    @GetMapping("/detail/{id}")
-    @RequiresPermissions("novel:author:detail")
-    String detail(@PathVariable("id") Long id, Model model) {
-			AuthorDO author = authorService.get(id);
-        model.addAttribute("author", author);
-        return "novel/author/detail";
+    @PostMapping("author/remove")
+    public RestResult<Void> authorRemove(@RequestParam Long id) {
+        authorService.authorRemove(id);
+        return RestResult.ok();
     }
 
-    /**
-     * 保存
-     */
-    @ApiOperation(value = "新增作者表", notes = "新增作者表")
-    @ResponseBody
-    @PostMapping("/save")
-    @RequiresPermissions("novel:author:add")
-    public R save( AuthorDO author) {
-        if (authorService.save(author) > 0) {
-            return R.ok();
-        }
-        return R.error();
+    @PostMapping("author/batchRemove")
+    public RestResult<Void> authorBatchRemove(@RequestParam String ids) {
+        authorService.authorBatchRemove(ids);
+        return RestResult.ok();
     }
 
-    /**
-     * 修改
-     */
-    @ApiOperation(value = "修改作者表", notes = "修改作者表")
-    @ResponseBody
-    @RequestMapping("/update")
-    @RequiresPermissions("novel:author:edit")
-    public R update( AuthorDO author) {
-            authorService.update(author);
-        return R.ok();
+    @PostMapping("author/status")
+    public RestResult<Void> authorStatus(@RequestParam Long id, @RequestParam Byte status) {
+        authorService.authorStatus(id, status);
+        return RestResult.ok();
     }
 
-    /**
-     * 删除
-     */
-    @ApiOperation(value = "删除作者表", notes = "删除作者表")
-    @PostMapping("/remove")
-    @ResponseBody
-    @RequiresPermissions("novel:author:remove")
-    public R remove( Long id) {
-        if (authorService.remove(id) > 0) {
-            return R.ok();
-        }
-        return R.error();
+    @GetMapping("authorCode/list")
+    public RestResult<PageBean<AuthorCode>> codeList(@RequestParam(required = false) String keyword,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(authorService.codeList(keyword, page, pageSize));
     }
 
-    /**
-     * 删除
-     */
-    @ApiOperation(value = "批量删除作者表", notes = "批量删除作者表")
-    @PostMapping("/batchRemove")
-    @ResponseBody
-    @RequiresPermissions("novel:author:batchRemove")
-    public R remove(@RequestParam("ids[]") Long[] ids) {
-            authorService.batchRemove(ids);
-        return R.ok();
+    @GetMapping("authorCode/get")
+    public RestResult<AuthorCode> codeGet(@RequestParam Long id) {
+        return RestResult.ok(authorService.codeGet(id));
+    }
+
+    @PostMapping("authorCode/save")
+    public RestResult<Void> codeSave(AuthorCode authorCode) {
+        authorService.codeSave(authorCode);
+        return RestResult.ok();
+    }
+
+    @PostMapping("authorCode/update")
+    public RestResult<Void> codeUpdate(AuthorCode authorCode) {
+        authorService.codeUpdate(authorCode);
+        return RestResult.ok();
+    }
+
+    @PostMapping("authorCode/remove")
+    public RestResult<Void> codeRemove(@RequestParam Long id) {
+        authorService.codeRemove(id);
+        return RestResult.ok();
+    }
+
+    @PostMapping("authorCode/batchRemove")
+    public RestResult<Void> codeBatchRemove(@RequestParam String ids) {
+        authorService.codeBatchRemove(ids);
+        return RestResult.ok();
     }
 
 }

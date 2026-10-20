@@ -1,33 +1,228 @@
 package com.java2nb.novel.service;
 
-import com.java2nb.novel.domain.BookDO;
+import com.github.pagehelper.PageHelper;
+import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookComment;
+import com.java2nb.novel.entity.BookContent;
+import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.entity.BookSetting;
+import com.java2nb.novel.mapper.BookCategoryMapper;
+import com.java2nb.novel.mapper.BookCommentDynamicSqlSupport;
+import com.java2nb.novel.mapper.BookCommentMapper;
+import com.java2nb.novel.mapper.BookContentDynamicSqlSupport;
+import com.java2nb.novel.mapper.BookContentMapper;
+import com.java2nb.novel.mapper.BookDynamicSqlSupport;
+import com.java2nb.novel.mapper.BookIndexDynamicSqlSupport;
+import com.java2nb.novel.mapper.BookIndexMapper;
+import com.java2nb.novel.mapper.BookMapper;
+import com.java2nb.novel.mapper.BookSettingDynamicSqlSupport;
+import com.java2nb.novel.mapper.BookSettingMapper;
+import io.github.xxyopen.model.page.PageBean;
+import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
+import io.github.xxyopen.util.IdWorker;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
+import static com.java2nb.novel.core.utils.AdminUtil.biz;
+import static com.java2nb.novel.core.utils.AdminUtil.like;
+import static com.java2nb.novel.core.utils.AdminUtil.parseIds;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLikeWhenPresent;
 
 /**
- * 小说表
- * 
- * @author xiongxy
- * @email 1179705413@qq.com
- * @date 2020-12-01 03:49:46
+ * 小说管理Service：小说列表/章节管理/内容管理
+ *
+ * @author Administrator
  */
-public interface BookService {
-	
-	BookDO get(Long id);
-	
-	List<BookDO> list(Map<String, Object> map);
-	
-	int count(Map<String, Object> map);
-	
-	int save(BookDO book);
-	
-	int update(BookDO book);
-	
-	int remove(Long id);
-	
-	int batchRemove(Long[] ids);
+@Service
+@RequiredArgsConstructor
+public class BookService {
 
-    Map<Object, Object> tableSta(Date minDate);
+    private final BookMapper bookMapper;
+
+    private final BookIndexMapper bookIndexMapper;
+
+    private final BookContentMapper bookContentMapper;
+
+    private final BookCommentMapper bookCommentMapper;
+
+    private final BookSettingMapper bookSettingMapper;
+
+    private final BookCategoryMapper bookCategoryMapper;
+
+    private final IdWorker idWorker = IdWorker.INSTANCE;
+
+    public PageBean<Book> bookList(String keyword, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<Book> list = bookMapper.select(c -> {
+            if (StringUtils.isNotBlank(keyword)) {
+                // 书名或作者名任一匹配
+                String likeVal = like(keyword);
+                return c.where(BookDynamicSqlSupport.bookName, isLike(likeVal))
+                        .or(BookDynamicSqlSupport.authorName, isLike(likeVal))
+                        .orderBy(BookDynamicSqlSupport.updateTime.descending());
+            }
+            return c.orderBy(BookDynamicSqlSupport.updateTime.descending());
+        });
+        return PageBuilder.build(list);
+    }
+
+    public Book bookGet(Long id) {
+        return bookMapper.selectByPrimaryKey(id).orElseThrow(() -> biz("小说不存在"));
+    }
+
+    public void bookSave(Book book) {
+        throw biz("小说列表不支持新增");
+    }
+
+    public void bookUpdate(Book book) {
+        throw biz("小说列表不支持修改");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void bookRemove(Long id) {
+        // 级联删除章节内容与小说本体
+        List<BookIndex> indexList = bookIndexMapper.select(c -> c.where(BookIndexDynamicSqlSupport.bookId, isEqualTo(id)));
+        removeContentByIndex(indexList.stream().map(BookIndex::getId).toList());
+        bookIndexMapper.delete(c -> c.where(BookIndexDynamicSqlSupport.bookId, isEqualTo(id)));
+        bookCommentMapper.delete(c -> c.where(BookCommentDynamicSqlSupport.bookId, isEqualTo(id)));
+        bookSettingMapper.delete(c -> c.where(BookSettingDynamicSqlSupport.bookId, isEqualTo(id)));
+        bookMapper.deleteByPrimaryKey(id);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void bookBatchRemove(String ids) {
+        for (Long id : parseIds(ids)) {
+            bookRemove(id);
+        }
+    }
+
+    /**
+     * 下载小说全部正文（TXT文本）
+     *
+     * @param bookId 小说ID
+     * @return 小说正文
+     */
+    public String bookDownload(Long bookId) {
+        Book book = bookGet(bookId);
+        List<BookIndex> indexList = bookIndexMapper.select(c -> c
+                .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                .orderBy(BookIndexDynamicSqlSupport.indexNum));
+        StringBuilder sb = new StringBuilder();
+        sb.append("《").append(book.getBookName()).append("》\n");
+        for (BookIndex index : indexList) {
+            sb.append("\n").append(index.getIndexName()).append("\n");
+            bookContentMapper.select(c -> c.where(BookContentDynamicSqlSupport.indexId, isEqualTo(index.getId())))
+                    .stream().findFirst().ifPresent(content -> sb.append(htmlToText(content.getContent())).append("\n"));
+        }
+        // 章节衔接处可能叠加出多个空行，全文统一压缩
+        return sb.toString().replaceAll("\n{3,}", "\n\n");
+    }
+
+    /**
+     * 将库内 HTML 内容转为纯文本：换行类标签转换行符，&nbsp; 转空格，剔除其余标签并解码常见实体
+     *
+     * @param html 原始内容
+     * @return 纯文本
+     */
+    private String htmlToText(String html) {
+        if (html == null || html.isEmpty()) {
+            return "";
+        }
+        String text = html
+                // 统一换行符：CRLF 或单独的 CR 都归一为 LF，避免后续空行压缩被 CR 隔断失效
+                .replaceAll("\r\n?", "\n")
+                // 块尾补换行，避免 </p></div> 后两段粘连
+                .replaceAll("(?i)</(p|div|h[1-6]|li|blockquote)>", "\n")
+                // 换行标签统一转换行符
+                .replaceAll("(?i)<br\\s*/?>", "\n")
+                // 段落/制表符转空格（正文缩进常用）
+                .replace("&nbsp;", " ")
+                .replace("&ensp;", " ")
+                .replace("&emsp;", "  ")
+                .replaceAll("&#\\d+;", "")
+                // 剔除其余所有标签
+                .replaceAll("(?i)<[^>]+>", "")
+                // 解码常见实体（顺序不可调，&amp; 必须最后）
+                .replace("&quot;", "\"")
+                .replace("&#39;", "'")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&");
+        // 清理多余空白：3 个以上连续换行压缩为一个段落分隔，行尾空白去掉
+        return text.replaceAll("[ \\t]+\n", "\n").replaceAll("\n{3,}", "\n\n").trim() + "\n";
+    }
+
+    private void fillCatName(Book book) {
+        if (book.getCatId() != null) {
+            bookCategoryMapper.selectByPrimaryKey(book.getCatId())
+                    .ifPresent(category -> book.setCatName(category.getName()));
+        }
+    }
+
+    public PageBean<BookIndex> indexList(Long bookId, String keyword, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<BookIndex> list = bookIndexMapper.select(c -> c
+                .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                .and(BookIndexDynamicSqlSupport.indexName, isLikeWhenPresent(like(keyword)))
+                .orderBy(BookIndexDynamicSqlSupport.indexNum));
+        return PageBuilder.build(list);
+    }
+
+    public BookIndex indexGet(Long id) {
+        return bookIndexMapper.selectByPrimaryKey(id).orElseThrow(() -> biz("章节不存在"));
+    }
+
+    public void indexSave(BookIndex bookIndex) {
+        throw biz("章节列表不支持新增");
+    }
+
+    public void indexUpdate(BookIndex bookIndex) {
+        throw biz("章节列表不支持修改");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void indexRemove(Long id) {
+        removeContentByIndex(List.of(id));
+        bookIndexMapper.deleteByPrimaryKey(id);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void indexBatchRemove(String ids) {
+        List<Long> idList = parseIds(ids);
+        if (idList.isEmpty()) {
+            return;
+        }
+        removeContentByIndex(idList);
+        bookIndexMapper.delete(c -> c.where(BookIndexDynamicSqlSupport.id, isIn(idList)));
+    }
+
+    private void removeContentByIndex(List<Long> indexIds) {
+        if (!indexIds.isEmpty()) {
+            bookContentMapper.delete(c -> c.where(BookContentDynamicSqlSupport.indexId, isIn(indexIds)));
+        }
+    }
+
+    public BookContent contentGet(Long indexId) {
+        return bookContentMapper.select(c -> c.where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId)))
+                .stream().findFirst().orElse(null);
+    }
+
+    /**
+     * 章节内容仅供查看，不支持编辑
+     *
+     * @param indexId 章节ID
+     * @param content 章节内容
+     */
+    public void contentSave(Long indexId, String content) {
+        throw biz("章节内容仅供查看，不支持修改");
+    }
+
 }

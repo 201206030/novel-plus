@@ -14,6 +14,12 @@ spring:
       #连接超时时间（毫秒）
       timeout: 10000
 
+pic:
+  save:
+    type: 1 #图片保存方式, 1不保存，使用爬取的网络图片 ，2保存在自己的存储介质
+    storage: local #存储介质，local：本地，OSS：阿里云对象存储
+    path: /Users/xiongxiaoyang/java/  #图片保存路径
+
 content:
   save:
     storage: db # 小说内容存储方式：db-数据库，txt-TXT文本

@@ -181,6 +181,7 @@
         <div class="msg-tab active" data-type="">全部</div>
         <div class="msg-tab" data-type="1">书评回复</div>
         <div class="msg-tab" data-type="2">段评回复</div>
+        <div class="msg-tab" data-type="3">系统通知</div>
     </div>
     <div class="msg-bar"><span class="read-all" onclick="readAll()">全部标为已读</span></div>
 
@@ -264,10 +265,11 @@
     }
 
     function buildMsgItem(msg) {
-        var photo = msg.sendUserPhoto ? msg.sendUserPhoto : '/images/default.gif';
-        var sender = msg.sendUserName ? msg.sendUserName : '某用户';
-        // msgType：1书评被回复 2段评被回复
-        var action = msg.msgType == 2 ? '回复了你的段评' : '回复了你的书评';
+        // 系统通知用专属铃铛头像，辨识度高
+        var photo = msg.msgType == 3 ? '/images/system_notice.svg' : (msg.sendUserPhoto ? msg.sendUserPhoto : '/images/default.gif');
+        var sender = msg.sendUserName ? msg.sendUserName : (msg.msgType == 3 ? '系统通知' : '某用户');
+        // msgType：1书评被回复 2段评被回复 3系统通知
+        var action = msg.msgType == 3 ? '系统通知' : (msg.msgType == 2 ? '回复了你的段评' : '回复了你的书评');
         var from = '';
         if (msg.bookName) {
             from += msg.bookName;
@@ -303,6 +305,10 @@
         // 先本地置已读，跳转返回后视觉即时反馈
         $el.addClass('readed');
         markRead(id);
+        // 系统通知不关联小说，只标记已读不跳转
+        if (type == 3) {
+            return;
+        }
         var url;
         if (type == 2) {
             // 段评：跳章节阅读页

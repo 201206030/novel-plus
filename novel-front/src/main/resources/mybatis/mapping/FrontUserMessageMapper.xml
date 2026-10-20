@@ -13,7 +13,7 @@
                t2.username send_user_name, t2.user_photo send_user_photo,
                t3.book_name, t4.index_name
         from user_message t1
-        inner join user t2 on t1.send_user_id = t2.id
+        left join user t2 on t1.send_user_id = t2.id
         left join book t3 on t1.book_id = t3.id
         left join book_index t4 on t1.book_index_id = t4.id
         where t1.user_id = #{userId}

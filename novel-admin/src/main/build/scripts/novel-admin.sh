@@ -29,13 +29,13 @@ is_exist(){
 start(){
   is_exist
   if [ $? -eq "0" ]; then 
-    echo ">>> 小说精品屋后台正在运行 PID = ${pid} <<<" 
+    echo ">>> 小说精品屋后台正在运行 PID = ${pid} <<<"
   else 
-    echo ">>> 小说精品屋后台开始启动 <<<" 
+    echo ">>> 小说精品屋后台开始启动 <<<"
     nohup java -jar -Dspring.profiles.active=prod $JAR_NAME >/dev/null 2>&1 &
-    sleep 20
+    sleep 10
     echo $! > $PID
-    echo ">>> 小说精品屋后台启动完成 PID = $! <<<" 
+    echo ">>> 小说精品屋后台启动完成 PID = $! <<<"
     status
    fi
   }
