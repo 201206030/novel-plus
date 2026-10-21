@@ -8,23 +8,10 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
-        <style type="text/css">
-            .redBtn {
-                padding: 5px;
-                border-radius: 20px;
-                border: 1px solid #3eaf7c;
-                background: #3eaf7c;
-                color: #fff;
-            }
-
-            a.redBtn:hover {
-
-                color: #fff;
-            }
-        </style>
+        <link rel="stylesheet" href="/css/author.css"/>
     </head>
 </head>
-<body class="">
+<body class="author_zone">
 
 <div class="header">
     <div class="mainNav" id="mainNav">
@@ -50,38 +37,43 @@
         </div>
         <div class="my_r">
             <div id="noContentDiv">
-                <div class="tc" style="margin-top: 200px"><a href="/author/book_add.html" class="btn_red">创建作品</a></div>
-
+                <div class="empty_box">
+                    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#3eaf7c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 7.5C10.5 6 8 5.4 4.5 5.7v12C8 17.5 10.5 18 12 19.5M12 7.5c1.5-1.5 4-2.1 7.5-1.8v12c-3.5-.2-6 .3-7.5 1.8"/>
+                    </svg>
+                    <p>还没有作品，快去创建一部吧～</p>
+                    <a href="/author/book_add.html" class="btn_main">创建作品</a>
+                </div>
             </div>
             <div class="my_bookshelf" id="hasContentDiv" style="display: none">
                 <div class="title cf">
                     <h2 class="fl">小说列表</h2>
-                    <div class="fr"><a href="/author/book_add.html" class="btn_red">发布小说</a></div>
+                    <div class="fr"><a href="/author/book_add.html" class="btn_main">＋ 发布小说</a></div>
                 </div>
 
                 <div id="divData" class="updateTable">
                     <table cellpadding="0" cellspacing="0">
                         <thead>
                         <tr>
-                            <th class="goread">
-                                书名
+                            <th class="name">
+                                作品
                             </th>
-                            <th class="goread">
-                                分类
-                            </th>
-                            <th class="goread">
+                            <th class="goread col_visit">
                                 点击量
                             </th>
-                            <th class="goread">
-                                昨日订阅数
+                            <th class="goread col_buy">
+                                昨日订阅
                             </th>
-                            <th class="goread">
+                            <th class="goread col_time">
                                 更新时间
                             </th>
-                            <th class="goread">
+                            <th class="goread col_word">
                                 总字数
                             </th>
-                            <th class="goread">
+                            <th class="goread col_status">
+                                状态
+                            </th>
+                            <th class="goread col_opt">
                                 操作
                             </th>
                         </tr>
@@ -94,37 +86,6 @@
                     <div class="pageBox cf" id="shellPage">
                     </div>
                 </div>
-                <!--<div id="divData" class="updateTable">
-                    <table cellpadding="0" cellspacing="0">
-                        <thead>
-                        <tr>
-
-                            <th class="name">
-                                爬虫源（已开启的爬虫源）
-                            </th>
-                            <th class="chapter">
-                                成功爬取数量（websocket实现）
-                            </th>
-                            <th class="time">
-                            目标爬取数量
-                            </th>
-                            <th class="goread">
-                                状态（正在运行，已停止）（一次只能运行一个爬虫源）
-                            </th>
-                            <th class="goread">
-                                操作（启动，停止）
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody id="bookShelfList">
-
-
-
-                        </tbody>
-                    </table>
-                    <div class="pageBox cf" id="shellPage">
-                    </div>
-                </div>-->
             </div>
         </div>
     </div>
@@ -143,7 +104,27 @@
 <script language="javascript" type="text/javascript">
     var coverUpdateInterval;
 
-    search(1, 5);
+    search(1, 10);
+
+    //数字缩写：超过10万用“万”作单位，避免数字过长撑宽列
+    function fmtNum(n) {
+        var num = Number(n || 0);
+        if (isNaN(num)) {
+            num = 0;
+        }
+        return num >= 100000 ? (num / 10000).toFixed(1).replace(/\.0$/, '') + '万' : String(num);
+    }
+
+    //时间两行展示：日期 + 时刻
+    function fmtTime(t) {
+        var d = new Date(Date.parse(t));
+        return d.Format('yyyy-MM-dd') + '<br>' + d.Format('hh:mm');
+    }
+
+    //HTML转义，防止书名/章节名破坏表格结构
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
 
     function search(curr, limit) {
         clearInterval(coverUpdateInterval);
@@ -156,20 +137,20 @@
                 if (data.code == 200) {
                     var bookList = data.data.list;
                     if (bookList.length > 0) {
-                        if(curr == 1 && bookList[0].picUrl == '/images/default.gif'){
-                            coverUpdateInterval = setInterval(function(){
+                        if (curr == 1 && bookList[0].picUrl == '/images/default.gif') {
+                            coverUpdateInterval = setInterval(function () {
                                 $.ajax({
                                     type: "get",
                                     url: "/author/queryAiGenPic",
                                     data: {'bookId': bookList[0].id},
                                     dataType: "json",
                                     success: function (data) {
-                                        if(data.code == 200 && data.data){
-                                            $("#cover"+bookList[0].id).attr("src", data.data);
+                                        if (data.code == 200 && data.data) {
+                                            $("#cover" + bookList[0].id).attr("src", data.data);
                                             clearInterval(coverUpdateInterval);
                                         }
                                     }
-                                  });
+                                });
                             }, 3000);
                             setTimeout(() => {
                                 clearInterval(coverUpdateInterval);
@@ -180,40 +161,32 @@
                         var bookListHtml = "";
                         for (var i = 0; i < bookList.length; i++) {
                             var book = bookList[i];
-                            bookListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
-                                /* "                            <td class=\"style bookclass\">\n" +
-                                 "                                ["+(i+1)+"]\n" +
-                                 "                            </td>\n" +*/
-
-                                "                            <td style=\"position: relative\" class=\"goread\">\n" +
-                                "<input class=\"opacity\" onchange=\"picChange('" + book.id + "')\"\n" +
-                                "                                           type=\"file\" id=\"file" + book.id + "\" name=\"file\"\n" +
-                                "                                           title=\"点击上传图片\"\n" +
-                                "                                           style=\"z-index: 100;cursor: pointer;left: 30px; top: 0px; width: 60px; height: 80px; opacity: 0; position: absolute;  \"\n" +
-                                "                                    />" +
-                                "<img id=\"cover" + book.id + "\" width='50' height='70' src='" + book.picUrl + "'/><br/>" +                                "                                " + book.bookName + "</td>\n" +
-                                "                            <td class=\"goread\" >"
-                                + book.catName + "</td>\n" +
-
-                                "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                + book.visitCount + "</td>\n" +
-
-                                "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                + book.yesterdayBuy + "</td>\n" +
-
-                                "                            <td class=\"goread\">\n" +
-                                "                                " + new Date(Date.parse(book.lastIndexUpdateTime ? book.lastIndexUpdateTime : book.updateTime)).Format("yyyy-MM-dd hh:mm") + "更新\n" +
-                                "                            </td>\n" +
-
-                                "                            <td class=\"goread\" valsc=\"291|2037554|1\">"
-                                + book.wordCount + "</td>\n" +
-
-                                " <td class=\"goread\" id='opt" + book.id + "'>" +
-                                "<a target='_blank' class='redBtn' href='/author/index_list.html?bookId=" + book.id + "'>章节管理  </a><br/>" +
-                                "<a class='redBtn' href='/author/ai_assistant.html?bookId=" + book.id + "'>AI创作  </a><br/>" +
-                                "<a target='_blank' href='/author/author_income_detail.html?bookId=" + book.id + "'>薪酬查询  </a><br/>" +
-                                "<a target='_blank' href='/book/" + book.id + ".html'>作品信息</a>" +
-                                "</td>                     </tr>");
+                            var updTime = fmtTime(book.lastIndexUpdateTime ? book.lastIndexUpdateTime : book.updateTime);
+                            bookListHtml += '<tr class="book_list">'
+                                + '<td class="name">'
+                                + '  <div class="book_cell">'
+                                + '    <div class="cover_wrap">'
+                                + '      <input type="file" id="file' + book.id + '" name="file" title="点击更换封面" onchange="picChange(\'' + book.id + '\')" />'
+                                + '      <img id="cover' + book.id + '" src="' + book.picUrl + '" alt="封面"/>'
+                                + '      <span class="cover_mask">更换封面</span>'
+                                + '    </div>'
+                                + '    <div class="book_info">'
+                                + '      <a class="book_name" target="_blank" href="/book/' + book.id + '.html" title="' + escapeHtml(book.bookName) + '">' + escapeHtml(book.bookName) + '</a>'
+                                + '      <p class="book_cat">' + escapeHtml(book.catName || '') + '</p>'
+                                + '    </div>'
+                                + '  </div>'
+                                + '</td>'
+                                + '<td class="goread"><span class="num">' + fmtNum(book.visitCount) + '</span></td>'
+                                + '<td class="goread"><span class="num">' + fmtNum(book.yesterdayBuy) + '</span></td>'
+                                + '<td class="goread time_cell">' + updTime + '</td>'
+                                + '<td class="goread"><span class="num">' + fmtNum(book.wordCount) + '</span></td>'
+                                + '<td class="goread">' + (book.bookStatus == 0 ? '<span class="tag tag_serial">连载中</span>' : '<span class="tag tag_done">已完结</span>') + '</td>'
+                                + '<td class="goread opt" id="opt' + book.id + '">'
+                                + '<a target="_blank" href="/author/index_list.html?bookId=' + book.id + '">章节管理</a>'
+                                + '<a href="/author/ai_assistant.html?bookId=' + book.id + '">AI创作</a>'
+                                + '<a target="_blank" href="/author/author_income_detail.html?bookId=' + book.id + '">薪酬查询</a>'
+                                + (book.bookStatus == 0 ? '<a class="opt_del" href="javascript:finishBook(\'' + book.id + '\')">设为完结</a>' : '')
+                                + '</td></tr>';
                         }
                         $("#bookList").html(bookListHtml);
 
@@ -223,22 +196,14 @@
                             //执行一个laypage实例
                             laypage.render({
                                 elem: 'shellPage' //注意，这里的 test1 是 ID，不用加 # 号
-                                , count: data.data.total //数据总数，从服务端得到,
+                                , count: data.data.total //数据总数，从服务端得到
                                 , curr: data.data.pageNum
                                 , limit: data.data.pageSize
+                                , theme: '#3eaf7c'
                                 , jump: function (obj, first) {
-
-
-                                    //obj包含了当前分页的所有参数，比如：
-                                    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-                                    console.log(obj.limit); //得到每页显示的条数
-
-
                                     //首次不执行
                                     if (!first) {
                                         search(obj.curr, obj.limit);
-                                    } else {
-
                                     }
                                 }
                             });
@@ -295,7 +260,7 @@
     }
 
 
-   function picChange(bookId) {
+    function picChange(bookId) {
         var file = $("#file" + bookId).val(); //文件名称
         if (file != "") {
             if (checkPicUpload($("#file" + bookId)[0])) {
@@ -316,7 +281,7 @@
                                 dataType: "json",
                                 success: function (data) {
                                     if (data.code == 200) {
-                                        $("#cover"+bookId).attr("src", picUrl);
+                                        $("#cover" + bookId).attr("src", picUrl);
                                     } else {
                                         layer.alert(data.msg);
                                     }
@@ -338,6 +303,42 @@
         } else {
             alert("请选择上传文件！");
         }
+
+
+    }
+
+    function finishBook(bookId) {
+
+        layer.confirm('确认要完结作品吗？该操作不可逆！', {
+            btn: ['确定', '取消']//按钮
+        }, function (index) {
+
+            layer.close(index);
+            $.ajax({
+                type: "post",
+                url: "/author/finishBook",
+                data: {"bookId": bookId},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+
+                        location.reload();
+
+
+                    } else if (data.code == 1001) {
+                        //未登录
+                        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                    } else {
+                        layer.alert(data.msg);
+                    }
+
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            })
+        });
 
 
     }

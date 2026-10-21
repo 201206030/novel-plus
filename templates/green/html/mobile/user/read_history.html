@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -16,30 +14,13 @@
 
     <div th:include="mobile/common/css :: css"></div>
 
-    </div>
-
     <style type="text/css">
-
-
-        .line-limit-length {
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
+        body {
+            background: #f5f7f6;
         }
 
-        .indexP p a {
-            color: #4c6978;
-        }
-
-        .Readarea {
-            font-size: 18px;
-            line-height: 35px;
-            padding: 10px;
-            color: #333;
+        #bookList {
+            padding-top: 10px;
         }
 
         div, p {
@@ -47,21 +28,125 @@
             word-break: break-all;
             word-wrap: break-word;
             word-break: normal;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
             box-sizing: border-box;
-            -ms-box-sizing: border-box;
         }
 
-        .indexDiv a {
-            margin-left: 20px;
+        /* 历史书卡片：整卡一个链接 */
+        .history-item {
+            display: -webkit-flex;
+            display: flex;
+            margin: 0 12px 10px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+            -webkit-tap-highlight-color: transparent;
+            color: #1f2d26;
         }
 
-        img {
-            width: 130px;
-            height: 180px;
+        .history-item:active {
+            opacity: .88;
         }
 
+        .history-item .cover {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 64px;
+            height: 88px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #f0f2f1;
+        }
+
+        .history-item .info {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 10px;
+        }
+
+        .history-item .book-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 22px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-item .meta-row {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .history-item .tag-pill {
+            font-size: 10px;
+            line-height: 16px;
+            padding: 0 7px;
+            border-radius: 8px;
+            background: rgba(62, 175, 124, .12);
+            color: #2e8b62;
+            margin-right: 6px;
+        }
+
+        .history-item .tag-pill.gray {
+            background: #f0f2f1;
+            color: #8a968f;
+        }
+
+        .history-item .update-time {
+            margin-left: auto;
+            font-size: 11px;
+            color: #98a8a1;
+        }
+
+        .history-item .author {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #8a968f;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-item .desc {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #98a8a1;
+            line-height: 17px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 空记录 */
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        /* 分页 */
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
     </style>
 </head>
 <body>
@@ -78,18 +163,7 @@
 <input type="hidden" id="sortBy" th:value="${sortBy}"/>
 <input type="hidden" id="sort" th:value="${sort}"/>
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
-
-    <div style="width:10%;float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-    </div>
-    <b class="layui-icon">阅读历史</b>
-    <div style="width:10%;float: right;margin-right: 10px"><a href="/">
-        <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i>
-    </a>
-    </div>
-</div>
+<div th:replace="mobile/common/header :: pageHeader('阅读历史', null)"></div>
 <div id="body">
     <div id="bookList">
 
@@ -97,7 +171,7 @@
     </div>
 
 
-    <div id="books" style="text-align: center;"></div>
+    <div id="books" class="page-box"></div>
 
 </div>
 <div th:replace="mobile/common/footer :: footer">
@@ -136,34 +210,21 @@
                             book.bookDesc = book.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "").replace(/&nbsp;/g, "");
                         }
 
-                        bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:10px;background: #f2f2f2\">\n" +
-                            "        <a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
-                            "            <div class=\"layui-col-xs6 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
-                            "                <img style='width: 130px;height: 180px' align=\"center\"\n" +
-                            "                     src=\"" + book.picUrl + "\"/>\n" +
-                            "\n" +
-                            "            </div>\n" +
-                            "        </a>\n" +
-                            "        <div style=\"padding: 10px\" class=\"layui-col-xs6 layui-col-sm8 layui-col-md8 layui-col-lg8\">\n" +
-                            "            <a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
-                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">" + book.bookName + "</div>\n" +
-                            "            </a>\n" +
-                            "            <div style=\";color: #4c6978;float: right;\"><i style=\"color: red\"></i></div>\n" +
-                            "            <a href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
-                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者：" + book.authorName + "</div>\n" +
-                            "            </a>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别：" + book.catName + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态：" + (book.bookStatus == 0 ? '连载' : '完结') + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>" + book.lastIndexUpdateTime.substr(0, 11) + "</i>\n" +
-                            "            </div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">简介：" + (book.bookDesc ? (book.bookDesc.length > 15 ? (book.bookDesc.substr(0, 15) + "...") : book.bookDesc) : book.bookDesc) + "</div>\n" +
-                            "\n" +
-                            "\n" +
+                        bookListHtml += ("<a class=\"history-item\" href='/book/" + book.bookId + "/" + book.preContentId + ".html'>\n" +
+                            "    <img class=\"cover\" src=\"" + book.picUrl + "\"/>\n" +
+                            "    <div class=\"info\">\n" +
+                            "        <div class=\"book-name\">" + book.bookName + "</div>\n" +
+                            "        <div class=\"meta-row\">\n" +
+                            "            <span class=\"tag-pill\">" + book.catName + "</span>\n" +
+                            "            <span class=\"tag-pill gray\">" + (book.bookStatus == 0 ? '连载' : '完结') + "</span>\n" +
+                            "            <span class=\"update-time\">" + book.lastIndexUpdateTime.substr(0, 11) + " 更新</span>\n" +
                             "        </div>\n" +
-                            "\n" +
-                            "    </div>");
+                            "        <div class=\"author\">作者：" + book.authorName + "</div>\n" +
+                            "        <div class=\"desc\">简介：" + (book.bookDesc ? book.bookDesc : '暂无简介') + "</div>\n" +
+                            "    </div>\n" +
+                            "</a>");
                     }
-                    $("#bookList").html(bookListHtml);
+                    $("#bookList").html(bookListHtml || "<div class=\"empty-tip\">还没有阅读记录，去书城发现好书吧~<br><a href=\"/\" class=\"empty-link\">去书城逛逛</a></div>");
 
                     layui.use('laypage', function () {
                         var laypage = layui.laypage;

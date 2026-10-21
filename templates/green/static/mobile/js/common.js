@@ -197,5 +197,3 @@ String.prototype.isNickName = function () {
     }
     return false;
 };
-
-

@@ -177,13 +177,13 @@ function set(intype,p){
         fontsmall.className="sizebg";
         if(p == "big"){
             fontbig.className="button sizebgon";
-            nr1.style.fontSize="25px";
+            nr1.style.fontSize="28px";
             fontmiddle.className="sizebg";
             fontsmall.className="sizebg";
         }
         if(p == "middle"){
             fontmiddle.className="button sizebgon";
-            nr1.style.fontSize = "20px";
+            nr1.style.fontSize = "22px";
             fontbig.className="sizebg";
             fontsmall.className="sizebg";
         }

@@ -3,68 +3,124 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title th:text="${application.website.name}+'列表'"></title>
+    <title th:text="'小说排行榜_'+${application.website.name}"></title>
 
     <meta name="keywords"
-          th:content="${application.website.name}+',精品小说,弹幕网站,弹幕,弹幕小说网站,免费小说,小说阅读,小说排行,轻小说,txt小说下载,电子书下载,动漫轻小说,日本轻小说'">
+          content="小说排行榜,热门小说榜,小说排行榜完结版,完结小说排行榜,完本小说排行榜,最新小说排行榜,网络小说排行榜,排行榜,点击榜,新书榜,推荐榜"/>
 
     <meta name="description"
-          th:content="${application.website.name}+'是国内优秀的小说弹幕网站,'+${application.website.name}+'提供海量热门网络小说,日本轻小说,国产轻小说,动漫小说,轻小说在线阅读和TXT小说下载,致力于网络精品小说的收集,智能计算小说评分,打造小说精品排行榜,致力于无广告无弹窗的小说阅读环境。'">
-
+          th:content="'最新热门网络小说排行榜,包含各类热门小说榜,小说排行榜上都是受用户喜爱的小说作品,精彩尽在'+${application.website.name}+'。'">
 
     <div th:include="mobile/common/css :: css"></div>
 
     <style type="text/css">
 
-
         .line-limit-length {
-
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             white-space: nowrap;
-
         }
 
-        .indexP p a {
-            color: #4c6978;
+        /* 榜单类型选项卡 */
+        .rank-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #eee;
         }
 
-        .Readarea {
-            font-size: 18px;
-            line-height: 35px;
-            padding: 10px;
-            color: #333;
+        .rank-tabs a {
+            flex: 1;
+            text-align: center;
+            line-height: 44px;
+            font-size: 15px;
+            color: #666;
+            position: relative;
         }
 
-        div, p {
-            wrap-work: break-word;
-            word-break: break-all;
-            word-wrap: break-word;
-            word-break: normal;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            -ms-box-sizing: border-box;
+        .rank-tabs a.on {
+            color: #3eaf7c;
+            font-weight: bold;
         }
 
-        .indexDiv a {
-            margin-left: 20px;
+        .rank-tabs a.on:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #3eaf7c;
+            border-radius: 2px;
         }
 
-        img {
-            width: 130px;
-            height: 180px;
+        /* 榜单当前名称 */
+        .rank-title {
+            padding: 12px 5px 6px 5px;
+            font-size: 16px;
+            color: #000;
+            font-weight: bold;
         }
 
-        .book_desc {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            white-space: pre-wrap;
+        /* 榜单条目 */
+        .rank-item {
+            padding: 10px 5px;
+            border-bottom: 1px solid #f2f2f2;
+            background: #fff;
+        }
+
+        .rank-item .rank-name {
+            color: #000;
+            font-size: 15px;
+        }
+
+        .rank-item .rank-word {
+            float: right;
+            color: #a6a6a6;
+            font-size: 12px;
+            line-height: 24px;
+        }
+
+        .rank-item .rank-meta {
+            margin-top: 6px;
+            color: #a6a6a6;
+            font-size: 13px;
+        }
+
+        .rank-item .rank-meta .rank-chapter {
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* 排名序号 */
+        .rank-num {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            background: #f2f2f2;
+            border-radius: 3px;
+            margin-right: 8px;
+            vertical-align: middle;
+            font-style: normal;
+        }
+
+        .rank-num-1 {
+            color: #fff;
+            background: #ff5722;
+        }
+
+        .rank-num-2 {
+            color: #fff;
+            background: #ffb800;
+        }
+
+        .rank-num-3 {
+            color: #fff;
+            background: #3eaf7c;
         }
 
     </style>
@@ -72,51 +128,22 @@
 <body>
 
 
-<input type="hidden" id="limit" th:value="${limit}"/>
-<input type="hidden" id="curr" th:value="${curr}"/>
-<input type="hidden" id="total" th:value="${total}"/>
-<input type="hidden" id="ids" th:value="${ids}"/>
-<input type="hidden" id="bookStatus" th:value="${bookStatus}"/>
-<input type="hidden" id="token" th:value="${token}"/>
-<input type="hidden" id="keyword" th:value="${keyword}"/>
-<input type="hidden" id="catId" th:value="${catId}"/>
-<input type="hidden" id="sortBy" th:value="${sortBy}"/>
-<input type="hidden" id="sort" th:value="${sort}"/>
+<div th:replace="mobile/common/header :: pageHeader('小说排行榜', null)"></div>
 
-<div style="height: 50px;line-height: 50px;text-align: center" class="layui-header header header-doc  layui-bg-cyan">
-
-    <div style="float: left;margin-left: 10px">
-        <a href="javascript:history.go(-1)">
-            <i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe65c;</i></a>
-    </div>
-    <b class="layui-icon">小说列表</b>
-    <div style="float: right;margin-right: 10px">
-        <a href="/"><i style="font-size: 20px;color: #fff;" class="layui-icon">&#xe68e;</i></a>
-    </div>
+<div class="rank-tabs" id="rankType">
+    <a href="javascript:listRank(0)">点击榜</a>
+    <a href="javascript:listRank(1)">新书榜</a>
+    <a href="javascript:listRank(2)">更新榜</a>
+    <a href="javascript:listRank(3)">评论榜</a>
 </div>
 
-<div class="layui-container">
-    <div class="layui-row">
+<div class="layui-container" style="padding: 0 5px">
 
-        <div class="layui-col-xs10 layui-col-sm10 layui-col-md11 layui-col-lg11" style="padding-top:1%">
-            <input id="title" type="text" name="title" required lay-verify="required" placeholder="请输入书名·作者"
-                   autocomplete="off"
-                   class="layui-input" th:value="${keyword}">
-        </div>
-        <div class="layui-col-xs1" style="padding: 1%">
-            <button onclick="search(1,20)" class="layui-btn" lay-submit lay-filter="formDemo">搜索</button>
-        </div>
-    </div>
+    <div class="rank-title" id="rankName">点击榜</div>
+
+    <div id="bookRankList"></div>
 
 </div>
-
-<div id="bookList">
-
-
-</div>
-
-
-<div id="books" style="text-align: center"></div>
 
 
 <div th:replace="mobile/common/footer :: footer">
@@ -127,126 +154,52 @@
 
 <div th:replace="mobile/common/js :: js"></div>
 
-<script>
+<script type="text/javascript">
 
-    var catId = getQueryVariable("catId");
-    var bookStatus = getQueryVariable("bookStatus");
-    var sortBy = getQueryVariable("sortBy");
-    var keyword = getQueryVariable("keyword");
+    var rankNames = ["点击榜", "新书榜", "更新榜", "评论榜"];
 
-    if (keyword != false) {
-        $("#title").val(decodeURI(keyword));
+    // 支持通过 ?type= 直接定位榜单，与PC端参数保持一致
+    var rankType = getQueryVariable("type");
+    if (rankType === false || rankType === undefined || isNaN(parseInt(rankType))) {
+        rankType = 0;
     } else {
-        keyword = "";
+        rankType = parseInt(rankType);
     }
+    if (rankType < 0 || rankType >= rankNames.length) {
+        rankType = 0;
+    }
+    listRank(rankType);
 
-
-    search(1, 20);
-
-    function search(curr, limit) {
-
-
-        var searchData = {};
-
-        searchData.curr = curr;
-        searchData.limit = limit;
-
-        keyword = $("#title").val();
-
-        if (catId != false) {
-            searchData.catId = catId;
-        }
-
-        if (bookStatus != false) {
-            searchData.bookStatus = bookStatus;
-        }
-
-        if (sortBy != false) {
-            searchData.sort = sortBy;
-        } else if (!keyword) {
-            sortBy = "last_index_update_time";
-        }
-
-        if (keyword) {
-            searchData.keyword = keyword;
-        }
+    function listRank(rankType) {
+        // 选项卡高亮及榜单标题
+        $("#rankType a").removeClass("on");
+        $("#rankType a").eq(rankType).addClass("on");
+        $("#rankName").html(rankNames[rankType]);
 
         $.ajax({
             type: "get",
-            url: "/book/searchByPage",
-            data: searchData,
+            url: "/book/listRank",
+            data: {'type': rankType, 'limit': 30},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    var bookList = data.data.list;
-                    var bookListHtml = "";
-                    for (var i = 0; i < bookList.length; i++) {
-                        var book = bookList[i];
-
-                        /*var end = book.bookDesc.indexOf("<");
-                        if(end != -1) {
-                            book.bookDesc = book.bookDesc.substring(0,end);
-                        }*/
-
-                        if (book.bookDesc) {
-                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "").replace(/&nbsp;/g, "");
-                        }
-
-                        bookListHtml += ("<div class=\"layui-row\" style=\"margin-bottom:10px;padding:5px 0px;background: #f2f2f2\">\n" +
+                    var bookRankList = data.data;
+                    var bookRankListHtml = "";
+                    for (var i = 0; i < bookRankList.length; i++) {
+                        var book = bookRankList[i];
+                        bookRankListHtml += ("<div class=\"rank-item\">\n" +
                             "        <a href=\"/book/" + book.id + ".html\">\n" +
-                            "            <div class=\"layui-col-xs5 layui-col-sm3 layui-col-md2 layui-col-lg2\" style=\"text-align: center\">\n" +
-                            "                <img style='width: 130px;height: 190px' align=\"center\"\n" +
-                            "                     src=\"" + book.picUrl + "\"/>\n" +
-                            "\n" +
-                            "            </div>\n" +
+                            "            <i class=\"rank-num rank-num-" + (i + 1) + "\">" + (i + 1) + "</i>\n" +
+                            "            <span class=\"rank-name line-limit-length\" style=\"max-width: 55%\">" + book.bookName + "</span>\n" +
+                            "            <span class=\"rank-word\">" + (book.wordCount / 10000).toFixed(2) + "万字</span>\n" +
                             "        </a>\n" +
-                            "        <div style=\"padding: 0px 10px 0px 0px\" class=\"layui-col-xs7 layui-col-sm9 layui-col-md10 layui-col-lg10\">\n" +
-                            "            <a href=\"/book/" + book.id + ".html\">\n" +
-                            "                <div class=\"line-limit-length\" style=\";color: #000;font-size: 15px\">" + book.bookName + "</div>\n" +
-                            "            </a>\n" +
-                            "            <div style=\"height: 5px;color: #4c6978;\"><i style=\"color: red\"></i></div>\n" +
-                            "            <a href=\"/book/book_ranking.html?keyword=" + encodeURI(book.authorName) + "\">\n" +
-                            "                <div style=\";color: #a6a6a6;\" class=\"line-limit-length\">作者：" + book.authorName + "</div>\n" +
-                            "            </a>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">类别：" + book.catName + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">状态：" + (book.bookStatus == 0 ? '连载' : '完结') + "</div>\n" +
-                            "            <div style=\"margin-top: 5px;color: #a6a6a6;\">更新：<i style='color: red'>" + book.lastIndexUpdateTime.substr(0, 11) + "</i>\n" +
-                            "            </div>\n" +
-                            "            <div class='book_desc' style=\"margin-top: 5px;color: #a6a6a6;\">简介：" + (book.bookDesc) + "</div>\n" +
-                            "\n" +
-                            "\n" +
+                            "        <div class=\"rank-meta\">\n" +
+                            "            <a href=\"/book/bookclass.html?catId=" + book.catId + "\">[" + book.catName + "]</a> · " + book.authorName + "\n" +
+                            "            <a class=\"rank-chapter line-limit-length\" href=\"/book/" + book.id + ".html\">最新章节：" + book.lastIndexName + "</a>\n" +
                             "        </div>\n" +
-                            "\n" +
                             "    </div>");
                     }
-                    $("#bookList").html(bookListHtml);
-
-                    layui.use('laypage', function () {
-                        var laypage = layui.laypage;
-
-                        //执行一个laypage实例
-                        laypage.render({
-                            elem: 'books' //注意，这里的 test1 是 ID，不用加 # 号
-                            , count: data.data.total //数据总数，从服务端得到,
-                            , curr: data.data.pageNum
-                            , limit: data.data.pageSize
-                            , jump: function (obj, first) {
-
-
-                                //obj包含了当前分页的所有参数，比如：
-                                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-                                console.log(obj.limit); //得到每页显示的条数
-
-
-                                //首次不执行
-                                if (!first) {
-                                    search(obj.curr, obj.limit);
-                                } else {
-
-                                }
-                            }
-                        });
-                    });
+                    $("#bookRankList").html(bookRankListHtml);
                 } else {
                     layer.alert(data.msg);
                 }
@@ -256,65 +209,6 @@
                 layer.alert('网络异常');
             }
         })
-
-    }
-
-
-    function searchByAllCondition(curr, limit, newKeyword) {
-        var toUrl = "/book/search?curr=" + curr + "&limit=" + limit;
-        var ids = $("#ids").val();
-        if (ids) {
-            toUrl += ("&historyBookIds=" + ids);
-        }
-        var token = $("#token").val();
-        if (token) {
-            toUrl += ("&token=" + token);
-        }
-        var keyword = $("#keyword").val();
-        if (newKeyword) {
-            toUrl += encodeURI("&keyword=" + newKeyword);
-        } else if (keyword) {
-            toUrl += encodeURI("&keyword=" + keyword);
-        }
-        var bookStatus = $("#bookStatus").val();
-        if (bookStatus) {
-            toUrl += ("&bookStatus=" + bookStatus);
-        }
-        var catId = $("#catId").val();
-        if (catId) {
-            toUrl += ("&catId=" + catId);
-        }
-
-        var sortBy = $("#sortBy").val();
-        if (sortBy) {
-            toUrl += ("&sortBy=" + sortBy);
-        }
-
-        var sort = $("#sort").val();
-        if (sort) {
-            toUrl += ("&sort=" + sort);
-        }
-
-        window.location.href = toUrl;
-    }
-
-    function searchBooks() {
-        var keywords = $("#title").val();
-        $("#keyword").val("");
-        searchByAllCondition(1, 20, keywords);
-    }
-
-</script>
-<script>
-
-
-    function toMyCollect() {
-        var token = localStorage.getItem("token");
-        if (token) {
-            window.location.href = "/book/search?token=" + token;
-        } else {
-            window.location.href = "/user/login.html";
-        }
     }
 </script>
 
