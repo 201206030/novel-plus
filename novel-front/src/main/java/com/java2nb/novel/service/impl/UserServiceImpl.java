@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.java2nb.novel.mapper.BookDynamicSqlSupport.id;
 import static com.java2nb.novel.mapper.UserBookshelfDynamicSqlSupport.userBookshelf;
@@ -77,7 +78,8 @@ public class UserServiceImpl implements UserService {
         //数据库生成注册记录
         Long id = idWorker.nextId();
         entity.setId(id);
-        entity.setNickName(entity.getUsername());
+        //注册时生成随机昵称，避免直接展示手机号
+        entity.setNickName(generateRandomNickName());
         Date currentDate = new Date();
         entity.setCreateTime(currentDate);
         entity.setUpdateTime(currentDate);
@@ -89,6 +91,15 @@ public class UserServiceImpl implements UserService {
         userDetails.setUsername(entity.getUsername());
         userDetails.setNickName(entity.getNickName());
         return userDetails;
+    }
+
+    /**
+     * 生成随机昵称，格式：书友 + 6 位随机数字。
+     * 用户后续可在账号设置里修改昵称。
+     */
+    private String generateRandomNickName() {
+        int random = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        return "书友" + random;
     }
 
     @Override
