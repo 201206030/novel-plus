@@ -1,169 +1,650 @@
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head id="Head1"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>
-    申请作者
-</title><link rel="stylesheet" type="text/css" href="/css/easyui.css" />
-    <link href="/css/public.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="/javascript/jquery-1.8.0.min.js"></script>
-    <script type="text/javascript" src="/javascript/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="/javascript/easyui-lang-zh_CN.js"></script>
-    <script src="/javascript/YT.js" type="text/javascript"></script>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="'申请签约作者_'+${application.website.name}+'小说'">申请签约作者</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/author.css"/>
     <style type="text/css">
-        .ipage a
-        {
-            border: 1px dotted #cccccc;
-            color: #555555;
-            display: block;
-            float: left;
-            height: 30px;
-            line-height: 30px;
-            margin: 0 15px 0 0;
-            text-align: center;
-            width: 122px;
+        .author_reg {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef8f3 0%, #f7fbf9 45%, #e6f4ec 100%);
+            padding: 40px 20px 60px;
+            box-sizing: border-box;
         }
-        .ipage a:hover,.ahover
-        {
-            background-color: #fff; color: #f00!important; border:1px solid #f00!important
+
+        .author_reg .reg_topbar {
+            max-width: 1060px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .author_reg .reg_back {
+            font-size: 13px;
+            color: #5c6b64;
+            text-decoration: none;
+        }
+
+        .author_reg .reg_back:hover { color: #3eaf7c }
+
+        .author_reg .reg_brand {
+            font-size: 15px;
+            color: #2c8a61;
+            font-weight: 600;
+        }
+
+        .author_reg .reg_card {
+            max-width: 1060px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e6f0ea;
+            box-shadow: 0 12px 40px rgba(62, 175, 124, .12);
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* 左侧介绍区 */
+        .author_reg .reg_side {
+            width: 380px;
+            flex: none;
+            padding: 42px 34px;
+            box-sizing: border-box;
+            background: linear-gradient(160deg, #3eaf7c 0%, #2c8a61 100%);
+            color: #fff;
+        }
+
+        .author_reg .side_logo {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: .95;
+        }
+
+        .author_reg .side_logo svg { margin-right: 8px }
+
+        .author_reg .side_title {
+            margin: 26px 0 12px;
+            font-size: 25px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .author_reg .side_desc {
+            font-size: 13px;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, .85);
+        }
+
+        .author_reg .side_list { margin: 28px 0 0 }
+
+        .author_reg .side_list li {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, .92);
+        }
+
+        .author_reg .side_list .ico {
+            flex: none;
+            width: 30px;
+            height: 30px;
+            margin-right: 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .author_reg .side_list .ico svg {
+            display: block;
+            width: 15px;
+            height: 15px;
+        }
+
+        .author_reg .side_steps {
+            margin-top: 30px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, .22);
+        }
+
+        .author_reg .side_steps h4 { font-size: 13px; margin-bottom: 14px; opacity: .9 }
+
+        .author_reg .side_steps .stp {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .88);
+        }
+
+        .author_reg .side_steps .num_ {
+            width: 22px;
+            height: 22px;
+            flex: none;
+            line-height: 22px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .22);
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .author_reg .side_steps .line {
+            width: 22px;
+            height: 1px;
+            margin: 6px 0 6px 32px;
+            background: rgba(255, 255, 255, .35);
+        }
+
+        /* 右侧表单区 */
+        .author_reg .reg_main {
+            flex: 1;
+            min-width: 0;
+            padding: 42px 46px;
+            box-sizing: border-box;
+        }
+
+        .author_reg .reg_title { font-size: 22px; color: #333; font-weight: 600 }
+
+        .author_reg .reg_sub {
+            font-size: 13px;
+            color: #99a59e;
+            margin: 10px 0 24px;
+        }
+
+        .author_reg .reg_sub .req { color: #3eaf7c; font-weight: 600 }
+
+        .author_reg .reg_err {
+            padding: 11px 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: #fef0f0;
+            border: 1px solid #fbc4c4;
+            color: #d9544f;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .author_reg .field { margin-bottom: 20px }
+
+        .author_reg .field label.fl {
+            display: block;
+            font-size: 13px;
+            color: #5c6b64;
+            margin-bottom: 8px;
+        }
+
+        .author_reg .field label.fl b { color: #3eaf7c; font-weight: 600 }
+
+        .author_reg .ipt_wrap {
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            height: 42px;
+            padding: 0 14px 0 13px;
+            border: 1px solid #dfe9e4;
+            border-radius: 8px;
+            background: #fbfdfc;
+            outline: none;
+            transition: border-color .2s, background .2s, box-shadow .2s;
+        }
+
+        .author_reg .ipt_wrap .picon {
+            flex: none;
+            display: block;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            color: #a9b8b1;
+        }
+
+        .author_reg .ipt {
+            flex: 1;
+            min-width: 0;
+            height: 40px;
+            line-height: 40px;
+            padding: 0;
+            border: 0;
+            font-size: 13px;
+            color: #333;
+            background: transparent;
+            outline: none;
+        }
+
+        .author_reg .ipt::placeholder, .author_reg .ipt::-webkit-input-placeholder {
+            color: #b3c0b9
+        }
+
+        .author_reg .ipt_wrap:focus-within {
+            border-color: #3eaf7c;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(62, 175, 124, .12);
+        }
+
+        .author_reg .field.error .ipt_wrap { border-color: #f56c6c; background: #fff }
+
+        .author_reg .fhint {
+            font-size: 12px;
+            color: #99a59e;
+            line-height: 1;
+            margin-top: 8px;
+        }
+
+        .author_reg .field.error .fhint { color: #d9544f }
+
+        .author_reg .field.ok .fhint { color: #2c8a61 }
+
+        /* 方向选择 */
+        .author_reg .dir_box { display: flex; position: relative }
+
+        .author_reg .dir_box input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .author_reg .dir_card {
+            flex: 1;
+            margin-right: 14px;
+            padding: 14px 16px;
+            box-sizing: border-box;
+            border: 1px solid #dfe9e4;
+            border-radius: 10px;
+            background: #fbfdfc;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .author_reg .dir_card:last-child { margin-right: 0 }
+
+        .author_reg .dir_card .dt {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .author_reg .dir_card .dd {
+            display: block;
+            font-size: 12px;
+            color: #99a59e;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .author_reg .dir_box input[type="radio"]:checked + .dir_card {
+            border-color: #3eaf7c;
+            background: #f2faf6;
+            box-shadow: 0 0 0 3px rgba(62, 175, 124, .1);
+        }
+
+        .author_reg .dir_box input[type="radio"]:checked + .dir_card .dt { color: #2c8a61 }
+
+        .author_reg .dir_box input[type="radio"]:focus-visible + .dir_card {
+            border-color: #3eaf7c;
+            box-shadow: 0 0 0 3px rgba(62, 175, 124, .18);
+        }
+
+        .author_reg .field.error .dir_card { border-color: #f56c6c }
+
+        .author_reg .btn_submit {
+            display: block;
+            width: 100%;
+            height: 46px;
+            line-height: 44px;
+            margin-top: 26px;
+            box-sizing: border-box;
+            border: 1px solid #3eaf7c;
+            border-radius: 23px;
+            background: #3eaf7c;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .author_reg .btn_submit:hover { background: #2c8a61; border-color: #2c8a61 }
+
+        .author_reg .btn_submit:disabled {
+            background: #c8ead9;
+            border-color: #c8ead9;
+            color: #fff;
+            cursor: not-allowed;
+        }
+
+        .author_reg .reg_foot {
+            margin-top: 18px;
+            font-size: 12px;
+            color: #99a59e;
+            text-align: center;
+        }
+
+        .author_reg .reg_foot a { color: #2c8a61; text-decoration: none }
+
+        .author_reg .reg_foot a:hover { text-decoration: underline }
+
+        @media screen and (max-width: 900px) {
+            .author_reg { padding: 20px 12px 40px }
+
+            .author_reg .reg_card { display: block }
+
+            .author_reg .reg_side { width: auto; padding: 28px 22px }
+
+            .author_reg .side_title { font-size: 20px; margin-top: 18px }
+
+            .author_reg .side_steps { display: none }
+
+            .author_reg .reg_main { padding: 28px 22px }
+
+            .author_reg .dir_box { display: block }
+
+            .author_reg .dir_card { margin: 0 0 12px }
         }
     </style>
-    <script src="/javascript/ycUtils.js" type="text/javascript"></script>
 </head>
-<body style="background-color: #444;">
-<div style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 150px;">
-    <form method="post" action="/author/register.html" id="form1" onsubmit="return $(this).form(&quot;validate&quot;);">
-        <div id="main">
-            <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic" style="line-height:40px;">
-                <tr>
-                    <td colspan="3" style="text-align: left;">
-                        <div style="padding-left: 15px; height: 40px; line-height: 40px;">
-                            我是网络小说写手，我要注册为小说精品屋签约作者：</div>
-                    </td>
-                </tr>
-                <tr><td align="right">邀请码：</td><td><input name="inviteCode" th:value="${author.inviteCode}" type="text" maxlength="12" id="TxtGetCode" class="easyui-validatebox inpMain" data-options="required:true" /></td>
-                    <td>
-                        <span class="notes"> *</span> 小说精品屋分配给作者的邀请码
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        作者笔名：
-                    </td>
-                    <td>
-                        <input name="penName" th:value="${author.penName}" type="text" maxlength="8" id="TxtNiceName" class="easyui-validatebox inpMain" data-options="required:true" validType="checkPenName" />
+<body class="author_reg">
 
-                    </td>
-                    <td>
-                        <span class="notes"> *</span> 长度为2到8位的中英文
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        手机号码：
-                    </td>
-                    <td>
-                        <input name="telPhone" th:value="${author.telPhone}" type="text" id="TxtMobile" class="easyui-validatebox inpMain" data-options="required:true" validType="chinaMobile" />
-                    </td>
-                    <td>
-                        <span class="notes"> *</span> 小说精品屋的编辑会通过这个号码与您联系
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        QQ或微信：
-                    </td>
-                    <td>
-                        <input name="chatAccount" th:value="${author.chatAccount}" type="text" id="TxtQQ" class="easyui-validatebox inpMain" data-options="required:true" />
-                    </td>
-                    <td>
-                        <span class="notes"> *</span> 小说精品屋的编辑会通过这个号码与您联系
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        电子邮箱：
-                    </td>
-                    <td>
-                        <input name="email" th:value="${author.email}" type="text" id="TxtEmail" class="easyui-validatebox inpMain w300" data-options="required:true" validType="email" />
-                    </td>
-                    <td>
-                        <span class="notes"> *</span> 长度为2到15位的中英文，数字
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        男女主角：
-                    </td>
-                    <td>
-                        <div>
-                            <ul class="ipage">
-                                <input type="hidden" name="workDirection" id="HidSexclass" /><!-- th:attr="class=${author.workDirection} == '0'? 'ahover':''"-->
-                                <a href="javascript:void(0);" val="0">男性主角选男频</a>
-                                <a href="javascript:void(0);" val="1">
-                                女性主角选女频</a>
-                                <div class="clear">
-                                </div>
-                            </ul>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="notes"> *</span> 请选择作品方向
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
-            <tr>
-                <td>
-                    <div style="padding-left: 110px; margin-top: 10px; margin-bottom: 5px;">
-
-                        <input type="submit" name="btnSubmit" value="立即开始您的作者生涯" id="btnSubmit" class="btnGray" />
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span id="LabErr" th:text="${LabErr}"></span>
-
-                </td>
-            </tr>
-        </table>
-        <input type="hidden" name="HidUId" id="HidUId" value="1095" />
-    </form>
+<div class="reg_topbar">
+    <a class="reg_back" href="/">← 返回书城首页</a>
+    <span class="reg_brand" th:text="${application.website.name}+'作家中心'">小说精品屋作家中心</span>
 </div>
-<script language="javascript" type="text/javascript">
 
+<div class="reg_card">
+    <div class="reg_side">
+        <div class="side_logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 7.5C10.5 6 8 5.4 4.5 5.7v12C8 17.5 10.5 18 12 19.5M12 7.5c1.5-1.5 4-2.1 7.5-1.8v12c-3.5-.2-6 .3-7.5 1.8"/>
+            </svg>
+            <span>成为签约作者</span>
+        </div>
+        <h2 class="side_title">让每一个好故事<br/>都被读者看见</h2>
+        <p class="side_desc">提交真实资料，编辑审核通过后即可开通作家后台，在线创建作品、连载更新、查看稿费收入。</p>
+
+        <ul class="side_list">
+            <li>
+                <span class="ico">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                </span>
+                <span>专属作家后台，发布章节、管理作品一站完成</span>
+            </li>
+            <li>
+                <span class="ico">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                    </svg>
+                </span>
+                <span>订阅稿费按月结算，收入明细随时查询</span>
+            </li>
+            <li>
+                <span class="ico">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/>
+                    </svg>
+                </span>
+                <span>编辑一对一沟通，作品方向与签约指导</span>
+            </li>
+            <li>
+                <span class="ico">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2l2.4 5.4L20 9l-4.4 3.3L16.6 18 12 15.2 7.4 18l1-5.7L4 9l5.6-1.6z"/>
+                    </svg>
+                </span>
+                <span>作品推荐位与书单曝光，帮助新书冷启动</span>
+            </li>
+        </ul>
+
+        <div class="side_steps">
+            <h4>注册流程</h4>
+            <div class="stp"><span class="num_">1</span>填写邀请码与联系资料</div>
+            <div class="line"></div>
+            <div class="stp"><span class="num_">2</span>编辑审核笔名与作品方向</div>
+            <div class="line"></div>
+            <div class="stp"><span class="num_">3</span>开通后台，开始创作连载</div>
+        </div>
+    </div>
+
+    <div class="reg_main">
+        <h3 class="reg_title">申请作者资料</h3>
+        <p class="reg_sub">带 <span class="req">*</span> 的项为必填，请确保联系方式真实有效</p>
+
+        <div class="reg_err" th:if="${!#strings.isEmpty(LabErr)}" th:text="${LabErr}"></div>
+
+        <form method="post" action="/author/register.html" id="regForm">
+            <div class="field" id="fInvite">
+                <label class="fl" for="inviteCode">邀请码 <b>*</b></label>
+                <div class="ipt_wrap">
+                    <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 7a2 2 0 012 2v2a2 2 0 01-2 2H9a2 2 0 01-2 2v2H5v-2.5A4.5 4.5 0 019.5 7z"/>
+                    </svg>
+                    <input class="ipt" type="text" name="inviteCode" id="inviteCode" maxlength="12" autocomplete="off"
+                           th:value="${author?.inviteCode}" placeholder="小说精品屋分配给作者的邀请码"/>
+                </div>
+                <p class="fhint">邀请码由平台分配，请填写 12 位以内的编码</p>
+            </div>
+
+            <div class="field" id="fPenName">
+                <label class="fl" for="penName">作者笔名 <b>*</b></label>
+                <div class="ipt_wrap">
+                    <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <input class="ipt" type="text" name="penName" id="penName" maxlength="8" autocomplete="off"
+                           th:value="${author?.penName}" placeholder="2-8位中文或英文笔名"/>
+                </div>
+                <p class="fhint" id="penHint">笔名将展示在作品页面，提交时会校验是否已被占用</p>
+            </div>
+
+            <div class="field" id="fTel">
+                <label class="fl" for="telPhone">手机号码 <b>*</b></label>
+                <div class="ipt_wrap">
+                    <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="7" y="2" width="10" height="20" rx="2"/>
+                        <path d="M11 18h2"/>
+                    </svg>
+                    <input class="ipt" type="text" name="telPhone" id="telPhone" maxlength="11" autocomplete="off"
+                           th:value="${author?.telPhone}" placeholder="便于编辑与您联系"/>
+                </div>
+                <p class="fhint">请填写 11 位中国大陆手机号</p>
+            </div>
+
+            <div class="field" id="fChat">
+                <label class="fl" for="chatAccount">QQ 或微信 <b>*</b></label>
+                <div class="ipt_wrap">
+                    <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 01-9 8.5L3 21l1-4.5a8.5 8.5 0 112-5z"/>
+                    </svg>
+                    <input class="ipt" type="text" name="chatAccount" id="chatAccount" maxlength="20"
+                           autocomplete="off" th:value="${author?.chatAccount}" placeholder="请填写QQ号或微信号"/>
+                </div>
+                <p class="fhint">编辑会通过该号码与您沟通签约事宜</p>
+            </div>
+
+            <div class="field" id="fEmail">
+                <label class="fl" for="email">电子邮箱 <b>*</b></label>
+                <div class="ipt_wrap">
+                    <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                        <path d="M3 7l9 6 9-6"/>
+                    </svg>
+                    <input class="ipt" type="text" name="email" id="email" maxlength="50" autocomplete="off"
+                           th:value="${author?.email}" placeholder="example@mail.com"/>
+                </div>
+                <p class="fhint">用于接收审核结果与平台通知</p>
+            </div>
+
+            <div class="field" id="fDirection">
+                <label class="fl">作品方向 <b>*</b></label>
+                <div class="dir_box">
+                    <input type="radio" name="workDirection" id="dirMale" value="0"
+                           th:checked="${author != null and author.workDirection != null and author.workDirection == 0}"/>
+                    <label class="dir_card" for="dirMale">
+                        <span class="dt">男频</span>
+                        <span class="dd">男主角视角，玄幻 / 都市 / 历史等</span>
+                    </label>
+
+                    <input type="radio" name="workDirection" id="dirFemale" value="1"
+                           th:checked="${author != null and author.workDirection != null and author.workDirection == 1}"/>
+                    <label class="dir_card" for="dirFemale">
+                        <span class="dt">女频</span>
+                        <span class="dd">女主角视角，言情 / 总裁 / 古言等</span>
+                    </label>
+                </div>
+                <p class="fhint">请选择主要创作的作品方向</p>
+            </div>
+
+            <button type="submit" class="btn_submit" id="btnSubmit">立即开始您的作者生涯</button>
+
+            <p class="reg_foot">
+                还不是书城会员？<a href="/user/register.html">先注册会员</a>
+                &nbsp;|&nbsp; 已有账号？<a href="/user/login.html?originUrl=/author/register.html">去登录</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script type="text/javascript">
     $(function () {
-        $(".ipage a").click(function () {
-            $(".ipage a").each(function () {
-                $(this).removeClass("ahover");
-            });
-            $(this).addClass("ahover");
-            $("#HidSexclass").val($(this).attr("val"));
-            $("#btnSubmit").removeAttr("disabled");
-            $("#btnSubmit").removeClass("btnGray");
-            $("#btnSubmit").addClass("btn");
+        var $form = $('#regForm');
+        var $btn = $('#btnSubmit');
 
-        });
+        function setError(fieldId, msg) {
+            var $field = $('#' + fieldId);
+            $field.removeClass('ok').addClass('error');
+            $field.find('.fhint').text(msg);
+            return false;
+        }
 
-        var sexClass = $("#HidSexclass").val();
-        if (sexClass == 1 || sexClass == 2) {
-            $(".ipage a").each(function () {
-                $(this).removeClass("ahover");
-                if (sexClass == $(this).attr("val")) {
-                    $(this).addClass("ahover");
+        function setOk(fieldId, msg) {
+            var $field = $('#' + fieldId);
+            $field.removeClass('error').addClass('ok');
+            $field.find('.fhint').text(msg);
+            return true;
+        }
+
+        function resetHint(fieldId, msg) {
+            var $field = $('#' + fieldId);
+            $field.removeClass('error ok');
+            $field.find('.fhint').text(msg);
+        }
+
+        //校验笔名格式
+        function checkPenNameFormat() {
+            var penName = $.trim($('#penName').val());
+            if (!penName) {
+                return setError('fPenName', '请填写作者笔名');
+            }
+            if (!/^[\u4e00-\u9fa5a-zA-Z]{2,8}$/.test(penName)) {
+                return setError('fPenName', '笔名需为2到8位的中文或英文字母');
+            }
+            return setOk('fPenName', '格式正确，提交时校验是否重复');
+        }
+
+        //异步校验笔名是否被占用
+        function checkPenNameRepeat(callback) {
+            var penName = $.trim($('#penName').val());
+            $btn.prop('disabled', true).text('正在校验笔名…');
+            $.ajax({
+                type: 'get',
+                url: '/author/checkPenName',
+                data: {penName: penName},
+                dataType: 'json',
+                cache: false,
+                success: function (result) {
+                    $btn.prop('disabled', false).text('立即开始您的作者生涯');
+                    if (result && result.data) {
+                        setError('fPenName', '笔名已被使用，请更换一个');
+                        callback(false);
+                    } else {
+                        setOk('fPenName', '笔名可以使用');
+                        callback(true);
+                    }
+                },
+                error: function () {
+                    $btn.prop('disabled', false).text('立即开始您的作者生涯');
+                    setError('fPenName', '笔名校验失败，请稍后重试');
+                    callback(false);
                 }
             });
-            $("#btnSubmit").removeClass("btnGray");
-            $("#btnSubmit").addClass("btn");
         }
-        else {
-            $("#btnSubmit").attr("disabled", "disabled");
-        }
+
+        $('#penName').on('blur', function () {
+            if (checkPenNameFormat()) {
+                checkPenNameRepeat(function () {
+                });
+            }
+        }).on('focus', function () {
+            resetHint('fPenName', '笔名将展示在作品页面，提交时会校验是否已被占用');
+        });
+
+        $form.on('submit', function () {
+            var inviteCode = $.trim($('#inviteCode').val());
+            var telPhone = $.trim($('#telPhone').val());
+            var chatAccount = $.trim($('#chatAccount').val());
+            var email = $.trim($('#email').val());
+            var penName = $.trim($('#penName').val());
+
+            if (!inviteCode) {
+                return setError('fInvite', '请填写小说精品屋分配的邀请码');
+            }
+            if (!penName || !/^[\u4e00-\u9fa5a-zA-Z]{2,8}$/.test(penName)) {
+                return setError('fPenName', '笔名需为2到8位的中文或英文字母');
+            }
+            if (!/^1[3-9]\d{9}$/.test(telPhone)) {
+                return setError('fTel', '请填写正确的11位手机号码');
+            }
+            if (!chatAccount) {
+                return setError('fChat', '请填写QQ号或微信号');
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return setError('fEmail', '请填写正确的电子邮箱');
+            }
+            if (!$('input[name="workDirection"]:checked').val()) {
+                return setError('fDirection', '请选择作品方向');
+            }
+
+            //格式通过后，最后再校验笔名重复，避免无效请求
+            checkPenNameRepeat(function (usable) {
+                if (usable) {
+                    //笔名可用，走原生提交，避免再次触发校验
+                    $form[0].submit();
+                } else {
+                    $btn.prop('disabled', false).text('立即开始您的作者生涯');
+                }
+            });
+            return false;
+        });
+
+        //服务端返回错误后，重新聚焦输入框即清除错误态
+        $('.ipt').on('focus', function () {
+            $(this).closest('.field').removeClass('error ok');
+        });
     });
-
 </script>
-</body>
 </html>
-
