@@ -109,7 +109,7 @@
                                                                        style="display: none;">见习</span></div>
                                 <ul class="pl_bar fr">
                                     <li class="name"><span
-                                            th:text="${#strings.substring(comment.createUserName,0,4)}+'****'+${#strings.substring(comment.createUserName,#strings.length(comment.createUserName)-3,#strings.length(comment.createUserName))}"></span><span
+                                            th:text="${T(com.java2nb.novel.core.utils.NameMaskUtil).maskIfNeeded(comment.createUserName)}"></span><span
                                             style="padding-left: 10px" class="other" th:if="${comment.location}"
                                             th:text="${comment.location} + '读者'"></span></span></li>
                                     <li class="dec" th:utext="${comment.commentContent}"></li>

@@ -14,7 +14,7 @@
     <select id="listByParagraph" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
         select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
                t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
-               t2.username create_user_name, t2.user_photo create_user_photo
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
         from book_paragraph_comment t1
         inner join user t2 on t1.create_user_id = t2.id
         where t1.book_index_id = #{bookIndexId}
@@ -26,7 +26,7 @@
     <select id="getById" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
         select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
                t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
-               t2.username create_user_name, t2.user_photo create_user_photo
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
         from book_paragraph_comment t1
         inner join user t2 on t1.create_user_id = t2.id
         where t1.id = #{id}

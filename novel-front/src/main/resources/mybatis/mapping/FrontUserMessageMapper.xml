@@ -10,7 +10,7 @@
     <select id="listByPage" resultType="com.java2nb.novel.vo.UserMessageVO">
         select t1.id, t1.user_id, t1.send_user_id, t1.msg_type, t1.book_id, t1.book_index_id, t1.target_id,
                t1.content, t1.read_flag, t1.create_time,
-               t2.username send_user_name, t2.user_photo send_user_photo,
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) send_user_name, t2.user_photo send_user_photo,
                t3.book_name, t4.index_name
         from user_message t1
         left join user t2 on t1.send_user_id = t2.id

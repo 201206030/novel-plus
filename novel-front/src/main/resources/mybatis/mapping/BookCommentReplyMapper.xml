@@ -4,7 +4,7 @@
 <mapper namespace="com.java2nb.novel.mapper.FrontBookCommentReplyMapper">
 
     <select id="listCommentReplyByPage"  resultType="com.java2nb.novel.vo.BookCommentReplyVO">
-        select t1.id,t1.reply_content,t1.location,t1.create_time,t2.username create_user_name,t2.user_photo create_user_photo
+        select t1.id,t1.reply_content,t1.location,t1.create_time,IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name,t2.user_photo create_user_photo
         from book_comment_reply t1 inner join user t2 on t1.create_user_id = t2.id
         <trim>
             <if test="commentId != null">

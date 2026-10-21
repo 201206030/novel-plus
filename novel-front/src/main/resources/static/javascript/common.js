@@ -155,4 +155,3 @@ function checkPicUpload(file) {
     }
     return true;
 }
-

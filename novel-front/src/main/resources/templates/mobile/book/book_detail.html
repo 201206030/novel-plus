@@ -424,7 +424,7 @@
                         <div style="margin-left:52px;">
                             <div style="font-size:14px;">
                                 <span style="color:#444;"
-                                      th:text="${#strings.length(comment.createUserName) > 4} ? ${#strings.substring(comment.createUserName,0,4)}+'****'+${#strings.substring(comment.createUserName,#strings.length(comment.createUserName)-3,#strings.length(comment.createUserName))} : ${comment.createUserName}"></span>
+                                      th:text="${T(com.java2nb.novel.core.utils.NameMaskUtil).maskIfNeeded(comment.createUserName)}"></span>
                                 <span th:if="${comment.location}" style="color:#999;margin-left:8px;"
                                       th:text="${comment.location}+'读者'"></span>
                                 <span style="color:#999;float:right;font-size:12px;"
