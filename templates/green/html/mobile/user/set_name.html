@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'修改昵称_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        .setup_form {
+            padding: 20px 15px;
+        }
+
+        .setup_form .layui-input {
+            height: 42px;
+            line-height: 42px;
+        }
+
+        .setup_form .tip {
+            color: #999;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .setup_form .err {
+            color: #ff5722;
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 18px;
+        }
+
+        .setup_form .layui-btn {
+            width: 100%;
+            background-color: #3eaf7c !important;
+            border-color: #3eaf7c !important;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('修改昵称', null)"></div>
+
+    <div class="setup_form">
+        <input type="text" id="txtNiceName" class="layui-input" maxlength="11" placeholder="请输入昵称"/>
+        <div class="tip">用户名只能包括汉字、英文字母、数字和下划线</div>
+        <div class="err" id="LabErr"></div>
+        <button type="button" id="submitBtn" class="layui-btn" onclick="updateName()">修改</button>
+    </div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+<script>
+    // 防重复提交标志
+    var nameSubmitting = false;
+
+    //查询用户信息
+    $.ajax({
+        type: "get",
+        url: "/user/userInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if (data.data.nickName) {
+                    $("#txtNiceName").val(data.data.nickName);
+                } else {
+                    $("#txtNiceName").val(data.data.username);
+                }
+
+            } else if (data.code == 1001) {
+                //未登录
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+    function updateName() {
+        if (nameSubmitting) {
+            return;
+        }
+        var nickname = $("#txtNiceName").val();
+        if (nickname.isBlank()) {
+            $("#LabErr").html("昵称不能为空！");
+            return;
+        }
+        if (!nickname.isNickName()) {
+            $("#LabErr").html("昵称格式不正确！");
+            return;
+        }
+        nameSubmitting = true;
+        var $btn = $('#submitBtn');
+        $btn.addClass('layui-btn-disabled').attr('disabled', 'disabled').text('提交中...');
+        $.ajax({
+            type: "POST",
+            url: "/user/updateUserInfo",
+            data: {'nickName': nickname},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $.cookie('Authorization', data.data.token, {path: '/'});
+                    window.location.href = '/user/setup.html';
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                } else {
+                    $("#LabErr").html(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            },
+            complete: function () {
+                nameSubmitting = false;
+                $btn.removeClass('layui-btn-disabled').removeAttr('disabled').text('修改');
+            }
+        })
+    }
+</script>
+
+
+</body>
+</html>

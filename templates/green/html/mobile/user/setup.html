@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'账号设置_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        .setup_list {
+            background-color: #fafafa;
+            padding: 0 15px;
+        }
+
+        .setup_list .setup_item {
+            display: block;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            color: #000;
+            font-size: 16px;
+            line-height: 24px;
+        }
+
+        .setup_list .setup_item:last-child {
+            border-bottom: 0;
+        }
+
+        .setup_list .setup_item .tit {
+            float: left;
+            color: #666;
+        }
+
+        .setup_list .setup_item .val {
+            float: right;
+            color: #3eaf7c;
+        }
+
+        .setup_list .setup_item .val em {
+            font-style: normal;
+            color: #999;
+            font-size: 13px;
+            margin-left: 5px;
+        }
+
+        .setup_list .setup_item .avatar {
+            float: right;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .setup_list .setup_item::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        #filePic {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('账号设置', null)"></div>
+
+    <div class="setup_list">
+        <a href="javascript:void(0)" class="setup_item" onclick="$('#filePic').click()">
+            <i class="tit">我的头像</i>
+            <img id="imgLogo" class="avatar" alt="我的头像" src="/images/man.png"/>
+        </a>
+        <a href="/user/set_name.html" class="setup_item">
+            <i class="tit">我的昵称</i>
+            <span class="val" id="my_name">[修改]<em></em></span>
+        </a>
+        <a href="/user/set_sex.html" class="setup_item">
+            <i class="tit">我的性别</i>
+            <span class="val" id="my_sex">请选择</span>
+        </a>
+        <a href="/user/set_password.html" class="setup_item">
+            <i class="tit">我的密码</i>
+            <span class="val">修改密码</span>
+        </a>
+        <a href="javascript:logout()" class="setup_item">
+            <i class="tit">当前状态</i>
+            <span class="val">退出登录</span>
+        </a>
+    </div>
+
+    <input type="file" id="filePic" name="file" accept="image/*" onchange="picChange()"/>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+<script>
+    //查询用户信息
+    $.ajax({
+        type: "get",
+        url: "/user/userInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                if (data.data.userPhoto) {
+                    $("#imgLogo").attr("src", data.data.userPhoto);
+                }
+                if (data.data.nickName) {
+                    $("#my_name").html(data.data.nickName + '<em>[修改]</em>');
+                } else {
+                    $("#my_name").html(data.data.username + '<em>[修改]</em>');
+                }
+                // userSex为Byte类型，JSON返回的是数字，需先转字符串再比较
+                var sexVal = data.data.userSex == null ? '' : String(data.data.userSex);
+                if (sexVal === '0') {
+                    $("#my_sex").html('男<em>[修改]</em>');
+                } else if (sexVal === '1') {
+                    $("#my_sex").html('女<em>[修改]</em>');
+                } else {
+                    $("#my_sex").html('请选择<em>[修改]</em>');
+                }
+
+            } else if (data.code == 1001) {
+                //未登录
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+
+    //校验图片格式与大小（不能超过1M）
+    function checkPicUpload(file) {
+        var fileName = file.value;
+        var ext = fileName.substr(fileName.lastIndexOf(".")).toLowerCase();
+        if (['.jpg', '.jpeg', '.gif', '.png', '.bmp', '.webp'].indexOf(ext) == -1) {
+            layer.alert('只能上传图片格式的文件！');
+            return false;
+        }
+        var fileSize = Math.round(file.files[0].size / 1024 * 100) / 100; //单位为KB
+        if (fileSize >= 1024) {
+            layer.alert('上传的图片大小不能超过1M！');
+            return false;
+        }
+        return true;
+    }
+
+    function picChange() {
+        var fileInput = $("#filePic")[0];
+        if (!fileInput.value) {
+            return;
+        }
+        if (!checkPicUpload(fileInput)) {
+            return;
+        }
+        var loadIndex = layer.load(2);
+        //完全比照PC端ajaxfileupload的做法：隐藏iframe + 原生form multipart提交，
+        //不走XHR，绕开部分手机内核发送FormData会丢失multipart Content-Type的问题
+        var frameId = "picUploadFrame";
+        var $oldFrame = $("#" + frameId);
+        if ($oldFrame.length) {
+            $oldFrame.remove();
+        }
+        var iframe = document.createElement('iframe');
+        iframe.name = frameId;
+        iframe.id = frameId;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.enctype = 'multipart/form-data';
+        form.action = '/file/picUpload';
+        form.target = frameId;
+        form.style.display = 'none';
+        document.body.appendChild(form);
+        //把真实的文件输入搬进表单（只有原元素才携带已选文件）
+        form.appendChild(fileInput);
+
+        var submitted = false;
+        iframe.onload = function () {
+            if (!submitted) {
+                return;
+            }
+            //同源iframe，可直接读出响应文本（浏览器会把JSON包在pre里展示）
+            var text = '';
+            try {
+                var doc = iframe.contentWindow.document;
+                text = doc.body ? (doc.body.innerText || doc.body.textContent) : '';
+            } catch (e) {
+            }
+            var data = null;
+            try {
+                data = JSON.parse($.trim(text || ''));
+            } catch (e) {
+            }
+            layer.close(loadIndex);
+            if (data && data.code == 200) {
+                saveUserPhoto(data.data);
+            } else {
+                //归还输入框到原容器，方便重新选择
+                document.getElementById('body').appendChild(fileInput);
+                layer.alert(data ? data.msg : '头像上传失败');
+            }
+            $(iframe).remove();
+            $(form).remove();
+        };
+        form.submit();
+        submitted = true;
+    }
+
+    //保存头像地址到用户信息
+    function saveUserPhoto(photoUrl) {
+        $.ajax({
+            type: "POST",
+            url: "/user/updateUserInfo",
+            data: {'userPhoto': photoUrl},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    window.location.href = '/user/setup.html';
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+    }
+</script>
+
+
+</body>
+</html>

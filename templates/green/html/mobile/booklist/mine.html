@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'我的书单_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        .bl-wrap {
+            padding: 10px 15px 30px 15px;
+        }
+
+        .bl-item {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+        }
+
+        .bl-item .bl-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            line-height: 22px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bl-item .bl-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: pre-wrap;
+        }
+
+        .bl-item .bl-foot {
+            margin-top: 10px;
+            border-top: 1px solid #f2f2f2;
+            padding-top: 8px;
+        }
+
+        .bl-item .bl-foot .bl-count {
+            float: left;
+            font-size: 13px;
+            color: #3eaf7c;
+            line-height: 30px;
+        }
+
+        .bl-item .bl-foot .bl-ops {
+            float: right;
+        }
+
+        .bl-item .bl-foot .bl-ops button {
+            margin-left: 6px;
+        }
+
+        .bl-item .bl-foot::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .bl-empty {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            padding: 60px 0;
+        }
+
+        #createBar {
+            text-align: center;
+            padding: 10px 0 5px 0;
+        }
+
+        #createBar button {
+            width: 60%;
+            max-width: 240px;
+        }
+
+        .bl-form {
+            padding: 20px 20px 0 20px;
+        }
+
+        .bl-form .layui-form-item {
+            margin-bottom: 12px;
+        }
+
+        .bl-form input[name=listName] {
+            height: 38px;
+            line-height: 38px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 0 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .bl-form textarea[name=description] {
+            height: 80px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 8px 10px;
+            width: 100%;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        .bl-form .bl-word-tip {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('我的书单', null)"></div>
+
+    <div class="bl-wrap">
+        <div id="blList"></div>
+        <div id="blEmpty" class="bl-empty" style="display: none">还没有书单，点击下方按钮创建</div>
+        <div id="createBar">
+            <button class="layui-btn" id="createBtn">+ 创建书单</button>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+<script>
+    var submitting = false;
+
+    loadMine();
+
+    //加载我的书单
+    function loadMine() {
+        var loadIndex = layer.load(2);
+        $.ajax({
+            type: "get",
+            url: "/bookList/mine",
+            data: {'curr': 1, 'limit': 200},
+            dataType: "json",
+            success: function (data) {
+                layer.close(loadIndex);
+                if (data.code == 200) {
+                    renderMine(data.data.list);
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.close(loadIndex);
+                layer.alert('网络异常');
+            }
+        })
+    }
+
+    function renderMine(list) {
+        var html = "";
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            html += '<div class="bl-item" data-id="' + item.id + '">';
+            html += '<div class="bl-name">' + escapeBlHtml(item.listName) + '</div>';
+            if (item.description) {
+                html += '<div class="bl-desc">' + escapeBlHtml(item.description) + '</div>';
+            }
+            html += '<div class="bl-foot"><span class="bl-count">' + item.bookCount + '本书</span>';
+            html += '<span class="bl-ops">';
+            html += '<button class="layui-btn layui-btn-xs layui-btn-primary" onclick="openForm(' + item.id + ')">编辑</button>';
+            html += '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteBookList(' + item.id + ')">删除</button>';
+            html += '<a class="layui-btn layui-btn-xs" href="/booklist/detail-' + item.id + '.html">进入</a>';
+            html += '</span></div></div>';
+        }
+        $("#blList").html(html);
+        $("#blEmpty").toggle(list.length == 0);
+    }
+
+    //创建/编辑书单表单层，listId为空表示创建
+    function openForm(listId) {
+        var name = '';
+        var desc = '';
+        if (listId) {
+            var $item = $('.bl-item[data-id=' + listId + ']');
+            name = $item.find('.bl-name').text();
+            desc = $item.find('.bl-desc').text();
+        }
+        var html = '<div class="bl-form">'
+            + '<div class="layui-form-item"><input type="text" name="listName" maxlength="50" placeholder="书单名（必填，50字以内）" value="' + escapeBlAttr(name) + '"></div>'
+            + '<div class="layui-form-item"><textarea name="description" maxlength="300" placeholder="书单简介（选填，300字以内）">' + escapeBlHtml(desc) + '</textarea>'
+            + '<div class="bl-word-tip">简介不超过300字</div></div>'
+            + '</div>';
+        layer.open({
+            type: 1,
+            title: listId ? '编辑书单' : '创建书单',
+            area: ['90%', 'auto'],
+            content: html,
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                submitBookList(index, listId, layero);
+            }
+        });
+    }
+
+    //提交创建/编辑书单（防重复提交）
+    function submitBookList(layerIndex, listId, layero) {
+        if (submitting) {
+            return;
+        }
+        var listName = $.trim(layero.find('input[name=listName]').val());
+        if (listName.length == 0 || listName.length > 50) {
+            layer.alert('书单名不能为空且不能超过50个字！');
+            return;
+        }
+        var description = $.trim(layero.find('textarea[name=description]').val());
+        if (description.length > 300) {
+            layer.alert('书单简介不能超过300个字！');
+            return;
+        }
+        submitting = true;
+        var $yesBtn = layero.find('.layui-layer-btn0');
+        $yesBtn.addClass('layui-btn-disabled').css('pointer-events', 'none').text('提交中...');
+        $.ajax({
+            type: "POST",
+            url: listId ? "/bookList/update" : "/bookList/create",
+            data: {'listId': listId, 'listName': listName, 'description': description},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    layer.close(layerIndex);
+                    loadMine();
+                } else if (data.code == 1001) {
+                    layer.close(layerIndex);
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            },
+            complete: function () {
+                submitting = false;
+                $yesBtn.removeClass('layui-btn-disabled').css('pointer-events', '').text('确定');
+            }
+        })
+    }
+
+    //删除书单
+    function deleteBookList(listId) {
+        layer.confirm('确定删除该书单吗？书单内的收藏记录将一并移除。', {
+            btn: ['删除', '取消'],
+            title: '删除书单'
+        }, function (index) {
+            layer.close(index);
+            var loadIndex = layer.load(2);
+            $.ajax({
+                type: "POST",
+                url: "/bookList/delete",
+                data: {'listId': listId},
+                dataType: "json",
+                success: function (data) {
+                    layer.close(loadIndex);
+                    if (data.code == 200) {
+                        loadMine();
+                    } else if (data.code == 1001) {
+                        //未登录
+                        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                    } else {
+                        layer.alert(data.msg);
+                    }
+
+                },
+                error: function () {
+                    layer.close(loadIndex);
+                    layer.alert('网络异常');
+                }
+            })
+        });
+    }
+
+    $("#createBtn").click(function () {
+        openForm(null);
+    });
+
+    //HTML转义，防止内容破坏页面结构
+    function escapeBlHtml(str) {
+        if (str == null) {
+            return '';
+        }
+        return $('<div></div>').text(String(str)).html();
+    }
+
+    //属性值转义
+    function escapeBlAttr(str) {
+        return escapeBlHtml(str).replace(/"/g, '&quot;');
+    }
+</script>
+
+
+</body>
+</html>

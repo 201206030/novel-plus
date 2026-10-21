@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title th:utext="${book.bookName}+'作品评论区'"></title>
+
+    <meta name="keywords"
+          th:content="${book.bookName}+','+${book.bookName}+'评论,'+${book.bookName}+'最新章节'">
+    <meta name="description"
+          th:content="${book.bookName}+'作品评论区,'+${book.bookName}+'读者评论,'+${book.bookName}+'最新章节免费阅读。'">
+
+    <div th:include="mobile/common/css :: css"></div>
+</head>
+<body>
+<div id="content">
+    <input type="hidden" id="bookIdHidden" th:value="${book.id}"/>
+
+    <div th:replace="mobile/common/header :: pageHeader('作品评论区', null)"></div>
+
+    <div style="padding: 10px 12px 0;">
+        <span id="bookCommentTotal" style="color:#999;font-size:13px;">(0条)</span>
+    </div>
+
+    <div id="noCommentPanel" style="display:none;">
+        <p style="text-align:center;color:#999;padding:30px 0;">暂无评论，快来抢沙发~</p>
+    </div>
+
+    <div id="commentPanel"></div>
+
+    <div id="commentPage" style="padding: 15px 0;text-align: center;"></div>
+
+    <!--发表评论 start-->
+    <div style="padding: 12px;">
+        <div style="font-size:15px;color:#444;margin-bottom:8px;">发表评论</div>
+        <textarea id="txtComment" class="layui-textarea" maxlength="1000" placeholder="我来说两句..."></textarea>
+        <div style="margin-top:8px;overflow:hidden;text-align:right;">
+            <span id="emCommentNum" style="float:left;color:#999;font-size:12px;line-height:30px;">0/1000</span>
+            <button type="button" id="commentSubmitBtn" onclick="saveBookComment()"
+                    style="background-color:#3eaf7c!important;border-color:#3eaf7c!important;"
+                    class="layui-btn layui-btn-sm layui-btn-normal fr">发表
+            </button>
+        </div>
+    </div>
+    <!--发表评论 end-->
+</div>
+
+<div th:replace="mobile/common/footer :: footer"></div>
+
+</body>
+<div th:replace="mobile/common/js :: js"></div>
+<script>
+    var currPage = 1, limitPage = 20;
+    // 防重复提交标志
+    var commentSubmitting = false;
+
+    $('#txtComment').on('input propertychange', function () {
+        $('#emCommentNum').html($(this).val().length + "/1000");
+    });
+
+    loadCommentList(1, 20);
+
+    function loadCommentList(curr, limit) {
+        currPage = curr;
+        limitPage = limit;
+        $.ajax({
+            type: "get",
+            url: "/book/listCommentByPage",
+            data: {'bookId': $("#bookIdHidden").val(), 'curr': curr, 'limit': limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderCommentList(data.data);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function renderCommentList(pageBean) {
+        var commentList = pageBean.list;
+        $("#bookCommentTotal").html("(" + pageBean.total + "条)");
+        if (!commentList || commentList.length == 0) {
+            $("#commentPanel").html("");
+            $("#noCommentPanel").show();
+            $("#commentPage").html("");
+            return;
+        }
+        $("#noCommentPanel").hide();
+        var html = "";
+        for (var i = 0; i < commentList.length; i++) {
+            html += buildCommentItem(commentList[i]);
+        }
+        $("#commentPanel").html(html);
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'commentPage',
+                count: pageBean.total,
+                curr: pageBean.pageNum,
+                limit: pageBean.pageSize,
+                layout: ['prev', 'page', 'next'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        loadCommentList(obj.curr, obj.limit);
+                    }
+                }
+            });
+        });
+    }
+
+    function buildCommentItem(comment) {
+        var photo = comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png';
+        var location = comment.location ? '<span style="color:#999;margin-left:8px;">' + comment.location + '读者</span>' : '';
+        return ('<div style="padding:12px;border-bottom:1px solid #eee;overflow:hidden;">' +
+            '<img src="' + photo + '" onerror="this.src=\'/images/man.png\'" style="width:40px;height:40px;border-radius:50%;float:left;object-fit:cover;">' +
+            '<div style="margin-left:52px;">' +
+            '<div style="font-size:14px;">' +
+            '<span style="color:#444;">' + comment.createUserName + '</span>' + location +
+            '<span style="color:#999;float:right;font-size:12px;">' + comment.createTime + '</span>' +
+            '</div>' +
+            '<div style="color:#333;margin-top:6px;line-height:20px;word-break:break-all;">' + comment.commentContent + '</div>' +
+            '<div style="margin-top:8px;text-align:right;font-size:13px;">' +
+            '<a href="javascript:;" onclick="toggleCommentLike(\'' + comment.id + '\')" style="color:#3eaf7c;margin-right:15px;">赞(<span id="likeCount' + comment.id + '">' + comment.likesCount + '</span>)</a>' +
+            '<a href="javascript:;" onclick="toggleCommentUnLike(\'' + comment.id + '\')" style="color:#999;margin-right:15px;">踩(<span id="unLikeCount' + comment.id + '">' + comment.unLikesCount + '</span>)</a>' +
+            '<a href="/book/reply-' + comment.id + '.html" style="color:#4c6978;">回复(<span>' + comment.replyCount + '</span>)</a>' +
+            '</div>' +
+            '</div>' +
+            '</div>');
+    }
+
+    function saveBookComment() {
+        if (commentSubmitting) {
+            return;
+        }
+        if (!isLogin) {
+            location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+            return;
+        }
+        var content = $.trim($('#txtComment').val());
+        if (content == '') {
+            layer.alert('评论内容必须填写');
+            return;
+        }
+        if (content.length < 5) {
+            layer.alert('评论内容必须大于5个字');
+            return;
+        }
+        commentSubmitting = true;
+        var $btn = $('#commentSubmitBtn');
+        $btn.addClass('layui-btn-disabled').attr('disabled', 'disabled').text('提交中...');
+        $.ajax({
+            type: "POST",
+            url: "/book/addBookComment",
+            data: {'bookId': $("#bookIdHidden").val(), 'commentContent': content},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $('#txtComment').val("");
+                    $('#emCommentNum').html("0/1000");
+                    layer.msg('发表成功！');
+                    loadCommentList(1, limitPage);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            },
+            complete: function () {
+                commentSubmitting = false;
+                $btn.removeClass('layui-btn-disabled').removeAttr('disabled').text('发表');
+            }
+        });
+    }
+
+    function toggleCommentLike(commentId) {
+        toggleLike(commentId, "/book/toggleCommentLike", "likeCount");
+    }
+
+    function toggleCommentUnLike(commentId) {
+        toggleLike(commentId, "/book/toggleCommentUnLike", "unLikeCount");
+    }
+
+    function toggleLike(id, url, prefix) {
+        $.ajax({
+            type: "post",
+            url: url,
+            data: {'commentId': id},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#" + prefix + id).text(data.data);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+</script>
+
+
+</html>

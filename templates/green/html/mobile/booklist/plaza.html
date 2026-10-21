@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'书单广场_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        .bl-tip-bar {
+            padding: 8px 15px;
+            font-size: 13px;
+            color: #999;
+            background-color: #fafafa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bl-tip-bar a {
+            float: right;
+            color: #3eaf7c;
+        }
+
+        .bl-wrap {
+            padding: 10px 15px 70px 15px;
+        }
+
+        .bl-card {
+            display: block;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            color: #000;
+        }
+
+        .bl-card .bl-name {
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 22px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bl-card .bl-author {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .bl-card .bl-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: pre-wrap;
+        }
+
+        .bl-card .bl-foot {
+            font-size: 12px;
+            color: #3eaf7c;
+            margin-top: 8px;
+        }
+
+        .bl-card .bl-foot .bl-time {
+            float: right;
+            color: #bbb;
+        }
+
+        .bl-card::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .bl-empty {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            padding: 60px 0;
+        }
+
+        #loadMore {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('书单广场', null)"></div>
+
+    <div class="bl-tip-bar">
+        发现好书单
+        <a href="/booklist/mine.html">我的书单 <i class="layui-icon">&#xe602;</i></a>
+    </div>
+
+    <div class="bl-wrap">
+        <div id="blList"></div>
+        <div id="blEmpty" class="bl-empty" style="display: none">还没有书单，快去创建第一个吧~</div>
+        <button id="loadMore" class="layui-btn layui-btn-primary layui-btn-fluid" style="display: none">加载更多
+        </button>
+    </div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+<script>
+    var curr = 1;
+    var limit = 10;
+    var total = 0;
+
+    loadPlaza(false);
+
+    //加载广场书单
+    function loadPlaza(append) {
+        var loadIndex = layer.load(2);
+        $.ajax({
+            type: "get",
+            url: "/bookList/plaza",
+            data: {'curr': curr, 'limit': limit},
+            dataType: "json",
+            success: function (data) {
+                layer.close(loadIndex);
+                if (data.code == 200) {
+                    total = data.data.total;
+                    renderPlaza(data.data.list, append);
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.close(loadIndex);
+                layer.alert('网络异常');
+            }
+        })
+    }
+
+    function renderPlaza(list, append) {
+        var html = "";
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            html += '<a href="/booklist/detail-' + item.id + '.html" class="bl-card">';
+            html += '<div class="bl-name">' + escapeBlHtml(item.listName) + '</div>';
+            html += '<div class="bl-author">by ' + escapeBlHtml(item.createUserName || '匿名') + '</div>';
+            if (item.description) {
+                html += '<div class="bl-desc">' + escapeBlHtml(item.description) + '</div>';
+            }
+            html += '<div class="bl-foot">' + item.bookCount + '本书'
+                + '<span class="bl-time">' + escapeBlHtml(item.createTime || '') + '</span></div>';
+            html += '</a>';
+        }
+        if (append) {
+            $("#blList").append(html);
+        } else {
+            $("#blList").html(html);
+        }
+        var shown = $("#blList").children().length;
+        $("#blEmpty").toggle(shown == 0);
+        $("#loadMore").toggle(shown > 0 && shown < total);
+    }
+
+    //加载更多
+    $("#loadMore").click(function () {
+        if (curr * limit >= total) {
+            return;
+        }
+        curr++;
+        loadPlaza(true);
+    });
+
+    //HTML转义，防止内容破坏页面结构
+    function escapeBlHtml(str) {
+        if (str == null) {
+            return '';
+        }
+        return $('<div></div>').text(String(str)).html();
+    }
+</script>
+
+
+</body>
+</html>

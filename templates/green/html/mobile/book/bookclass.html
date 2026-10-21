@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title th:text="${application.website.name}+'列表'"></title>
+
+    <meta name="keywords"
+          th:content="${application.website.name}+',精品小说,弹幕网站,弹幕,弹幕小说网站,免费小说,小说阅读,小说排行,轻小说,txt小说下载,电子书下载,动漫轻小说,日本轻小说'">
+
+    <meta name="description"
+          th:content="${application.website.name}+'是国内优秀的小说弹幕网站,'+${application.website.name}+'提供海量热门网络小说,日本轻小说,国产轻小说,动漫小说,轻小说在线阅读和TXT小说下载,致力于网络精品小说的收集,智能计算小说评分,打造小说精品排行榜,致力于无广告无弹窗的小说阅读环境。'">
+
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style type="text/css">
+
+        .line-limit-length {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        div, p {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        /* 搜索条：胶囊输入框 + 主题色等高按钮 */
+        .search-bar {
+            display: -webkit-flex;
+            display: flex;
+            padding: 10px 12px;
+        }
+
+        .search-bar input {
+            -webkit-flex: 1;
+            flex: 1;
+            height: 40px;
+            line-height: 40px;
+            border: 1px solid #e2ece7;
+            border-radius: 20px;
+            background: #fff;
+            padding: 0 15px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            min-width: 0;
+        }
+
+        .search-bar input::-webkit-input-placeholder {
+            color: #b8c4bf;
+        }
+
+        .search-bar button {
+            width: 66px;
+            height: 40px;
+            margin-left: 8px;
+            border: none;
+            border-radius: 20px;
+            background: #3eaf7c;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* 筛选面板：卡片化，与主题色衔接 */
+        .layui-collapse {
+            margin: 0 12px;
+            border: none;
+        }
+
+        .layui-collapse .layui-colla-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+        }
+
+        .layui-collapse .layui-colla-title {
+            background: #fff;
+            color: #2c8a61;
+            font-weight: 600;
+        }
+
+        .layui-collapse .layui-colla-content {
+            background: #fff;
+            border-top: 1px solid #f0f5f2;
+        }
+
+        /* 筛选区：标签胶囊组，替代原生下拉框 */
+        .filter-body {
+            padding: 12px 14px 14px;
+        }
+
+        .filter-row {
+            display: -webkit-flex;
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 56px;
+            font-size: 13px;
+            color: #5c6b64;
+            line-height: 26px;
+            margin-right: 8px;
+        }
+
+        .filter-pills {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            display: inline-block;
+            line-height: 26px;
+            padding: 0 12px;
+            border-radius: 13px;
+            font-size: 12px;
+            background: #f2f6f4;
+            color: #5c6b64;
+            cursor: pointer;
+        }
+
+        .pill.active {
+            background: #3eaf7c;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(62, 175, 124, .25);
+        }
+
+        /* 书籍列表卡片 */
+        #bookList {
+            padding: 10px 12px 0;
+        }
+
+        .book-card {
+            display: -webkit-flex;
+            display: flex;
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+        }
+
+        .book-card .book-cover img {
+            width: 96px;
+            height: 128px;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .book-card .book-info {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 12px;
+        }
+
+        .book-card .book-name {
+            color: #000;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 22px;
+        }
+
+        .book-card .book-meta {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        .book-card .book-meta span {
+            margin-right: 8px;
+        }
+
+        .book-card .book-tag {
+            display: inline-block;
+            padding: 0 6px;
+            line-height: 18px;
+            border-radius: 9px;
+            font-size: 11px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .book-card .book-tag-0 {
+            color: #3eaf7c;
+            background: rgba(62, 175, 124, .12);
+        }
+
+        .book-card .book-tag-1 {
+            color: #8a968f;
+            background: #f0f2f1;
+        }
+
+        .book-card .book-author {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        .book_desc {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: pre-wrap;
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 18px;
+            color: #98a8a1;
+        }
+
+        /* 分页留白 */
+        #books {
+            padding: 10px 0 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<input type="hidden" id="limit" th:value="${limit}"/>
+<input type="hidden" id="curr" th:value="${curr}"/>
+<input type="hidden" id="total" th:value="${total}"/>
+<input type="hidden" id="ids" th:value="${ids}"/>
+<input type="hidden" id="bookStatus" th:value="${bookStatus}"/>
+<input type="hidden" id="token" th:value="${token}"/>
+<input type="hidden" id="keyword" th:value="${keyword}"/>
+<input type="hidden" id="catId" th:value="${catId}"/>
+<input type="hidden" id="sortBy" th:value="${sortBy}"/>
+<input type="hidden" id="sort" th:value="${sort}"/>
+
+<div th:replace="mobile/common/header :: pageHeader('书库', null)"></div>
+
+<div class="search-bar">
+    <input id="title" type="text" name="title" required lay-verify="required" placeholder="请输入书名·作者"
+           autocomplete="off" th:value="${keyword}">
+    <button type="button" onclick="search(1,20)" lay-submit lay-filter="formDemo">搜索</button>
+</div>
+
+<div class="layui-collapse">
+    <div class="layui-colla-item" style="margin-bottom: 0px">
+        <h2 class="layui-colla-title">小说筛选</h2>
+        <div class="layui-colla-content ">
+            <div class="filter-body">
+
+                <!-- 保留隐藏 select 作为取值容器，胶囊点击同步写入，search() 读取逻辑不变 -->
+                <select id="channel" hidden>
+                    <option value="0">男频</option>
+                    <option value="1">女频</option>
+                </select>
+                <select id="category" hidden></select>
+                <select id="status" hidden>
+                    <option value="">不限</option>
+                    <option value="0">连载中</option>
+                    <option value="1">已完结</option>
+                </select>
+                <select id="wordCount" hidden>
+                    <option value="">不限</option>
+                    <option value="-300000">30万字以下</option>
+                    <option value="300000-500000">30-50万字</option>
+                    <option value="500000-1000000">50-100万字</option>
+                    <option value="1000000-">100万字以上</option>
+                </select>
+                <select id="updateTime" hidden>
+                    <option value="">不限</option>
+                    <option value="3">3日内</option>
+                    <option value="7">7日内</option>
+                    <option value="15">半月内</option>
+                    <option value="30">一月内</option>
+                </select>
+                <select id="by" hidden>
+                    <option value="">不限</option>
+                    <option value="last_index_update_time">更新时间</option>
+                    <option value="word_count">总字数</option>
+                    <option value="visit_count">点击量</option>
+                </select>
+
+                <div class="filter-row" id="channelItem">
+                    <div class="filter-label">频道</div>
+                    <div class="filter-pills" id="channelPills" data-target="channel">
+                        <span class="pill active" data-val="0">男频</span>
+                        <span class="pill" data-val="1">女频</span>
+                    </div>
+                </div>
+
+                <div class="filter-row" id="categoryItem">
+                    <div class="filter-label">分类</div>
+                    <div class="filter-pills" id="categoryPills" data-target="category">
+                        <span class="pill active" data-val="">不限</span>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-label">状态</div>
+                    <div class="filter-pills" id="statusPills" data-target="status">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="0">连载中</span>
+                        <span class="pill" data-val="1">已完结</span>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-label">字数</div>
+                    <div class="filter-pills" data-target="wordCount">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="-300000">30万字以下</span>
+                        <span class="pill" data-val="300000-500000">30-50万字</span>
+                        <span class="pill" data-val="500000-1000000">50-100万字</span>
+                        <span class="pill" data-val="1000000-">100万字以上</span>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-label">更新</div>
+                    <div class="filter-pills" data-target="updateTime">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="3">3日内</span>
+                        <span class="pill" data-val="7">7日内</span>
+                        <span class="pill" data-val="15">半月内</span>
+                        <span class="pill" data-val="30">一月内</span>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-label">排序</div>
+                    <div class="filter-pills" data-target="by">
+                        <span class="pill active" data-val="">不限</span>
+                        <span class="pill" data-val="last_index_update_time">更新时间</span>
+                        <span class="pill" data-val="word_count">总字数</span>
+                        <span class="pill" data-val="visit_count">点击量</span>
+                    </div>
+                </div>
+
+                <div id="novel-list">
+                    <!-- Novel items will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="bookList">
+
+
+</div>
+
+
+<div id="books" style="text-align: center"></div>
+
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+
+<a name="buttom"></a>
+</body>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+
+    var catId = getQueryVariable("catId");
+    var bookStatus = getQueryVariable("bookStatus");
+    var sortBy = getQueryVariable("sortBy");
+    var keyword = getQueryVariable("keyword");
+
+    if (keyword) {
+        $("#title").val(decodeURI(keyword));
+        $("#channelItem").remove();
+        $("#categoryItem").remove();
+    } else {
+        keyword = "";
+    }
+
+    // getQueryVariable 未命中时返回 false，若用 !==null/!=="" 判断会误入同步逻辑，
+    // 导致所有状态胶囊被移除 active，「不限」初始值不选中；改用真值判断（'0'/'1' 为非空字符串不受影响）
+    if (bookStatus) {
+        $("#status").val(bookStatus);
+        $('#statusPills .pill').removeClass('active')
+            .filter('[data-val="' + bookStatus + '"]').addClass('active');
+    }
+
+    function search(curr, limit, fromPage) {
+
+
+        var searchData = {};
+
+        searchData.curr = curr;
+        searchData.limit = limit;
+
+        keyword = $("#title").val();
+
+        if (keyword) {
+            searchData.keyword = keyword;
+        }
+
+
+        var workDirection = $("#channel").val();
+        searchData.workDirection = workDirection;
+
+        var category = $("#category").val()
+        if (category !== "") {
+            searchData.catId = category;
+        }
+
+        var bookStatus = $("#status").val()
+        if (bookStatus !== "") {
+            searchData.bookStatus = bookStatus;
+        }
+
+        var wordCount = $("#wordCount").val().split("-");
+        var wordCountMin = wordCount[0];
+        if (wordCountMin !== "") {
+            searchData.wordCountMin = wordCountMin;
+        }
+        var wordCountMax = wordCount[1];
+        if (wordCountMax !== "") {
+            searchData.wordCountMax = wordCountMax;
+        }
+
+        var updatePeriod = $("#updateTime").val();
+        if (updatePeriod !== "") {
+            searchData.updatePeriod = updatePeriod;
+        }
+
+        var sort = $("#by").val();
+        if (sort !== "") {
+            searchData.sort = sort;
+        }
+
+        $.ajax({
+            type: "get",
+            url: "/book/searchByPage",
+            data: searchData,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var bookList = data.data.list;
+                    var bookListHtml = "";
+                    for (var i = 0; i < bookList.length; i++) {
+                        var book = bookList[i];
+
+                        if (book.bookDesc) {
+                            book.bookDesc = book.bookDesc.replace(/<[^>]+>/g, "").replace(/\s+/g, "").replace(/&nbsp;/g, "");
+                        }
+
+                        bookListHtml += ("<div class=\"book-card\">\n" +
+                            "        <a class=\"book-cover\" href=\"/book/" + book.id + ".html\">\n" +
+                            "            <img src=\"" + book.picUrl + "\"/>\n" +
+                            "        </a>\n" +
+                            "        <div class=\"book-info\">\n" +
+                            "            <a href=\"/book/" + book.id + ".html\">\n" +
+                            "                <div class=\"book-name line-limit-length\">" + book.bookName + "</div>\n" +
+                            "            </a>\n" +
+                            "            <div class=\"book-meta line-limit-length\">\n" +
+                            "                <span class=\"book-tag book-tag-" + book.bookStatus + "\">" + (book.bookStatus == 0 ? '连载' : '完结') + "</span>\n" +
+                            "                <span>" + book.catName + "</span>\n" +
+                            "                <span>" + book.lastIndexUpdateTime.substr(0, 11) + "更新</span>\n" +
+                            "            </div>\n" +
+                            "            <a href=\"/book/bookclass.html?keyword=" + encodeURI(book.authorName) + "\">\n" +
+                            "                <div class=\"book-author line-limit-length\">作者：" + book.authorName + "</div>\n" +
+                            "            </a>\n" +
+                            "            <div class='book_desc'>简介：" + (book.bookDesc) + "</div>\n" +
+                            "        </div>\n" +
+                            "    </div>");
+                    }
+                    $("#bookList").html(bookListHtml);
+
+                    // 分页跳页后自动滚到列表第一行（首屏加载不触发）
+                    if (fromPage) {
+                        scrollToFirstBook();
+                    }
+
+                    layui.use('laypage', function () {
+                        var laypage = layui.laypage;
+
+                        //执行一个laypage实例
+                        laypage.render({
+                            elem: 'books' //注意，这里的 test1 是 ID，不用加 # 号
+                            , count: data.data.total //数据总数，从服务端得到,
+                            , curr: data.data.pageNum
+                            , limit: data.data.pageSize
+                            , jump: function (obj, first) {
+
+
+                                //obj包含了当前分页的所有参数，比如：
+                                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                                console.log(obj.limit); //得到每页显示的条数
+
+
+                                //首次不执行
+                                if (!first) {
+                                    search(obj.curr, obj.limit, true);
+                                } else {
+
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        })
+
+    }
+
+    // 滚动到小说列表首行，需扣除吸顶头部高度（44px）避免首条卡片被头部遮挡
+    function scrollToFirstBook() {
+        var top = $("#bookList").offset().top - 50;
+        $('html,body').animate({scrollTop: top > 0 ? top : 0}, 200);
+    }
+
+    var categoryList;
+    $.ajax({
+        type: 'get', url: '/book/listBookCategory', data: {}, success: function (data) {
+            categoryList = data.data;
+            var workdirection = "0";
+            for (var i = 0; i < categoryList.length; i++) {
+                var category = categoryList[i];
+                if (category.id == catId) {
+                    workdirection = category.workDirection;
+                    break;
+                }
+            }
+            if (workdirection != "0") {
+                $('#channelPills .pill').removeClass('active')
+                    .filter('[data-val="' + workdirection + '"]').addClass('active');
+            }
+            $("#channel").val(workdirection);
+            changeChannel(workdirection);
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    });
+
+    // 胶囊点击：同步写入隐藏 select 后触发检索，原逻辑不变
+    $(".filter-pills").on("click", ".pill", function () {
+        var $pill = $(this);
+        if ($pill.hasClass('active')) {
+            return;
+        }
+        $pill.addClass('active').siblings('.active').removeClass('active');
+        var targetId = $pill.closest('.filter-pills').attr('data-target');
+        if (targetId === 'channel') {
+            changeChannel($pill.attr('data-val'));
+            return;
+        }
+        $("#" + targetId).val($pill.attr('data-val'));
+        search(1, 20);
+    });
+
+    function changeChannel(selected) {
+        $("#channel").val(selected);
+        var options = '<option value="">不限</option>';
+        // 有 catId 时「不限」不置选中，避免和具体分类双高亮
+        var pills = '<span class="pill' + (catId ? '' : ' active') + '" data-val="">不限</span>';
+        for (var i = 0; i < categoryList.length; i++) {
+            var category = categoryList[i];
+            if (category.workDirection == selected) {
+                options += ('<option value="' + category.id + '">' + category.name + '</option>');
+                pills += ('<span class="pill" data-val="' + category.id + '">' + category.name + '</span>');
+            }
+        }
+        $('#category').html(options);
+        $('#categoryPills').html(pills);
+        if (catId) {
+            $('#category').val(catId);
+            $('#categoryPills .pill[data-val="' + catId + '"]').addClass('active');
+        }
+        search(1, 20)
+    }
+
+    function searchByAllCondition(curr, limit, newKeyword) {
+        var toUrl = "/book/search?curr=" + curr + "&limit=" + limit;
+        var ids = $("#ids").val();
+        if (ids) {
+            toUrl += ("&historyBookIds=" + ids);
+        }
+        var token = $("#token").val();
+        if (token) {
+            toUrl += ("&token=" + token);
+        }
+        var keyword = $("#keyword").val();
+        if (newKeyword) {
+            toUrl += encodeURI("&keyword=" + newKeyword);
+        } else if (keyword) {
+            toUrl += encodeURI("&keyword=" + keyword);
+        }
+        var bookStatus = $("#bookStatus").val();
+        if (bookStatus) {
+            toUrl += ("&bookStatus=" + bookStatus);
+        }
+        var catId = $("#catId").val();
+        if (catId) {
+            toUrl += ("&catId=" + catId);
+        }
+
+        var sortBy = $("#sortBy").val();
+        if (sortBy) {
+            toUrl += ("&sortBy=" + sortBy);
+        }
+
+        var sort = $("#sort").val();
+        if (sort) {
+            toUrl += ("&sort=" + sort);
+        }
+
+        window.location.href = toUrl;
+    }
+
+    function searchBooks() {
+        var keywords = $("#title").val();
+        $("#keyword").val("");
+        searchByAllCondition(1, 20, keywords);
+    }
+
+</script>
+<script>
+
+
+    function toMyCollect() {
+        var token = localStorage.getItem("token");
+        if (token) {
+            window.location.href = "/book/search?token=" + token;
+        } else {
+            window.location.href = "/user/login.html";
+        }
+    }
+</script>
+
+
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- 系统通知头像：绿色渐变圆底 + 金色铃铛 + 红色提醒点 -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4cc38a"/>
+      <stop offset="1" stop-color="#2e9e63"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="64" fill="url(#bg)"/>
+  <!-- 铃铛顶珠 -->
+  <circle cx="64" cy="30" r="5.5" fill="#ffd54f"/>
+  <!-- 铃铛主体 -->
+  <path d="M64 36c-12 0-20.5 9.5-20.5 22v14.5L35 83h58l-8.5-10.5V58C84.5 45.5 76 36 64 36z" fill="#ffd54f"/>
+  <!-- 铃铛底沿 -->
+  <rect x="36" y="83" width="56" height="8" rx="4" fill="#ffca28"/>
+  <!-- 铃舌 -->
+  <path d="M56 95a8 8 0 0 0 16 0z" fill="#ffca28"/>
+  <!-- 红色提醒点 -->
+  <circle cx="92" cy="38" r="13" fill="#ff5252" stroke="#ffffff" stroke-width="5"/>
+</svg>

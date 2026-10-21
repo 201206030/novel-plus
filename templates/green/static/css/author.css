@@ -1,0 +1,87 @@
+@charset "utf-8";
+/* ===================== 作家专区公共样式（小说管理 / 章节管理） ===================== */
+/* 主题色 #3eaf7c；深化 #2c8a61；浅化背景 #f2faf6；边框 #e6f0ea；投影 rgba(62,175,124,.12)；正文灰 #5c6b64 */
+
+/* ---------- 区块标题 ---------- */
+.author_zone .my_bookshelf .title h2 { font-size:17px; color:#333; font-weight:600; padding-left:10px; border-left:4px solid #3eaf7c }
+.author_zone .my_bookshelf .title .sub { font-size:13px; color:#5c6b64; font-weight:normal; margin-left:12px }
+
+/* ---------- 按钮 ---------- */
+.author_zone .btn_main, .author_zone .btn_ghost { display:inline-block; border-radius:20px; font-size:13px; line-height:1; text-decoration:none; vertical-align:middle; box-sizing:border-box; transition:all .2s }
+.author_zone .btn_main { padding:9px 22px; background:#3eaf7c; border:1px solid #3eaf7c; color:#fff }
+.author_zone .btn_main:hover { background:#2c8a61; border-color:#2c8a61; color:#fff }
+.author_zone .btn_ghost { padding:8px 20px; background:#fff; border:1px solid #3eaf7c; color:#2c8a61 }
+.author_zone .btn_ghost:hover { background:#f2faf6; border-color:#3eaf7c; color:#2c8a61 }
+.author_zone .btn_sm { padding:5px 13px; font-size:12px }
+.author_zone .btn_del { border-color:#f56c6c; color:#f56c6c }
+.author_zone .btn_del:hover { background:#fef0f0; border-color:#f56c6c; color:#f56c6c }
+
+/* ---------- 表格卡片 ---------- */
+.author_zone .updateTable { width:100%; border:1px solid #e6f0ea; border-radius:10px; overflow:hidden; background:#fff; box-shadow:0 2px 12px rgba(62,175,124,.08); margin-top:15px }
+.author_zone .updateTable table { margin-bottom:0; table-layout:fixed }
+.author_zone .updateTable th { background:#f2faf6; color:#2c8a61; font-size:13px; height:44px; line-height:44px; border-top:0; white-space:nowrap; overflow:hidden }
+.author_zone .updateTable td { border-top:1px solid #eef4f0; color:#5c6b64; font-size:13px; height:52px; line-height:52px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.author_zone .updateTable tr:nth-child(2n) td { background:#fbfdfc }
+.author_zone .updateTable tbody tr:hover td { background:#f2faf6 }
+.author_zone .updateTable th.name { width:auto }
+.author_zone .updateTable .goread { padding:0 8px }
+.author_zone .pageBox { padding:14px 10px 4px; border-top:1px solid #eef4f0 }
+.author_zone .layui-laypage a:hover { color:#3eaf7c }
+
+/* ---------- 列宽控制（table-layout:fixed 以表头宽度为准） ---------- */
+.author_zone .updateTable th.col_idx { width:9% }
+.author_zone .updateTable th.col_visit { width:10% }
+.author_zone .updateTable th.col_buy { width:10% }
+.author_zone .updateTable th.col_time { width:12% }
+.author_zone .updateTable th.col_word { width:10% }
+.author_zone .updateTable th.col_status { width:11% }
+.author_zone .updateTable th.col_vip { width:10% }
+.author_zone .updateTable th.col_opt { width:16% }
+
+/* ---------- 时间单元格：日期/时刻两行 ---------- */
+.author_zone .updateTable td.time_cell { line-height:1.5; padding:8px 0; font-size:12px; color:#7d8a83 }
+
+/* ---------- 操作单元格：文字链接竖排 ---------- */
+.author_zone .updateTable td.opt { padding:6px 0; line-height:1 }
+.author_zone .updateTable td.opt a { display:block; height:auto; line-height:23px; font-size:12px; color:#2c8a61; overflow:visible }
+.author_zone .updateTable td.opt a:hover { color:#3eaf7c }
+.author_zone .updateTable td.opt a.opt_del { color:#f56c6c }
+.author_zone .updateTable td.opt a.opt_del:hover { color:#e05a5a }
+
+/* ---------- 状态徽章 ---------- */
+.author_zone .tag { display:inline-block; padding:3px 10px; border-radius:10px; font-size:12px; line-height:1; border:1px solid transparent }
+.author_zone .tag_serial { background:#f2faf6; color:#2c8a61; border-color:#c8ead9 }
+.author_zone .tag_done { background:#f5f5f5; color:#8a8a8a; border-color:#e5e5e5 }
+.author_zone .tag_vip { background:#fdf6ec; color:#e6a23c; border-color:#f5e1c0 }
+.author_zone .tag_free { background:#f2faf6; color:#2c8a61; border-color:#c8ead9 }
+
+/* ---------- 数字强调 ---------- */
+.author_zone .num { color:#333; font-weight:600 }
+
+/* ---------- 作品单元格（封面+信息） ---------- */
+.author_zone .book_cell { display:flex; align-items:center; text-align:left; white-space:normal }
+.author_zone .cover_wrap { position:relative; width:60px; height:80px; flex:none; margin-right:12px; border-radius:6px; overflow:hidden; background:#f6f6f6 }
+.author_zone .cover_wrap img { width:100%; height:100%; display:block; object-fit:cover }
+.author_zone .cover_wrap input[type="file"] { position:absolute; left:0; top:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:3 }
+.author_zone .cover_mask { position:absolute; left:0; bottom:0; width:100%; padding:4px 0; text-align:center; font-size:12px; color:#fff; background:rgba(0,0,0,.45); z-index:2; opacity:0; transition:opacity .2s }
+.author_zone .cover_wrap:hover .cover_mask { opacity:1 }
+.author_zone .book_info { overflow:hidden; min-width:0; flex:1 }
+.author_zone .book_info .book_name { display:block; height:auto; line-height:1.4; font-size:14px; color:#333; max-width:170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.author_zone .book_info .book_name:hover { color:#3eaf7c }
+.author_zone .book_info .book_cat { font-size:12px; color:#99a59e; margin-top:4px; line-height:1 }
+
+/* ---------- 章节序号 ---------- */
+.author_zone .idx_no { display:inline-block; min-width:28px; padding:2px 6px; border-radius:10px; background:#f2faf6; color:#2c8a61; font-size:12px; text-align:center }
+
+/* ---------- 空状态 ---------- */
+.author_zone .empty_box { padding:80px 0 100px; text-align:center; color:#99a59e }
+.author_zone .empty_box svg { opacity:.6 }
+.author_zone .empty_box p { margin:18px 0 22px; font-size:14px }
+
+/* ---------- 章节页顶部作品信息栏 ---------- */
+.author_zone .book_brief { display:none; margin-top:20px; padding:16px 20px; border-radius:10px; background:linear-gradient(135deg, #f2faf6, #e9f6ef); border:1px solid #e6f0ea; overflow:hidden }
+.author_zone .book_brief img { width:48px; height:64px; border-radius:6px; object-fit:cover; float:left; margin-right:14px; background:#fff }
+.author_zone .book_brief .back_link { float:right; font-size:13px; color:#2c8a61 }
+.author_zone .book_brief .back_link:hover { text-decoration:underline }
+.author_zone .book_brief h3 { font-size:16px; color:#2c8a61; font-weight:600; line-height:1.4 }
+.author_zone .book_brief p { font-size:12px; color:#5c6b64; margin-top:8px }

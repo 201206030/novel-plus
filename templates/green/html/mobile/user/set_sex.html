@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'修改性别_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        .setup_form {
+            padding: 20px 15px;
+        }
+
+        .setup_form .sex_group {
+            padding: 10px 0;
+        }
+
+        .setup_form .sex_group label {
+            display: inline-block;
+            margin-right: 30px;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .setup_form .sex_group input[type=radio] {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .setup_form .err {
+            color: #ff5722;
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 18px;
+        }
+
+        .setup_form .layui-btn {
+            width: 100%;
+            margin-top: 15px;
+            background-color: #3eaf7c !important;
+            border-color: #3eaf7c !important;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('修改性别', null)"></div>
+
+    <div class="setup_form">
+        <div class="sex_group">
+            <label><input type="radio" name="sex" value="0"/>男生</label>
+            <label><input type="radio" name="sex" value="1"/>女生</label>
+        </div>
+        <div class="err" id="LabErr"></div>
+        <button type="button" id="submitBtn" class="layui-btn" onclick="updateSex()">修改</button>
+    </div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer">
+</div>
+</body>
+
+<div th:replace="mobile/common/js :: js">
+</div>
+
+<script>
+    // 防重复提交标志
+    var sexSubmitting = false;
+
+    //查询用户信息
+    $.ajax({
+        type: "get",
+        url: "/user/userInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                // userSex为Byte类型，JSON返回的是数字，需先转字符串再比较
+                var sexVal = data.data.userSex == null ? '' : String(data.data.userSex);
+                if (sexVal === '0') {
+                    $("input[name=sex]").eq(0).prop("checked", true);
+                } else if (sexVal === '1') {
+                    $("input[name=sex]").eq(1).prop("checked", true);
+                }
+
+            } else if (data.code == 1001) {
+                //未登录
+                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+            } else {
+                layer.alert(data.msg);
+            }
+
+        },
+        error: function () {
+            layer.alert('网络异常');
+        }
+    })
+
+    function updateSex() {
+        if (sexSubmitting) {
+            return;
+        }
+        var sex = $("input[name=sex]:checked").val();
+        if (sex == undefined) {
+            $("#LabErr").html("请选择性别！");
+            return;
+        }
+        sexSubmitting = true;
+        var $btn = $('#submitBtn');
+        $btn.addClass('layui-btn-disabled').attr('disabled', 'disabled').text('提交中...');
+        $.ajax({
+            type: "POST",
+            url: "/user/updateUserInfo",
+            data: {'userSex': sex},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    window.location.href = '/user/setup.html';
+
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+
+                } else {
+                    layer.alert(data.msg);
+                }
+
+            },
+            error: function () {
+                layer.alert('网络异常');
+            },
+            complete: function () {
+                sexSubmitting = false;
+                $btn.removeClass('layui-btn-disabled').removeAttr('disabled').text('修改');
+            }
+        })
+    }
+</script>
+
+
+</body>
+</html>

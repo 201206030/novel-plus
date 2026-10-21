@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'我的段评_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        body {
+            background: #f5f7f6;
+        }
+
+        #paraCommentList {
+            padding-top: 10px;
+        }
+
+        /* 段评卡片 */
+        .para-item {
+            margin: 0 12px 10px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .para-item .pi-head {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f5f7f6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .para-item .pi-head:active {
+            opacity: .88;
+        }
+
+        .para-item .pi-cover {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 36px;
+            height: 50px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #f0f2f1;
+        }
+
+        .para-item .pi-book {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 10px;
+        }
+
+        .para-item .pi-book-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2d26;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .para-item .pi-index-name {
+            font-size: 11px;
+            color: #98a8a1;
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .para-item .pi-go {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 7px;
+            height: 7px;
+            border-right: 1.5px solid #c4cec9;
+            border-top: 1.5px solid #c4cec9;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            margin-left: 8px;
+        }
+
+        .para-item .pi-content {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+            line-height: 21px;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
+        /* 回复标记 */
+        .para-item .pi-reply-tag {
+            display: inline-block;
+            font-size: 10px;
+            line-height: 16px;
+            padding: 0 7px;
+            border-radius: 8px;
+            background: rgba(62, 175, 124, .12);
+            color: #2e8b62;
+            margin-right: 6px;
+            vertical-align: 2px;
+        }
+
+        .para-item .pi-foot {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        .para-item .pi-meta {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .para-item .pi-num {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            margin-left: 12px;
+            color: #8a968f;
+        }
+
+        /* 空态 */
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        /* 分页 */
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('我的段评', null)"></div>
+
+    <div id="paraCommentList"></div>
+    <div id="paraCommentPage" class="page-box"></div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer"></div>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+    search(1, 10);
+
+    function search(curr, limit) {
+        $.ajax({
+            type: "get",
+            url: "/user/listParagraphCommentByPage",
+            data: {'curr': curr, 'limit': limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderParaCommentList(data.data);
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function renderParaCommentList(pageBean) {
+        var commentList = pageBean.list;
+        if (!commentList || commentList.length == 0) {
+            $("#paraCommentList").html("<div class=\"empty-tip\">还没有发表过段评，去章节里对感兴趣的一段话吐槽吧~<br><a href=\"/\" class=\"empty-link\">去书城逛逛</a></div>");
+            $("#paraCommentPage").html("");
+            return;
+        }
+        var html = "";
+        for (var i = 0; i < commentList.length; i++) {
+            html += buildParaCommentItem(commentList[i]);
+        }
+        $("#paraCommentList").html(html);
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'paraCommentPage'
+                , count: pageBean.total
+                , curr: pageBean.pageNum
+                , limit: pageBean.pageSize
+                , layout: ['prev', 'page', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        search(obj.curr, obj.limit);
+                    }
+                }
+            });
+        });
+    }
+
+    function buildParaCommentItem(comment) {
+        var cover = comment.picUrl ? comment.picUrl : '/images/default.gif';
+        var bookName = comment.bookName ? comment.bookName : '书籍已下架';
+        var indexName = comment.indexName ? comment.indexName : '章节已删除';
+        // 回复（root_id!=0）带回复标记
+        var replyTag = '';
+        if (comment.rootId && comment.rootId != 0) {
+            var replyTo = comment.replyUserName ? comment.replyUserName : '某书友';
+            replyTag = '<span class="pi-reply-tag">回复 @' + replyTo + '</span>';
+        }
+        var meta = comment.createTime + (comment.location ? ' · ' + comment.location : '');
+        return ('<div class="para-item">' +
+            '<div class="pi-head" onclick="toChapter(\'' + comment.bookId + '\', \'' + comment.bookIndexId + '\')">' +
+            '<img class="pi-cover" src="' + cover + '" onerror="this.src=\'/images/default.gif\'" alt="">' +
+            '<div class="pi-book">' +
+            '<div class="pi-book-name">' + bookName + '</div>' +
+            '<div class="pi-index-name">' + indexName + '</div>' +
+            '</div>' +
+            '<span class="pi-go"></span>' +
+            '</div>' +
+            '<div class="pi-content">' + replyTag + comment.commentContent + '</div>' +
+            '<div class="pi-foot">' +
+            '<span class="pi-meta">' + meta + '</span>' +
+            (comment.replyCount > 0 ? '<span class="pi-num">回复 ' + comment.replyCount + '</span>' : '') +
+            '</div>' +
+            '</div>');
+    }
+
+    function toChapter(bookId, bookIndexId) {
+        location.href = '/book/' + bookId + '/' + bookIndexId + '.html';
+    }
+</script>
+
+</body>
+</html>
