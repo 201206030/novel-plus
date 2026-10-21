@@ -13,6 +13,8 @@ spring:
       password: test123456
       #连接超时时间（毫秒）
       timeout: 10000
+  profiles:
+    active: prod
 
 #登录用户名密码
 admin:
