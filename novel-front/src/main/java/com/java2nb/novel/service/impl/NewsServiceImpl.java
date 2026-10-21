@@ -64,7 +64,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public PageBean<News> listByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        SelectStatementProvider selectStatement = select(id, catName, catId, title, createTime)
+        SelectStatementProvider selectStatement = select(id, catName, catId, title, readCount, createTime)
             .from(news)
             .orderBy(createTime.descending())
             .build()

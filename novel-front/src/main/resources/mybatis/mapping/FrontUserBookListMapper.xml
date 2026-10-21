@@ -32,7 +32,7 @@
 
     <select id="getById" resultType="com.java2nb.novel.vo.BookListVO">
         select t1.id, t1.user_id, t1.list_name, t1.description, t1.book_count, t1.status,
-               t1.create_time, t1.update_time, t2.username create_user_name, t2.user_photo create_user_photo
+               t1.create_time, t1.update_time, IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
         from user_book_list t1
         inner join user t2 on t1.user_id = t2.id
         where t1.id = #{id}
@@ -51,7 +51,7 @@
 
     <select id="listMine" resultType="com.java2nb.novel.vo.BookListVO">
         select t1.id, t1.user_id, t1.list_name, t1.description, t1.book_count, t1.status,
-               t1.create_time, t1.update_time, t2.username create_user_name, t2.user_photo create_user_photo
+               t1.create_time, t1.update_time, IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
         from user_book_list t1
         inner join user t2 on t1.user_id = t2.id
         where t1.user_id = #{userId}
@@ -61,7 +61,7 @@
 
     <select id="listPlaza" resultType="com.java2nb.novel.vo.BookListVO">
         select t1.id, t1.user_id, t1.list_name, t1.description, t1.book_count, t1.status,
-               t1.create_time, t1.update_time, t2.username create_user_name, t2.user_photo create_user_photo
+               t1.create_time, t1.update_time, IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
         from user_book_list t1
         inner join user t2 on t1.user_id = t2.id
         where t1.status = 1

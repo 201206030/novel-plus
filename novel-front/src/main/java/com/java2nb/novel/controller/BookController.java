@@ -9,6 +9,7 @@ import com.java2nb.novel.service.BookParagraphCommentService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.IpLocationService;
 import com.java2nb.novel.service.LikeService;
+import com.java2nb.novel.service.UserService;
 import com.java2nb.novel.vo.*;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
@@ -41,6 +42,8 @@ public class BookController extends BaseController {
     private final LikeService likeService;
 
     private final BookParagraphCommentService bookParagraphCommentService;
+
+    private final UserService userService;
 
     /**
      * 查询首页小说设置列表数据
@@ -141,6 +144,53 @@ public class BookController extends BaseController {
     @GetMapping("listRecBookByCatId")
     public RestResult<List<Book>> listRecBookByCatId(Integer catId) {
         return RestResult.ok(bookService.listRecBookByCatId(catId));
+    }
+
+    /**
+     * 读者端查询章节正文（供跨端客户端使用）
+     */
+    @GetMapping("queryBookIndexContent/{indexId}")
+    public RestResult<?> queryBookIndexContent(@PathVariable("indexId") Long indexId,
+        HttpServletRequest request) {
+        BookIndex bookIndex;
+        try {
+            // queryBookIndex 对不存在的章节会抛异常，统一转为业务错误码
+            bookIndex = bookService.queryBookIndex(indexId);
+        } catch (RuntimeException e) {
+            bookIndex = null;
+        }
+        if (bookIndex == null) {
+            return RestResult.fail(ResponseStatus.INDEX_NOT_EXISTS);
+        }
+        Long bookId = bookIndex.getBookId();
+        // 判断是否需要购买（与页面端渲染逻辑保持一致）
+        boolean needBuy = false;
+        if (bookIndex.getIsVip() != null && bookIndex.getIsVip() == 1) {
+            UserDetails user = getUserDetails(request);
+            if (user == null) {
+                // 未登录，需要购买
+                needBuy = true;
+            } else {
+                // 判断用户是否购买过该目录
+                needBuy = !userService.queryIsBuyBookIndex(user.getId(), indexId);
+            }
+        }
+        Map<String, Object> data = new HashMap<>(10);
+        data.put("bookId", bookId);
+        data.put("indexId", indexId);
+        data.put("indexNum", bookIndex.getIndexNum());
+        data.put("indexName", bookIndex.getIndexName());
+        data.put("isVip", bookIndex.getIsVip());
+        data.put("bookPrice", bookIndex.getBookPrice());
+        data.put("preBookIndexId", bookService.queryPreBookIndexId(bookId, bookIndex.getIndexNum()));
+        data.put("nextBookIndexId", bookService.queryNextBookIndexId(bookId, bookIndex.getIndexNum()));
+        data.put("needBuy", needBuy);
+        if (!needBuy) {
+            BookContent bookContent = bookContentServiceMap.get(bookIndex.getStorageType())
+                .queryBookContent(bookId, indexId);
+            data.put("content", bookContent == null ? null : bookContent.getContent());
+        }
+        return RestResult.ok(data);
     }
 
 
