@@ -13,3 +13,8 @@ spring:
 admin:
   username: admin
   password: admin
+
+#图片保存路径
+pic:
+  save:
+    path: /var/pic  #图片保存路径
