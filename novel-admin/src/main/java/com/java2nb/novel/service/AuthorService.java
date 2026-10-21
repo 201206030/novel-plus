@@ -103,7 +103,14 @@ public class AuthorService {
 
     public void codeSave(AuthorCode authorCode) {
         if (StringUtils.isBlank(authorCode.getInviteCode())) {
-            authorCode.setInviteCode(RandomStringUtils.randomAlphanumeric(8));
+            // 未填写时随机生成，与已有邀请码重复则重新生成
+            String inviteCode;
+            do {
+                inviteCode = RandomStringUtils.randomAlphanumeric(8);
+            } while (codeExists(inviteCode));
+            authorCode.setInviteCode(inviteCode);
+        } else if (codeExists(authorCode.getInviteCode())) {
+            throw biz("邀请码已存在，请更换后重新提交");
         }
         if (authorCode.getValidityTime() == null) {
             authorCode.setValidityTime(new Date(System.currentTimeMillis() + 30L * 24 * 3600 * 1000));
@@ -112,6 +119,14 @@ public class AuthorService {
         authorCode.setIsUse((byte) 0);
         authorCode.setCreateTime(new Date());
         authorCodeMapper.insertSelective(authorCode);
+    }
+
+    /**
+     * 邀请码是否已存在
+     */
+    private boolean codeExists(String inviteCode) {
+        return authorCodeMapper.count(c ->
+                c.where(AuthorCodeDynamicSqlSupport.inviteCode, isEqualTo(StringUtils.trim(inviteCode)))) > 0;
     }
 
     public void codeUpdate(AuthorCode authorCode) {
