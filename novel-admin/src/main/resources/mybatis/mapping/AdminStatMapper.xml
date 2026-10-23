@@ -11,4 +11,58 @@
         order by d
     </select>
 
+    <select id="countAll" resultType="long">
+        select count(*) from ${table}
+    </select>
+
+    <select id="countToday" resultType="long">
+        select count(*) from ${table}
+        where create_time &gt;= #{today}
+    </select>
+
+    <select id="payStat" resultType="java.util.LinkedHashMap">
+        select ifnull(sum(total_amount), 0)                                            as amount,
+               count(*)                                                                 as payCount,
+               ifnull(sum(case when update_time &gt;= #{today} then total_amount else 0 end), 0) as todayAmount,
+               ifnull(sum(case when update_time &gt;= #{today} then 1 else 0 end), 0)            as todayCount
+        from order_pay
+        where pay_status = 1
+    </select>
+
+    <select id="payDaily" resultType="java.util.LinkedHashMap">
+        select date_format(update_time, '%Y-%m-%d') as d,
+               sum(total_amount) as amount,
+               count(*) as cnt
+        from order_pay
+        where pay_status = 1 and update_time &gt;= #{start}
+        group by d
+        order by d
+    </select>
+
+    <select id="categoryDist" resultType="java.util.LinkedHashMap">
+        select ifnull(cat_name, '未分类') as name, count(*) as value
+        from book
+        where status = 1
+        group by cat_name
+        order by value desc
+    </select>
+
+    <select id="hotBooks" resultType="java.util.LinkedHashMap">
+        select book_name as bookName, author_name as authorName, visit_count as visits
+        from book
+        where status = 1
+        order by visit_count desc
+        limit #{limit}
+    </select>
+
+    <select id="channelDist" resultType="java.util.LinkedHashMap">
+        select case pay_channel when 1 then '支付宝' when 2 then '微信' else '其他' end as name,
+               count(*) as value,
+               sum(total_amount) as amount
+        from order_pay
+        where pay_status = 1
+        group by pay_channel
+        order by value desc
+    </select>
+
 </mapper>

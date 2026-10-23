@@ -1,28 +1,76 @@
-<div th:fragment="header" class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;width: 100%">
-
-            <a style="color: #fff;" href="/">小说精品屋后台管理</a>
-            <div style="text-align: center;height: 44px;line-height: 48px;font-size: 14px;float: right;padding-right: 20px">
-                <a style="color: #fff;"
-                   href="/logout">
-
-                    退出
-                </a>
-            </div>
-            <div style="float: right;margin-right:5px;margin-top: 15px">
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"
-                     class="mr-3 iconify iconify--gitee icon-user-arrow-right" width="16" height="16"
-                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16">
-                    <g fill="none" fill-rule="evenodd">
-                        <path d="M0 0h16v16H0z"></path>
-                        <path fill="currentColor" fill-rule="nonzero"
-                              d="M8 1.5a3.5 3.5 0 01.192 6.995L8 8.5a5.75 5.75 0 00-5.75 5.75.5.5 0 11-1 0 6.753 6.753 0 014.681-6.427A3.5 3.5 0 018 1.5zm6.996 10.767.003.041v.002l.001.011a.51.51 0 010 .006v.006l-.002.03a.502.502 0 01-.004.037l-.002.011a.39.39 0 01-.016.063.491.491 0 01-.053.114l-.028.039-.031.035.027-.03-.009.011-.017.02-.011.012-2.122 2.121a.5.5 0 01-.707-.707l1.268-1.268H9.5a.5.5 0 110-1h3.794l-1.269-1.267a.5.5 0 11.707-.708l2.122 2.122a.491.491 0 01.135.248l.005.037v-.006zM8 2.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"></path>
-                    </g>
+<div th:fragment="header" class="adm_header">
+    <div class="adm_header_in">
+        <a class="adm_header_logo" href="/">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span id="admSiteName">小说精品屋后台管理</span>
+        </a>
+        <div class="adm_header_right">
+            <a class="adm_header_btn" id="frontSiteLink" href="javascript:;" target="_blank" rel="noopener" style="display:none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <path d="M15 3h6v6"></path>
+                    <path d="M10 14L21 3"></path>
                 </svg>
-            </div>
+                前台站点
+            </a>
+            <span class="adm_header_user">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                管理员
+            </span>
+            <a class="adm_header_btn adm_header_logout" id="logoutBtn" href="javascript:;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <path d="M16 17l5-5-5-5"></path>
+                    <path d="M21 12H9"></path>
+                </svg>
+                退出
+            </a>
         </div>
     </div>
-
+    <!-- Spring Security 的 /logout 仅接受 POST，用隐藏表单提交（csrf 已全局禁用） -->
+    <form id="logoutForm" action="/logout" method="post" style="display:none"></form>
+    <script>
+        // 头部不依赖 jQuery（各页面 jQuery 在 body 末尾才加载），用原生 ES5 实现
+        (function () {
+            // 站点名与前台地址取自网站信息，失败/未配置时保持默认文案
+            if (window.fetch) {
+                fetch('/website/websiteInfo/get').then(function (r) {
+                    return r.json();
+                }).then(function (res) {
+                    if (!res || res.code !== 200 || !res.data) {
+                        return;
+                    }
+                    var info = res.data;
+                    if (info.name) {
+                        document.getElementById('admSiteName').textContent = info.name + '后台管理';
+                        document.title = info.name + '后台管理';
+                    }
+                    if (info.domain) {
+                        var url = info.domain;
+                        if (!/^(https?:)?\/\//.test(url)) {
+                            url = 'http://' + url;
+                        }
+                        var link = document.getElementById('frontSiteLink');
+                        link.href = url;
+                        link.style.display = 'inline-flex';
+                    }
+                })['catch'](function () { /* 静默降级 */ });
+            }
+            document.getElementById('logoutBtn').onclick = function () {
+                if (window.confirm('确定退出登录吗？')) {
+                    document.getElementById('logoutForm').submit();
+                }
+            };
+        })();
+    </script>
 </div>

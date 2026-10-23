@@ -148,21 +148,44 @@
 .a_detail .detail_btns { padding: 14px 0; text-align: center; }
 .a_detail .detail_btns .layui-btn { min-width: 120px; }
 
+/* ---------------- 公共头部 ---------------- */
+/* 吸顶固定：长列表页下滑时仍可随时访问前台站点/退出；z-index 需高于 layui 弹层以外的页面内容 */
+.adm_header { position: sticky; top: 0; z-index: 990; height: 48px; background: linear-gradient(90deg, #2c8a61, #3eaf7c); box-shadow: 0 2px 8px rgba(44, 138, 97, .25); margin-bottom: 16px; }
+/* 全宽布局：两侧留出适中边距，避免贴屏太近 */
+.adm_header_in { height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
+.adm_header_logo { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 16px; font-weight: bold; }
+.adm_header_logo:hover { color: #fff; opacity: .9; }
+.adm_header_right { display: inline-flex; align-items: center; gap: 14px; }
+.adm_header_user { display: inline-flex; align-items: center; gap: 6px; color: rgba(255, 255, 255, .85); font-size: 13px; }
+.adm_header_btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 6px; color: #fff; font-size: 13px; transition: background .15s, border-color .15s; }
+.adm_header_btn:hover { color: #fff; background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .8); }
+.adm_header_logout { border-color: transparent; background: rgba(0, 0, 0, .12); }
+.adm_header_logout:hover { background: rgba(0, 0, 0, .22); border-color: transparent; }
+
 /* ---------------- 首页模块卡片 ---------------- */
 .a_welcome { padding: 20px 0; }
 .a_welcome h3 { font-size: 18px; color: #333; margin-bottom: 16px; }
-/* 快捷入口卡片：grid 自适应列数，卡片高度互不影响，子菜单数量不均也不会错位 */
-.a_cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
-/* 防误挂 clearfix：cf 的 before/after 伪元素在 grid 下会变成匿名网格项顶出空位 */
-.a_cards::before, .a_cards::after { content: normal; display: none; }
-.a_card { padding: 18px 20px; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .10); }
-.a_card b { display: block; font-size: 16px; color: #2c8a61; margin-bottom: 8px; }
-.a_card a { display: inline-block; margin: 0 12px 6px 0; color: #5c6b64; font-size: 13px; }
-.a_card a:hover { color: #3eaf7c; }
+
+/* 首页概览统计卡片：固定四等分一排，窄屏降级为 2x2 避免数字挤压换行 */
+.a_stat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
+@media (max-width: 1000px) { .a_stat { grid-template-columns: repeat(2, 1fr); } }
+.a_stat::before, .a_stat::after { content: normal; display: none; }
+.a_stat_item { padding: 16px 20px; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .10); }
+.a_stat_label { display: block; font-size: 13px; color: #5c6b64; margin-bottom: 6px; }
+.a_stat_val { display: block; font-size: 24px; color: #2c8a61; line-height: 1.2; }
+.a_stat_sub { display: block; font-size: 12px; color: #9aa8a0; font-style: normal; margin-top: 4px; }
 
 /* 首页增长趋势图卡片 */
 .a_chart_box { margin-top: 20px; padding: 18px 20px; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .10); }
+/* 双列图表行：窄屏降单列，卡片间距由 grid gap 接管 */
+.a_chart_row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.a_chart_row .a_chart_box { margin-top: 20px; }
+@media (max-width: 1000px) { .a_chart_row { grid-template-columns: 1fr; } }
 .a_chart_head { display: flex; align-items: center; justify-content: space-between; }
 .a_chart_head b { font-size: 16px; color: #2c8a61; }
+.a_chart_tip { font-size: 12px; color: #9aa8a0; }
 .a_chart_days { height: 28px; line-height: 28px; border: 1px solid #d7e5dd; border-radius: 6px; color: #5c6b64; font-size: 13px; padding: 0 6px; background: #fff; outline: none; cursor: pointer; }
 .a_chart { height: 320px; margin-top: 10px; }
+/* 半宽图表适当降低高度，避免两列卡片过高 */
+.a_chart_sm { height: 280px; }
+.a_chart_md { height: 320px; }

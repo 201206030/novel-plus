@@ -27,4 +27,14 @@ public class StatController {
         return RestResult.ok(statService.trend(days));
     }
 
+    @GetMapping("overview")
+    public RestResult<Map<String, Object>> overview() {
+        return RestResult.ok(statService.overview());
+    }
+
+    @GetMapping("extra")
+    public RestResult<Map<String, Object>> extra(@RequestParam(required = false, defaultValue = "30") String days) {
+        return RestResult.ok(statService.extra(days));
+    }
+
 }

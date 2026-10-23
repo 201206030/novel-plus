@@ -22,39 +22,15 @@
             <div class="my_bookshelf">
                 <div class="a_welcome">
                     <h3>欢迎使用小说精品屋后台管理系统</h3>
-                    <div class="a_cards">
-                        <div class="a_card"><b>小说管理</b>
-                            <a href="/book/book.html">小说列表</a>
-                            <a href="/book/category.html">小说分类</a>
-                            <a href="/bookList/bookList.html">书单管理</a>
-                            <a href="/comment/bookComment.html">书评管理</a>
-                            <a href="/comment/paragraph.html">段评管理</a>
-                        </div>
-                        <div class="a_card"><b>会员管理</b>
-                            <a href="/member/user.html">会员列表</a>
-                            <a href="/member/userFeedback.html">会员反馈</a>
-                            <a href="/message/userMessage.html">消息管理</a>
-                            <a href="/order/pay.html">订单管理</a>
-                        </div>
-                        <div class="a_card"><b>作家管理</b>
-                            <a href="/author/author.html">作者列表</a>
-                            <a href="/author/authorCode.html">邀请码管理</a>
-                            <a href="/author/income.html">作家收入</a>
-                        </div>
-                        <div class="a_card"><b>AI创作管理</b>
-                            <a href="/ai/task.html">AI创作任务</a>
-                            <a href="/ai/plan.html">AI创作方案</a>
-                            <a href="/ai/pref.html">AI创作偏好</a>
-                        </div>
-                        <div class="a_card"><b>内容运营</b>
-                            <a href="/website/bookSetting.html">小说推荐</a>
-                            <a href="/news/news.html">新闻列表</a>
-                            <a href="/news/category.html">新闻类别</a>
-                        </div>
-                        <div class="a_card"><b>网站设置</b>
-                            <a href="/website/websiteInfo.html">网站信息</a>
-                            <a href="/website/friendLink.html">友情链接</a>
-                        </div>
+                    <div class="a_stat" id="statOverview">
+                        <div class="a_stat_item"><span class="a_stat_label">小说总数</span>
+                            <b class="a_stat_val" id="stBook">-</b><i class="a_stat_sub" id="stBookToday"></i></div>
+                        <div class="a_stat_item"><span class="a_stat_label">会员总数</span>
+                            <b class="a_stat_val" id="stUser">-</b><i class="a_stat_sub" id="stUserToday"></i></div>
+                        <div class="a_stat_item"><span class="a_stat_label">累计充值金额</span>
+                            <b class="a_stat_val" id="stAmount">-</b><i class="a_stat_sub" id="stAmountToday"></i></div>
+                        <div class="a_stat_item"><span class="a_stat_label">支付成功订单</span>
+                            <b class="a_stat_val" id="stOrder">-</b><i class="a_stat_sub" id="stOrderToday"></i></div>
                     </div>
                     <div class="a_chart_box">
                         <div class="a_chart_head"><b>增长趋势</b>
@@ -66,6 +42,26 @@
                         </div>
                         <div id="trendChart" class="a_chart"></div>
                     </div>
+                    <div class="a_chart_row">
+                        <div class="a_chart_box">
+                            <div class="a_chart_head"><b>充值金额趋势</b></div>
+                            <div id="payChart" class="a_chart a_chart_sm"></div>
+                        </div>
+                        <div class="a_chart_box">
+                            <div class="a_chart_head"><b>作品分类分布</b></div>
+                            <div id="catChart" class="a_chart a_chart_sm"></div>
+                        </div>
+                    </div>
+                    <div class="a_chart_row">
+                        <div class="a_chart_box">
+                            <div class="a_chart_head"><b>热门作品 TOP10</b><span class="a_chart_tip">按点击量</span></div>
+                            <div id="hotChart" class="a_chart a_chart_md"></div>
+                        </div>
+                        <div class="a_chart_box">
+                            <div class="a_chart_head"><b>支付渠道占比</b><span class="a_chart_tip">仅统计支付成功</span></div>
+                            <div id="channelChart" class="a_chart a_chart_md"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,17 +71,58 @@
 </body>
 <script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
 <script src="/layui/layui.all.js" type="text/javascript"></script>
-<script src="https://unpkg.com/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="/javascript/echarts.min.js?v=1"></script>
 <script>
+    // 首页概览卡片：不依赖 echarts，先独立加载
+    (function () {
+        function num(v) {
+            var n = Number(v);
+            return isNaN(n) ? 0 : n.toLocaleString();
+        }
+        $.get('/stat/overview', function (res) {
+            if (!res || res.code !== 200) {
+                return;
+            }
+            var d = res.data;
+            $('#stBook').text(num(d.bookCount));
+            $('#stBookToday').text('今日新增 ' + num(d.bookToday));
+            $('#stUser').text(num(d.userCount));
+            $('#stUserToday').text('今日新增 ' + num(d.userToday));
+            $('#stAmount').text('¥' + num(d.payAmount));
+            $('#stAmountToday').text('今日 +' + num(d.payAmountToday) + ' 元');
+            $('#stOrder').text(num(d.payCount));
+            $('#stOrderToday').text('今日 +' + num(d.payCountToday));
+        }, 'json');
+    })();
+
     // 首页统计曲线：作品/会员/订单每日新增趋势
     (function () {
         if (!window.echarts) {
-            $('#trendChart').html('<div style="padding:40px;text-align:center;color:#999;">图表库加载失败，请检查网络后刷新</div>');
+            $('#trendChart').html('<div style="padding:40px;text-align:center;color:#999;">图表库加载失败，请确认 /javascript/echarts.min.js 存在后刷新</div>');
             return;
         }
         var chart = echarts.init(document.getElementById('trendChart'));
+        var payChart = echarts.init(document.getElementById('payChart'));
+        var catChart = echarts.init(document.getElementById('catChart'));
+        var hotChart = echarts.init(document.getElementById('hotChart'));
+        var channelChart = echarts.init(document.getElementById('channelChart'));
+        var allCharts = [chart, payChart, catChart, hotChart, channelChart];
         var COLORS = { book: '#3eaf7c', user: '#4a90d9', order: '#e6a23c' };
         var NAMES = { book: '作品新增', user: '会员新增', order: '订单新增' };
+        var PIE_PALETTE = ['#3eaf7c', '#4a90d9', '#e6a23c', '#9b59b6', '#1abc9c', '#e74c3c', '#f78fb3', '#7f8c8d'];
+
+        // 无数据时图表中心显示提示，避免空白
+        function emptyOption(title) {
+            return {
+                title: {text: title || '暂无数据', left: 'center', top: 'middle', textStyle: {color: '#999', fontSize: 14, fontWeight: 'normal'}},
+                xAxis: {show: false}, yAxis: {show: false}, series: []
+            };
+        }
+
+        function shortName(s, n) {
+            s = String(s || '');
+            return s.length > n ? s.substring(0, n) + '…' : s;
+        }
 
         function load(days) {
             $.get('/stat/trend', {days: days}, function (res) {
@@ -107,13 +144,112 @@
                     ]
                 });
             }, 'json');
+
+            $.get('/stat/extra', {days: days}, function (res) {
+                if (!res || res.code !== 200) {
+                    return;
+                }
+                var d = res.data;
+                var axisLabel = {formatter: function (v) { return v.substring(5); }};
+                renderPay(d, axisLabel);
+                renderCats(d);
+                renderHot(d);
+                renderChannels(d);
+            }, 'json');
+        }
+
+        // 充值金额（柱）+ 笔数（线）双轴
+        function renderPay(d, axisLabel) {
+            var hasPay = false;
+            for (var i = 0; i < d.pay.amount.length; i++) {
+                if (d.pay.amount[i] > 0 || d.pay.count[i] > 0) { hasPay = true; break; }
+            }
+            if (!hasPay) {
+                payChart.clear(); payChart.setOption(emptyOption()); return;
+            }
+            payChart.setOption({
+                    tooltip: {trigger: 'axis'},
+                    legend: {data: ['充值金额(元)', '支付笔数'], top: 4},
+                    grid: {left: 50, right: 50, top: 36, bottom: 26},
+                    xAxis: {type: 'category', data: d.dates, axisLabel: axisLabel},
+                    yAxis: [
+                        {type: 'value', name: '元'},
+                        {type: 'value', name: '笔', minInterval: 1, splitLine: {show: false}}
+                    ],
+                    series: [
+                        {name: '充值金额(元)', type: 'bar', barMaxWidth: 18, itemStyle: {color: COLORS.order}, data: d.pay.amount},
+                        {name: '支付笔数', type: 'line', yAxisIndex: 1, smooth: true, itemStyle: {color: COLORS.user}, data: d.pay.count}
+                    ]
+                });
+        }
+
+        // 分类分布环图
+        function renderCats(d) {
+            if (!d.categories.length) {
+                catChart.clear(); catChart.setOption(emptyOption()); return;
+            }
+            catChart.setOption({
+                    color: PIE_PALETTE,
+                    tooltip: {trigger: 'item', formatter: '{b}: {c} 本 ({d}%)'},
+                    legend: {type: 'scroll', orient: 'vertical', right: 6, top: 'middle', textStyle: {fontSize: 12}},
+                    series: [{
+                        type: 'pie', radius: ['38%', '62%'], center: ['40%', '52%'],
+                        label: {formatter: '{b}\n{c}'}, data: d.categories
+                    }]
+                });
+        }
+
+        // 热门作品横向条形图（数据倒序推入，使第1名在顶部）
+        function renderHot(d) {
+            if (!d.hotBooks.length) {
+                hotChart.clear(); hotChart.setOption(emptyOption()); return;
+            }
+            var names = [];
+            var visits = [];
+            for (var j = d.hotBooks.length - 1; j >= 0; j--) {
+                names.push(shortName(d.hotBooks[j].name, 10));
+                visits.push(d.hotBooks[j]);
+            }
+            hotChart.setOption({
+                    tooltip: {trigger: 'axis', axisPointer: {type: 'shadow'}, formatter: function (p) {
+                        var b = p[0].data; return b.name + '<br/>作者：' + b.author + '<br/>点击量：' + b.visits.toLocaleString();
+                    }},
+                    grid: {left: 100, right: 40, top: 10, bottom: 26},
+                    xAxis: {type: 'value', name: '点击'},
+                    yAxis: {type: 'category', data: names, axisLabel: {fontSize: 12}},
+                    series: [{
+                        type: 'bar', barMaxWidth: 14, itemStyle: {color: COLORS.book},
+                        label: {show: true, position: 'right', formatter: function (p) { return p.data.visits.toLocaleString(); }},
+                        data: visits
+                    }]
+                });
+        }
+
+        // 支付渠道环图，tooltip 附带金额
+        function renderChannels(d) {
+            if (!d.channels.length) {
+                channelChart.clear(); channelChart.setOption(emptyOption('暂无支付数据')); return;
+            }
+            var amountOf = {};
+            for (var k = 0; k < d.channels.length; k++) { amountOf[d.channels[k].name] = d.channels[k].amount; }
+            channelChart.setOption({
+                    color: PIE_PALETTE,
+                    tooltip: {trigger: 'item', formatter: function (p) {
+                        return p.name + '<br/>笔数：' + p.value + '<br/>金额：¥' + Number(amountOf[p.name] || 0).toLocaleString();
+                    }},
+                    legend: {bottom: 6, textStyle: {fontSize: 12}},
+                    series: [{
+                        type: 'pie', radius: ['40%', '64%'], center: ['50%', '46%'],
+                        label: {formatter: '{b}\n{d}%'}, data: d.channels.map(function (c) { return {name: c.name, value: c.value}; })
+                    }]
+                });
         }
 
         $('#trendDays').on('change', function () {
             load($(this).val());
         });
         $(window).on('resize', function () {
-            chart.resize();
+            for (var m = 0; m < allCharts.length; m++) { allCharts[m].resize(); }
         });
         load(30);
     })();
