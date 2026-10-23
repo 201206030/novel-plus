@@ -19,6 +19,9 @@ public class BookReadHistoryVO extends UserReadHistory {
     private String lastIndexName;
     private String bookName;
 
+    /** 用户实际读至的章节名（由 pre_content_id 关联 book_index 得到），无进度时为空 */
+    private String preContentName;
+
     private String picUrl;
 
     private Long authorId;

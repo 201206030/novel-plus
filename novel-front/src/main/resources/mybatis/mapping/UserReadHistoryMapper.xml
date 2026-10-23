@@ -12,6 +12,8 @@
                t2.cat_name,
                t2.last_index_id,
                t2.last_index_name,
+               t3.index_name as pre_content_name,
+               t1.create_time,
                t2.last_index_update_time,
                t2.pic_url,
                t2.author_id,
@@ -20,6 +22,7 @@
                t2.book_status
         from user_read_history t1
                  inner join book t2 on t1.book_id = t2.id and t1.user_id = #{userId}
+                 left join book_index t3 on t3.id = t1.pre_content_id
         order by t1.create_time desc
 
     </select>
