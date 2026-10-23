@@ -81,6 +81,7 @@ bin/novel-front.sh start
 
 #### 新版本UI（2026年）
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/new_green1.png)](https://www.xxyopen.com/images/resource/os/novel-plus/new_green1.png)
+[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/new_admin.png)](https://www.xxyopen.com/images/resource/os/novel-plus/new_admin.png)
 
 
 ## AI 功能
