@@ -106,6 +106,11 @@ public class BookServiceImpl implements BookService {
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
 
+    /**
+     * 小说上架状态：仅 status=1 的小说对读者可见（0 为入库/已下架）
+     */
+    private static final Byte BOOK_STATUS_ONLINE = 1;
+
 
     @SneakyThrows
     @Override
@@ -240,6 +245,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Book queryOnlineBookDetail(Long bookId) {
+        // 读者端详情：仅允许查询已上架小说，下架或不存在均视为不可见
+        SelectStatementProvider selectStatement = select(book.allColumns())
+            .from(book)
+            .where(id, isEqualTo(bookId))
+            .and(status, isEqualTo(BOOK_STATUS_ONLINE))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+        return bookMapper.selectMany(selectStatement).stream().findFirst()
+            .orElseThrow(() -> new BusinessException(ResponseStatus.BOOK_NOT_EXISTS));
+    }
+
+    @Override
     public List<BookIndex> queryIndexList(Long bookId, String orderBy, Integer page, Integer pageSize) {
         if (page != null && pageSize != null) {
             PageHelper.startPage(page, pageSize);
@@ -349,6 +367,7 @@ public class BookServiceImpl implements BookService {
             authorId, authorName, picUrl, bookDesc, wordCount, lastIndexUpdateTime)
             .from(book)
             .where(wordCount, isGreaterThan(0))
+            .and(status, isEqualTo(BOOK_STATUS_ONLINE))
             .orderBy(sortSpecification)
             .limit(limit)
             .build()
@@ -650,6 +669,7 @@ public class BookServiceImpl implements BookService {
             .from(book)
             .where(updateTime, isGreaterThan(startDate))
             .and(lastIndexId, isNotNull())
+            .and(status, isEqualTo(BOOK_STATUS_ONLINE))
             .orderBy(updateTime)
             .limit(limit)
             .build()

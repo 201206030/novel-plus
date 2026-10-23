@@ -56,6 +56,25 @@ public class BookController {
         return RestResult.ok();
     }
 
+    /**
+     * 小说上架/下架（status：0 下架，1 上架）
+     */
+    @PostMapping("book/status")
+    public RestResult<Void> bookStatus(@RequestParam Long id, @RequestParam Byte status) {
+        bookService.bookStatus(id, status);
+        return RestResult.ok();
+    }
+
+    /**
+     * 一键上架所有小说
+     *
+     * @return 本次上架的小说数量
+     */
+    @PostMapping("book/batchOnline")
+    public RestResult<Integer> bookBatchOnline() {
+        return RestResult.ok(bookService.bookOnlineAll());
+    }
+
     @PostMapping("book/remove")
     public RestResult<Void> bookRemove(@RequestParam Long id) {
         bookService.bookRemove(id);

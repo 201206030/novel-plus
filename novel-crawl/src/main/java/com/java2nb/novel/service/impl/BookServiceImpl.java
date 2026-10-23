@@ -86,6 +86,8 @@ public class BookServiceImpl implements BookService {
 
                 //保存小说主表
                 book.setCreateTime(new Date());
+                //爬虫新采集的小说默认上架（status=1），下架的小说重新抓取时不会被改回
+                book.setStatus((byte) 1);
                 if(StringUtils.isBlank(book.getPicUrl())) {
                     //设置默认封面图片
                     book.setPicUrl("/images/default.gif");

@@ -61,6 +61,13 @@ public interface BookService {
     Book queryBookDetail(Long id);
 
     /**
+     * 读者端查询已上架小说详情；已下架或不存在的小说不可查询
+     * @param id 书籍ID
+     * @return 书籍信息
+     * */
+    Book queryOnlineBookDetail(Long id);
+
+    /**
      * 查询目录列表
      * @param bookId 书籍ID
      * @param orderBy 排序

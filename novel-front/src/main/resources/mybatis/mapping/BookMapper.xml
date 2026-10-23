@@ -6,7 +6,7 @@
     <select id="searchByPage" parameterType="com.java2nb.novel.vo.BookSpVO" resultType="com.java2nb.novel.vo.BookVO">
         select
         id,cat_id,cat_name,book_name,author_id,author_name,word_count,last_index_id,last_index_name,score,pic_url,book_status,last_index_update_time,book_desc
-        from book where word_count > 0
+        from book where status = 1 and word_count > 0
         <if test="keyword != null and keyword != ''">
             and (book_name like concat('%',#{keyword},'%') or author_name like concat('%',#{keyword},'%'))
         </if>
@@ -47,6 +47,7 @@
         select id, pic_url, book_name, book_desc
         from book
         where cat_id = #{catId}
+          and status = 1
           and word_count > 0
         order by RAND() LIMIT 4
     </select>
@@ -71,6 +72,7 @@
 
         select id, book_name, author_name, pic_url, book_desc, score
         from book
+        where status = 1
         ORDER BY score, RAND() LIMIT #{limit};
     </select>
 

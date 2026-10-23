@@ -256,7 +256,7 @@ public class PageController extends BaseController {
         //加载小说基本信息线程
         CompletableFuture<Book> bookCompletableFuture = CompletableFuture.supplyAsync(() -> {
             //查询书籍
-            Book book = bookService.queryBookDetail(bookId);
+            Book book = bookService.queryOnlineBookDetail(bookId);
             log.debug("加载小说基本信息线程结束");
             return book;
         }, threadPoolExecutor);
@@ -298,7 +298,7 @@ public class PageController extends BaseController {
     @SneakyThrows
     @RequestMapping("/book/indexList-{bookId}.html")
     public String indexList(@PathVariable("bookId") Long bookId, Model model) {
-        Book book = bookService.queryBookDetail(bookId);
+        Book book = bookService.queryOnlineBookDetail(bookId);
         model.addAttribute("book", book);
         List<BookIndex> bookIndexList = bookService.queryIndexList(bookId, null, 1, null);
         model.addAttribute("bookIndexList", bookIndexList);
@@ -316,7 +316,7 @@ public class PageController extends BaseController {
         //加载小说基本信息线程
         CompletableFuture<Book> bookCompletableFuture = CompletableFuture.supplyAsync(() -> {
             //查询书籍
-            Book book = bookService.queryBookDetail(bookId);
+            Book book = bookService.queryOnlineBookDetail(bookId);
             log.debug("加载小说基本信息线程结束");
             return book;
         }, threadPoolExecutor);
@@ -396,7 +396,7 @@ public class PageController extends BaseController {
     @RequestMapping("/book/comment-{bookId}.html")
     public String commentList(@PathVariable("bookId") Long bookId, Model model) {
         //查询书籍
-        Book book = bookService.queryBookDetail(bookId);
+        Book book = bookService.queryOnlineBookDetail(bookId);
         model.addAttribute("book", book);
         return ThreadLocalUtil.getTemplateDir() + "book/book_comment";
     }

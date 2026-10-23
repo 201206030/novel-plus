@@ -7,6 +7,7 @@
         select t1.book_id,t1.type,t1.sort,t2.book_name,t2.author_name,t2.pic_url,t2.book_desc,t2.score,t2.cat_id,t2.cat_name,t2.book_status
         from book_setting t1 inner join book t2
         on t1.book_id = t2.id
+        where t2.status = 1
         order by t1.sort
 
     </select>

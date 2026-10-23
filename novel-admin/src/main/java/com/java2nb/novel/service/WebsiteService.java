@@ -31,6 +31,7 @@ import static com.java2nb.novel.core.utils.AdminUtil.biz;
 import static com.java2nb.novel.core.utils.AdminUtil.like;
 import static com.java2nb.novel.core.utils.AdminUtil.parseIds;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLikeWhenPresent;
 
 /**
@@ -172,13 +173,11 @@ public class WebsiteService {
      */
     public List<Book> simpleBookList(String keyword) {
         PageHelper.startPage(1, 50);
-        return bookMapper.select(c -> {
-            if (StringUtils.isNotBlank(keyword)) {
-                return c.where(BookDynamicSqlSupport.bookName, isLikeWhenPresent(like(keyword)))
-                        .orderBy(BookDynamicSqlSupport.updateTime.descending());
-            }
-            return c.orderBy(BookDynamicSqlSupport.updateTime.descending());
-        });
+        // 仅可选择已上架（status=1）小说，keyword 为空时 like() 返回 null，isLikeWhenPresent 自动跳过
+        return bookMapper.select(c -> c
+                .where(BookDynamicSqlSupport.status, isEqualTo((byte) 1))
+                .and(BookDynamicSqlSupport.bookName, isLikeWhenPresent(like(keyword)))
+                .orderBy(BookDynamicSqlSupport.updateTime.descending()));
     }
 
 }

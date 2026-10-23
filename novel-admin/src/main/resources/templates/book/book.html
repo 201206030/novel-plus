@@ -31,6 +31,19 @@
 <script src="/layui/layui.all.js" type="text/javascript"></script>
 <script src="/javascript/admin.js" type="text/javascript"></script>
 <script th:inline="none">
+    // 上架/下架小说（status：0 下架，1 上架）
+    function changeBookStatus(row, to) {
+        var name = to == 1 ? '上架' : '下架';
+        var tip = to == 1 ? '上架后前台将可查询该小说。' : '下架后前台所有小说查询接口将不再返回该小说。';
+        layer.confirm('确定要' + name + '小说「' + (row.bookName || '') + '」吗？' + tip, {icon: 3, title: '提示'}, function (idx) {
+            layer.close(idx);
+            Admin.post('/book/book/status', {id: row.id, status: to}, function () {
+                layer.msg(name + '成功');
+                Admin.refresh();
+            });
+        });
+    }
+
     Admin.crud({
         api: '/book/book',
         title: '小说列表',
@@ -38,6 +51,7 @@
         selectable: true,
         hasAdd: false,
         hasEdit: false,
+        toolbar: '<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal" id="aBatchOnlineBtn">一键上架全部</a>',
         columns: [
             {title: '书名', field: 'bookName', thClass: 'col_book', ellipsis: true},
             {title: '作者', field: 'authorName', thClass: 'col_ell', ellipsis: true},
@@ -53,9 +67,14 @@
             }},
             {title: '是否收费', thClass: 'time', render: function (row) {
                 return row.isVip == 1 ? '收费' : '免费';
+            }},
+            {title: '上架状态', thClass: 'time', render: function (row) {
+                return row.status == 1 ? '<span style="color:#5FB878">已上架</span>' : '<span style="color:#999">已下架</span>';
             }}
         ],
         rowActions: [
+            {title: '上架', show: function (row) { return row.status != 1; }, fn: function (row) { changeBookStatus(row, 1); }},
+            {title: '下架', show: function (row) { return row.status == 1; }, fn: function (row) { changeBookStatus(row, 0); }},
             {title: '章节', fn: function (row) {
                 location.href = '/book/bookIndex.html?bookId=' + row.id;
             }},
@@ -63,6 +82,17 @@
                 window.location.href = '/book/book/download?bookId=' + row.id;
             }}
         ]
+    });
+
+    // 工具栏按钮由框架异步渲染，用事件委托绑定
+    $(document).on('click', '#aBatchOnlineBtn', function () {
+        layer.confirm('确定要将所有未上架的小说一键上架吗？上架后前台立即可见，且全部小说都会被爬虫自动更新。', {icon: 3, title: '提示'}, function (idx) {
+            layer.close(idx);
+            Admin.post('/book/book/batchOnline', {}, function (count) {
+                layer.msg('上架完成，本次共上架 ' + (count || 0) + ' 本小说');
+                Admin.refresh();
+            });
+        });
     });
 </script>
 </html>

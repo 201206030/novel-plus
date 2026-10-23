@@ -91,6 +91,7 @@
         from user_book_list_item t1
         inner join book t2 on t1.book_id = t2.id
         where t1.list_id = #{listId}
+          and t2.status = 1
         order by t1.create_time desc
     </select>
 

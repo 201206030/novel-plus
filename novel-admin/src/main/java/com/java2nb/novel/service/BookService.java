@@ -1,6 +1,8 @@
 package com.java2nb.novel.service;
 
 import com.github.pagehelper.PageHelper;
+import com.java2nb.novel.core.cache.CacheKey;
+import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookComment;
 import com.java2nb.novel.entity.BookContent;
@@ -35,6 +37,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLikeWhenPresent;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
 
 /**
  * 小说管理Service：小说列表/章节管理/内容管理
@@ -56,6 +62,8 @@ public class BookService {
     private final BookSettingMapper bookSettingMapper;
 
     private final BookCategoryMapper bookCategoryMapper;
+
+    private final CacheService cacheService;
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
 
@@ -84,6 +92,61 @@ public class BookService {
 
     public void bookUpdate(Book book) {
         throw biz("小说列表不支持修改");
+    }
+
+    /**
+     * 小说上架/下架（status：0 下架/未上架，1 上架）。
+     * 下架后前台所有小说查询接口均不再返回该小说，故需失效前台首页榜单/推荐缓存。
+     *
+     * @param id     小说ID
+     * @param status 目标状态
+     */
+    public void bookStatus(Long id, Byte status) {
+        if (status == null || (status != 0 && status != 1)) {
+            throw biz("状态值不合法");
+        }
+        Book exist = bookMapper.selectByPrimaryKey(id).orElseThrow(() -> biz("小说不存在"));
+        Date now = new Date();
+        // 爬虫采集的书重新上架后重置最后章节更新时间，使其立即回到近30天的自动更新队列；equalToWhenPresent 保证下架/非爬虫书不修改该字段
+        Date lastIndexUpdateTime = (status == 1 && exist.getCrawlSourceId() != null) ? now : null;
+        bookMapper.update(u -> u.set(BookDynamicSqlSupport.status).equalTo(status)
+                .set(BookDynamicSqlSupport.updateTime).equalTo(now)
+                .set(BookDynamicSqlSupport.lastIndexUpdateTime).equalToWhenPresent(lastIndexUpdateTime)
+                .where(BookDynamicSqlSupport.id, isEqualTo(id)));
+        // 上架状态变更后前台榜单与首页推荐缓存失效，下次访问按 status=1 重新加载
+        cacheService.del(CacheKey.INDEX_CLICK_BANK_BOOK_KEY);
+        cacheService.del(CacheKey.INDEX_NEW_BOOK_KEY);
+        cacheService.del(CacheKey.INDEX_UPDATE_BOOK_KEY);
+        cacheService.del(CacheKey.INDEX_BOOK_SETTINGS_KEY);
+    }
+
+    /**
+     * 一键上架所有小说（仅处理当前非上架的书），上架后失效前台榜单/推荐缓存。
+     * 爬虫采集的书同步重置最后章节更新时间，与单本上架逻辑保持一致，确保能回到近30天自动更新队列。
+     *
+     * @return 本次上架的小说数量
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public int bookOnlineAll() {
+        Date now = new Date();
+        // 爬虫书：上架 + 重置章节更新时间
+        int count = bookMapper.update(u -> u.set(BookDynamicSqlSupport.status).equalTo((byte) 1)
+                .set(BookDynamicSqlSupport.updateTime).equalTo(now)
+                .set(BookDynamicSqlSupport.lastIndexUpdateTime).equalTo(now)
+                .where(BookDynamicSqlSupport.crawlSourceId, isNotNull())
+                .and(BookDynamicSqlSupport.status, isNotEqualTo((byte) 1), or(BookDynamicSqlSupport.status, isNull())));
+        // 非爬虫书：仅上架，不碰章节更新时间
+        count += bookMapper.update(u -> u.set(BookDynamicSqlSupport.status).equalTo((byte) 1)
+                .set(BookDynamicSqlSupport.updateTime).equalTo(now)
+                .where(BookDynamicSqlSupport.crawlSourceId, isNull())
+                .and(BookDynamicSqlSupport.status, isNotEqualTo((byte) 1), or(BookDynamicSqlSupport.status, isNull())));
+        if (count > 0) {
+            cacheService.del(CacheKey.INDEX_CLICK_BANK_BOOK_KEY);
+            cacheService.del(CacheKey.INDEX_NEW_BOOK_KEY);
+            cacheService.del(CacheKey.INDEX_UPDATE_BOOK_KEY);
+            cacheService.del(CacheKey.INDEX_BOOK_SETTINGS_KEY);
+        }
+        return count;
     }
 
     @Transactional(rollbackFor = Exception.class)

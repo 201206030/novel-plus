@@ -99,7 +99,7 @@ public class BookController extends BaseController {
      */
     @GetMapping("queryBookDetail/{id}")
     public RestResult<Book> queryBookDetail(@PathVariable("id") Long id) {
-        return RestResult.ok(bookService.queryBookDetail(id));
+        return RestResult.ok(bookService.queryOnlineBookDetail(id));
     }
 
 
@@ -163,6 +163,8 @@ public class BookController extends BaseController {
             return RestResult.fail(ResponseStatus.INDEX_NOT_EXISTS);
         }
         Long bookId = bookIndex.getBookId();
+        // 已下架（或未上架）的小说不允许读者阅读章节正文
+        bookService.queryOnlineBookDetail(bookId);
         // 判断是否需要购买（与页面端渲染逻辑保持一致）
         boolean needBuy = false;
         if (bookIndex.getIsVip() != null && bookIndex.getIsVip() == 1) {
