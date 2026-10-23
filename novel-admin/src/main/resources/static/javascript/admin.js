@@ -359,7 +359,8 @@ var Admin = (function ($) {
             var action = cfg.rowActions[i];
             var show = action.show ? action.show(row) : true;
             if (show) {
-                html += '<a href="javascript:;" class="a_action" data-act="' + i + '" data-index="' + index + '">' + escapeHtml(action.title) + '</a> ';
+                // action.cls 可选：追加自定义样式类（如 a_action_red），不传则保持默认绿色
+                html += '<a href="javascript:;" class="a_action' + (action.cls ? ' ' + action.cls : '') + '" data-act="' + i + '" data-index="' + index + '">' + escapeHtml(action.title) + '</a> ';
             }
         }
         if (cfg.hasDel !== false) {

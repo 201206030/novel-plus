@@ -86,6 +86,9 @@
 .updateTable td.goread a:hover { color: #fff; background: #3eaf7c; border-color: #3eaf7c; box-shadow: 0 2px 6px rgba(62, 175, 124, .35); }
 .updateTable td.goread a.a_del { color: #e05c3e; background: #fdf3f0; border-color: #f6d5cd; }
 .updateTable td.goread a.a_del:hover { color: #fff; background: #ef5a3a; border-color: #ef5a3a; box-shadow: 0 2px 6px rgba(239, 90, 58, .35); }
+/* 自定义行操作红色皮肤（rowActions 的 cls 属性引用），与删除按钮同色系 */
+.updateTable td.goread a.a_action_red { color: #e05c3e; background: #fdf3f0; border-color: #f6d5cd; }
+.updateTable td.goread a.a_action_red:hover { color: #fff; background: #ef5a3a; border-color: #ef5a3a; box-shadow: 0 2px 6px rgba(239, 90, 58, .35); }
 
 /* ---------------- 分页组件（laypage 无 layui.css 时的皮肤） ---------------- */
 .pageBox { padding: 14px 0; text-align: center; }

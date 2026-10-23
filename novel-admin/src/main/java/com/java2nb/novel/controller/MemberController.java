@@ -3,6 +3,7 @@ package com.java2nb.novel.controller;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.entity.UserFeedback;
 import com.java2nb.novel.service.MemberService;
+import com.java2nb.novel.vo.AdminUserBuyRecordVO;
 import com.java2nb.novel.vo.AdminUserFeedbackVO;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.resp.RestResult;
@@ -70,6 +71,14 @@ public class MemberController {
     @PostMapping("user/adjustBalance")
     public RestResult<Long> userAdjustBalance(@RequestParam Long id, @RequestParam Long amount) {
         return RestResult.ok(memberService.userAdjustBalance(id, amount));
+    }
+
+    @GetMapping("buyRecord/list")
+    public RestResult<PageBean<AdminUserBuyRecordVO>> buyRecordList(@RequestParam(required = false) String keyword,
+        @RequestParam(required = false) Long userId,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(memberService.buyRecordList(keyword, userId, page, pageSize));
     }
 
     @GetMapping("userFeedback/list")

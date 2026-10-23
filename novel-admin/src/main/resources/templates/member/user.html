@@ -63,7 +63,7 @@
             {name: 'status', label: '状态', type: 'select', options: [[0, '正常'], [1, '封禁']]}
         ],
         rowActions: [
-            {title: '封禁', show: function (row) { return row.status != 1; }, fn: function (row) {
+            {title: '封禁', cls: 'a_action_red', show: function (row) { return row.status != 1; }, fn: function (row) {
                 layer.confirm('确定封禁「' + (row.nickName || row.username) + '」吗？封禁后该会员无法登录前台（已登录的在令牌过期前不受影响）。', {icon: 3, title: '提示'}, function (idx) {
                     layer.close(idx);
                     Admin.post('/member/user/ban', {id: row.id, status: 1}, function () {
@@ -83,6 +83,10 @@
             }},
             {title: '调整书币', fn: function (row) {
                 showAdjustBookCoin(row);
+            }},
+            {title: '购买记录', fn: function (row) {
+                // row.id 是后端序列化的字符串（防长整型精度丢失），直接拼接不转 Number
+                location.href = '/member/buyRecord.html?userId=' + row.id;
             }}
         ]
     });

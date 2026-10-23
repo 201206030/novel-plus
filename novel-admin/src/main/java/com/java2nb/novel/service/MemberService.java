@@ -4,11 +4,13 @@ import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.entity.UserFeedback;
 import com.java2nb.novel.mapper.AdminMemberCmdMapper;
+import com.java2nb.novel.mapper.AdminUserBuyRecordQueryMapper;
 import com.java2nb.novel.mapper.AdminUserFeedbackQueryMapper;
 import com.java2nb.novel.mapper.UserDynamicSqlSupport;
 import com.java2nb.novel.mapper.UserFeedbackDynamicSqlSupport;
 import com.java2nb.novel.mapper.UserFeedbackMapper;
 import com.java2nb.novel.mapper.UserMapper;
+import com.java2nb.novel.vo.AdminUserBuyRecordVO;
 import com.java2nb.novel.vo.AdminUserFeedbackVO;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
@@ -58,6 +60,8 @@ public class MemberService {
     private final AdminUserFeedbackQueryMapper userFeedbackQueryMapper;
 
     private final AdminMemberCmdMapper memberCmdMapper;
+
+    private final AdminUserBuyRecordQueryMapper userBuyRecordQueryMapper;
 
     public PageBean<User> userList(String keyword, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
@@ -137,6 +141,21 @@ public class MemberService {
             throw biz("扣除失败：会员余额不足");
         }
         return userMapper.selectByPrimaryKey(id).orElseThrow(() -> biz("会员不存在")).getAccountBalance();
+    }
+
+    /**
+     * 购买记录列表（只读）：用户购章流水是资产变动审计依据，不提供增删改入口
+     *
+     * @param keyword  用户名/昵称/书名/章节名关键字（可空）
+     * @param userId   指定用户ID（可空，会员列表入口带参跳转）
+     * @param page     页码
+     * @param pageSize 每页条数
+     * @return 分页结果
+     */
+    public PageBean<AdminUserBuyRecordVO> buyRecordList(String keyword, Long userId, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<AdminUserBuyRecordVO> list = userBuyRecordQueryMapper.listAll(keyword, userId);
+        return PageBuilder.build(list);
     }
 
     public PageBean<AdminUserFeedbackVO> feedbackList(String keyword, int page, int pageSize) {
