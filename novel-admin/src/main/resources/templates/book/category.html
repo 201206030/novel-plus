@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>小说分类-小说精品屋后台管理</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body class="">
+
+<div th:replace="admin/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="admin/menu :: menu">
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div id="adminApp"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/admin.js" type="text/javascript"></script>
+<script th:inline="none">
+    // 内置分类（id <= 7）不允许删除：不使用框架删除按钮，用自定义行操作按行控制删除入口
+    Admin.crud({
+        api: '/book/category',
+        title: '小说分类列表',
+        searchPlaceholder: '输入分类名称搜索',
+        selectable: true,
+        hasDel: false,
+        addBtnText: '新增分类',
+        columns: [
+            {title: 'ID', field: 'id', thClass: 'col_num'},
+            {title: '频道', render: function (row) {
+                return row.workDirection == 1 ? '<span style="color:#FF5F7E">女频</span>' : '<span style="color:#1E9FFF">男频</span>';
+            }},
+            {title: '分类名称', field: 'name'},
+            {title: '排序号', field: 'sort', thClass: 'col_num'},
+            {title: '创建时间', thClass: 'col_time', render: function (row) {
+                return row.createTime ? Admin.fmt(row.createTime) : '-';
+            }}
+        ],
+        fields: [
+            {name: 'name', label: '分类名称', required: true},
+            {name: 'workDirection', label: '所属频道（创建后不可修改）', type: 'select', required: true, lockOnEdit: true,
+                options: [['0', '男频'], ['1', '女频']]},
+            {name: 'sort', label: '排序号（越小越靠前，留空自动排到本频道末尾）', type: 'number'}
+        ],
+        rowActions: [
+            {title: '删除', show: function (row) {
+                return row.id > 7;
+            }, fn: function (row) {
+                layer.confirm('确定删除分类「' + row.name + '」吗？删除后不可恢复。', {icon: 3, title: '提示'}, function (idx) {
+                    layer.close(idx);
+                    Admin.post('/book/category/remove', {id: row.id}, function () {
+                        layer.msg('删除成功');
+                        Admin.refresh();
+                    });
+                });
+            }}
+        ]
+    });
+</script>
+</html>

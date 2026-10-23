@@ -1,8 +1,10 @@
 package com.java2nb.novel.controller;
 
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.service.BookCategoryService;
 import com.java2nb.novel.service.BookService;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.resp.RestResult;
@@ -31,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 public class BookController {
 
     private final BookService bookService;
+
+    private final BookCategoryService bookCategoryService;
 
     @GetMapping("book/list")
     public RestResult<PageBean<Book>> bookList(@RequestParam(required = false) String keyword,
@@ -148,6 +152,42 @@ public class BookController {
     @PostMapping("bookContent/save")
     public RestResult<Void> contentSave(@RequestParam Long indexId, @RequestParam String content) {
         bookService.contentSave(indexId, content);
+        return RestResult.ok();
+    }
+
+    @GetMapping("category/list")
+    public RestResult<PageBean<BookCategory>> categoryList(@RequestParam(required = false) String keyword,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(bookCategoryService.categoryList(keyword, page, pageSize));
+    }
+
+    @GetMapping("category/get")
+    public RestResult<BookCategory> categoryGet(@RequestParam Integer id) {
+        return RestResult.ok(bookCategoryService.categoryGet(id));
+    }
+
+    @PostMapping("category/save")
+    public RestResult<Void> categorySave(BookCategory category) {
+        bookCategoryService.categorySave(category);
+        return RestResult.ok();
+    }
+
+    @PostMapping("category/update")
+    public RestResult<Void> categoryUpdate(BookCategory category) {
+        bookCategoryService.categoryUpdate(category);
+        return RestResult.ok();
+    }
+
+    @PostMapping("category/remove")
+    public RestResult<Void> categoryRemove(@RequestParam Integer id) {
+        bookCategoryService.categoryRemove(id);
+        return RestResult.ok();
+    }
+
+    @PostMapping("category/batchRemove")
+    public RestResult<Void> categoryBatchRemove(@RequestParam String ids) {
+        bookCategoryService.categoryBatchRemove(ids);
         return RestResult.ok();
     }
 

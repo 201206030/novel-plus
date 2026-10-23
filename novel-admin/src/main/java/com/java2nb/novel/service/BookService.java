@@ -4,10 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.BookComment;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.entity.BookSetting;
+import com.java2nb.novel.mapper.BookCategoryDynamicSqlSupport;
 import com.java2nb.novel.mapper.BookCategoryMapper;
 import com.java2nb.novel.mapper.BookCommentDynamicSqlSupport;
 import com.java2nb.novel.mapper.BookCommentMapper;
@@ -66,6 +68,11 @@ public class BookService {
     private final CacheService cacheService;
 
     private final IdWorker idWorker = IdWorker.INSTANCE;
+
+    /**
+     * 内置小说分类ID上限：id <= 该值的分类为系统预置（玄幻奇幻~女生频道），只允许修改不允许删除
+     */
+    private static final int BUILTIN_CATEGORY_MAX_ID = 7;
 
     public PageBean<Book> bookList(String keyword, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
