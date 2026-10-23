@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminAiCreationQueryMapper">
+
+    <select id="listPlans" resultType="com.java2nb.novel.vo.AdminAiPlanVO">
+        select t1.*, t2.pen_name, t3.book_name
+        from ai_creation_plan t1
+        left join author t2 on t1.author_id = t2.id
+        left join book t3 on t1.book_id = t3.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (t2.pen_name like concat('%', #{keyword}, '%') or t3.book_name like concat('%', #{keyword}, '%'))
+            </if>
+            <if test="stage != null">
+                and t1.stage = #{stage}
+            </if>
+        </where>
+        order by t1.update_time desc
+    </select>
+
+    <select id="listChapterPlans" resultType="com.java2nb.novel.entity.AiChapterPlan">
+        select id, plan_id, chapter_no, index_name, chapter_outline, status, index_id, word_count, summary,
+        create_time, update_time
+        from ai_chapter_plan
+        where plan_id = #{planId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        order by chapter_no asc
+    </select>
+
+    <select id="listTasks" resultType="com.java2nb.novel.vo.AdminAiTaskVO">
+        select t1.*, t2.pen_name, t3.book_name
+        from ai_creation_task t1
+        left join author t2 on t1.author_id = t2.id
+        left join ai_creation_plan p on t1.plan_id = p.id
+        left join book t3 on p.book_id = t3.id
+        <where>
+            <if test="planId != null">
+                and t1.plan_id = #{planId}
+            </if>
+            <if test="status != null">
+                and t1.status = #{status}
+            </if>
+            <if test="taskType != null">
+                and t1.task_type = #{taskType}
+            </if>
+        </where>
+        order by t1.id desc
+    </select>
+
+    <select id="getTask" resultType="com.java2nb.novel.entity.AiCreationTask">
+        select id, plan_id, author_id, task_type, chapter_no, status, running_flag, error_msg, create_time, update_time
+        from ai_creation_task
+        where id = #{id}
+    </select>
+
+    <select id="listPrefs" resultType="com.java2nb.novel.vo.AdminAiPrefVO">
+        select t1.*, t2.pen_name
+        from ai_author_pref t1
+        left join author t2 on t1.author_id = t2.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and t2.pen_name like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by t1.update_time desc
+    </select>
+
+</mapper>

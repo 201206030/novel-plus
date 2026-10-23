@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>AI创作任务-小说精品屋后台管理</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body class="">
+
+<div th:replace="admin/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="admin/menu :: menu">
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div id="adminApp"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/admin.js" type="text/javascript"></script>
+<script th:inline="none">
+    var TASK_TYPES = {'1': '书名建议', '2': '创作方案', '3': '章节正文', '4': '章节校验修订', '5': '章节摘要', '6': '章节规划增量'};
+
+    function taskStatusHtml(s) {
+        if (s == 1) return '<span style="color:#5FB878">成功</span>';
+        if (s == 2) return '<span style="color:#FF5722">失败</span>';
+        return '<span style="color:#1E9FFF">执行中</span>';
+    }
+
+    // JSON 内容美化展示，解析失败则按原文转义展示
+    function showJson(title, text) {
+        var html = '';
+        if (text) {
+            try {
+                html = Admin.escape(JSON.stringify(JSON.parse(text), null, 2));
+            } catch (e) {
+                html = Admin.escape(String(text)).replace(/\n/g, '<br/>');
+            }
+        } else {
+            html = '<span style="color:#999;">（空）</span>';
+        }
+        layer.open({type: 1, title: title, area: ['760px', '620px'],
+            content: '<div class="content_view" style="padding:12px;white-space:pre-wrap;word-break:break-all;">' + html + '</div>'});
+    }
+
+    function failStuckTask(row) {
+        layer.confirm('确定终止该“执行中”任务吗？终止后释放防重锁，作家端可重新提交同类任务。', {icon: 3, title: '提示'}, function (idx) {
+            layer.close(idx);
+            Admin.post('/ai/task/failStuck', {id: row.id}, function () {
+                layer.msg('已终止');
+                Admin.refresh();
+            });
+        });
+    }
+
+    Admin.crud({
+        api: '/ai/task',
+        title: 'AI创作任务' + (Admin.q('planId') ? '（方案 #' + Admin.q('planId') + '）' : ''),
+        searchKey: false,
+        selectable: false,
+        hasAdd: false,
+        hasEdit: false,
+        backUrl: Admin.q('planId') ? '/ai/plan.html' : '',
+        params: {planId: Admin.q('planId')},
+        filters: [
+            {param: 'status', label: '状态', options: [['0', '执行中'], ['1', '成功'], ['2', '失败']]},
+            {param: 'taskType', label: '类型', options: [['1', '书名建议'], ['2', '创作方案'], ['3', '章节正文'], ['4', '章节校验修订'], ['5', '章节摘要'], ['6', '章节规划增量']]}
+        ],
+        columns: [
+            {title: 'ID', field: 'id', thClass: 'col_num'},
+            {title: '类型', render: function (row) {
+                return TASK_TYPES[row.taskType] || row.taskType;
+            }},
+            {title: '章节', thClass: 'col_num', render: function (row) {
+                return row.chapterNo > 0 ? row.chapterNo : '-';
+            }},
+            {title: '作家', field: 'penName', thClass: 'time'},
+            {title: '小说', render: function (row) {
+                return row.bookName ? Admin.escape(row.bookName) : ('方案#' + row.planId);
+            }},
+            {title: '状态', thClass: 'time', render: function (row) {
+                return taskStatusHtml(row.status);
+            }},
+            {title: '失败原因', thClass: 'col_ell', render: function (row) {
+                return row.errorMsg ? Admin.escape(row.errorMsg) : '-';
+            }},
+            {title: '更新时间', thClass: 'col_time', render: function (row) {
+                return Admin.fmt(row.updateTime);
+            }}
+        ],
+        rowActions: [
+            {title: '结果', show: function (row) { return !!row.result; }, fn: function (row) {
+                showJson('任务结果 #' + row.id, row.result);
+            }},
+            {title: '终止', show: function (row) { return row.status == 0; }, fn: function (row) { failStuckTask(row); }}
+        ]
+    });
+</script>
+</html>

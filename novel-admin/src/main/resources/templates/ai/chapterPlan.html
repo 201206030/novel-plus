@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>AI章节规划-小说精品屋后台管理</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body class="">
+
+<div th:replace="admin/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="admin/menu :: menu">
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div id="adminApp"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/admin.js" type="text/javascript"></script>
+<script th:inline="none">
+    var planId = Admin.q('planId');
+
+    var CHAPTER_STATUS = {
+        '0': '<span style="color:#999">待创作</span>',
+        '1': '<span style="color:#1E9FFF">草稿已生成</span>',
+        '2': '<span style="color:#5FB878">已保存正式章节</span>',
+        '3': '<span style="color:#FFB800">保存中</span>'
+    };
+
+    function showText(title, text) {
+        var html = text ? Admin.escape(String(text)).replace(/\n/g, '<br/>') : '<span style="color:#999;">（空）</span>';
+        layer.open({type: 1, title: title, area: ['760px', '620px'],
+            content: '<div class="content_view" style="padding:12px;white-space:pre-wrap;word-break:break-all;">' + html + '</div>'});
+    }
+
+    function showOutline(row) {
+        var text = row.chapterOutline;
+        var html = '';
+        if (text) {
+            try {
+                html = Admin.escape(JSON.stringify(JSON.parse(text), null, 2));
+            } catch (e) {
+                html = Admin.escape(String(text)).replace(/\n/g, '<br/>');
+            }
+        } else {
+            html = '<span style="color:#999;">（空）</span>';
+        }
+        layer.open({type: 1, title: '章节规划 #' + row.chapterNo, area: ['760px', '620px'],
+            content: '<div class="content_view" style="padding:12px;white-space:pre-wrap;word-break:break-all;">' + html + '</div>'});
+    }
+
+    Admin.crud({
+        api: '/ai/chapterPlan',
+        title: 'AI章节规划（方案 #' + planId + '）',
+        searchKey: false,
+        selectable: false,
+        hasAdd: false,
+        hasEdit: false,
+        backUrl: '/ai/plan.html',
+        params: {planId: planId},
+        columns: [
+            {title: '章节号', field: 'chapterNo', thClass: 'col_num'},
+            {title: '章节标题', field: 'indexName'},
+            {title: '状态', thClass: 'time', render: function (row) {
+                return CHAPTER_STATUS[row.status] || row.status;
+            }},
+            {title: '字数', thClass: 'col_num', render: function (row) {
+                return row.wordCount || 0;
+            }},
+            {title: '正式章节ID', thClass: 'col_num', render: function (row) {
+                return row.indexId || '-';
+            }},
+            {title: '更新时间', thClass: 'col_time', render: function (row) {
+                return Admin.fmt(row.updateTime);
+            }}
+        ],
+        rowActions: [
+            {title: '规划', fn: function (row) { showOutline(row); }},
+            {title: '摘要', show: function (row) { return !!row.summary; }, fn: function (row) {
+                showText('章节摘要 #' + row.chapterNo, row.summary);
+            }}
+        ]
+    });
+</script>
+</html>

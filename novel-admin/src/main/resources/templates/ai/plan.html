@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>AI创作方案-小说精品屋后台管理</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body class="">
+
+<div th:replace="admin/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="admin/menu :: menu">
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div id="adminApp"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/admin.js" type="text/javascript"></script>
+<script th:inline="none">
+    var STAGES = {'1': '创作问答中', '2': '方案草稿', '3': '方案已确认', '4': '创作完成'};
+
+    function showJson(title, text) {
+        var html = '';
+        if (text) {
+            try {
+                html = Admin.escape(JSON.stringify(JSON.parse(text), null, 2));
+            } catch (e) {
+                html = Admin.escape(String(text)).replace(/\n/g, '<br/>');
+            }
+        } else {
+            html = '<span style="color:#999;">（空）</span>';
+        }
+        layer.open({type: 1, title: title, area: ['760px', '620px'],
+            content: '<div class="content_view" style="padding:12px;white-space:pre-wrap;word-break:break-all;">' + html + '</div>'});
+    }
+
+    Admin.crud({
+        api: '/ai/plan',
+        title: 'AI创作方案',
+        searchPlaceholder: '输入笔名/书名搜索',
+        selectable: false,
+        hasAdd: false,
+        hasEdit: false,
+        filters: [
+            {param: 'stage', label: '阶段', options: [['1', '创作问答中'], ['2', '方案草稿'], ['3', '方案已确认'], ['4', '创作完成']]}
+        ],
+        columns: [
+            {title: 'ID', field: 'id', thClass: 'col_num'},
+            {title: '作家', field: 'penName', thClass: 'time'},
+            {title: '关联小说', render: function (row) {
+                return row.bookName ? Admin.escape(row.bookName) : '<span style="color:#999;">未关联</span>';
+            }},
+            {title: '阶段', thClass: 'time', render: function (row) {
+                return STAGES[row.stage] || row.stage;
+            }},
+            {title: '大纲版本', thClass: 'col_num', render: function (row) {
+                return row.outlineVersion || 0;
+            }},
+            {title: '创建时间', thClass: 'col_time', render: function (row) {
+                return Admin.fmt(row.createTime);
+            }},
+            {title: '更新时间', thClass: 'col_time', render: function (row) {
+                return Admin.fmt(row.updateTime);
+            }}
+        ],
+        rowActions: [
+            {title: '方案详情', fn: function (row) {
+                showJson('创作方案 #' + row.id, row.planContent);
+            }},
+            {title: '问答参数', show: function (row) { return !!row.creativeParams; }, fn: function (row) {
+                showJson('创作问答参数 #' + row.id, row.creativeParams);
+            }},
+            {title: '章节', fn: function (row) {
+                location.href = '/ai/chapterPlan.html?planId=' + row.id;
+            }},
+            {title: '任务', fn: function (row) {
+                location.href = '/ai/task.html?planId=' + row.id;
+            }}
+        ]
+    });
+</script>
+</html>

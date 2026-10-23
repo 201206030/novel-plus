@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminAiCreationCmdMapper">
+
+    <update id="failStuckTask">
+        update ai_creation_task
+        set status = 2,
+            running_flag = null,
+            error_msg = #{errorMsg},
+            update_time = now()
+        where id = #{id} and status = 0
+    </update>
+
+    <delete id="deleteTask">
+        delete from ai_creation_task where id = #{id}
+    </delete>
+
+    <delete id="deleteTasksByPlan">
+        delete from ai_creation_task where plan_id = #{planId}
+    </delete>
+
+    <delete id="deleteChapterPlan">
+        delete from ai_chapter_plan where id = #{id}
+    </delete>
+
+    <delete id="deleteChapterPlansByPlan">
+        delete from ai_chapter_plan where plan_id = #{planId}
+    </delete>
+
+    <delete id="deletePlan">
+        delete from ai_creation_plan where id = #{id}
+    </delete>
+
+    <delete id="deletePref">
+        delete from ai_author_pref where id = #{id}
+    </delete>
+
+</mapper>
