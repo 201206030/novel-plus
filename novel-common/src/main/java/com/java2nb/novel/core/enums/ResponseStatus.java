@@ -25,6 +25,7 @@ public enum ResponseStatus implements IResultCode {
     TWO_PASSWORD_DIFF(1005, "两次输入的新密码不匹配!"),
     OLD_PASSWORD_ERROR(1006, "旧密码不匹配!"),
     USER_NO_BALANCE(1007, "用户余额不足"),
+    USER_STATUS_FORBIDDEN(1008, "账号已被封禁，请联系管理员！"),
 
     /**
      * 评论相关错误

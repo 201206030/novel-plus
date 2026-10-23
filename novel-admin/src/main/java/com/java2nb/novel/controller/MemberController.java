@@ -61,6 +61,17 @@ public class MemberController {
         return RestResult.ok();
     }
 
+    @PostMapping("user/ban")
+    public RestResult<Void> userBan(@RequestParam Long id, @RequestParam Byte status) {
+        memberService.userBan(id, status);
+        return RestResult.ok();
+    }
+
+    @PostMapping("user/adjustBalance")
+    public RestResult<Long> userAdjustBalance(@RequestParam Long id, @RequestParam Long amount) {
+        return RestResult.ok(memberService.userAdjustBalance(id, amount));
+    }
+
     @GetMapping("userFeedback/list")
     public RestResult<PageBean<AdminUserFeedbackVO>> feedbackList(@RequestParam(required = false) String keyword,
         @RequestParam(value = "curr", defaultValue = "1") int page,

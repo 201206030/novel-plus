@@ -43,13 +43,13 @@
             {title: '用户名', field: 'username', thClass: 'col_ell', ellipsis: true},
             {title: '昵称', field: 'nickName', thClass: 'col_ell', ellipsis: true},
             {title: '性别', thClass: 'time', render: function (row) {
-                return row.userSex == 1 ? '男' : (row.userSex == 0 ? '女' : '未知');
+                return row.userSex == 0 ? '男' : (row.userSex == 1 ? '女' : '未知');
             }},
             {title: '账户余额', thClass: 'time', render: function (row) {
                 return (row.accountBalance || 0) + ' 书币';
             }},
             {title: '状态', thClass: 'time', render: function (row) {
-                return row.status == 0 ? '正常' : '禁用';
+                return row.status == 1 ? '<span style="color:#FF5722">已封禁</span>' : '<span style="color:#5FB878">正常</span>';
             }},
             {title: '注册时间', thClass: 'col_time', render: function (row) {
                 return Admin.fmt(row.createTime);
@@ -58,10 +58,61 @@
         fields: [
             {name: 'username', label: '用户名', required: true},
             {name: 'nickName', label: '昵称'},
-            {name: 'userSex', label: '性别', type: 'select', options: [[0, '女'], [1, '男']]},
+            {name: 'userSex', label: '性别', type: 'select', options: [[0, '男'], [1, '女']]},
             {name: 'accountBalance', label: '账户余额', type: 'number'},
-            {name: 'status', label: '状态', type: 'select', options: [[0, '正常'], [1, '禁用']]}
+            {name: 'status', label: '状态', type: 'select', options: [[0, '正常'], [1, '封禁']]}
+        ],
+        rowActions: [
+            {title: '封禁', show: function (row) { return row.status != 1; }, fn: function (row) {
+                layer.confirm('确定封禁「' + (row.nickName || row.username) + '」吗？封禁后该会员无法登录前台（已登录的在令牌过期前不受影响）。', {icon: 3, title: '提示'}, function (idx) {
+                    layer.close(idx);
+                    Admin.post('/member/user/ban', {id: row.id, status: 1}, function () {
+                        layer.msg('已封禁');
+                        Admin.refresh();
+                    });
+                });
+            }},
+            {title: '解封', show: function (row) { return row.status == 1; }, fn: function (row) {
+                layer.confirm('确定解封「' + (row.nickName || row.username) + '」吗？', {icon: 3, title: '提示'}, function (idx) {
+                    layer.close(idx);
+                    Admin.post('/member/user/ban', {id: row.id, status: 0}, function () {
+                        layer.msg('已解封');
+                        Admin.refresh();
+                    });
+                });
+            }},
+            {title: '调整书币', fn: function (row) {
+                showAdjustBookCoin(row);
+            }}
         ]
     });
+
+    // 补发/扣除书币（充值掉单救济等场景），正数补发、负数扣除
+    function showAdjustBookCoin(row) {
+        var html = '<div style="padding:20px;" class="cf">'
+            + '<div style="margin-bottom:8px;">会员：' + Admin.escape(row.nickName || row.username) + '，当前余额：<b>' + (row.accountBalance || 0) + '</b> 书币</div>'
+            + '<div style="margin-bottom:12px;">调整书币数：<input type="number" id="adjustAmount" class="layui-input" style="width:160px;display:inline-block;" placeholder="正数补发，负数扣除"/> 书币</div>'
+            + '<div>扣除时余额不足会拒绝操作，单次上限 1000000 书币</div>'
+            + '</div>';
+        layer.open({
+            type: 1,
+            title: '调整书币',
+            area: ['420px', '240px'],
+            content: html,
+            btn: ['确定', '取消'],
+            yes: function (idx) {
+                var amount = Number($('#adjustAmount').val());
+                if (!amount || isNaN(amount) || Math.floor(amount) !== amount) {
+                    layer.msg('请输入非0的整数书币数');
+                    return;
+                }
+                Admin.post('/member/user/adjustBalance', {id: row.id, amount: amount}, function (balance) {
+                    layer.close(idx);
+                    layer.msg('调整成功，最新余额：' + balance + ' 书币');
+                    Admin.refresh();
+                });
+            }
+        });
+    }
 </script>
 </html>

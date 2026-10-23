@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails login(User user) {
         //根据用户名密码查询记录
-        SelectStatementProvider selectStatement = select(id, username, nickName)
+        SelectStatementProvider selectStatement = select(id, username, nickName, status)
             .from(UserDynamicSqlSupport.user)
             .where(username, isEqualTo(user.getUsername()))
             .and(password, isEqualTo(MD5Util.MD5Encode(user.getPassword(), Charsets.UTF_8.name())))
@@ -103,6 +103,10 @@ public class UserServiceImpl implements UserService {
         List<User> users = userMapper.selectMany(selectStatement);
         if (users.size() == 0) {
             throw new BusinessException(ResponseStatus.USERNAME_PASS_ERROR);
+        }
+        //后台封禁的账号禁止登录
+        if (users.get(0).getStatus() != null && users.get(0).getStatus() == 1) {
+            throw new BusinessException(ResponseStatus.USER_STATUS_FORBIDDEN);
         }
         //生成UserDetail对象并返回
         UserDetails userDetails = new UserDetails();
