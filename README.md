@@ -2,6 +2,7 @@
     <a href="https://sx.org/c/NOVEL4"><img src="https://www.xxyopen.com/images/ad3.jpg" alt="SX.ORG" ></a>
 </p>
 <p align="center">
+    <img src="https://gitranks.com/badges/201206030/stars-score.svg" alt="GitHub 总收藏">
     <a href='https://github.com/201206030/novel-plus'><img alt="Github stars" src="https://img.shields.io/github/stars/201206030/novel-plus?logo=github"></a>
     <a href='https://github.com/201206030/novel-plus'><img alt="Github forks" src="https://img.shields.io/github/forks/201206030/novel-plus?logo=github"></a>
     <a href='https://gitee.com/novel_dev_team/novel-plus'><img alt="Gitee stars" src="https://gitee.com/novel_dev_team/novel-plus/badge/star.svg?theme=gitee"></a>
