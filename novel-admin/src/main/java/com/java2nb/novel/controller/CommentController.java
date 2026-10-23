@@ -2,6 +2,7 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.entity.BookComment;
 import com.java2nb.novel.service.CommentService;
+import com.java2nb.novel.vo.AdminBookCommentReplyVO;
 import com.java2nb.novel.vo.AdminBookCommentVO;
 import com.java2nb.novel.vo.AdminBookParagraphCommentVO;
 import io.github.xxyopen.model.page.PageBean;
@@ -53,6 +54,26 @@ public class CommentController {
     @PostMapping("bookComment/batchRemove")
     public RestResult<Void> commentBatchRemove(@RequestParam String ids) {
         commentService.commentBatchRemove(ids);
+        return RestResult.ok();
+    }
+
+    @GetMapping("commentReply/list")
+    public RestResult<PageBean<AdminBookCommentReplyVO>> commentReplyList(@RequestParam Long commentId,
+        @RequestParam(required = false) String keyword,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(commentService.commentReplyList(commentId, keyword, page, pageSize));
+    }
+
+    @PostMapping("commentReply/remove")
+    public RestResult<Void> commentReplyRemove(@RequestParam Long id) {
+        commentService.commentReplyRemove(id);
+        return RestResult.ok();
+    }
+
+    @PostMapping("commentReply/batchRemove")
+    public RestResult<Void> commentReplyBatchRemove(@RequestParam String ids) {
+        commentService.commentReplyBatchRemove(ids);
         return RestResult.ok();
     }
 

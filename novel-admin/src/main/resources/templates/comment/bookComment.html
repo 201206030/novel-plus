@@ -43,10 +43,19 @@
             {title: '评论用户', field: 'createUserName', thClass: 'time'},
             {title: '评论内容', field: 'commentContent'},
             {title: '回复数', thClass: 'col_num', render: function (row) {
-                return row.replyCount || 0;
+                var n = row.replyCount || 0;
+                if (n > 0) {
+                    return '<a href="/comment/commentReply.html?commentId=' + row.id + '" style="color:#1E9FFF">' + n + '</a>';
+                }
+                return '0';
             }},
             {title: '评论时间', thClass: 'col_time', render: function (row) {
                 return Admin.fmt(row.createTime);
+            }}
+        ],
+        rowActions: [
+            {title: '回复', fn: function (row) {
+                location.href = '/comment/commentReply.html?commentId=' + row.id;
             }}
         ]
     });
