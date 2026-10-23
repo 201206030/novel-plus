@@ -2,7 +2,9 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorCode;
+import com.java2nb.novel.service.AuthorIncomeService;
 import com.java2nb.novel.service.AuthorService;
+import com.java2nb.novel.vo.AdminAuthorIncomeVO;
 import io.github.xxyopen.model.page.PageBean;
 import io.github.xxyopen.model.resp.RestResult;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorController {
 
     private final AuthorService authorService;
+
+    private final AuthorIncomeService authorIncomeService;
 
     @GetMapping("author/list")
     public RestResult<PageBean<Author>> authorList(@RequestParam(required = false) String keyword,
@@ -100,6 +104,31 @@ public class AuthorController {
     public RestResult<Void> codeBatchRemove(@RequestParam String ids) {
         authorService.codeBatchRemove(ids);
         return RestResult.ok();
+    }
+
+    @GetMapping("income/list")
+    public RestResult<PageBean<AdminAuthorIncomeVO>> incomeList(@RequestParam(required = false) String keyword,
+        @RequestParam(required = false) Byte payStatus,
+        @RequestParam(required = false) String month,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
+        return RestResult.ok(authorIncomeService.incomeList(keyword, payStatus, month, page, pageSize));
+    }
+
+    @PostMapping("income/settle")
+    public RestResult<Void> incomeSettle(@RequestParam Long id) {
+        authorIncomeService.incomeSettle(id);
+        return RestResult.ok();
+    }
+
+    @PostMapping("income/batchSettle")
+    public RestResult<Integer> incomeBatchSettle(@RequestParam String ids) {
+        return RestResult.ok(authorIncomeService.incomeBatchSettle(ids));
+    }
+
+    @PostMapping("income/settleAll")
+    public RestResult<Integer> incomeSettleAll() {
+        return RestResult.ok(authorIncomeService.incomeSettleAll());
     }
 
 }
