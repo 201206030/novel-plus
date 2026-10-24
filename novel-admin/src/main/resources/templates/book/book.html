@@ -69,7 +69,7 @@
                 return row.isVip == 1 ? '收费' : '免费';
             }},
             {title: '上架状态', thClass: 'time', render: function (row) {
-                return row.status == 1 ? '<span style="color:#5FB878">已上架</span>' : '<span style="color:#999">已下架</span>';
+                return row.status == 1 ? '<span style="color:#5FB878">已上架</span>' : '<span style="color:#999">未上架</span>';
             }},
             // 列表默认按该时间倒序，显式展示便于核对排序
             {title: '创建时间', thClass: 'time', render: function (row) {
