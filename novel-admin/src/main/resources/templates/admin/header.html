@@ -6,10 +6,12 @@
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
-            <span id="admSiteName">小说精品屋后台管理</span>
+            <span id="admSiteName" th:text="${headerSite.name}">小说精品屋后台管理</span>
         </a>
         <div class="adm_header_right">
-            <a class="adm_header_btn" id="frontSiteLink" href="javascript:;" target="_blank" rel="noopener" style="display:none">
+            <!-- 前台站点：站点信息配了域名才渲染，地址由 PageController#headerSite 补齐协议前缀 -->
+            <a class="adm_header_btn" id="frontSiteLink" th:if="${not #strings.isEmpty(headerSite.url)}"
+               th:href="${headerSite.url}" target="_blank" rel="noopener">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -47,33 +49,11 @@
     </div>
     <!-- Spring Security 的 /logout 仅接受 POST，用隐藏表单提交（csrf 已全局禁用） -->
     <form id="logoutForm" action="/logout" method="post" style="display:none"></form>
+    <!-- 各页面模板的 <title> 是静态文案，浏览器标题由服务端渲染的站点名统一覆盖 -->
+    <script th:inline="javascript">document.title = /*[[${headerSite.name}]]*/ '小说精品屋后台管理';</script>
     <script>
         // 头部不依赖 jQuery（各页面 jQuery 在 body 末尾才加载），用原生 ES5 实现
         (function () {
-            // 站点名与前台地址取自网站信息，失败/未配置时保持默认文案
-            if (window.fetch) {
-                fetch('/website/websiteInfo/get').then(function (r) {
-                    return r.json();
-                }).then(function (res) {
-                    if (!res || res.code !== 200 || !res.data) {
-                        return;
-                    }
-                    var info = res.data;
-                    if (info.name) {
-                        document.getElementById('admSiteName').textContent = info.name + '后台管理';
-                        document.title = info.name + '后台管理';
-                    }
-                    if (info.domain) {
-                        var url = info.domain;
-                        if (!/^(https?:)?\/\//.test(url)) {
-                            url = 'http://' + url;
-                        }
-                        var link = document.getElementById('frontSiteLink');
-                        link.href = url;
-                        link.style.display = 'inline-flex';
-                    }
-                })['catch'](function () { /* 静默降级 */ });
-            }
             document.getElementById('logoutBtn').onclick = function () {
                 if (window.confirm('确定退出登录吗？')) {
                     document.getElementById('logoutForm').submit();
