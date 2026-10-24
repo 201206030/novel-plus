@@ -38,6 +38,13 @@
             outline: 0
         }
 
+        .login_msg {
+            margin-top: 12px;
+            font-size: 13px;
+            text-align: center;
+            min-height: 18px;
+        }
+
     </style>
 </head>
 <body>
@@ -54,7 +61,24 @@
             <input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
         </p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+        <p id="loginMsg" class="login_msg"></p>
     </form>
 </div>
+<script>
+    // 登录失败/登出/无权限均由 Security 带回查询参数，此处给出文字反馈
+    (function () {
+        var map = {
+            'error': '用户名或密码错误，请重试',
+            'logout': '已安全退出',
+            'denied': '当前账号无权访问该页面，可换用有权限的账号登录'
+        };
+        var m = location.search.match(/[?&](error|logout|denied)/);
+        if (m) {
+            var el = document.getElementById('loginMsg');
+            el.textContent = map[m[1]];
+            el.style.color = m[1] === 'logout' ? '#3eaf7c' : '#e05c3e';
+        }
+    })();
+</script>
 </body>
 </html>

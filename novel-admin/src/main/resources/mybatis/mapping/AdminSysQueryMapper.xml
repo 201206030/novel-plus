@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminSysQueryMapper">
+
+    <select id="listUsers" resultType="com.java2nb.novel.vo.SysUserVO">
+        select t1.user_id, t1.username, t1.name, t1.email, t1.mobile, t1.status,
+        t1.gmt_create, t1.gmt_modified,
+        (select group_concat(t3.role_name) from sys_user_role t2
+        inner join sys_role t3 on t2.role_id = t3.role_id
+        where t2.user_id = t1.user_id) as roleNames
+        from sys_user t1
+        <where>
+            <if test="status != null">
+                and t1.status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (t1.username like concat('%', #{keyword}, '%')
+                or t1.name like concat('%', #{keyword}, '%')
+                or t1.email like concat('%', #{keyword}, '%')
+                or t1.mobile like concat('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by t1.user_id desc
+    </select>
+
+    <select id="getUser" resultType="com.java2nb.novel.vo.SysUserVO">
+        select user_id, username, name, email, mobile, status, gmt_create, gmt_modified
+        from sys_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="countUsername" resultType="int">
+        select count(*) from sys_user
+        where username = #{username}
+        <if test="excludeId != null">
+            and user_id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="roleIdsByUser" resultType="long">
+        select role_id from sys_user_role where user_id = #{userId}
+    </select>
+
+    <select id="listRoles" resultType="com.java2nb.novel.vo.SysRoleVO">
+        select role_id, role_name, role_sign, remark, gmt_create, gmt_modified
+        from sys_role
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (role_name like concat('%', #{keyword}, '%')
+                or role_sign like concat('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by role_id asc
+    </select>
+
+    <select id="getRole" resultType="com.java2nb.novel.vo.SysRoleVO">
+        select role_id, role_name, role_sign, remark, gmt_create, gmt_modified
+        from sys_role
+        where role_id = #{roleId}
+    </select>
+
+    <select id="countRoleSign" resultType="int">
+        select count(*) from sys_role
+        where role_sign = #{roleSign}
+        <if test="excludeId != null">
+            and role_id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="countUserByRole" resultType="int">
+        select count(*) from sys_user_role where role_id = #{roleId}
+    </select>
+
+    <select id="menuIdsByRole" resultType="long">
+        select menu_id from sys_role_menu where role_id = #{roleId}
+    </select>
+
+    <select id="listMenus" resultType="com.java2nb.novel.vo.SysMenuVO">
+        select t1.menu_id, t1.parent_id, t1.name, t1.url, t1.perms, t1.type, t1.icon,
+        t1.order_num, t1.gmt_create, t1.gmt_modified,
+        t2.name as parentName
+        from sys_menu t1
+        left join sys_menu t2 on t1.parent_id = t2.menu_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (t1.name like concat('%', #{keyword}, '%')
+                or t1.perms like concat('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by t1.parent_id asc, t1.order_num asc, t1.menu_id asc
+    </select>
+
+    <select id="getMenu" resultType="com.java2nb.novel.vo.SysMenuVO">
+        select menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified
+        from sys_menu
+        where menu_id = #{menuId}
+    </select>
+
+    <select id="countChildMenu" resultType="int">
+        select count(*) from sys_menu where parent_id = #{menuId}
+    </select>
+
+    <!-- 登录认证与授权取数 -->
+
+    <select id="getAuthUserByUsername" resultType="com.java2nb.novel.vo.SysUserVO">
+        select user_id, username, name, password, email, mobile, status, gmt_create, gmt_modified
+        from sys_user
+        where username = #{username} and status = 1
+        limit 1
+    </select>
+
+    <select id="listRoleSignsByUser" resultType="string">
+        select distinct t3.role_sign
+        from sys_user_role t1
+        inner join sys_role t3 on t1.role_id = t3.role_id
+        where t1.user_id = #{userId} and t3.role_sign is not null
+    </select>
+
+    <select id="listPermsByUser" resultType="string">
+        select distinct t4.perms
+        from sys_user_role t1
+        inner join sys_role_menu t2 on t1.role_id = t2.role_id
+        inner join sys_menu t4 on t2.menu_id = t4.menu_id
+        where t1.user_id = #{userId} and t4.perms is not null and t4.perms != ''
+    </select>
+
+    <select id="menuIdsByUser" resultType="long">
+        select distinct t2.menu_id
+        from sys_user_role t1
+        inner join sys_role_menu t2 on t1.role_id = t2.role_id
+        inner join sys_menu t4 on t2.menu_id = t4.menu_id
+        where t1.user_id = #{userId} and t4.type in (0, 1)
+    </select>
+
+</mapper>

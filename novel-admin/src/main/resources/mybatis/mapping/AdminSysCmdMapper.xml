@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.AdminSysCmdMapper">
+
+    <insert id="insertUser" parameterType="com.java2nb.novel.vo.SysUserVO" useGeneratedKeys="true" keyProperty="userId">
+        insert into sys_user (username, name, password, email, mobile, status, gmt_create, gmt_modified)
+        values (#{username}, #{name}, #{password}, #{email}, #{mobile}, #{status}, now(), now())
+    </insert>
+
+    <update id="updateUser" parameterType="com.java2nb.novel.vo.SysUserVO">
+        update sys_user
+        <set>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="status != null">status = #{status},</if>
+            gmt_modified = now()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserStatus">
+        update sys_user set status = #{status}, gmt_modified = now()
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteUsers">
+        delete from sys_user where user_id in
+        <foreach collection="idList" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+
+    <delete id="deleteUserRoles">
+        delete from sys_user_role where user_id = #{userId}
+    </delete>
+
+    <insert id="insertUserRole">
+        insert into sys_user_role (user_id, role_id) values (#{userId}, #{roleId})
+    </insert>
+
+    <insert id="insertRole" parameterType="com.java2nb.novel.vo.SysRoleVO" useGeneratedKeys="true" keyProperty="roleId">
+        insert into sys_role (role_name, role_sign, remark, gmt_create, gmt_modified)
+        values (#{roleName}, #{roleSign}, #{remark}, now(), now())
+    </insert>
+
+    <update id="updateRole" parameterType="com.java2nb.novel.vo.SysRoleVO">
+        update sys_role
+        <set>
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+            <if test="roleSign != null and roleSign != ''">role_sign = #{roleSign},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            gmt_modified = now()
+        </set>
+        where role_id = #{roleId}
+    </update>
+
+    <delete id="deleteRoles">
+        delete from sys_role where role_id in
+        <foreach collection="idList" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+
+    <delete id="deleteRoleUsersByRole">
+        delete from sys_user_role where role_id = #{roleId}
+    </delete>
+
+    <insert id="insertRoleMenu">
+        insert into sys_role_menu (role_id, menu_id) values (#{roleId}, #{menuId})
+    </insert>
+
+    <delete id="deleteRoleMenus">
+        delete from sys_role_menu where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRoleMenusByMenu">
+        delete from sys_role_menu where menu_id = #{menuId}
+    </delete>
+
+    <insert id="insertMenu" parameterType="com.java2nb.novel.vo.SysMenuVO" useGeneratedKeys="true" keyProperty="menuId">
+        insert into sys_menu (parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified)
+        values (#{parentId}, #{name}, #{url}, #{perms}, #{type}, #{icon}, #{orderNum}, now(), now())
+    </insert>
+
+    <update id="updateMenu" parameterType="com.java2nb.novel.vo.SysMenuVO">
+        update sys_menu
+        <set>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="perms != null">perms = #{perms},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            gmt_modified = now()
+        </set>
+        where menu_id = #{menuId}
+    </update>
+
+    <delete id="deleteMenu">
+        delete from sys_menu where menu_id = #{menuId}
+    </delete>
+
+</mapper>

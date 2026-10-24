@@ -17,7 +17,4 @@ spring:
       max-file-size: 5MB
       max-request-size: 20MB
 
-#登录用户名密码
-admin:
-  username: admin
-  password: admin
+#后台登录账号统一存于 sys_user 表（系统管理-用户维护），不再在配置文件中配置用户名密码

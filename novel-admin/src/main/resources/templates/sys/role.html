@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>角色管理-小说精品屋后台管理</title>
+    <link rel="stylesheet" href="/css/base.css?v=1"/>
+    <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body class="">
+
+<div th:replace="admin/header :: header">
+</div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="admin/menu :: menu">
+        </div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div id="adminApp"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/admin.js" type="text/javascript"></script>
+<script th:inline="none">
+    Admin.crud({
+        api: '/sys/role',
+        title: '角色管理',
+        searchPlaceholder: '输入角色名称/标识搜索',
+        selectable: false,
+        // 角色只新增/删除/菜单授权，创建后不提供修改
+        hasEdit: false,
+        hasDel: false,
+        removeUrl: '/sys/role/batchRemove',
+        // 超管角色（role_sign=admin）固定拥有全部权限，系统内置，不可删除/授权
+        lockRow: function (row) { return row.roleSign === 'admin'; },
+        lockText: '超级管理员，不可操作',
+        columns: [
+            {title: '角色名称', field: 'roleName', thClass: 'col_ell', ellipsis: true},
+            {title: '角色标识', thClass: 'col_ell', ellipsis: true},
+            {title: '备注', thClass: 'col_ell', ellipsis: true},
+            {title: '创建时间', thClass: 'col_time', render: function (row) {
+                return Admin.fmt(row.gmtCreate);
+            }}
+        ],
+        fields: [
+            {name: 'roleName', label: '角色名称', required: true},
+            {name: 'roleSign', label: '角色标识', required: true, tip: '英文标识，全局唯一；填 admin 即为超级管理员（拥有全部菜单与操作权限）'},
+            {name: 'remark', label: '备注', type: 'textarea'}
+        ],
+        rowActions: [
+            {title: '菜单授权', fn: function (row) {
+                showAssignMenus(row);
+            }},
+            {title: '删除', cls: 'a_action_red', fn: function (row) {
+                layer.confirm('确定删除角色「' + row.roleName + '」吗？将同时解除相关的用户分配与菜单授权。', {icon: 3, title: '提示'}, function (idx) {
+                    layer.close(idx);
+                    Admin.post('/sys/role/batchRemove', {ids: row.id}, function () {
+                        layer.msg('删除成功');
+                        Admin.refresh();
+                    }, function (msg) {
+                        // 角色已分配用户时后端拒绝，二次确认后 force 强删
+                        layer.confirm(msg + '，是否继续？', {icon: 3, title: '提示'}, function (idx2) {
+                            layer.close(idx2);
+                            Admin.post('/sys/role/batchRemove', {ids: row.id, force: true}, function () {
+                                layer.msg('删除成功');
+                                Admin.refresh();
+                            });
+                        });
+                    });
+                });
+            }}
+        ]
+    });
+
+    // 菜单授权弹窗：层级、顺序、名称与后台左侧菜单保持一致（目录为分组，页面菜单缩进一级）
+    function showAssignMenus(row) {
+        Admin.get('/sys/role/menus', {id: row.id}, function (data) {
+            var menus = data.menus || [], checked = data.checked || [];
+            function isChecked(menuId) {
+                for (var j = 0; j < checked.length; j++) {
+                    if (String(checked[j]) === String(menuId)) { return true; }
+                }
+                return false;
+            }
+            // 按父级归堆后从一级节点往下递归，不依赖接口返回的平铺顺序，
+            // 这样在「权限管理」里调整排序后两边仍然对齐
+            var childMap = {}, parentOf = {}, seen = {};
+            for (var i = 0; i < menus.length; i++) {
+                var pid = String(menus[i].parentId == null ? 0 : menus[i].parentId);
+                (childMap[pid] = childMap[pid] || []).push(menus[i]);
+                parentOf[String(menus[i].menuId)] = pid;
+            }
+            // 收集某节点的全部子孙菜单ID（递归，支持目录>页面多级）
+            function descendantIds(menuId) {
+                var out = [];
+                (function walk(id) {
+                    var kids = childMap[String(id)] || [];
+                    for (var k = 0; k < kids.length; k++) {
+                        out.push(String(kids[k].menuId));
+                        walk(kids[k].menuId);
+                    }
+                })(menuId);
+                return out;
+            }
+            function byOrder(a, b) {
+                var x = a.orderNum == null ? 0 : a.orderNum, y = b.orderNum == null ? 0 : b.orderNum;
+                return x - y || a.menuId - b.menuId;
+            }
+            var html = '<div class="a_mtree">';
+            if (menus.length === 0) {
+                html += '暂无菜单，请先到「权限管理」新增。</div>';
+                layer.open({type: 1, title: '菜单授权 - ' + Admin.escape(row.roleName), area: ['360px', '180px'], content: html});
+                return;
+            }
+            function addRow(m, depth) {
+                seen[String(m.menuId)] = 1;
+                var isGrp = m.type == 0;
+                html += '<label class="' + (isGrp ? 'a_mtree_grp' : 'a_mtree_itm') + '"'
+                    + (isGrp ? '' : ' style="padding-left:' + (depth * 24) + 'px;"')
+                    // 类型与权限标识不另占一行，避免授权树比侧栏多出文字，需要时用悬提示查看
+                    + ' title="' + (m.perms ? '权限标识：' + Admin.escape(m.perms) : '') + '">'
+                    + '<input type="checkbox" class="a_menu_chk" value="' + m.menuId + '"'
+                    + (isChecked(m.menuId) ? ' checked' : '') + '/>' + Admin.escape(m.name) + '</label>';
+                var kids = (childMap[String(m.menuId)] || []).slice().sort(byOrder);
+                for (var k = 0; k < kids.length; k++) {
+                    addRow(kids[k], isGrp ? 1 : depth + 1);
+                }
+            }
+            var roots = (childMap['0'] || []).slice().sort(byOrder);
+            for (var r = 0; r < roots.length; r++) {
+                addRow(roots[r], 0);
+            }
+            // 父级已被删除的菜单挂不进任何分组，单独列在末尾，否则授权时看不到也勾不到
+            var orphan = [];
+            for (var oi = 0; oi < menus.length; oi++) {
+                if (!seen[String(menus[oi].menuId)]) { orphan.push(menus[oi]); }
+            }
+            if (orphan.length > 0) {
+                html += '<div class="a_mtree_orphan">以下菜单的父级不存在，请到「权限管理」校正</div>';
+                for (var oj = 0; oj < orphan.length; oj++) {
+                    addRow(orphan[oj], 1);
+                }
+            }
+            html += '</div>';
+            layer.open({
+                type: 1,
+                title: '菜单授权 - ' + Admin.escape(row.roleName),
+                area: ['520px', '520px'],
+                content: html,
+                btn: ['保存', '取消'],
+                success: function (layero) {
+                    // 父子联动：勾选/取消第一级(目录)同步其下全部第二级；取消第二级同时取消第一级
+                    layero.find('.a_menu_chk').change(function () {
+                        var id = String($(this).val()), on = $(this).prop('checked');
+                        var kids = descendantIds(id);
+                        if (kids.length > 0) {
+                            // 目录（含子级）：勾则全选，取消则全不选
+                            for (var d = 0; d < kids.length; d++) {
+                                layero.find('.a_menu_chk[value="' + kids[d] + '"]').prop('checked', on);
+                            }
+                        } else {
+                            var pid = parentOf[id];
+                            if (!on) {
+                                // 末级页面取消：逐级向上取消父链，使一级与二级状态一致（只连带清父级，不影响兄弟节点）
+                                while (pid && pid !== '0') {
+                                    layero.find('.a_menu_chk[value="' + pid + '"]').prop('checked', false);
+                                    pid = parentOf[pid];
+                                }
+                            } else if (pid && pid !== '0') {
+                                // 勾选末级：若同一父级下的子菜单已全部勾选，自动勾上父级（一级）
+                                var sibs = childMap[pid] || [];
+                                var allChecked = sibs.length > 0;
+                                for (var s = 0; s < sibs.length; s++) {
+                                    if (!layero.find('.a_menu_chk[value="' + String(sibs[s].menuId) + '"]').prop('checked')) {
+                                        allChecked = false;
+                                        break;
+                                    }
+                                }
+                                if (allChecked) {
+                                    layero.find('.a_menu_chk[value="' + pid + '"]').prop('checked', true);
+                                }
+                            }
+                        }
+                    });
+                },
+                yes: function (idx) {
+                    var ids = [];
+                    $('#layui-layer' + idx).find('.a_menu_chk:checked').each(function () { ids.push($(this).val()); });
+                    Admin.post('/sys/role/assignMenus', {roleId: row.id, menuIds: ids.join(',')}, function () {
+                        layer.close(idx);
+                        layer.msg('授权成功');
+                    });
+                }
+            });
+        });
+    }
+</script>
+</html>

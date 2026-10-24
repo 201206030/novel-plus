@@ -24,8 +24,16 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                管理员
+                <span id="admUserName">管理员</span>
             </span>
+            <!-- 修改自己的密码：任何已登录账号可用，弹窗逻辑在 admin.js 的 Admin.changePwd -->
+            <a class="adm_header_btn" id="changePwdBtn" href="javascript:;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                </svg>
+                修改密码
+            </a>
             <a class="adm_header_btn adm_header_logout" id="logoutBtn" href="javascript:;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -71,6 +79,24 @@
                     document.getElementById('logoutForm').submit();
                 }
             };
+            // 修改密码弹窗依赖 admin.js（各页面 body 末尾才加载），点击时再取，未加载则忽略
+            document.getElementById('changePwdBtn').onclick = function () {
+                if (window.Admin && window.Admin.changePwd) {
+                    window.Admin.changePwd();
+                }
+            };
+            // 当前登录账号（多账号后台下必须知道自己是谁）
+            if (window.fetch) {
+                fetch('/sys/auth/info').then(function (r) {
+                    return r.json();
+                }).then(function (res) {
+                    if (!res || res.code !== 200 || !res.data || !res.data.username) {
+                        return;
+                    }
+                    var name = res.data.displayName || res.data.username;
+                    document.getElementById('admUserName').textContent = res.data.superAdmin ? name + '（超管）' : name;
+                })['catch'](function () { /* 静默降级，保留“管理员”文案 */ });
+            }
         })();
     </script>
 </div>

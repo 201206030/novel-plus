@@ -50,27 +50,45 @@ var Admin = (function ($) {
         return m ? decodeURIComponent(m[1]) : '';
     }
 
-    function handle(data, ok) {
+    // fail 可选：业务错误时回调（传 msg）而不是默认弹层提示，用于二次确认类流程
+    function handle(data, ok, fail) {
         if (data.code == 200) {
             ok(data.data);
         } else if (data.code == 1001) {
             //未登录
             location.href = '/login.html';
+        } else if (fail) {
+            fail(data.msg || '操作失败');
         } else {
             layer.alert(data.msg || '操作失败');
         }
     }
 
-    function get(url, params, ok) {
+    function get(url, params, ok, fail) {
         $.ajax({type: 'GET', url: url, data: params, dataType: 'json',
-            success: function (d) { handle(d, ok); },
-            error: function () { layer.alert('网络异常'); }});
+            success: function (d) { handle(d, ok, fail); },
+            error: function (xhr) { handleAjaxError(xhr); }});
     }
 
-    function post(url, params, ok) {
+    function post(url, params, ok, fail) {
         $.ajax({type: 'POST', url: url, data: params, dataType: 'json',
-            success: function (d) { handle(d, ok); },
-            error: function () { layer.alert('网络异常'); }});
+            success: function (d) { handle(d, ok, fail); },
+            error: function (xhr) { handleAjaxError(xhr); }});
+    }
+
+    // ajax 异常统一处理：401 登录已过期跳登录页，403 展示后端给出的越权原因，其余才是网络异常
+    function handleAjaxError(xhr) {
+        var status = xhr && xhr.status;
+        if (status === 401) {
+            layer.msg('登录已失效，正在跳转登录页...', {icon: 2, time: 1500}, function () {
+                location.href = '/login.html';
+            });
+        } else if (status === 403) {
+            var body = (xhr.responseJSON && xhr.responseJSON.msg) ? xhr.responseJSON.msg : '当前账号无权执行该操作';
+            layer.msg(body, {icon: 2});
+        } else {
+            layer.alert('网络异常，请稍后重试');
+        }
     }
 
     /* ---------------- 表单构建 ---------------- */
@@ -351,6 +369,12 @@ var Admin = (function ($) {
 
     function rowActionHtml(row, index) {
         var cfg = state.cfg;
+        // 系统内置/锁定行（如 admin 账号、超级管理员角色）：不渲染任何操作入口，只给一句提示。
+        // 后端同样会拦截对这些行的写操作，这里只是让界面不出现点了会报错的按钮；
+        // 锁定账号的密码由本人用公共头部「修改密码」自助修改（Admin.changePwd）
+        if (cfg.lockRow && cfg.lockRow(row)) {
+            return '<span class="a_lock">' + escapeHtml(cfg.lockText || '系统内置，不可操作') + '</span>';
+        }
         var html = '';
         if (cfg.hasEdit !== false && cfg.fields) {
             html += '<a href="javascript:;" class="a_edit" data-id="' + escapeHtml(row.id) + '" data-index="' + index + '">修改</a> ';
@@ -390,7 +414,9 @@ var Admin = (function ($) {
             var row = list[r];
             bodyHtml += '<tr class="book_list">';
             if (cfg.selectable) {
-                bodyHtml += '<td><input type="checkbox" class="a_chk" value="' + escapeHtml(row.id) + '"/></td>';
+                // 锁定行不给勾选框，避免通过“批量删除”绕过单行锁定
+                var locked = cfg.lockRow && cfg.lockRow(row);
+                bodyHtml += '<td><input type="checkbox" class="a_chk" value="' + escapeHtml(row.id) + '"' + (locked ? ' disabled' : '') + '/></td>';
             }
             bodyHtml += '<td class="style bookclass">[' + ((state.curr - 1) * state.limit + r + 1) + ']</td>';
             for (var c = 0; c < cfg.columns.length; c++) {
@@ -624,6 +650,52 @@ var Admin = (function ($) {
         doSearch();
     }
 
+    /* ---------------- 修改自己的密码（公共头部入口） ---------------- */
+
+    // 任何已登录账号都可改自己密码；#changePwdBtn 在 templates/admin/header.html，
+    // 接口 /sys/auth/changePassword 只要求登录，不要求系统管理权限
+    function showChangePwd() {
+        var html = '<div class="a_form" id="aPwdBox" style="padding:14px 20px 4px;">'
+            + '<div class="form_row"><label class="form_label">原密码</label><div class="form_cell">'
+            + '<input type="password" class="form_input" name="oldPassword" autocomplete="off" placeholder="当前登录密码"/></div></div>'
+            + '<div class="form_row"><label class="form_label">新密码</label><div class="form_cell">'
+            + '<input type="password" class="form_input" name="newPassword" autocomplete="off" placeholder="至少6位"/></div></div>'
+            + '<div class="form_row"><label class="form_label">确认新密码</label><div class="form_cell">'
+            + '<input type="password" class="form_input" name="confirmPassword" autocomplete="off" placeholder="再次输入新密码"/></div></div>'
+            + '</div>';
+        layer.open({
+            type: 1,
+            title: '修改密码',
+            area: ['420px', 'auto'],
+            content: html,
+            btn: ['保存', '取消'],
+            yes: function (index) {
+                var $box = $('#layui-layer' + index).find('#aPwdBox');
+                var oldPwd = $box.find('[name=oldPassword]').val() || '';
+                var newPwd = $box.find('[name=newPassword]').val() || '';
+                var confirmPwd = $box.find('[name=confirmPassword]').val() || '';
+                if (!oldPwd) {
+                    layer.alert('请输入原密码');
+                    return false;
+                }
+                if (newPwd.length < 6) {
+                    layer.alert('新密码不能少于6位');
+                    return false;
+                }
+                if (newPwd !== confirmPwd) {
+                    layer.alert('两次输入的新密码不一致');
+                    return false;
+                }
+                // 接口异步返回前不关弹窗（return false），原密码错误等提示看完就能直接改重提交
+                post('/sys/auth/changePassword', {oldPassword: oldPwd, newPassword: newPwd}, function () {
+                    layer.close(index);
+                    layer.msg('密码修改成功，下次登录请使用新密码');
+                });
+                return false;
+            }
+        });
+    }
+
     /* ---------------- 对外接口 ---------------- */
 
     return {
@@ -675,6 +747,8 @@ var Admin = (function ($) {
         q: q,
         fmt: fmtDate,
         escape: escapeHtml,
+        // 公共头部「修改密码」入口调用（任何已登录账号可用）
+        changePwd: showChangePwd,
         layerConfirmPost: function (url, params, confirmText, okText) {
             layer.confirm(confirmText || '确定执行该操作吗？', {icon: 3, title: '提示'}, function (index) {
                 layer.close(index);
@@ -685,8 +759,9 @@ var Admin = (function ($) {
         }
     };
 
+    // 当前页菜单高亮。侧栏由后台按 sys_menu 授权结果渲染（templates/admin/menu.html），
+    // 无权限的入口不会出现在 DOM 里，所以这里只负责高亮，不再做前端过滤
     function highlightMenu() {
-        // 当前页菜单高亮
         var path = location.pathname;
         $('.my_l a').each(function () {
             if ($(this).attr('href') === path) {

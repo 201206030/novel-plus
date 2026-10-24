@@ -3,6 +3,8 @@
 /* ---------------- 左侧菜单 ---------------- */
 .my_l .log_list li.menu_group { height: 32px; line-height: 32px; margin: 10px 10px 2px; padding-left: 4px; font-size: 14px; font-weight: bold; color: #2c8a61; border-bottom: 1px dashed #dfeede; }
 .my_l .log_list li.menu_group:first-child { margin-top: 0; }
+/* 菜单授权为空时的提示（例如新建角色还没勾页面就登录） */
+.my_l .log_list li .menu_empty { display: block; margin: 12px 10px; padding: 8px 10px; font-size: 12px; line-height: 1.6; color: #9aa8a0; background: #f6faf7; border: 1px dashed #dfeede; border-radius: 6px; }
 
 /* ---------------- 按钮系统（主题色 #3eaf7c） ---------------- */
 .layui-btn {
@@ -89,6 +91,8 @@
 /* 自定义行操作红色皮肤（rowActions 的 cls 属性引用），与删除按钮同色系 */
 .updateTable td.goread a.a_action_red { color: #e05c3e; background: #fdf3f0; border-color: #f6d5cd; }
 .updateTable td.goread a.a_action_red:hover { color: #fff; background: #ef5a3a; border-color: #ef5a3a; box-shadow: 0 2px 6px rgba(239, 90, 58, .35); }
+/* 系统内置/锁定行：操作列只展示一句中性提示，不渲染任何可点按钮 */
+.updateTable td.goread .a_lock { display: inline-block; padding: 2px 6px; font-size: 12px; line-height: 18px; color: #9aa8a0; }
 
 /* ---------------- 分页组件（laypage 无 layui.css 时的皮肤） ---------------- */
 .pageBox { padding: 14px 0; text-align: center; }
@@ -192,3 +196,14 @@
 /* 半宽图表适当降低高度，避免两列卡片过高 */
 .a_chart_sm { height: 280px; }
 .a_chart_md { height: 320px; }
+
+/* ---------------- 菜单授权树（对齐左侧菜单的分组样式） ---------------- */
+.a_mtree { padding: 4px 20px 16px; max-height: 100%; overflow: auto; }
+/* 目录行就是侧栏里的分组标题，字号/颜色/虚线下划线沿用 .my_l .menu_group */
+.a_mtree_grp { display: block; margin: 14px 0 4px; padding-bottom: 4px; font-size: 14px; font-weight: bold; color: #2c8a61; border-bottom: 1px dashed #dfeede; cursor: pointer; }
+.a_mtree_itm { display: block; margin-bottom: 2px; padding: 4px 0 4px 24px; font-size: 13px; color: #5c6b64; cursor: pointer; }
+.a_mtree_itm:first-of-type { margin-top: 4px; }
+.a_mtree_grp input, .a_mtree_itm input { margin-right: 7px; vertical-align: 2px; }
+.a_mtree_grp:hover, .a_mtree_itm:hover { color: #3eaf7c; }
+/* 孤儿菜单提示：仅历史脏数据才会出现 */
+.a_mtree_orphan { margin: 18px 0 6px; padding-top: 8px; font-size: 12px; color: #c78d3c; border-top: 1px dashed #f0e0c8; }
