@@ -391,6 +391,35 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
     filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/search.png', sizingMethod='scale');
 }
 
+/* 搜索框交互：hover / focus 有明确反馈，聚焦时主色描边 + 淡绿光环 */
+.searchBar .s_int:hover {
+    border-color: #35a271;
+    background-color: #fff
+}
+
+.searchBar .s_int:focus {
+    outline: none;
+    border-color: #35a271;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(62, 175, 124, .14)
+}
+
+.searchBar .s_int::-webkit-input-placeholder {
+    color: #a8b0ab
+}
+
+.searchBar .s_int::placeholder {
+    color: #a8b0ab
+}
+
+.searchBar .search_btn {
+    transition: background-color .25s
+}
+
+.searchBar .search_btn:hover {
+    background-color: #35a271
+}
+
 /*.hotword { padding-top: 3px }
 .hotword a, .hotword span { color: #999; margin: 0 6px 0 5px }
 .hotword a:hover { color: #666 }*/
@@ -438,10 +467,12 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
 }
 
 /*.bookShelf img { position: absolute; top: 17px; left: 17px; z-index: 10 }*/
+/* 导航条：纯色改微渐变（上浅下深）增加质感，底部加一道主色浅阴影与内容区分层 */
 .mainNav {
     width: 100%;
     height: 48px;
-    background: #3eaf7c;
+    background: linear-gradient(180deg, #45b584, #3eaf7c);
+    box-shadow: 0 1px 3px rgba(62, 175, 124, .22);
     margin-bottom: 20px
 }
 
@@ -449,19 +480,32 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
     float: left
 }
 
+/* 链接用 padding 撑出整块可点区域（原写法靠 margin 0 34px 拉开，hover 时无背景块、只有下划线），
+   不再用下划线做指示，选中态只靠背景块与字重区分，所以高度直接用满 48 */
 .mainNav .nav li a {
     float: left;
-    height: 44px;
+    height: 48px;
     line-height: 48px;
-    color: #fff;
+    padding: 0 20px;
+    margin: 0 2px;
+    color: rgba(255, 255, 255, .9);
     font-size: 16px;
-    margin: 0 34px;
-    border-bottom: 2px solid #3eaf7c;
-    transition: color .3s, background-color .3s, border .3s
+    transition: color .25s, background-color .25s
 }
 
-.mainNav .nav li.on a, .mainNav .nav li a:hover {
-    border-bottom: 2px solid rgba(255, 255, 255, .8)
+.mainNav .nav li:first-child a {
+    margin-left: 0
+}
+
+.mainNav .nav li a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .14)
+}
+
+.mainNav .nav li.on a {
+    color: #fff;
+    font-weight: 600;
+    background: rgba(0, 0, 0, .07)
 }
 
 .footer {

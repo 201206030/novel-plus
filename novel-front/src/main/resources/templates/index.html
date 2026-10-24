@@ -10,6 +10,8 @@
     <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
     <link href="/favicon.ico" type="image/x-icon" rel="Bookmark"/>
     <link rel="stylesheet" href="/css/main.css"/>
+    <!-- 首页专属美化（卡片化/徽标等），限定在 .home 作用域，不影响共用 main.css 的页面 -->
+    <link rel="stylesheet" href="/css/home.css"/>
 </head>
 <body>
 
@@ -17,7 +19,7 @@
 <div th:replace="common/top :: top('0')">
 </div>
 
-<div class="main box_center cf">
+<div class="main box_center cf home">
     <div class="channelWrap channelBanner cf">
         <div class="leftBox">
             <div class="sliderContent">
@@ -33,31 +35,46 @@
                 </div>
             </div>
             <div class="hot_articles">
-                <dl class="hot_recommend" id="topBooks1" th:if="${bookMap['1']} and ${#lists.size(bookMap['1']) > 0}">
-                    <dt><a th:href="'/book/'+${bookMap['1'][0].bookId}+'.html'" th:text="${bookMap['1'][0].bookName}"></a></dt>
-                    <dd th:if="${#lists.size(bookMap['1']) > 1}"><a th:href="'/book/'+${bookMap['1'][1].bookId}+'.html'" th:text="${bookMap['1'][1].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 2}" th:href="'/book/'+${bookMap['1'][2].bookId}+'.html'" th:text="${bookMap['1'][2].bookName}"></a></dd>
-                    <dd th:if="${#lists.size(bookMap['1']) > 3}"><a th:href="'/book/'+${bookMap['1'][3].bookId}+'.html'" th:text="${bookMap['1'][3].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 4}" th:href="'/book/'+${bookMap['1'][4].bookId}+'.html'" th:text="${bookMap['1'][4].bookName}"></a></dd>
-                </dl>
-                <dl class="hot_recommend" id="topBooks2" th:if="${bookMap['1']} and ${#lists.size(bookMap['1']) > 5}">
-                    <dt><a th:href="'/book/'+${bookMap['1'][5].bookId}+'.html'" th:text="${bookMap['1'][5].bookName}"></a></dt>
-                    <dd th:if="${#lists.size(bookMap['1']) > 6}"><a th:href="'/book/'+${bookMap['1'][6].bookId}+'.html'" th:text="${bookMap['1'][6].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 7}" th:href="'/book/'+${bookMap['1'][7].bookId}+'.html'" th:text="${bookMap['1'][7].bookName}"></a></dd>
-                    <dd th:if="${#lists.size(bookMap['1']) > 8}"><a th:href="'/book/'+${bookMap['1'][8].bookId}+'.html'" th:text="${bookMap['1'][8].bookName}"></a><a th:if="${#lists.size(bookMap['1']) > 9}" th:href="'/book/'+${bookMap['1'][9].bookId}+'.html'" th:text="${bookMap['1'][9].bookName}"></a></dd>
-                </dl>
+                <!-- 长篇好书 TOP10（对应后台推荐类型 type=1，固定10本）：拆成两列编号列表（1-5 / 6-10），整块 flex 撑满轮播旁的剩余高度 -->
+                <div class="ha_box">
+                    <h4 class="ha_tit">长篇好书</h4>
+                    <div class="ha_cols">
+                        <ul class="ha_col" th:if="${bookMap['1']} and ${#lists.size(bookMap['1']) > 0}">
+                            <li th:each="book,iterStat : ${bookMap['1']}" th:if="${iterStat.index < 5}">
+                                <i th:text="${iterStat.index + 1}"></i><a th:href="'/book/'+${book.bookId}+'.html'" th:text="${book.bookName}" th:title="${book.bookName}"></a>
+                            </li>
+                        </ul>
+                        <ul class="ha_col" th:if="${bookMap['1']} and ${#lists.size(bookMap['1']) > 5}">
+                            <li th:each="book,iterStat : ${bookMap['1']}" th:if="${iterStat.index >= 5}">
+                                <i th:text="${iterStat.index + 1}"></i><a th:href="'/book/'+${book.bookId}+'.html'" th:text="${book.bookName}" th:title="${book.bookName}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-                <dl class="hot_notice" id="indexNews">
-                    <dd style="text-align:left;" th:each="news : ${newsList}"><span th:text="'['+${news.catName}+']'"></span><a th:href="'/about/newsInfo-'+${news.id}+'.html'" th:utext="${news.title}"></a>
-                    </dd>
-
-                </dl>
+                <!-- 新闻公告（固定2条）：单行走马灯，列表由 JS 纵向逐条滚动 -->
+                <div class="ha_news" th:if="${newsList} and ${#lists.size(newsList) > 0}">
+                    <div class="nm_box">
+                        <h4 class="ha_tit">新闻公告</h4>
+                        <div class="news_marquee" id="newsMarquee">
+                            <ul class="nm_list">
+                                <li th:each="news : ${newsList}">
+                                    <span th:text="'['+${news.catName}+']'"></span><a th:href="'/about/newsInfo-'+${news.id}+'.html'" th:utext="${news.title}" th:title="${news.title}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="rightBox">
-            <div class="title cf" id="weekcommend">
+            <div class="title cf">
                 <h3>本周强推</h3>
+                <a class="title_more" href="/book/book_ranking.html">查看更多&gt;</a>
             </div>
             <div class="rightList">
                 <ul id="currentWeek" th:if="${bookMap['2']}">
-                    <li th:each="book,iterStat : ${bookMap['2']}"  th:class="${iterStat.first}? 'on num1': (${iterStat.index < 3}? 'num'+${iterStat.index+1})">
+                    <li th:each="book,iterStat : ${bookMap['2']}" th:class="${iterStat.first}? 'on num1': (${iterStat.index < 3}? 'num'+${iterStat.index+1})">
                         <div class="book_name"><i th:text="${iterStat.index+1}"></i><a class="name" th:href="'/book/'+${book.bookId}+'.html'" th:text="${book.bookName}"></a></div>
                         <div class="book_intro">
                             <div class="cover"><a th:href="'/book/'+${book.bookId}+'.html'"><img th:src="${book.picUrl}" th:alt="${book.bookName}"></a>
@@ -74,6 +91,7 @@
         <div class="leftBox">
             <div class="title">
                 <h2 class="on">热门推荐</h2>
+                <a class="title_more" href="/book/bookclass.html">查看更多&gt;</a>
             </div>
             <div class="picRecommend cf" id="hotRecBooks" th:if="${bookMap['3']}">
                 <div class="itemsList" th:each="book : ${bookMap['3']}">
@@ -109,6 +127,7 @@
         <div class="leftBox">
             <div class="title">
                 <h2>精品推荐</h2>
+                <a class="title_more" href="/book/bookclass.html">查看更多&gt;</a>
             </div>
             <div class="picRecommend cf" id="classicBooks" th:if="${bookMap['4']}">
                 <div class="itemsList" th:each="book : ${bookMap['4']}">
@@ -156,7 +175,7 @@
                         <th class="time">更新时间</th>
                     </tr>
                     </thead>
-                    <tbody id="newRankBooks2">
+                    <tbody id="updateBooksTable">
 
 
                     </tbody>
@@ -231,7 +250,87 @@
     });
 
     lazyload();
+
+    // 简介/书名可能带HTML标签，拼接前先剥离并截断，防止撑破行高或破坏页面结构
+    function plainText(v, max) {
+        var t = String(v === null || v === undefined ? '' : v).replace(/<[^>]*>/g, '');
+        return t.length > max ? t.substring(0, max) + '…' : t;
+    }
+
+    // 右侧榜单通用渲染：点击榜/新书榜/更新榜均固定展示前10条，仅第1条带封面+简介
+    function renderRankBooks(list, elId) {
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+            var book = list[i];
+            var classHtml = (i === 0 ? 'on' : '') + (i < 3 ? ' num' + (i + 1) : '');
+            var imageHtml = i === 0 ? '<img src="' + book.picUrl + '" alt="' + plainText(book.bookName, 30) + '"/>' : '';
+            html += '<li class="' + classHtml + '">'
+                + '<div class="book_name"><i>' + (i + 1) + '</i><a class="name" href="/book/' + book.id + '.html">' + plainText(book.bookName, 20) + '</a></div>'
+                + '<div class="book_intro"><div class="cover"><a href="/book/' + book.id + '.html">' + imageHtml + '</a></div>'
+                + '<a class="txt" href="/book/' + book.id + '.html">' + plainText(book.bookDesc, 60) + '</a></div>'
+                + '</li>';
+        }
+        $('#' + elId).html(html);
+    }
+
+    // 新闻公告走马灯：单行纵向逐条滚动，滚完最后一条接回首条；鼠标悬停暂停
+    function initNewsMarquee() {
+        var box = $('#newsMarquee'), list = box.find('.nm_list');
+        if (!list.length) {
+            return;
+        }
+        var items = list.children(), count = items.length;
+        if (count < 2) {
+            return;
+        }
+        var rowH = items.first().outerHeight(true);
+        items.first().clone().appendTo(list);// 末尾补一条副本，实现无缝回卷
+        var idx = 0, timer = null;
+        function step() {
+            idx++;
+            list.css('margin-top', -idx * rowH);
+            if (idx === count) {
+                setTimeout(function () {// 滚到副本后瞬间复位到首条，关闭过渡避免倒带动画
+                    list.css({transition: 'none', marginTop: 0});
+                    void list[0].offsetHeight;
+                    list.css('transition', '');
+                    idx = 0;
+                }, 500);
+            }
+        }
+        function play() {
+            stop();
+            timer = setInterval(step, 3000);
+        }
+        function stop() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+        box.hover(stop, play);
+        play();
+    }
+
+    // 最新更新表格：展示后端返回的全部数据（固定23本），不截断行数
+    function renderUpdateTable(list) {
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+            var book = list[i];
+            html += '<tr>'
+                + '<td class="style"><a href="/book/bookclass.html?c=' + book.catId + '">[' + plainText(book.catName, 8) + ']</a></td>'
+                + '<td class="name"><a href="/book/' + book.id + '.html">' + plainText(book.bookName, 16) + '</a></td>'
+                + '<td class="chapter"><a href="/book/' + book.id + '.html">' + plainText(book.lastIndexName, 16) + '</a></td>'
+                + '<td class="author"><a href="javascript:void(0)">' + plainText(book.authorName, 8) + '</a></td>'
+                + '<td class="time">' + (book.lastIndexUpdateTime || '') + '</td>'
+                + '</tr>';
+        }
+        $('#updateBooksTable').html(html);
+    }
+
     $(function () {
+
+        initNewsMarquee();
 
         //点击榜单数据查询
         $.ajax({
@@ -241,33 +340,8 @@
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    var clickRankBooks = data.data;
-                    var clickRankBooksHtml = "";
-                    for (var i = 0; i < clickRankBooks.length; i++) {
-                        var clickRankBook = clickRankBooks[i];
-                        var classHtml = "";
-                        var imageHtml = "";
-                        if (i == 0) {
-                            classHtml = "on";
-                            imageHtml = "<img src=\"" + clickRankBook.picUrl + "\" alt=\"" + clickRankBook.bookName + "\"/>";
-                        }
-                        if (i < 3) {
-                            classHtml += (" num" + (i + 1));
-                        }
-                        clickRankBooksHtml += ("<li class=\"" + classHtml + "\">\n" +
-                            "                            <div class=\"book_name\">\n" +
-                            "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + clickRankBook.id + ".html\">" + clickRankBook.bookName + "</a>\n" +
-                            "                            </div>\n" +
-                            "                            <div class=\"book_intro\">\n" +
-                            "                                <div class=\"cover\">\n" +
-                            "                                    <a href=\"book/" + clickRankBook.id + ".html\">"+ imageHtml +"</a>\n" +
-                            "                                </div>\n" +
-                            "                                <a class=\"txt\" href=\"/book/" + clickRankBook.id + ".html\">" + clickRankBook.bookDesc + "</a>\n" +
-                            "                            </div>\n" +
-                            "\n" +
-                            "                        </li>");
-                    }
-                    $("#clickRankBooks").html(clickRankBooksHtml);
+                    // 首位展开项收到 111px 后高度余量够了，后端10本全部展示（与左卡三行六本≈533px 相差约25px，由等高拉伸吸收）
+                    renderRankBooks(data.data, 'clickRankBooks');
                 } else {
                     layer.alert(data.msg);
                 }
@@ -285,33 +359,8 @@
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    var newRankBooks = data.data;
-                    var newRankBooksHtml = "";
-                    for (var i = 0; i < newRankBooks.length; i++) {
-                        var newRankBook = newRankBooks[i];
-                        var classHtml = "";
-                        var imageHtml = "";
-                        if (i == 0) {
-                            classHtml = "on";
-                            imageHtml = "<img src=\"" + newRankBook.picUrl + "\" alt=\"" + newRankBook.bookName + "\"/>";
-                        }
-                        if (i < 3) {
-                            classHtml += (" num" + (i + 1));
-                        }
-                        newRankBooksHtml += ("<li class=\"" + classHtml + "\">\n" +
-                            "                            <div class=\"book_name\">\n" +
-                            "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + newRankBook.id + ".html\">" + newRankBook.bookName + "</a>\n" +
-                            "                            </div>\n" +
-                            "                            <div class=\"book_intro\">\n" +
-                            "                                <div class=\"cover\">\n" +
-                            "                                    <a href=\"book/" + newRankBook.id + ".html\">" + imageHtml + "</a>\n" +
-                            "                                </div>\n" +
-                            "                                <a class=\"txt\" href=\"/book/" + newRankBook.id + ".html\">" + newRankBook.bookDesc + "</a>\n" +
-                            "                            </div>\n" +
-                            "\n" +
-                            "                        </li>");
-                    }
-                    $("#newRankBooks").html(newRankBooksHtml);
+                    // 同上：首位展开项收小后，后端10本全部展示
+                    renderRankBooks(data.data, 'newRankBooks');
                 } else {
                     layer.alert(data.msg);
                 }
@@ -329,46 +378,9 @@
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    var updateRankBooks = data.data;
-                    var updateRankBookHtml = "";
-                    var updateRankBookHtml2 = "";
-                    for (var i = 0; i < updateRankBooks.length; i++) {
-                        var updateRankBook = updateRankBooks[i];
-                        var classHtml = "";
-                        var imageHtml = "";
-                        if (i == 0) {
-                            classHtml = "on";
-                            imageHtml = "<img\ src=\"" + updateRankBook.picUrl + "\" alt=\"" + updateRankBook.bookName + "\"/>";
-                        }
-                        if (i < 3) {
-                            classHtml += (" num" + (i + 1));
-                        }
-                        if (i < 10) {
-                            updateRankBookHtml += ("<li class=\"" + classHtml + "\">\n" +
-                                "                            <div class=\"book_name\">\n" +
-                                "                                <i>" + (i + 1) + "</i><a class=\"name\" href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookName + "</a>\n" +
-                                "                            </div>\n" +
-                                "                            <div class=\"book_intro\">\n" +
-                                "                                <div class=\"cover\">\n" +
-                                "                                    <a href=\"book/" + updateRankBook.id + ".html\">" + imageHtml + "</a>\n" +
-                                "                                </div>\n" +
-                                "                                <a class=\"txt\" href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookDesc + "</a>\n" +
-                                "                            </div>\n" +
-                                "\n" +
-                                "                        </li>");
-                        }
-                        updateRankBookHtml2 += ("<tr>\n" +
-                            "                        <td class=\"style\"><a href=\"book/bookclass.html?c=" + updateRankBook.catId + "\">[" + updateRankBook.catName + "]</a></td>\n" +
-                            "                        <td class=\"name\"><a href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.bookName + "</a></td>\n" +
-                            "                        <td class=\"chapter\"><a href=\"/book/" + updateRankBook.id + ".html\">" + updateRankBook.lastIndexName + "</a>\n" +
-                            "                            <i class=\"\"></i>\n" +
-                            "                        </td>\n" +
-                            "                        <td class=\"author\"><a href=\"javascript:void(0)\">" + updateRankBook.authorName + "</a></td>\n" +
-                            "                        <td class=\"time\">" + updateRankBook.lastIndexUpdateTime + "</td>\n" +
-                            "                    </tr>");
-                    }
-                    $("#updateRankBooks").html(updateRankBookHtml);
-                    $("#newRankBooks2").html(updateRankBookHtml2);
+                    // 更新榜后端固定返回23本：右侧榜单只取前10，左侧表格展示全部
+                    renderRankBooks(data.data.slice(0, 10), 'updateRankBooks');
+                    renderUpdateTable(data.data);
                 } else {
                     layer.alert(data.msg);
                 }
@@ -401,17 +413,6 @@
             },
             error: function () {
                 layer.alert('网络异常');
-            }
-        })
-        $("#weekcommend h3").mouseover(function () {
-            $("#weekcommend h3").removeClass("on");
-            $(this).addClass("on");
-            if ($(this).attr("class").indexOf("fr") >= 0) {
-                $("#currentWeek").hide();
-                $("#currentPreWeek").show();
-            } else {
-                $("#currentPreWeek").hide();
-                $("#currentWeek").show();
             }
         });
     });

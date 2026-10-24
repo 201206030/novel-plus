@@ -31,7 +31,7 @@
 <script src="/layui/layui.all.js" type="text/javascript"></script>
 <script src="/javascript/admin.js" type="text/javascript"></script>
 <script th:inline="none">
-    var TYPE_MAP = {0: '轮播图', 1: '顶部小说栏', 2: '本周强推', 3: '热门推荐', 4: '精品推荐'};
+    var TYPE_MAP = {0: '轮播图', 1: '长篇好书', 2: '本周强推', 3: '热门推荐', 4: '精品推荐'};
 
     Admin.crud({
         api: '/website/bookSetting',
@@ -41,7 +41,7 @@
         hasAdd: false,
         hasDel: false,
         filters: [
-            {param: 'type', label: '类型', options: [[0, '轮播图'], [1, '顶部小说栏'], [2, '本周强推'], [3, '热门推荐'], [4, '精品推荐']]}
+            {param: 'type', label: '类型', options: [[0, '轮播图'], [1, '长篇好书'], [2, '本周强推'], [3, '热门推荐'], [4, '精品推荐']]}
         ],
         columns: [
             {title: '小说名称', field: 'bookName', thClass: 'col_book', ellipsis: true},
@@ -59,7 +59,7 @@
                 labelFields: 'bookName,authorName', searchLabel: '书名', required: true,
                 tip: '列表展示最近更新的50本，可输入关键字检索'},
             {name: 'type', label: '推荐类型', type: 'select', required: true, lockOnEdit: true,
-                options: [[0, '轮播图'], [1, '顶部小说栏'], [2, '本周强推'], [3, '热门推荐'], [4, '精品推荐']]},
+                options: [[0, '轮播图'], [1, '长篇好书'], [2, '本周强推'], [3, '热门推荐'], [4, '精品推荐']]},
             {name: 'sort', label: '排序号', type: 'number'}
         ]
     });

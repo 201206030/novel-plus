@@ -1,0 +1,486 @@
+@charset "utf-8";
+/*
+ * 首页专属样式增强：卡片化 + 榜单/表格/推荐位美化
+ * 依赖 main.css 之后引入；所有规则限定在首页容器 .home 与首页独有的 .friend_link 内，
+ * 不影响共用 main.css 的排行榜/分类/详情等页面。
+ * 布局按各模块固定数量适配：轮播4（未改）/长篇好书10（轮播右侧两列编号列表 + 新闻公告走马灯）/热门与精品推荐各6（两列三行）/
+ * 右侧榜单全量10条、本周强推5条（首位展开项已收小到111px）分别对齐左卡高度/最新更新表格全量23行（比右侧榜单长，不做行数对齐）。
+ */
+
+/* ================= 卡片容器 ================= */
+.home .channelWrap {
+    margin-bottom: 16px
+}
+
+.home .channelWrap .leftBox, .home .channelWrap .rightBox {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+    box-sizing: border-box;
+    padding: 14px 16px 10px
+}
+
+.home .channelWrap .rightBox {
+    padding: 14px 14px 10px
+}
+
+/* ================= 同一行左右卡片等高（第1~3行） ================= */
+/* 每个 .channelWrap 都带老式 .cf clearfix，其 ::before/::after 在弹性容器里会变成弹性项
+   把卡片挤偏（同首页推荐位改 grid 那次踩坑），因此必须先关掉伪元素 */
+.home .channelBanner:before, .home .channelBanner:after,
+.home .channelPic:before, .home .channelPic:after {
+    content: none
+}
+
+.home .channelBanner, .home .channelPic {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between
+}
+
+/* flex 下 float 失效，两列宽度仍按原 720 / 240 锁定；
+   容器 box_center 为 1020px，剩下的 60px 自然成为两卡间距（与原浮动布局下的间距一致） */
+.home .channelBanner > .leftBox, .home .channelPic > .leftBox,
+.home .channelBanner > .rightBox, .home .channelPic > .rightBox {
+    float: none;
+    flex: none
+}
+
+/* 第2/3行右卡外面多包了一层 #bookrankN_ShowBookRank：由它承接拉伸，再把弹性传给内部 .rightBox */
+.home .channelPic > [id$="_ShowBookRank"] {
+    flex: none;
+    display: flex
+}
+
+.home .channelPic > [id$="_ShowBookRank"] > .rightBox {
+    flex: none
+}
+
+/* 榜单卡内部：列表自然高度，底部「查看更多」钉在卡片底边，等高后多出的空隙落在列表与按钮之间 */
+.home .channelBanner .rightBox, .home .channelPic .rightBox {
+    display: flex;
+    flex-direction: column
+}
+
+.home .channelBanner .rightBox .rightList, .home .channelPic .rightBox .rightList {
+    flex: 1;
+    display: flex;
+    flex-direction: column
+}
+
+.home .channelPic .rightList .more {
+    margin-top: auto
+}
+
+/* 轮播行：卡片内边距占用后 main.css 的 306 + 396 = 702 超过内容宽 688，
+   所以左卡改 flex 行：轮播 306 固定不动，长篇好书区 flex:1 自动吃掉剩余宽度（≈688-306-16=366）并撑满剩余高度 */
+.home .channelBanner .leftBox {
+    display: flex;
+    align-items: stretch;
+    gap: 16px
+}
+
+.home .hot_articles {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column
+}
+
+.home .picRecommend {
+    width: 100%
+}
+
+.home .leftBox .updateTable {
+    width: 100%
+}
+
+/* ================= 模块标题：绿色竖条 + 右侧更多入口 ================= */
+.home .leftBox .title h2, .home .rightBox .title h3 {
+    position: relative;
+    padding-left: 12px
+}
+
+.home .leftBox .title h2:after, .home .rightBox .title h3:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background: #3eaf7c
+}
+
+.home .title .title_more {
+    float: right;
+    font-size: 12px;
+    color: #999;
+    line-height: 1;
+    padding-top: 5px
+}
+
+.home .title .title_more:hover {
+    color: #3eaf7c
+}
+
+/* ================= 榜单列表（本周强推/点击榜/新书榜/更新榜） ================= */
+.home .rightList li {
+    padding: 2px 0;
+    border-bottom: 1px dashed #f0f0f0
+}
+
+.home .rightList li:last-child {
+    border-bottom: none
+}
+
+.home .rightList .book_name a.name {
+    color: #333
+}
+
+.home .rightList .book_name a.name:hover {
+    color: #3eaf7c
+}
+
+/* 序号徽标（圆角 5px、浅底 #eef0f2 + 灰字，前三位红/橙/绿白字）已上收到 main.css 的
+   .rightList li i / .rankTable .rank i，首页与排行榜页、分类页共用，这里不再重复定义 */
+
+/* 首位展开项：简介底色柔和、封面圆角悬浮微动效 */
+.home .rightList li.on .book_intro {
+    background: #f8faf9;
+    border: 1px solid #eef2ef;
+    border-radius: 8px;
+    padding: 8px 10px
+}
+
+.home .rightList li.on .cover {
+    border-radius: 6px;
+    overflow: hidden
+}
+
+.home .rightList li.on .cover img {
+    transition: transform .2s
+}
+
+.home .rightList li.on .cover a:hover img {
+    transform: scale(1.05)
+}
+
+/* 榜单首位展开项统一收小（四个榜单通用：本周强推/点击榜/新书榜/更新榜）：
+   封面 60×80 → 40×53（object-fit: cover 保证遇到非 3:4 封面只裁不拉伸），
+   简介容器上下内边距 10 → 8，简介精确三行（main.css 的 height:72px 在 12px/18px 行高下会露出第四行半截）。
+   首位项高度由 ≈151px 降到 ≈111px */
+.home .rightList li.on .cover img {
+    width: 40px;
+    height: 53px;
+    object-fit: cover
+}
+
+.home .rightList .on .book_intro .txt {
+    color: #8a8f96;
+    font-size: 12px;
+    line-height: 18px;
+    height: 54px
+}
+
+/* 榜单底部“查看更多”恢复成块按钮（main.css 里该样式被注释掉了） */
+.home .rightList .more {
+    margin-top: 8px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #f7f8f9;
+    border-radius: 6px
+}
+
+.home .rightList .more a {
+    display: block;
+    color: #666
+}
+
+.home .rightList .more a:hover {
+    color: #3eaf7c
+}
+
+/* ================= 热门/精品推荐（6 本 = 两列 × 三行，沿用 main.css 原本的 50% 浮动两列） ================= */
+/* 此处不再做任何布局重写（不改 flex/grid、不调行间距）：与右卡的高度差靠收窄榜单首位展开项调节，
+    残余差值由同行等高拉伸吸收（落在右卡列表与「查看更多」之间或左卡底部，幅度≈十余像素） */
+.home .itemsList {
+    box-sizing: border-box;
+    /* 左右各 10px 作为栏内 gutter：原本 96(封面)+14(封面右边距)+230(文字定宽)=340，
+       而每列宽度只有 344，文字块几乎贴到右一列的封面上；改后两列之间共有 20px 间隙，
+       靠右列文字也不会顶到卡片右边缘（hover 背景会连同内边距一起亮起，单条 hover 时不会接成一片） */
+    padding: 17px 10px;
+    border-radius: 8px;
+    transition: background-color .15s
+}
+
+.home .itemsList:hover {
+    background: #f8faf9
+}
+
+.home .itemsList .items_img img {
+    border-radius: 6px;
+    transition: box-shadow .2s, transform .2s
+}
+
+.home .itemsList:hover .items_img img {
+    box-shadow: 0 6px 14px rgba(62, 175, 124, .22);
+    transform: translateY(-3px)
+}
+
+/* 配合上面的 gutter：文字宽度改为自适应，
+   main.css 里它是 float:left + 固定 230px，必须去掉浮动改用 overflow:hidden 撑满封面旁边的剩余宽度 */
+.home .items_txt {
+    width: auto;
+    float: none;
+    overflow: hidden
+}
+
+.home .items_txt h4 a {
+    color: #333
+}
+
+.home .items_txt h4 a:hover {
+    color: #3eaf7c
+}
+
+/* 简介固定三行截断（12px/18px 与榜单简介字号统一），三行高度整齐；
+   行高变成 ≈161px，左卡总高≈554px，与右侧榜单 10 条的≈558px 几乎齐平 */
+.home .items_txt .intro {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    font-size: 12px;
+    line-height: 18px;
+    height: 54px;
+    overflow: hidden;
+    color: #8a8f96
+}
+
+/* ================= 最新更新表格（全量23行） ================= */
+.home .updateTable th {
+    height: 36px;
+    line-height: 36px;
+    color: #999;
+    border-bottom: 1px solid #eee
+}
+
+.home .updateTable td {
+    border-top: none;
+    height: 40px;
+    line-height: 40px
+}
+
+.home .updateTable tbody tr {
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color .15s
+}
+
+.home .updateTable tbody tr:hover {
+    background: #f0f9f4
+}
+
+/* 类别列：类名最长 4 字（如古典文学/世界名著），加上括号与徽标内边距实测需 ~88px，
+   原 74px 不够会换行；固定加宽到 104px 并强制单行，多出的宽度由无固定宽的「最新章节」列自动吸收 */
+.home .updateTable .style {
+    width: 104px
+}
+
+/* 类别改绿色小徽标 */
+.home .updateTable .style a {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #eef7f1;
+    color: #3eaf7c;
+    white-space: nowrap
+}
+
+.home .updateTable .name a {
+    color: #333
+}
+
+.home .updateTable .name a:hover {
+    color: #3eaf7c
+}
+
+.home .updateTable .chapter a {
+    color: #666
+}
+
+.home .updateTable .time {
+    color: #999
+}
+
+/* ================= 长篇好书 TOP10（轮播右侧，对应 type=1，固定10本拆成 1-5/6-10 两列编号列表） ================= */
+.home .ha_box {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0
+}
+
+.home .ha_tit {
+    position: relative;
+    padding-left: 10px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 600
+}
+
+.home .ha_tit:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: #3eaf7c
+}
+
+/* 两列容器占满标题以下的全部剩余高度，10 本按行均分，撑满轮播旁区域 */
+.home .ha_cols {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    gap: 8px
+}
+
+.home .ha_col {
+    flex: 1;
+    min-width: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column
+}
+
+.home .ha_col li {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin: 0 -6px;
+    padding: 0 6px;
+    border-radius: 6px;
+    transition: background-color .15s
+}
+
+.home .ha_col li:hover {
+    background: #f8faf9
+}
+
+/* 尺寸与字号对齐 main.css 的统一序号规格（17×17 / 圆角 5px / 12px） */
+.home .ha_col li i {
+    flex: none;
+    margin-right: 6px;
+    width: 17px;
+    height: 17px;
+    line-height: 17px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #eef0f2;
+    color: #999;
+    font-size: 12px
+}
+
+.home .ha_col li a {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #666
+}
+
+.home .ha_col li a:hover {
+    color: #3eaf7c
+}
+
+/* 前三序号徽标跳色（列内第1/2/3位） */
+.home .ha_col:first-of-type li:nth-child(1) i {
+    background-color: #ff5b4a;
+    color: #fff
+}
+
+.home .ha_col:first-of-type li:nth-child(2) i {
+    background-color: #ff9f45;
+    color: #fff
+}
+
+.home .ha_col:first-of-type li:nth-child(3) i {
+    background-color: #3eaf7c;
+    color: #fff
+}
+
+/* ================= 新闻公告（固定2条）：单行走马灯，列表由 index.html 的 initNewsMarquee 纵向滚动 ================= */
+.home .ha_news {
+    flex: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #f0f0f0
+}
+
+.home .news_marquee {
+    height: 30px;
+    overflow: hidden;
+    position: relative
+}
+
+.home .nm_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transition: margin-top .45s ease-out
+}
+
+.home .nm_list li {
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px
+}
+
+.home .nm_list li span {
+    color: #3eaf7c;
+    margin-right: 6px
+}
+
+.home .nm_list li a {
+    color: #666
+}
+
+.home .nm_list li a:hover {
+    color: #3eaf7c
+}
+
+/* ================= 底部友情链接（首页独有区域）：胶囊样式 ================= */
+.friend_link {
+    padding: 4px 0 26px
+}
+
+.friend_link a {
+    display: inline-block;
+    margin: 4px 8px;
+    padding: 2px 14px;
+    border: 1px solid #e4e4e4;
+    border-radius: 14px;
+    background: #fff;
+    color: #666
+}
+
+.friend_link a:hover {
+    border-color: #3eaf7c;
+    color: #3eaf7c
+}

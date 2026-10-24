@@ -267,13 +267,16 @@
     display: block
 }
 
+/* 序号徽标（首页榜单 / 排行榜页 / 分类页共用一套）：圆角 + 浅底深字，前三位用红/橙/绿跳色突出
+   （base.css 已有 i, em, cite { font-style: normal }，此处无需再处理斜体） */
 .rightList li i, .rankTable .rank i {
     width: 17px;
     height: 17px;
     line-height: 17px;
     text-align: center;
-    background-color: #999;
-    color: #fff;
+    border-radius: 5px;
+    background-color: #eef0f2;
+    color: #999;
     vertical-align: middle;
     display: inline-block;
     font-size: 12px;
@@ -289,16 +292,20 @@
 }
 
 /*.rightList li.on i { position: absolute; top: 12px; left: 0; margin: 0; display:none }*/
+/* 前三位：榜单页的类加在 <i> 上（.rankTable .rank .num1），首页榜单的类加在 <li> 上（.rightList li.num1 i） */
 .rightList li.num1 i, .rankTable .rank .num1 {
-    background-color: #3eaf7c
+    background-color: #ff5b4a;
+    color: #fff
 }
 
 .rightList li.num2 i, .rankTable .rank .num2 {
-    background-color: #65bf96
+    background-color: #ff9f45;
+    color: #fff
 }
 
 .rightList li.num3 i, .rankTable .rank .num3 {
-    background-color: #78c7a3
+    background-color: #3eaf7c;
+    color: #fff
 }
 
 .rightList li.num1 i, .rightList li.num2 i, .rightList li.num3 i {
@@ -501,8 +508,9 @@
 
 .classTable .rank i {
     float: inherit;
-    margin: 0;
-    color: #fff
+    margin: 0
+    /* 原本这里写的是 color: #fff，序号改成浅底 #eef0f2 后白字会看不见，
+       删掉这一句让序号继承上面统一规格的 #999 */
 }
 
 .classTable .style {
