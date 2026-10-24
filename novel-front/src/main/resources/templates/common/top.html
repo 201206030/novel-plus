@@ -29,6 +29,10 @@
                     <label class="search_btn" id="btnSearch" onclick="searchByK()"><i class="icon"></i></label>
                 </div>
             </div>
+            <!-- APP下载入口：网页右上角，未在网站信息配置下载地址时整体隐藏 -->
+            <a th:if="${!#strings.isEmpty(application.website.appDownUrl)}"
+               th:href="${application.website.appDownUrl}" class="appDown fr" target="_blank"><i
+                    class="appDown_icon"></i>APP下载</a>
             <div class="bookShelf fr" id="headerUserInfo">
                 <a class="sj_link" href="/user/favorites.html">我的书架</a>
                 <span class="user_link"><i class="line mr20">|</i><a href="/user/login.html" class="mr15">登录</a><a

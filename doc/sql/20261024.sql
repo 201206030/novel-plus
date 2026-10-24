@@ -186,3 +186,15 @@ UNION ALL SELECT '可登录角色', count(*) FROM sys_role;
 -- DROP TABLE IF EXISTS bak_sys_user_20261023;
 -- DROP TABLE IF EXISTS bak_sys_role_menu_20261023;
 -- DROP TABLE IF EXISTS bak_sys_user_role_20261023;
+
+
+SET @exist := (SELECT COUNT(*) FROM information_schema.COLUMNS
+               WHERE TABLE_SCHEMA = DATABASE()
+                 AND TABLE_NAME = 'website_info'
+                 AND COLUMN_NAME = 'app_down_url');
+SET @sql := IF(@exist = 0,
+               'ALTER TABLE website_info ADD COLUMN app_down_url varchar(255) NOT NULL DEFAULT ''https://mp.weixin.qq.com/s/7aKaG-ztpew1jEA15V3Vpw'' COMMENT ''APP下载地址'' AFTER logo_dark',
+               'SELECT ''column app_down_url already exists'' msg');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;

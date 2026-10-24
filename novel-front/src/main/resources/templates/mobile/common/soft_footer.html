@@ -2,7 +2,9 @@
     <a href="/book" style="font-size: 14px;color: #92B8B1;">更多小说</a>
     <a href="javascript:readHistory()" style="font-size: 14px;color: #92B8B1;margin-left: 8px">阅读记录</a>
     <a href="javascript:toMyCollect()" style="font-size: 14px;color: #92B8B1;margin-left: 8px">书架</a>
-    <a href="/mobile/HotBook.apk" style="font-size: 14px;color: #92B8B1;margin-left: 8px">客户端</a>
+    <!-- APP下载入口：未在网站信息配置下载地址时整体隐藏（原硬编码 /mobile/HotBook.apk 已失效） -->
+    <a th:if="${!#strings.isEmpty(application.website.appDownUrl)}" th:href="${application.website.appDownUrl}"
+       target="_blank" style="font-size: 14px;color: #92B8B1;margin-left: 8px">客户端</a>
     <!--<a href="https://www.zinglizingli.xyz/me/index.html" style="font-size: 14px;color: #92B8B1;margin-left: 8px">开发者</a>-->
 
 

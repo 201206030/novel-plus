@@ -86,6 +86,7 @@ public class WebsiteService {
                 throw biz(entry.getKey() + "不能为空");
             }
         }
+        // appDownUrl 为选填：表单提交空串时会正常落库（覆盖旧值），前台按空值隐藏 APP 下载入口
         websiteInfo.setUpdateTime(new Date());
         websiteInfoMapper.updateByPrimaryKeySelective(websiteInfo);
     }

@@ -35,7 +35,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface WebsiteInfoMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, name, domain, keyword, description, qq, logo, logoDark, createTime, createUserId, updateTime, updateUserId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, name, domain, keyword, description, qq, logo, logoDark, appDownUrl, createTime, createUserId, updateTime, updateUserId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -69,6 +69,7 @@ public interface WebsiteInfoMapper {
         @Result(column="qq", property="qq", jdbcType=JdbcType.VARCHAR),
         @Result(column="logo", property="logo", jdbcType=JdbcType.VARCHAR),
         @Result(column="logo_dark", property="logoDark", jdbcType=JdbcType.VARCHAR),
+        @Result(column="app_down_url", property="appDownUrl", jdbcType=JdbcType.VARCHAR),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="create_user_id", property="createUserId", jdbcType=JdbcType.BIGINT),
         @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
@@ -108,6 +109,7 @@ public interface WebsiteInfoMapper {
             .map(qq).toProperty("qq")
             .map(logo).toProperty("logo")
             .map(logoDark).toProperty("logoDark")
+            .map(appDownUrl).toProperty("appDownUrl")
             .map(createTime).toProperty("createTime")
             .map(createUserId).toProperty("createUserId")
             .map(updateTime).toProperty("updateTime")
@@ -126,6 +128,7 @@ public interface WebsiteInfoMapper {
             .map(qq).toProperty("qq")
             .map(logo).toProperty("logo")
             .map(logoDark).toProperty("logoDark")
+            .map(appDownUrl).toProperty("appDownUrl")
             .map(createTime).toProperty("createTime")
             .map(createUserId).toProperty("createUserId")
             .map(updateTime).toProperty("updateTime")
@@ -144,6 +147,7 @@ public interface WebsiteInfoMapper {
             .map(qq).toPropertyWhenPresent("qq", record::getQq)
             .map(logo).toPropertyWhenPresent("logo", record::getLogo)
             .map(logoDark).toPropertyWhenPresent("logoDark", record::getLogoDark)
+            .map(appDownUrl).toPropertyWhenPresent("appDownUrl", record::getAppDownUrl)
             .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
             .map(createUserId).toPropertyWhenPresent("createUserId", record::getCreateUserId)
             .map(updateTime).toPropertyWhenPresent("updateTime", record::getUpdateTime)
@@ -188,6 +192,7 @@ public interface WebsiteInfoMapper {
                 .set(qq).equalTo(record::getQq)
                 .set(logo).equalTo(record::getLogo)
                 .set(logoDark).equalTo(record::getLogoDark)
+                .set(appDownUrl).equalTo(record::getAppDownUrl)
                 .set(createTime).equalTo(record::getCreateTime)
                 .set(createUserId).equalTo(record::getCreateUserId)
                 .set(updateTime).equalTo(record::getUpdateTime)
@@ -204,6 +209,7 @@ public interface WebsiteInfoMapper {
                 .set(qq).equalToWhenPresent(record::getQq)
                 .set(logo).equalToWhenPresent(record::getLogo)
                 .set(logoDark).equalToWhenPresent(record::getLogoDark)
+                .set(appDownUrl).equalToWhenPresent(record::getAppDownUrl)
                 .set(createTime).equalToWhenPresent(record::getCreateTime)
                 .set(createUserId).equalToWhenPresent(record::getCreateUserId)
                 .set(updateTime).equalToWhenPresent(record::getUpdateTime)
@@ -220,6 +226,7 @@ public interface WebsiteInfoMapper {
             .set(qq).equalTo(record::getQq)
             .set(logo).equalTo(record::getLogo)
             .set(logoDark).equalTo(record::getLogoDark)
+            .set(appDownUrl).equalTo(record::getAppDownUrl)
             .set(createTime).equalTo(record::getCreateTime)
             .set(createUserId).equalTo(record::getCreateUserId)
             .set(updateTime).equalTo(record::getUpdateTime)
@@ -238,6 +245,7 @@ public interface WebsiteInfoMapper {
             .set(qq).equalToWhenPresent(record::getQq)
             .set(logo).equalToWhenPresent(record::getLogo)
             .set(logoDark).equalToWhenPresent(record::getLogoDark)
+            .set(appDownUrl).equalToWhenPresent(record::getAppDownUrl)
             .set(createTime).equalToWhenPresent(record::getCreateTime)
             .set(createUserId).equalToWhenPresent(record::getCreateUserId)
             .set(updateTime).equalToWhenPresent(record::getUpdateTime)

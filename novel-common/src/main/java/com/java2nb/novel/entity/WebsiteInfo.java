@@ -28,6 +28,11 @@ public class WebsiteInfo {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String logoDark;
 
+    /**
+     * APP下载地址（空则前台隐藏下载入口）
+     */
+    private String appDownUrl;
+
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date createTime;
 
@@ -118,6 +123,14 @@ public class WebsiteInfo {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setLogoDark(String logoDark) {
         this.logoDark = logoDark == null ? null : logoDark.trim();
+    }
+
+    public String getAppDownUrl() {
+        return appDownUrl;
+    }
+
+    public void setAppDownUrl(String appDownUrl) {
+        this.appDownUrl = appDownUrl == null ? null : appDownUrl.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

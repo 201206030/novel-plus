@@ -333,7 +333,7 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
 .logo {
     width: 160px;
     float: left;
-    padding: 23px 130px 0 0;
+    padding: 23px 110px 0 0;
     display: block
 }
 
@@ -448,6 +448,18 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
     float: right
 }
 
+/* 登录后昵称限宽省略（common.js 会往 .user_link 里写入带 mr15 类的昵称链接）：
+   昵称过长会把头部右侧浮块总宽撑爆，触发 float drop 后被 topMain 的 overflow:hidden 裁掉，
+   导致“我的书架/用户名”整块看似消失 */
+.bookShelf .user_link a.mr15 {
+    display: inline-block;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: top
+}
+
 .bookShelf .user_head {
     width: 26px;
     height: 26px;
@@ -506,6 +518,61 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
     color: #fff;
     font-weight: 600;
     background: rgba(0, 0, 0, .07)
+}
+
+/* APP下载入口：网页右上角绿色胶囊按钮，仅在网站信息配置了下载地址时由 top.html 的 th:if 渲染 */
+.topMain .appDown {
+    float: right;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    margin: 28px 0 0 12px;
+    padding: 0 12px;
+    border-radius: 18px;
+    background: #3eaf7c;
+    color: #fff;
+    font-size: 14px;
+    transition: background-color .25s
+}
+
+.topMain .appDown:hover {
+    background: #35a271
+}
+
+/* 下载小图标：圆圈 + 竖线 + 下箭头（纯 CSS，不依赖字体图标） */
+.topMain .appDown .appDown_icon {
+    position: relative;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    border: 1px solid rgba(255, 255, 255, .9);
+    border-radius: 50%
+}
+
+.topMain .appDown .appDown_icon:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 2px;
+    width: 1px;
+    height: 4px;
+    margin-left: -.5px;
+    background: #fff
+}
+
+.topMain .appDown .appDown_icon:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-left: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    transform: rotate(-45deg)
 }
 
 .footer {

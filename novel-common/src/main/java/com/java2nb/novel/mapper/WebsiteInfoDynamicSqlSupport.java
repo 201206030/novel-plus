@@ -34,6 +34,8 @@ public final class WebsiteInfoDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> logoDark = websiteInfo.logoDark;
 
+    public static final SqlColumn<String> appDownUrl = websiteInfo.appDownUrl;
+
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Date> createTime = websiteInfo.createTime;
 
@@ -63,6 +65,8 @@ public final class WebsiteInfoDynamicSqlSupport {
         public final SqlColumn<String> logo = column("logo", JDBCType.VARCHAR);
 
         public final SqlColumn<String> logoDark = column("logo_dark", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> appDownUrl = column("app_down_url", JDBCType.VARCHAR);
 
         public final SqlColumn<Date> createTime = column("create_time", JDBCType.TIMESTAMP);
 
