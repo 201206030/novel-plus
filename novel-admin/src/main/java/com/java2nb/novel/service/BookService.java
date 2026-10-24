@@ -76,15 +76,17 @@ public class BookService {
 
     public PageBean<Book> bookList(String keyword, int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
+        // 默认按创建时间倒序（新书在前）；爬虫批量入库的书 create_time 常相同，
+        // 故加 update_time 做次级排序，保证分页稳定不重不漏
         List<Book> list = bookMapper.select(c -> {
             if (StringUtils.isNotBlank(keyword)) {
                 // 书名或作者名任一匹配
                 String likeVal = like(keyword);
                 return c.where(BookDynamicSqlSupport.bookName, isLike(likeVal))
                         .or(BookDynamicSqlSupport.authorName, isLike(likeVal))
-                        .orderBy(BookDynamicSqlSupport.updateTime.descending());
+                        .orderBy(BookDynamicSqlSupport.createTime.descending(), BookDynamicSqlSupport.updateTime.descending());
             }
-            return c.orderBy(BookDynamicSqlSupport.updateTime.descending());
+            return c.orderBy(BookDynamicSqlSupport.createTime.descending(), BookDynamicSqlSupport.updateTime.descending());
         });
         return PageBuilder.build(list);
     }
