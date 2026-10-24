@@ -115,10 +115,10 @@
         return num >= 100000 ? (num / 10000).toFixed(1).replace(/\.0$/, '') + '万' : String(num);
     }
 
-    //时间两行展示：日期 + 时刻
+    //时间单行完整展示（不再拆成日期/时刻两行）
     function fmtTime(t) {
         var d = new Date(Date.parse(t));
-        return d.Format('yyyy-MM-dd') + '<br>' + d.Format('hh:mm');
+        return d.Format('yyyy-MM-dd hh:mm');
     }
 
     //HTML转义，防止书名/章节名破坏表格结构
@@ -180,7 +180,11 @@
                                 + '<td class="goread"><span class="num">' + fmtNum(book.yesterdayBuy) + '</span></td>'
                                 + '<td class="goread time_cell">' + updTime + '</td>'
                                 + '<td class="goread"><span class="num">' + fmtNum(book.wordCount) + '</span></td>'
-                                + '<td class="goread">' + (book.bookStatus == 0 ? '<span class="tag tag_serial">连载中</span>' : '<span class="tag tag_done">已完结</span>') + '</td>'
+                                + '<td class="goread status_cell">'
+                                + (book.bookStatus == 0 ? '<span class="tag tag_serial">连载中</span>' : '<span class="tag tag_done">已完结</span>')
+                                // 上架状态：1=已上架（前台读者可见），0=未上架（仅作者自己可见）
+                                + (book.status == 1 ? '<span class="tag tag_online">已上架</span>' : '<span class="tag tag_unpublished">未上架</span>')
+                                + '</td>'
                                 + '<td class="goread opt" id="opt' + book.id + '">'
                                 + '<a target="_blank" href="/author/index_list.html?bookId=' + book.id + '">章节管理</a>'
                                 + '<a href="/author/ai_assistant.html?bookId=' + book.id + '">AI创作</a>'

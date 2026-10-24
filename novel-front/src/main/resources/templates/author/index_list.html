@@ -112,10 +112,10 @@
         return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    //时间两行展示：日期 + 时刻
+    //时间单行完整展示（不再拆成日期/时刻两行）
     function fmtTime(t) {
         var d = new Date(Date.parse(t));
-        return d.Format('yyyy-MM-dd') + '<br>' + d.Format('hh:mm');
+        return d.Format('yyyy-MM-dd hh:mm');
     }
 
     //加载顶部作品信息栏

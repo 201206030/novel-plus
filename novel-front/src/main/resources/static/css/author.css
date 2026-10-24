@@ -17,10 +17,12 @@
 .author_zone .btn_del:hover { background:#fef0f0; border-color:#f56c6c; color:#f56c6c }
 
 /* ---------- 表格卡片 ---------- */
-.author_zone .updateTable { width:100%; border:1px solid #e6f0ea; border-radius:10px; overflow:hidden; background:#fff; box-shadow:0 2px 12px rgba(62,175,124,.08); margin-top:15px }
-.author_zone .updateTable table { margin-bottom:0; table-layout:fixed }
-.author_zone .updateTable th { background:#f2faf6; color:#2c8a61; font-size:13px; height:44px; line-height:44px; border-top:0; white-space:nowrap; overflow:hidden }
-.author_zone .updateTable td { border-top:1px solid #eef4f0; color:#5c6b64; font-size:13px; height:52px; line-height:52px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* 列宽不再限制容器，内容放不下时整表横向滚动，靠滑动而不是裁剪来容纳 */
+.author_zone .updateTable { width:100%; border:1px solid #e6f0ea; border-radius:10px; overflow-x:auto; background:#fff; box-shadow:0 2px 12px rgba(62,175,124,.08); margin-top:15px }
+/* 去掉 table-layout:fixed：固定布局会把列宽锁死，nowrap 的内容只能溢出被裁 */
+.author_zone .updateTable table { margin-bottom:0; width:100% }
+.author_zone .updateTable th { background:#f2faf6; color:#2c8a61; font-size:13px; height:44px; line-height:44px; border-top:0; white-space:nowrap }
+.author_zone .updateTable td { border-top:1px solid #eef4f0; color:#5c6b64; font-size:13px; height:52px; line-height:52px; white-space:nowrap }
 .author_zone .updateTable tr:nth-child(2n) td { background:#fbfdfc }
 .author_zone .updateTable tbody tr:hover td { background:#f2faf6 }
 .author_zone .updateTable th.name { width:auto }
@@ -28,18 +30,18 @@
 .author_zone .pageBox { padding:14px 10px 4px; border-top:1px solid #eef4f0 }
 .author_zone .layui-laypage a:hover { color:#3eaf7c }
 
-/* ---------- 列宽控制（table-layout:fixed 以表头宽度为准） ---------- */
-.author_zone .updateTable th.col_idx { width:9% }
-.author_zone .updateTable th.col_visit { width:10% }
-.author_zone .updateTable th.col_buy { width:10% }
-.author_zone .updateTable th.col_time { width:12% }
-.author_zone .updateTable th.col_word { width:10% }
-.author_zone .updateTable th.col_status { width:11% }
-.author_zone .updateTable th.col_vip { width:10% }
-.author_zone .updateTable th.col_opt { width:16% }
+/* ---------- 列宽控制（px 给的是最小宽度，内容更宽时列自动撑开并触发横滚） ---------- */
+.author_zone .updateTable th.col_idx { width:78px }
+.author_zone .updateTable th.col_visit { width:96px }
+.author_zone .updateTable th.col_buy { width:96px }
+.author_zone .updateTable th.col_time { width:150px }
+.author_zone .updateTable th.col_word { width:96px }
+.author_zone .updateTable th.col_status { width:170px }
+.author_zone .updateTable th.col_vip { width:88px }
+.author_zone .updateTable th.col_opt { width:112px }
 
-/* ---------- 时间单元格：日期/时刻两行 ---------- */
-.author_zone .updateTable td.time_cell { line-height:1.5; padding:8px 0; font-size:12px; color:#7d8a83 }
+/* ---------- 时间单元格：完整日期时刻单行显示 ---------- */
+.author_zone .updateTable td.time_cell { font-size:12px; color:#7d8a83 }
 
 /* ---------- 操作单元格：文字链接竖排 ---------- */
 .author_zone .updateTable td.opt { padding:6px 0; line-height:1 }
@@ -54,19 +56,26 @@
 .author_zone .tag_done { background:#f5f5f5; color:#8a8a8a; border-color:#e5e5e5 }
 .author_zone .tag_vip { background:#fdf6ec; color:#e6a23c; border-color:#f5e1c0 }
 .author_zone .tag_free { background:#f2faf6; color:#2c8a61; border-color:#c8ead9 }
+.author_zone .tag_online { background:#edf7ed; color:#4e9a4e; border-color:#cfe9cf }
+/* 未上架只是尚未公开，不是异常状态，用中性色而不用红色；避开与同一格内「已完结」的纯灰撞色 */
+.author_zone .tag_unpublished { background:#f0f4f8; color:#6b7f95; border-color:#dbe4ee }
+
+/* 状态列同时展示“连载状态 + 上架状态”两个徽章，横向单行排列，列宽不够则由整表横滚容纳 */
+.author_zone .status_cell .tag { margin:0 3px }
 
 /* ---------- 数字强调 ---------- */
 .author_zone .num { color:#333; font-weight:600 }
 
 /* ---------- 作品单元格（封面+信息） ---------- */
-.author_zone .book_cell { display:flex; align-items:center; text-align:left; white-space:normal }
+.author_zone .book_cell { display:flex; align-items:center; text-align:left; white-space:nowrap }
 .author_zone .cover_wrap { position:relative; width:60px; height:80px; flex:none; margin-right:12px; border-radius:6px; overflow:hidden; background:#f6f6f6 }
 .author_zone .cover_wrap img { width:100%; height:100%; display:block; object-fit:cover }
 .author_zone .cover_wrap input[type="file"] { position:absolute; left:0; top:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:3 }
 .author_zone .cover_mask { position:absolute; left:0; bottom:0; width:100%; padding:4px 0; text-align:center; font-size:12px; color:#fff; background:rgba(0,0,0,.45); z-index:2; opacity:0; transition:opacity .2s }
 .author_zone .cover_wrap:hover .cover_mask { opacity:1 }
-.author_zone .book_info { overflow:hidden; min-width:0; flex:1 }
-.author_zone .book_info .book_name { display:block; height:auto; line-height:1.4; font-size:14px; color:#333; max-width:170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+/* flex 子项默认 min-width:auto，不设 flex:none 时长书名会把自身宽度压到内容以下，书名仍被截 */
+.author_zone .book_info { flex:none }
+.author_zone .book_info .book_name { display:block; height:auto; line-height:1.4; font-size:14px; color:#333; white-space:nowrap }
 .author_zone .book_info .book_name:hover { color:#3eaf7c }
 .author_zone .book_info .book_cat { font-size:12px; color:#99a59e; margin-top:4px; line-height:1 }
 
