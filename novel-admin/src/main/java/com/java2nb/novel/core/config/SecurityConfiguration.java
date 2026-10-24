@@ -82,8 +82,10 @@ public class SecurityConfiguration {
                             "/css/**", "/javascript/**", "/layui/**", "/images/**", "/favicon.ico", "/error").permitAll();
                     // 登录用户信息与菜单：任何已登录用户都要拿（前端据此渲染头部与侧边菜单）
                     auth.requestMatchers("/sys/auth/**").authenticated();
-                    // 后台首页与统计：聚合数据，登录即可见，避免无权限角色打开首页被连环 403
-                    auth.requestMatchers("/", "/index", "/index.html", "/stat/**", "/file/upload").authenticated();
+                    // 后台首页与统计：聚合数据，登录即可见，避免无权限角色打开首页被连环 403；
+                    // 站点信息只读接口也放行（公共头部每页都取站点名/前台地址，不属于任何模块权限）
+                    auth.requestMatchers("/", "/index", "/index.html", "/stat/**", "/file/upload",
+                            "/website/websiteInfo/get").authenticated();
                     // 系统管理（RBAC 维护）
                     auth.requestMatchers("/sys/**").hasAnyAuthority(AdminLoginUser.SUPER_ADMIN_AUTHORITY, SYS_PERM);
                     // 业务模块按权限标识放行
