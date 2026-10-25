@@ -9,6 +9,7 @@
         left join book t2 on t1.book_id = t2.id
         left join author t3 on t1.author_id = t3.id
         <where>
+            and t1.book_id = 0
             <if test="keyword != null and keyword != ''">
                 and (t2.book_name like concat('%', #{keyword}, '%') or t3.pen_name like concat('%', #{keyword}, '%'))
             </if>
