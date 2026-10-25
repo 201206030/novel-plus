@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 作家日收入统计任务
@@ -67,7 +68,7 @@ public class MonthIncomeStaSchedule {
                     Long bookId = book.getId();
 
                     //3.月收入数据未统计入库,分作品统计数据入库
-                    Long monthIncome = authorService.queryTotalAccount(userId, bookId, startTime, endTime);
+                    long monthIncome = Optional.ofNullable(authorService.queryTotalAccount(userId, bookId, startTime, endTime)).orElse(0L);
 
                     BigDecimal monthIncomeShare = new BigDecimal(monthIncome)
                         .multiply(authorIncomeConfig.getShareProportion());
