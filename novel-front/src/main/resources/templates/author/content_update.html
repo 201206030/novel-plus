@@ -8,33 +8,31 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/author.css"/>
+        <style>
+            /* 编辑器工具条：字数统计/自动保存状态/内容自查 */
+            .editor_tipbar { display:flex; align-items:center; justify-content:space-between; width:80%; margin:6px auto 0; font-size:12px; color:#7d8a83 }
+            .editor_tipbar .word_stat b { color:#2c8a61; font-weight:600 }
+            .editor_tipbar .autosave_stat { margin-left:14px }
+            .btn_check { display:inline-block; padding:6px 14px; border-radius:6px; border:1px solid #4a90d9; color:#4a90d9; background:#fff; font-size:12px; cursor:pointer; vertical-align:middle }
+            .btn_check:hover { background:#eef4fd }
+            /* 自查结果弹层 */
+            .check_result { padding:16px 20px; font-size:13px; line-height:1.9; color:#5c6b64 }
+            .check_result h4 { font-size:13px; color:#333; margin-top:10px }
+            .check_result .chk_bad { color:#e05a5a }
+            .check_result .chk_tip { color:#e6a23c }
+            .check_result .chk_ok { color:#2c8a61 }
+            .check_result .word_tag { display:inline-block; margin:2px 6px 2px 0; padding:2px 8px; background:#fef0f0; color:#e05a5a; border-radius:4px; font-size:12px }
+        </style>
     </head>
 </head>
-<body class="">
+<body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book on" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
-                <li><a class="link_profile" href="/author/author_info.html">作者信息</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('book')"></div>
         <div class="my_r">
             <div class="my_bookshelf">
 
@@ -51,6 +49,10 @@
                                 <li id="contentLi">
                                 <textarea  name="bookContent" rows="30" cols="80" id="bookContent"
                                           class="textarea"></textarea>
+                                <div class="editor_tipbar">
+                                    <span class="word_stat">字数：<b id="wordStat">0</b><span class="autosave_stat" id="autosaveStat"></span></span>
+                                    <button type="button" class="btn_check" onclick="checkContent()">内容自查</button>
+                                </div>
                                 </li>
                                 <li style="margin-top: 10px"><input type="button" onclick="addBookContent()" name="btnRegister" value="提交"
                                            id="btnRegister" class="btn_red">
@@ -112,6 +114,12 @@
     var indexName = decodeURI(decodeURI(getSearchString("indexName")));
     var isVip = getSearchString("isVip");
 
+    //localStorage 草稿键：按章节隔离，提交成功后清除
+    var draftKey = 'author_chapter_draft_update_' + indexId;
+
+    //章节正文是否已从服务端加载完成（加载前不触发自动保存，避免空稿覆盖）
+    var contentLoaded = false;
+
     $("#bookIndex").val(indexName);
     if(isVip == 1){
         $("#contentLi").after("<b>是否收费：</b>\n" +
@@ -133,6 +141,9 @@
             if (data.code == 200) {
 
                 $("#bookContent").html(data.data);
+                contentLoaded = true;
+                updateWordStat();
+                restoreLocalDraft();
 
 
 
@@ -190,6 +201,8 @@
             success: function (data) {
                 if (data.code == 200) {
 
+                    //提交成功，清除本地草稿，避免下次误恢复旧稿
+                    clearLocalDraft();
                     window.location.href = '/author/index_list.html?bookId='+bookId;
 
 
@@ -205,6 +218,152 @@
             }
         })
 
+    }
+
+    // ---------- 自动保存草稿（localStorage 防丢稿） ----------
+    var saveTimer = null;
+
+    function updateWordStat() {
+        var len = $("#bookContent").val().replace(/\s/g, '').length;
+        $("#wordStat").text(len);
+    }
+
+    function clearLocalDraft() {
+        try {
+            localStorage.removeItem(draftKey);
+        } catch (e) {
+        }
+    }
+
+    function saveLocalDraft() {
+        var content = $("#bookContent").val();
+        if (!content || !contentLoaded) {
+            return;
+        }
+        try {
+            localStorage.setItem(draftKey, JSON.stringify({
+                'indexName': $("#bookIndex").val(),
+                'content': content,
+                'saveTime': new Date().toLocaleTimeString()
+            }));
+            $("#autosaveStat").text('已自动保存');
+        } catch (e) {
+            $("#autosaveStat").text('自动保存不可用');
+        }
+    }
+
+    //本地草稿与服务端内容不一致时才提示恢复，避免无意义弹窗
+    function restoreLocalDraft() {
+        var raw = null;
+        try {
+            raw = localStorage.getItem(draftKey);
+        } catch (e) {
+        }
+        if (!raw) {
+            return;
+        }
+        var draft;
+        try {
+            draft = JSON.parse(raw);
+        } catch (e) {
+            clearLocalDraft();
+            return;
+        }
+        if (!draft || !draft.content || draft.content === $("#bookContent").val()) {
+            return;
+        }
+        layer.confirm('检测到本地未提交的修改草稿（保存于 ' + (draft.saveTime || '未知时间') + '），是否恢复？', {
+            btn: ['恢复', '丢弃']
+        }, function (index) {
+            layer.close(index);
+            $("#bookIndex").val(draft.indexName || '');
+            $("#bookContent").val(draft.content);
+            updateWordStat();
+            $("#autosaveStat").text('已恢复本地草稿');
+        }, function (index) {
+            layer.close(index);
+            clearLocalDraft();
+        });
+    }
+
+    //输入停顿3秒自动保存
+    $("#bookContent,#bookIndex").on('input keyup change', function () {
+        if (!contentLoaded) {
+            return;
+        }
+        updateWordStat();
+        $("#autosaveStat").text('编辑中…');
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(saveLocalDraft, 3000);
+    });
+
+    //离开页面前仍有未存修改时补一次保存（提交成功路径已提前清除）
+    window.onbeforeunload = function () {
+        if ($("#bookContent").val() && contentLoaded && !lock) {
+            saveLocalDraft();
+        }
+    };
+
+    // ---------- 内容自查：敏感词/段落格式/有效字数（保存前预检，不拦截） ----------
+    function checkContent() {
+        var content = $("#bookContent").val();
+        if (!content) {
+            layer.msg('请先输入章节内容');
+            return;
+        }
+        var loading = layer.load(1, {shade: 0.3});
+        $.ajax({
+            type: "POST",
+            url: "/author/checkChapterContent",
+            data: {'content': content},
+            dataType: "json",
+            success: function (data) {
+                layer.close(loading);
+                if (data.code == 200) {
+                    showCheckResult(data.data);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.close(loading);
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function showCheckResult(r) {
+        var html = '<p>有效字数：<b class="chk_ok">' + (r.wordCount || 0) + '</b> 字</p>';
+        if (r.problems && r.problems.length > 0) {
+            html += '<h4>需要修正的问题</h4>';
+            for (var i = 0; i < r.problems.length; i++) {
+                html += '<p class="chk_bad">· ' + r.problems[i] + '</p>';
+            }
+        }
+        if (r.sensitiveWords && r.sensitiveWords.length > 0) {
+            html += '<h4>命中敏感词（建议修改后保存）</h4><p>';
+            for (var j = 0; j < r.sensitiveWords.length; j++) {
+                html += '<span class="word_tag">' + r.sensitiveWords[j] + '</span>';
+            }
+            html += '</p>';
+        }
+        if (r.tips && r.tips.length > 0) {
+            html += '<h4>格式建议</h4>';
+            for (var k = 0; k < r.tips.length; k++) {
+                html += '<p class="chk_tip">· ' + r.tips[k] + '</p>';
+            }
+        }
+        if ((!r.problems || r.problems.length == 0) && (!r.sensitiveWords || r.sensitiveWords.length == 0) && (!r.tips || r.tips.length == 0)) {
+            html += '<p class="chk_ok">未发现明显问题，可以安心保存～</p>';
+        }
+        layer.open({
+            type: 1,
+            title: '内容自查结果',
+            area: ['540px', '440px'],
+            content: '<div class="check_result">' + html + '</div>'
+        });
     }
 
 </script>

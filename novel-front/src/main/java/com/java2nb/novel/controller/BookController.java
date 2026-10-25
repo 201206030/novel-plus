@@ -2,6 +2,7 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.utils.IndexStatusUtil;
 import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.BookContentService;
@@ -160,6 +161,10 @@ public class BookController extends BaseController {
             bookIndex = null;
         }
         if (bookIndex == null) {
+            return RestResult.fail(ResponseStatus.INDEX_NOT_EXISTS);
+        }
+        //草稿或未到的定时章节对读者不可见
+        if (!IndexStatusUtil.isReaderVisible(bookIndex)) {
             return RestResult.fail(ResponseStatus.INDEX_NOT_EXISTS);
         }
         Long bookId = bookIndex.getBookId();

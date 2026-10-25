@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java2nb.novel.mapper.FrontAuthorDashboardMapper">
+
+    <!-- 每日更新字数：仅已发布章节，create_time 即发布日 -->
+    <select id="dailyUpdateWords" resultType="java.util.LinkedHashMap">
+        select date_format(bi.create_time, '%Y-%m-%d') as d, ifnull(sum(bi.word_count), 0) as value
+        from book_index bi
+                 join book b on b.id = bi.book_id
+        where b.author_id = #{authorId}
+          and bi.status = 1
+          and bi.create_time &gt;= #{start}
+        group by d
+        order by d
+    </select>
+
+    <!-- 每日追读人数：阅读记录(user_read_history)按用户去重，update_time 为当日最后活跃时间 -->
+    <select id="dailyFollowRead" resultType="java.util.LinkedHashMap">
+        select date_format(h.update_time, '%Y-%m-%d') as d, count(distinct h.user_id) as value
+        from user_read_history h
+                 join book b on b.id = h.book_id
+        where b.author_id = #{authorId}
+          and h.update_time &gt;= #{start}
+        group by d
+        order by d
+    </select>
+
+    <!-- 每日新增收藏：书架加入时间 -->
+    <select id="dailyCollect" resultType="java.util.LinkedHashMap">
+        select date_format(s.create_time, '%Y-%m-%d') as d, count(*) as value
+        from user_bookshelf s
+                 join book b on b.id = s.book_id
+        where b.author_id = #{authorId}
+          and s.create_time &gt;= #{start}
+        group by d
+        order by d
+    </select>
+
+    <!-- 存稿统计：草稿(0)与定时发布(2)章节的数量与字数 -->
+    <select id="draftStat" resultType="java.util.LinkedHashMap">
+        select ifnull(sum(case when bi.status = 0 then 1 else 0 end), 0)                      as draftCount,
+               ifnull(sum(case when bi.status = 0 then bi.word_count else 0 end), 0)          as draftWords,
+               ifnull(sum(case when bi.status = 2 then 1 else 0 end), 0)                      as scheduleCount
+        from book_index bi
+                 join book b on b.id = bi.book_id
+        where b.author_id = #{authorId}
+          and bi.status in (0, 2)
+    </select>
+
+    <!-- 有更新的日期列表（倒序），用于计算连续更新天数与最近更新日期 -->
+    <select id="updateDates" resultType="java.lang.String">
+        select distinct date_format(bi.create_time, '%Y-%m-%d')
+        from book_index bi
+                 join book b on b.id = bi.book_id
+        where b.author_id = #{authorId}
+          and bi.status = 1
+          and bi.create_time &gt;= #{start}
+        order by date_format(bi.create_time, '%Y-%m-%d') desc
+    </select>
+
+    <!-- 累计收藏总数 -->
+    <select id="collectTotal" resultType="long">
+        select count(*)
+        from user_bookshelf s
+                 join book b on b.id = s.book_id
+        where b.author_id = #{authorId}
+    </select>
+
+</mapper>

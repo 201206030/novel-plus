@@ -22,6 +22,16 @@ public class BookIndex {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte isVip;
 
+    /**
+     * 发布状态：0草稿，1已发布，2定时发布
+     */
+    private Byte status;
+
+    /**
+     * 定时发布时间（status=2时有效）
+     */
+    private Date publishTime;
+
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer bookPrice;
 
@@ -92,6 +102,22 @@ public class BookIndex {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setIsVip(Byte isVip) {
         this.isVip = isVip;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

@@ -1,5 +1,7 @@
 package com.java2nb.novel.controller;
 
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
+import com.java2nb.novel.core.ai.ChapterTextCheckUtil;
 import io.github.xxyopen.model.page.PageBean;
 
 import com.java2nb.novel.core.bean.UserDetails;
@@ -10,6 +12,8 @@ import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookIndex;
+import com.java2nb.novel.service.AuthorDashboardService;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookIncomeSummaryVO;
@@ -30,7 +34,9 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 11797
@@ -44,6 +50,8 @@ public class AuthorController extends BaseController {
     private final AuthorService authorService;
 
     private final BookService bookService;
+
+    private final AuthorDashboardService authorDashboardService;
 
     private final ChatClient chatClient;
 
@@ -191,20 +199,93 @@ public class AuthorController extends BaseController {
 
 
     /**
-     * 发布章节内容
+     * 发布章节内容（支持立即发布/存草稿/定时发布）
      */
     @PostMapping("addBookContent")
     public RestResult<Void> addBookContent(Long bookId, String indexName, String content, Byte isVip,
+        @RequestParam(value = "publishStatus", required = false, defaultValue = "1") Byte publishStatus,
+        @RequestParam(value = "publishTime", required = false) Date publishTime,
         HttpServletRequest request) {
         Author author = checkAuthor(request);
 
         content = content.replaceAll("\\n", "<br>")
             .replaceAll("\\s", "&nbsp;");
         //发布章节内容
-        bookService.addBookContent(bookId, indexName, content, isVip, author.getId());
+        bookService.addBookContent(bookId, indexName, content, isVip, author.getId(), publishStatus, publishTime);
 
         return RestResult.ok();
     }
+
+    /**
+     * 作者端分页查询章节列表（含草稿/定时发布状态）
+     */
+    @GetMapping("listIndexByPage")
+    public RestResult<PageBean<BookIndex>> listIndexByPage(@RequestParam("bookId") Long bookId,
+        @RequestParam(value = "curr", defaultValue = "1") int page,
+        @RequestParam(value = "limit", defaultValue = "20") int pageSize,
+        HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        return RestResult.ok(bookService.queryAuthorIndexPage(bookId, author.getId(), page, pageSize));
+    }
+
+    /**
+     * 立即发布章节（草稿/定时 → 已发布）
+     */
+    @PostMapping("publishIndex/{indexId}")
+    public RestResult<Void> publishIndex(@PathVariable("indexId") Long indexId, HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        bookService.publishIndex(indexId, author.getId());
+        return RestResult.ok();
+    }
+
+    /**
+     * 将草稿章节设为定时发布
+     */
+    @PostMapping("scheduleIndex")
+    public RestResult<Void> scheduleIndex(@RequestParam("indexId") Long indexId,
+        @RequestParam("publishTime") Date publishTime, HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        bookService.scheduleIndex(indexId, author.getId(), publishTime);
+        return RestResult.ok();
+    }
+
+    /**
+     * 章节内容自查：有效字数/重复段落/敏感词/段落格式建议（发布前预检，不拦截）
+     */
+    @PostMapping("checkChapterContent")
+    public RestResult<Map<String, Object>> checkChapterContent(@RequestParam("content") String content) {
+        List<String> problems = ChapterTextCheckUtil.check(content, 0);
+        List<String> tips = ChapterTextCheckUtil.formatTips(content);
+        // 与发布一致的敏感词检测（发布时不替换，仅提醒作者自行修改）
+        List<String> sensitiveWords =
+            SensitiveWordHelper.findAll(content == null ? "" : content.replaceAll("\\s", " "));
+        Map<String, Object> result = new HashMap<>(4);
+        result.put("wordCount", ChapterTextCheckUtil.validWordCount(content));
+        result.put("problems", problems);
+        result.put("tips", tips);
+        result.put("sensitiveWords", sensitiveWords);
+        return RestResult.ok(result);
+    }
+
+    /**
+     * 创作数据看板摘要：连续更新天数/存稿统计/今日与近30日更新字数等
+     */
+    @GetMapping("dashboardSummary")
+    public RestResult<Map<String, Object>> dashboardSummary(HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        return RestResult.ok(authorDashboardService.summary(author.getId()));
+    }
+
+    /**
+     * 创作数据看板趋势：近7/30日更新字数、追读（阅读记录去重）、新增收藏
+     */
+    @GetMapping("dashboardTrend")
+    public RestResult<Map<String, Object>> dashboardTrend(
+        @RequestParam(value = "days", defaultValue = "7") int days, HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        return RestResult.ok(authorDashboardService.trend(author.getId(), days));
+    }
+
 
     /**
      * 查询章节内容

@@ -13,30 +13,30 @@
 </head>
 <body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book on" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
-                <li><a class="link_profile" href="/author/author_info.html">作者信息</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('book')"></div>
         <div class="my_r">
+            <!-- 创作数据看板：标题与小说列表同款 .title 结构保证左对齐，摘要卡片 + 断更/存稿提醒 + 趋势折线图在卡片内 -->
+            <div class="my_bookshelf" id="dashWrap" style="display: none">
+                <div class="title cf">
+                    <h2 class="fl">创作数据看板</h2>
+                    <div class="fr dash_days">
+                        趋势区间
+                        <select id="dashDays">
+                            <option value="7" selected>近7日</option>
+                            <option value="30">近30日</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dash_box" id="dashBox">
+                    <div class="dash_cards" id="dashCards"></div>
+                    <div class="dash_alert" id="dashAlert"></div>
+                    <div class="dash_chart" id="dashChart"></div>
+                </div>
+            </div>
             <div id="noContentDiv">
                 <div class="empty_box">
                     <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#3eaf7c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -101,11 +101,128 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script src="/javascript/date.js" type="text/javascript"></script>
 <script src="/javascript/common.js" type="text/javascript"></script>
+<script src="/javascript/echarts.min.js?v=1" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
     var coverUpdateInterval;
 
     search(1, 10);
+    loadDashboard();
+
+    // ---------- 创作数据看板 ----------
+    var dashChart = null;
+
+    function loadDashboard() {
+        $.ajax({
+            type: "get",
+            url: "/author/dashboardSummary",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderDashCards(data.data);
+                    renderDashAlert(data.data);
+                    $("#dashWrap").show();
+                    renderDashTrend($("#dashDays").val());
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                }
+            }
+        });
+    }
+
+    function renderDashCards(s) {
+        var cards = [
+            ['连续更新', (s.streakDays || 0) + ' 天'],
+            ['今日更新', fmtNum(s.todayWords) + ' 字'],
+            ['本周更新', fmtNum(s.weekWords) + ' 字'],
+            ['存稿', (s.draftCount || 0) + ' 章 · ' + fmtNum(s.draftWords) + ' 字'],
+            ['定时发布', (s.scheduleCount || 0) + ' 章'],
+            ['30日追读', fmtNum(s.followRead30)],
+            ['30日新增收藏', fmtNum(s.collect30)]
+        ];
+        var html = '';
+        for (var i = 0; i < cards.length; i++) {
+            html += '<div class="dash_card"><b>' + cards[i][1] + '</b><span>' + cards[i][0] + '</span></div>';
+        }
+        $("#dashCards").html(html);
+    }
+
+    //断更/存稿提醒：今天已更新或连续更新较久给正向反馈，断更天数越多提醒越强
+    function renderDashAlert(s) {
+        var msg = '', cls = '';
+        if (s.gapDays == -1 || !s.lastUpdateDate) {
+            msg = '还没有已发布的章节，写好第一章就现在～';
+            cls = 'dash_warn';
+        } else if (s.gapDays >= 3) {
+            msg = '已断更 ' + s.gapDays + ' 天（最近更新：' + s.lastUpdateDate + '），读者流失高风险，快恢复更新！';
+            cls = 'dash_warn';
+        } else if (s.gapDays >= 1) {
+            msg = '今天还没有更新（连续更新 ' + s.streakDays + ' 天中断在昨天），别让这个月断更超过 3 天哦～';
+            cls = 'dash_warn';
+        } else if (s.streakDays >= 7) {
+            msg = '已连续更新 ' + s.streakDays + ' 天，保持住这个节奏！';
+            cls = 'dash_ok';
+        } else {
+            msg = '今日已更新 ' + fmtNum(s.todayWords) + ' 字，继续加油～';
+            cls = 'dash_ok';
+        }
+        //有存稿时追加定时发布建议，引导囤稿作者控更节奏
+        if (s.draftCount > 0 && s.gapDays < 1) {
+            msg += ' 当前有 ' + s.draftCount + ' 章存稿（' + fmtNum(s.draftWords) + ' 字），可在章节列表安排定时发布。';
+        }
+        $("#dashAlert").removeClass('dash_warn dash_ok').addClass(cls).text(msg);
+    }
+
+    function renderDashTrend(days) {
+        $.ajax({
+            type: "get",
+            url: "/author/dashboardTrend",
+            data: {'days': days},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    drawDashChart(data.data);
+                }
+            }
+        });
+    }
+
+    //与后台首页同款做法：ECharts 本地化，缺失时降级为文字提示
+    function drawDashChart(trend) {
+        if (!window.echarts) {
+            $("#dashChart").html('<p style="padding:40px 0;text-align:center;color:#99a59e">图表组件未加载，趋势数据暂不可用</p>');
+            return;
+        }
+        if (!dashChart) {
+            dashChart = echarts.init(document.getElementById('dashChart'));
+            window.addEventListener('resize', function () {
+                dashChart && dashChart.resize();
+            });
+        }
+        var COLORS = {words: '#3eaf7c', followReads: '#4a90d9', collects: '#e6a23c'};
+        dashChart.setOption({
+            tooltip: {trigger: 'axis'},
+            legend: {data: ['更新字数', '追读人数', '新增收藏'], top: 0},
+            grid: {left: 50, right: 20, top: 34, bottom: 26},
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: trend.dates,
+                axisLabel: {formatter: function (v) { return v.substring(5); }}
+            },
+            yAxis: {type: 'value'},
+            series: [
+                {name: '更新字数', type: 'line', smooth: true, data: trend.words, itemStyle: {color: COLORS.words}, lineStyle: {color: COLORS.words}},
+                {name: '追读人数', type: 'line', smooth: true, data: trend.followReads, itemStyle: {color: COLORS.followReads}, lineStyle: {color: COLORS.followReads}},
+                {name: '新增收藏', type: 'line', smooth: true, data: trend.collects, itemStyle: {color: COLORS.collects}, lineStyle: {color: COLORS.collects}}
+            ]
+        });
+    }
+
+    $("#dashDays").on('change', function () {
+        renderDashTrend($(this).val());
+    });
 
     //数字缩写：超过10万用“万”作单位，避免数字过长撑宽列
     function fmtNum(n) {

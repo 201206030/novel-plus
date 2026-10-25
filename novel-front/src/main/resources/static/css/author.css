@@ -6,6 +6,14 @@
 .author_zone .my_bookshelf .title h2 { font-size:17px; color:#333; font-weight:600; padding-left:10px; border-left:4px solid #3eaf7c }
 .author_zone .my_bookshelf .title .sub { font-size:13px; color:#5c6b64; font-weight:normal; margin-left:12px }
 
+/* ---------- 稿费页顶部标签（订阅明细 / 稿费汇总）：双标题场景，不用单标题的绿竖条，改为下划线式 tab ---------- */
+.author_zone .my_bookshelf .title.income_tabs { padding:16px 0 0; line-height:normal; border-bottom:1px solid #eef4f0; margin:8px 0 15px }
+.author_zone .income_tabs .itab { position:relative; display:inline-block; margin-right:26px; padding:0 2px 12px; font-size:15px; color:#5c6b64; text-decoration:none }
+.author_zone .income_tabs .itab:last-child { margin-right:0 }
+.author_zone .income_tabs .itab:hover { color:#3eaf7c }
+.author_zone .income_tabs .itab.active { color:#2c8a61; font-weight:600 }
+.author_zone .income_tabs .itab.active:after { content:""; position:absolute; left:0; right:0; bottom:0; height:3px; background:#3eaf7c; border-radius:3px }
+
 /* ---------- 按钮 ---------- */
 .author_zone .btn_main, .author_zone .btn_ghost { display:inline-block; border-radius:20px; font-size:13px; line-height:1; text-decoration:none; vertical-align:middle; box-sizing:border-box; transition:all .2s }
 .author_zone .btn_main { padding:9px 22px; background:#3eaf7c; border:1px solid #3eaf7c; color:#fff }
@@ -25,13 +33,13 @@
 .author_zone .updateTable td { border-top:1px solid #eef4f0; color:#5c6b64; font-size:13px; height:52px; line-height:52px; white-space:nowrap }
 .author_zone .updateTable tr:nth-child(2n) td { background:#fbfdfc }
 .author_zone .updateTable tbody tr:hover td { background:#f2faf6 }
-.author_zone .updateTable th.name { width:auto }
+.author_zone .updateTable th.name,
+.author_zone .updateTable td.name { width:auto; text-align:center }
 .author_zone .updateTable .goread { padding:0 8px }
 .author_zone .pageBox { padding:14px 10px 4px; border-top:1px solid #eef4f0 }
 .author_zone .layui-laypage a:hover { color:#3eaf7c }
 
 /* ---------- 列宽控制（px 给的是最小宽度，内容更宽时列自动撑开并触发横滚） ---------- */
-.author_zone .updateTable th.col_idx { width:78px }
 .author_zone .updateTable th.col_visit { width:96px }
 .author_zone .updateTable th.col_buy { width:96px }
 .author_zone .updateTable th.col_time { width:150px }
@@ -59,6 +67,9 @@
 .author_zone .tag_online { background:#edf7ed; color:#4e9a4e; border-color:#cfe9cf }
 /* 未上架只是尚未公开，不是异常状态，用中性色而不用红色；避开与同一格内「已完结」的纯灰撞色 */
 .author_zone .tag_unpublished { background:#f0f4f8; color:#6b7f95; border-color:#dbe4ee }
+/* 草稿存稿待发布用暖橙，定时待发用蓝，与已发布的绿色区分 */
+.author_zone .tag_draft { background:#fdf6ec; color:#e6a23c; border-color:#f5e1c0 }
+.author_zone .tag_schedule { background:#eef4fd; color:#4a90d9; border-color:#d3e3f7 }
 
 /* 状态列同时展示“连载状态 + 上架状态”两个徽章，横向单行排列，列宽不够则由整表横滚容纳 */
 .author_zone .status_cell .tag { margin:0 3px }
@@ -80,9 +91,6 @@
 .author_zone .book_info .book_cat { font-size:12px; color:#99a59e; margin-top:4px; line-height:1 }
 .author_zone .book_info .book_last { font-size:12px; color:#7d8a83; margin-top:6px; line-height:1; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
 
-/* ---------- 章节序号 ---------- */
-.author_zone .idx_no { display:inline-block; min-width:28px; padding:2px 6px; border-radius:10px; background:#f2faf6; color:#2c8a61; font-size:12px; text-align:center }
-
 /* ---------- 空状态 ---------- */
 .author_zone .empty_box { padding:80px 0 100px; text-align:center; color:#99a59e }
 .author_zone .empty_box svg { opacity:.6 }
@@ -95,3 +103,60 @@
 .author_zone .book_brief .back_link:hover { text-decoration:underline }
 .author_zone .book_brief h3 { font-size:16px; color:#2c8a61; font-weight:600; line-height:1.4 }
 .author_zone .book_brief p { font-size:12px; color:#5c6b64; margin-top:8px }
+
+/* ---------- 创作数据看板（首页 dashboard）：标题复用 .my_bookshelf .title 结构，卡片仅包内容 ---------- */
+.author_zone .dash_box { margin-bottom:20px; padding:2px 20px 18px; border:1px solid #e6f0ea; border-radius:10px; background:#fff; box-shadow:0 2px 12px rgba(62,175,124,.08) }
+.author_zone .dash_days { font-size:13px; color:#5c6b64; line-height:30px }
+.author_zone .dash_days select { height:28px; padding:0 8px; border:1px solid #c8ead9; border-radius:6px; color:#2c8a61; background:#fff; outline:none; margin-left:8px }
+.author_zone .dash_cards { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px }
+.author_zone .dash_card { flex:1; min-width:110px; text-align:center; padding:12px 6px; background:#f2faf6; border-radius:8px }
+.author_zone .dash_card b { display:block; font-size:20px; color:#2c8a61; font-weight:600; line-height:1.4 }
+.author_zone .dash_card span { display:block; font-size:12px; color:#5c6b64; margin-top:6px }
+.author_zone .dash_alert { display:none; margin-top:14px; padding:10px 14px; border-radius:8px; font-size:13px; line-height:1.6 }
+.author_zone .dash_alert.dash_warn { display:block; background:#fef0f0; color:#e05a5a; border:1px solid #fbc4c4 }
+.author_zone .dash_alert.dash_ok { display:block; background:#f2faf6; color:#2c8a61; border:1px solid #c8ead9 }
+.author_zone .dash_chart { width:100%; height:280px; margin-top:16px }
+
+/* ---------- 章节编辑器（自动保存/自查） ---------- */
+.author_zone .editor_tipbar { display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:12px; color:#7d8a83 }
+.author_zone .editor_tipbar .word_stat b { color:#2c8a61; font-weight:600 }
+.author_zone .editor_tipbar .autosave_stat { margin-left:14px }
+.author_zone .btn_check { display:inline-block; padding:6px 14px; border-radius:6px; border:1px solid #4a90d9; color:#4a90d9; background:#fff; font-size:12px; cursor:pointer; vertical-align:middle }
+.author_zone .btn_check:hover { background:#eef4fd }
+.author_zone .publish_opt { margin-top:10px }
+.author_zone .publish_opt .publish_time_input { display:none; margin-left:8px; width:150px; height:28px; padding:0 8px; border:1px solid #e6e6e6; border-radius:4px; font-size:12px }
+.author_zone .check_result { padding:16px 20px; font-size:13px; line-height:1.9; color:#5c6b64 }
+.author_zone .check_result h4 { font-size:13px; color:#333; margin-top:10px }
+.author_zone .check_result .chk_bad { color:#e05a5a }
+.author_zone .check_result .chk_tip { color:#e6a23c }
+.author_zone .check_result .chk_ok { color:#2c8a61 }
+.author_zone .check_result .word_tag { display:inline-block; margin:2px 6px 2px 0; padding:2px 8px; background:#fef0f0; color:#e05a5a; border-radius:4px; font-size:12px }
+
+/* ---------- 作家专区公共头部（author/common/header 片段，参照管理后台 adm_header） ---------- */
+.author_zone .auth_header { position:sticky; top:0; z-index:990; height:48px; background:linear-gradient(90deg, #2c8a61, #3eaf7c); box-shadow:0 2px 8px rgba(44,138,97,.25) }
+.author_zone .auth_header_in { width:1020px; height:48px; margin:0 auto; display:flex; align-items:center; justify-content:space-between }
+@media screen and (max-width:1060px) { .author_zone .auth_header_in { width:100%; padding:0 16px; box-sizing:border-box } }
+.author_zone .auth_header_logo { display:inline-flex; align-items:center; gap:8px; color:#fff; font-size:16px; font-weight:bold; text-decoration:none }
+.author_zone .auth_header_logo:hover { color:#fff; opacity:.9 }
+.author_zone .auth_header_right { display:inline-flex; align-items:center; gap:12px }
+.author_zone .auth_header_btn { position:relative; display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border:1px solid rgba(255,255,255,.55); border-radius:6px; color:#fff; font-size:13px; text-decoration:none; transition:background .15s, border-color .15s }
+.author_zone .auth_header_btn:hover { color:#fff; background:rgba(255,255,255,.16); border-color:rgba(255,255,255,.8) }
+.author_zone .auth_header_user { display:inline-flex; align-items:center; gap:6px; color:rgba(255,255,255,.9); font-size:13px; max-width:160px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis }
+.author_zone .auth_header_logout { border-color:transparent; background:rgba(0,0,0,.12) }
+.author_zone .auth_header_logout:hover { background:rgba(0,0,0,.22); border-color:transparent }
+
+/* ---------- 未读消息角标：头部绝对定位小红点，左侧导航内联小圆 ---------- */
+.author_zone .auth_header .auth_msg_badge { position:absolute; top:-8px; right:-10px; min-width:16px; padding:0 5px; line-height:16px; text-align:center; font-size:11px; font-style:normal; color:#fff; background:#f56c6c; border-radius:9px; box-shadow:0 2px 6px rgba(245,108,108,.4) }
+.author_zone .my_l .log_list a { position:relative }
+.author_zone .my_l .log_list .auth_msg_badge { display:none; position:absolute; top:50%; right:12px; transform:translateY(-50%); min-width:16px; padding:0 5px; line-height:16px; text-align:center; font-size:11px; font-style:normal; color:#fff; background:#f56c6c; border-radius:9px }
+
+/* ---------- 消息中心左侧导航图标（信封，与 user.css 其他 link_* 同风格） ---------- */
+.author_zone .my_l .link_msg { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233eaf7c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='M3 7l9 6 9-6'/%3E%3C/svg%3E"); background-position:31px center; background-size:22px 22px }
+
+/* ---------- 消息中心页 ---------- */
+/* 内容列占满剩余宽度（无类型/关联作品列，展示全部类型消息），长文本自动换行；左侧留空隙 */
+.author_zone .updateTable td.msg_content { white-space:normal; line-height:1.7; word-break:break-all; padding:12px 10px 12px 16px }
+/* 未读消息行：左侧主色描边+浅底，列表内一眼分辨（描边+内边距合计与常规行左空隙等宽） */
+.author_zone .updateTable tr.msg_unread td { background:#f2faf6 }
+.author_zone .updateTable tr.msg_unread td.msg_content { border-left:3px solid #3eaf7c; padding-left:13px }
+

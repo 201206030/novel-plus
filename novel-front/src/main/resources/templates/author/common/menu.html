@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 作家专区左侧导航公共片段：menu(active) 的 active 取值 book/ai/msg/income/profile，
+     与各页原硬编码 log_list 结构一致，新增「消息中心」入口（未读角标由 header 片段的 AuthHeader.setMsgBadge 统一刷新） -->
+<div th:fragment="menu(active)" class="my_l">
+    <ul class="log_list">
+        <li><a class="link_book" th:classappend="${active == 'book'} ? ' on'" href="/author/index.html">小说管理</a></li>
+        <li><a class="link_ai" th:classappend="${active == 'ai'} ? ' on'" href="/author/ai_assistant.html">AI创作助手</a></li>
+        <li><a class="link_msg" th:classappend="${active == 'msg'} ? ' on'" href="/author/message_list.html">消息中心<span class="auth_msg_badge js_msg_badge" style="display:none"></span></a></li>
+        <li><a class="link_income" th:classappend="${active == 'income'} ? ' on'" href="/author/author_income_detail.html">稿费收入</a></li>
+        <li><a class="link_profile" th:classappend="${active == 'profile'} ? ' on'" href="/author/author_info.html">作者信息</a></li>
+    </ul>
+</div>
+</body>
+</html>

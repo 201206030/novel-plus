@@ -97,6 +97,8 @@ public class BookServiceImpl implements BookService {
                 //批量保存目录和内容
                 bookIndexList.forEach(bookIndex -> {
                     bookIndex.setStorageType(storageType);
+                    //爬虫章节直接发布（status=1），insertMultiple 全列写入，不能留 NULL
+                    bookIndex.setStatus((byte) 1);
                 });
                 bookIndexMapper.insertMultiple(bookIndexList);
                 bookContentServiceMap.get(storageType).saveBookContent(bookContentList, book.getId());
@@ -122,6 +124,8 @@ public class BookServiceImpl implements BookService {
         List<BookIndex> bookIndexs = bookIndexMapper.selectMany(select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.storageType)
                 .from(BookIndexDynamicSqlSupport.bookIndex)
                 .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                // 排除作者草稿/定时章节，避免被爬取流程覆盖或误判为已存在
+                .and(BookIndexDynamicSqlSupport.status, isEqualTo((byte) 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3));
         if (bookIndexs.size() > 0) {

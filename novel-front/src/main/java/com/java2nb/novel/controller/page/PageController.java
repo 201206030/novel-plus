@@ -4,6 +4,7 @@ import com.java2nb.novel.controller.BaseController;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
+import com.java2nb.novel.core.utils.IndexStatusUtil;
 import com.java2nb.novel.core.utils.ThreadLocalUtil;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.service.*;
@@ -338,6 +339,12 @@ public class PageController extends BaseController {
             log.debug("加载小说章节信息线程结束");
             return bookIndex;
         }, threadPoolExecutor);
+
+        BookIndex visitedIndex = bookIndexCompletableFuture.get();
+        //草稿或未到的定时章节对读者不可见，回退到详情页
+        if (!IndexStatusUtil.isReaderVisible(visitedIndex)) {
+            return "redirect:/book/" + bookId + ".html";
+        }
 
         //加载小说上一章节信息线程，该线程在加载小说章节信息线程执行完毕后才执行
         CompletableFuture<Long> preBookIndexIdCompletableFuture = bookIndexCompletableFuture.thenApplyAsync(

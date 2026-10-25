@@ -8,6 +8,7 @@ import com.java2nb.novel.core.config.BookPriceProperties;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.Constants;
 import com.java2nb.novel.core.utils.FileUtil;
+import com.java2nb.novel.core.utils.IndexStatusUtil;
 import com.java2nb.novel.core.utils.StringUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.*;
@@ -110,6 +111,14 @@ public class BookServiceImpl implements BookService {
      * 小说上架状态：仅 status=1 的小说对读者可见（0 为入库/已下架）
      */
     private static final Byte BOOK_STATUS_ONLINE = 1;
+
+    /**
+     * 读者可见章节条件：已发布，或定时发布且已到时（兜底防定时任务延迟）
+     */
+    private static org.mybatis.dynamic.sql.AndOrCriteriaGroup readerVisibleCriterion() {
+        return or(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_SCHEDULED),
+            and(BookIndexDynamicSqlSupport.publishTime, isLessThanOrEqualTo(new Date())));
+    }
 
 
     @SneakyThrows
@@ -268,7 +277,9 @@ public class BookServiceImpl implements BookService {
             BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.updateTime,
             BookIndexDynamicSqlSupport.isVip)
             .from(bookIndex)
-            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId));
+            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            // 读者端目录只展示已发布（或已到时的定时）章节，草稿不可见
+            .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED), readerVisibleCriterion());
         if ("index_num desc".equals(orderBy)) {
             where.orderBy(BookIndexDynamicSqlSupport.indexNum.descending());
         }
@@ -284,7 +295,8 @@ public class BookServiceImpl implements BookService {
             BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum,
             BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount,
             BookIndexDynamicSqlSupport.bookPrice, BookIndexDynamicSqlSupport.updateTime,
-            BookIndexDynamicSqlSupport.isVip, BookIndexDynamicSqlSupport.storageType)
+            BookIndexDynamicSqlSupport.isVip, BookIndexDynamicSqlSupport.storageType,
+            BookIndexDynamicSqlSupport.status, BookIndexDynamicSqlSupport.publishTime)
             .from(bookIndex)
             .where(BookIndexDynamicSqlSupport.id, isEqualTo(bookIndexId))
             .build()
@@ -298,6 +310,7 @@ public class BookServiceImpl implements BookService {
             .from(bookIndex)
             .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
             .and(BookIndexDynamicSqlSupport.indexNum, isLessThan(indexNum))
+            .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED), readerVisibleCriterion())
             .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
             .limit(1)
             .build()
@@ -316,6 +329,7 @@ public class BookServiceImpl implements BookService {
             .from(bookIndex)
             .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
             .and(BookIndexDynamicSqlSupport.indexNum, isGreaterThan(indexNum))
+            .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED), readerVisibleCriterion())
             .orderBy(BookIndexDynamicSqlSupport.indexNum)
             .limit(1)
             .build()
@@ -386,6 +400,8 @@ public class BookServiceImpl implements BookService {
         SelectStatementProvider selectStatement = select(count(BookIndexDynamicSqlSupport.id))
             .from(bookIndex)
             .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            // 读者端章节数只统计已发布（或已到时的定时）章节
+            .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED), readerVisibleCriterion())
             .build()
             .render(RenderingStrategies.MYBATIS3);
 
@@ -402,6 +418,7 @@ public class BookServiceImpl implements BookService {
         SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id)
             .from(bookIndex)
             .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED), readerVisibleCriterion())
             .orderBy(BookIndexDynamicSqlSupport.indexNum)
             .limit(1)
             .build()
@@ -607,60 +624,246 @@ public class BookServiceImpl implements BookService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void addBookContent(Long bookId, String indexName, String content, Byte isVip, Long authorId) {
+        addBookContent(bookId, indexName, content, isVip, authorId, IndexStatusUtil.STATUS_PUBLISHED, null);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addBookContent(Long bookId, String indexName, String content, Byte isVip, Long authorId,
+        Byte publishStatus, Date publishTime) {
 
         Book book = queryBookDetail(bookId);
         if (!authorId.equals(book.getAuthorId())) {
             //并不是更新自己的小说
             return;
         }
-        Long lastIndexId = idWorker.nextId();
+        byte status = publishStatus == null ? IndexStatusUtil.STATUS_PUBLISHED : publishStatus;
         Date currentDate = new Date();
+        if (status == IndexStatusUtil.STATUS_SCHEDULED
+            && (publishTime == null || !publishTime.after(currentDate))) {
+            throw new BusinessException(ResponseStatus.INDEX_PUBLISH_TIME_INVALID);
+        }
+        Long newIndexId = idWorker.nextId();
         int wordCount = StringUtil.getStrValidWordCount(content);
 
-        //更新小说主表信息
-        bookMapper.update(update(BookDynamicSqlSupport.book)
-            .set(BookDynamicSqlSupport.lastIndexId)
-            .equalTo(lastIndexId)
-            .set(BookDynamicSqlSupport.lastIndexName)
-            .equalTo(indexName)
-            .set(BookDynamicSqlSupport.lastIndexUpdateTime)
-            .equalTo(currentDate)
-            .set(BookDynamicSqlSupport.wordCount)
-            .equalTo(book.getWordCount() + wordCount)
-            .where(id, isEqualTo(bookId))
-            .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
-            .build()
-            .render(RenderingStrategies.MYBATIS3));
+        //仅立即发布的章节才计入总字数与最新章节；草稿/定时章节发布时再补计
+        if (status == IndexStatusUtil.STATUS_PUBLISHED) {
+            //更新小说主表信息
+            bookMapper.update(update(BookDynamicSqlSupport.book)
+                .set(BookDynamicSqlSupport.lastIndexId)
+                .equalTo(newIndexId)
+                .set(BookDynamicSqlSupport.lastIndexName)
+                .equalTo(indexName)
+                .set(BookDynamicSqlSupport.lastIndexUpdateTime)
+                .equalTo(currentDate)
+                .set(BookDynamicSqlSupport.wordCount)
+                .equalTo(book.getWordCount() + wordCount)
+                .where(id, isEqualTo(bookId))
+                .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        }
 
         //计算价格
         int bookPrice = new BigDecimal(wordCount).multiply(bookPriceConfig.getValue())
             .divide(bookPriceConfig.getWordCount(), 0, RoundingMode.DOWN).intValue();
 
-        //更新小说目录表
-        int indexNum = 0;
-        if (book.getLastIndexId() != null) {
-            indexNum = queryBookIndex(book.getLastIndexId()).getIndexNum() + 1;
+        //目录号在全书（含草稿）范围内递增，避免重复
+        int indexNum = queryMaxIndexNum(bookId) + 1;
+        BookIndex newBookIndex = new BookIndex();
+        newBookIndex.setId(newIndexId);
+        newBookIndex.setWordCount(wordCount);
+        newBookIndex.setIndexName(indexName);
+        newBookIndex.setIndexNum(indexNum);
+        newBookIndex.setBookId(bookId);
+        newBookIndex.setIsVip(isVip);
+        newBookIndex.setBookPrice(bookPrice);
+        newBookIndex.setStatus(status);
+        if (status == IndexStatusUtil.STATUS_SCHEDULED) {
+            newBookIndex.setPublishTime(publishTime);
+        } else {
+            newBookIndex.setPublishTime(currentDate);
         }
-        BookIndex lastBookIndex = new BookIndex();
-        lastBookIndex.setId(lastIndexId);
-        lastBookIndex.setWordCount(wordCount);
-        lastBookIndex.setIndexName(indexName);
-        lastBookIndex.setIndexNum(indexNum);
-        lastBookIndex.setBookId(bookId);
-        lastBookIndex.setIsVip(isVip);
-        lastBookIndex.setBookPrice(bookPrice);
-        lastBookIndex.setCreateTime(currentDate);
-        lastBookIndex.setUpdateTime(currentDate);
-        bookIndexMapper.insertSelective(lastBookIndex);
+        //草稿的 create_time 为存稿时间，发布时会刷新为发布时间
+        newBookIndex.setCreateTime(currentDate);
+        newBookIndex.setUpdateTime(currentDate);
+        bookIndexMapper.insertSelective(newBookIndex);
 
         //更新小说内容表
         BookContent bookContent = new BookContent();
-        bookContent.setIndexId(lastIndexId);
+        bookContent.setIndexId(newIndexId);
         bookContent.setContent(content);
         bookContentMapper.insertSelective(bookContent);
 
 
     }
+
+    /**
+     * 查询全书最大目录号（含草稿/定时章节，保证目录号不冲突）
+     */
+    private int queryMaxIndexNum(Long bookId) {
+        List<BookIndex> list = bookIndexMapper.selectMany(select(BookIndexDynamicSqlSupport.indexNum)
+            .from(bookIndex)
+            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
+            .limit(1)
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
+        return list.isEmpty() ? 0 : list.get(0).getIndexNum();
+    }
+
+    @Override
+    public PageBean<BookIndex> queryAuthorIndexPage(Long bookId, Long authorId, int page, int pageSize) {
+        Book book = queryBookDetail(bookId);
+        if (!authorId.equals(book.getAuthorId())) {
+            throw new BusinessException(ResponseStatus.BOOK_NOT_EXISTS);
+        }
+        PageHelper.startPage(page, pageSize);
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id,
+            BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.indexNum,
+            BookIndexDynamicSqlSupport.indexName, BookIndexDynamicSqlSupport.wordCount,
+            BookIndexDynamicSqlSupport.isVip, BookIndexDynamicSqlSupport.status,
+            BookIndexDynamicSqlSupport.publishTime, BookIndexDynamicSqlSupport.createTime,
+            BookIndexDynamicSqlSupport.updateTime)
+            .from(bookIndex)
+            .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+            .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+        return PageBuilder.build(bookIndexMapper.selectMany(selectStatement));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void publishIndex(Long indexId, Long authorId) {
+        BookIndex chapter = null;
+        List<BookIndex> chapters = bookIndexMapper.selectMany(
+            select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId,
+                BookIndexDynamicSqlSupport.indexNum, BookIndexDynamicSqlSupport.indexName,
+                BookIndexDynamicSqlSupport.wordCount, BookIndexDynamicSqlSupport.status)
+                .from(bookIndex)
+                .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        if (chapters.size() > 0) {
+            chapter = chapters.get(0);
+        }
+        if (chapter == null) {
+            throw new BusinessException(ResponseStatus.INDEX_NOT_EXISTS);
+        }
+        byte currentStatus = chapter.getStatus() == null ? IndexStatusUtil.STATUS_PUBLISHED : chapter.getStatus();
+        if (currentStatus == IndexStatusUtil.STATUS_PUBLISHED) {
+            //已发布章节无需重复发布（幂等，定时任务扫描到刚手动发布的章节直接跳过）
+            return;
+        }
+        Book book = queryBookDetail(chapter.getBookId());
+        if (authorId != null && !authorId.equals(book.getAuthorId())) {
+            throw new BusinessException(ResponseStatus.BOOK_NOT_EXISTS);
+        }
+        Date currentDate = new Date();
+        int wordCount = chapter.getWordCount() == null ? 0 : chapter.getWordCount();
+
+        //翻状态：发布时刻即为准，刷新 create_time/update_time，使更新趋势按发布日统计
+        bookIndexMapper.update(update(bookIndex)
+            .set(BookIndexDynamicSqlSupport.status)
+            .equalTo(IndexStatusUtil.STATUS_PUBLISHED)
+            .set(BookIndexDynamicSqlSupport.publishTime)
+            .equalTo(currentDate)
+            .set(BookIndexDynamicSqlSupport.createTime)
+            .equalTo(currentDate)
+            .set(BookIndexDynamicSqlSupport.updateTime)
+            .equalTo(currentDate)
+            .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
+
+        //补计总字数
+        bookMapper.update(update(BookDynamicSqlSupport.book)
+            .set(BookDynamicSqlSupport.wordCount)
+            .equalTo(book.getWordCount() + wordCount)
+            .where(id, isEqualTo(book.getId()))
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
+
+        //若发布后本书已发布章节中该章目录号最大，刷新最新章节信息
+        List<BookIndex> lastChapters = bookIndexMapper.selectMany(
+            select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.indexName,
+                BookIndexDynamicSqlSupport.createTime)
+                .from(bookIndex)
+                .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(book.getId()))
+                .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED))
+                .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        if (lastChapters.size() > 0 && lastChapters.get(0).getId().equals(indexId)) {
+            BookIndex lastChapter = lastChapters.get(0);
+            bookMapper.update(update(BookDynamicSqlSupport.book)
+                .set(BookDynamicSqlSupport.lastIndexId)
+                .equalTo(indexId)
+                .set(BookDynamicSqlSupport.lastIndexName)
+                .equalTo(lastChapter.getIndexName())
+                .set(BookDynamicSqlSupport.lastIndexUpdateTime)
+                .equalTo(currentDate)
+                .where(id, isEqualTo(book.getId()))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void scheduleIndex(Long indexId, Long authorId, Date publishTime) {
+        if (publishTime == null || !publishTime.after(new Date())) {
+            throw new BusinessException(ResponseStatus.INDEX_PUBLISH_TIME_INVALID);
+        }
+        List<BookIndex> chapters = bookIndexMapper.selectMany(
+            select(BookIndexDynamicSqlSupport.id, BookIndexDynamicSqlSupport.bookId,
+                BookIndexDynamicSqlSupport.status)
+                .from(bookIndex)
+                .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        if (chapters.size() == 0) {
+            throw new BusinessException(ResponseStatus.INDEX_NOT_EXISTS);
+        }
+        BookIndex chapter = chapters.get(0);
+        Book book = queryBookDetail(chapter.getBookId());
+        if (!authorId.equals(book.getAuthorId())) {
+            throw new BusinessException(ResponseStatus.BOOK_NOT_EXISTS);
+        }
+        byte currentStatus = chapter.getStatus() == null ? IndexStatusUtil.STATUS_PUBLISHED : chapter.getStatus();
+        if (currentStatus == IndexStatusUtil.STATUS_PUBLISHED) {
+            //已发布章节不支持撤回为定时发布
+            throw new BusinessException(ResponseStatus.INDEX_ALREADY_PUBLISHED);
+        }
+        bookIndexMapper.update(update(bookIndex)
+            .set(BookIndexDynamicSqlSupport.status)
+            .equalTo(IndexStatusUtil.STATUS_SCHEDULED)
+            .set(BookIndexDynamicSqlSupport.publishTime)
+            .equalTo(publishTime)
+            .set(BookIndexDynamicSqlSupport.updateTime)
+            .equalTo(new Date())
+            .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId))
+            .build()
+            .render(RenderingStrategies.MYBATIS3));
+    }
+
+    @Override
+    public List<Long> queryDueScheduledIndexIds(Date now, int limit) {
+        SelectStatementProvider selectStatement = select(BookIndexDynamicSqlSupport.id)
+            .from(bookIndex)
+            .where(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_SCHEDULED))
+            .and(BookIndexDynamicSqlSupport.publishTime, isLessThanOrEqualTo(now))
+            .orderBy(BookIndexDynamicSqlSupport.publishTime)
+            .limit(limit)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+        return bookIndexMapper.selectMany(selectStatement).stream()
+            .map(BookIndex::getId)
+            .collect(Collectors.toList());
+    }
+
 
     @Override
     public List<Book> queryBookByUpdateTimeByPage(Date startDate, int limit) {
@@ -692,7 +895,8 @@ public class BookServiceImpl implements BookService {
 
         //查询小说章节表信息
         List<BookIndex> bookIndices = bookIndexMapper.selectMany(
-            select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
+            select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount,
+                BookIndexDynamicSqlSupport.status)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategies.MYBATIS3));
         if (bookIndices.size() > 0) {
@@ -716,9 +920,13 @@ public class BookServiceImpl implements BookService {
                     bookContentMapper.delete(
                         deleteFrom(bookContent).where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId)).build()
                             .render(RenderingStrategies.MYBATIS3));
-                    //更新总字数
-                    wordCount = wordCount - bookIndex.getWordCount();
-                    //更新最新章节
+                    //仅已发布章节计入过总字数，草稿/定时章节删除时不扣减
+                    byte chapterStatus = bookIndex.getStatus() == null
+                        ? IndexStatusUtil.STATUS_PUBLISHED : bookIndex.getStatus();
+                    if (chapterStatus == IndexStatusUtil.STATUS_PUBLISHED) {
+                        wordCount = wordCount - bookIndex.getWordCount();
+                    }
+                    //更新最新章节（只在已发布章节中取末章，草稿不参与）
                     Long lastIndexId = null;
                     String lastIndexName = null;
                     Date lastIndexUpdateTime = null;
@@ -727,6 +935,7 @@ public class BookServiceImpl implements BookService {
                             BookIndexDynamicSqlSupport.createTime)
                             .from(BookIndexDynamicSqlSupport.bookIndex)
                             .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                            .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED))
                             .orderBy(BookIndexDynamicSqlSupport.indexNum.descending())
                             .limit(1)
                             .build()
@@ -845,18 +1054,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public void updateBookContent(Long indexId, String indexName, String content, Long authorId) {
 
-        //查询小说章节表信息
+        //查询小说章节表信息（status 用于判断是否需重算小说总字数）
         List<BookIndex> bookIndices = bookIndexMapper.selectMany(
-            select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount)
+            select(BookIndexDynamicSqlSupport.bookId, BookIndexDynamicSqlSupport.wordCount,
+                BookIndexDynamicSqlSupport.status)
                 .from(bookIndex)
                 .where(BookIndexDynamicSqlSupport.id, isEqualTo(indexId)).build().render(RenderingStrategies.MYBATIS3));
         if (bookIndices.size() > 0) {
             BookIndex bookIndex = bookIndices.get(0);
             //获取小说ID
             Long bookId = bookIndex.getBookId();
-            //查询小说表信息
+            //查询小说表信息（lastIndexId 用于判断修改的是否为最新章节）
             List<Book> books = bookMapper.selectMany(
-                select(wordCount, BookDynamicSqlSupport.authorId)
+                select(wordCount, BookDynamicSqlSupport.authorId, BookDynamicSqlSupport.lastIndexId)
                     .from(book)
                     .where(id, isEqualTo(bookId))
                     .build()
@@ -893,6 +1103,38 @@ public class BookServiceImpl implements BookService {
                             .equalTo(content)
                             .where(BookContentDynamicSqlSupport.indexId, isEqualTo(indexId))
                             .build().render(RenderingStrategies.MYBATIS3));
+
+                    //已发布章节改正文后字数/价格会变，需按全书已发布章节重算小说总字数（草稿/定时不计入总数，全量重算可顺带修复历史偏差）。
+                    byte indexStatus = bookIndex.getStatus() == null
+                        ? IndexStatusUtil.STATUS_PUBLISHED : bookIndex.getStatus();
+                    if (indexStatus == IndexStatusUtil.STATUS_PUBLISHED) {
+                        Long publishedTotal = bookIndexMapper.selectStatistic(
+                            select(sum(BookIndexDynamicSqlSupport.wordCount))
+                                .from(BookIndexDynamicSqlSupport.bookIndex)
+                                .where(BookIndexDynamicSqlSupport.bookId, isEqualTo(bookId))
+                                .and(BookIndexDynamicSqlSupport.status, isEqualTo(IndexStatusUtil.STATUS_PUBLISHED))
+                                .build().render(RenderingStrategies.MYBATIS3));
+                        int totalWordCount = publishedTotal == null ? 0 : publishedTotal.intValue();
+
+                        if (indexId.equals(book.getLastIndexId())) {
+                            //改的正是最新章节，同步书名与最新更新时刻（局部变量 book 遮蔽静态导入的表，需显式限定）
+                            bookMapper.update(update(BookDynamicSqlSupport.book)
+                                .set(BookDynamicSqlSupport.wordCount)
+                                .equalTo(totalWordCount)
+                                .set(BookDynamicSqlSupport.lastIndexName)
+                                .equalTo(indexName)
+                                .set(BookDynamicSqlSupport.lastIndexUpdateTime)
+                                .equalTo(currentDate)
+                                .where(id, isEqualTo(bookId))
+                                .build().render(RenderingStrategies.MYBATIS3));
+                        } else {
+                            bookMapper.update(update(BookDynamicSqlSupport.book)
+                                .set(BookDynamicSqlSupport.wordCount)
+                                .equalTo(totalWordCount)
+                                .where(id, isEqualTo(bookId))
+                                .build().render(RenderingStrategies.MYBATIS3));
+                        }
+                    }
 
                 }
             }

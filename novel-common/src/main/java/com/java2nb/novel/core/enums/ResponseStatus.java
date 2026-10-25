@@ -49,6 +49,8 @@ public enum ResponseStatus implements IResultCode {
     BOOK_EXISTS(5001,"该小说已存在"),
     INDEX_NOT_EXISTS(5002,"该章节不存在！"),
     NEWS_NOT_EXISTS(5003,"该新闻不存在！"),
+    INDEX_PUBLISH_TIME_INVALID(5004,"定时发布时间需晚于当前时间！"),
+    INDEX_ALREADY_PUBLISHED(5005,"章节已发布，不能再撤回或改期！"),
 
     /**
      * 书单相关错误

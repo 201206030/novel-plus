@@ -7,6 +7,7 @@
     <title>AI创作助手-作家管理系统</title>
     <link rel="stylesheet" href="/css/base.css?v=1"/>
     <link rel="stylesheet" href="/css/user.css"/>
+    <link rel="stylesheet" href="/css/author.css"/>
     <style type="text/css">
         .ai-wrap { padding-bottom: 40px; }
         .ai-steps { border-bottom: 1px solid #e5e5e5; margin-bottom: 15px; padding: 0; overflow: hidden; }
@@ -47,25 +48,13 @@
         }
     </style>
 </head>
-<body>
+<body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf" style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-            小说精品屋作家管理
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-            <ul class="log_list">
-                <li><a class="link_book" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai on" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
-            </ul>
-        </div>
+        <div th:replace="author/common/menu :: menu('ai')"></div>
         <div class="my_r ai-wrap">
             <ul class="ai-steps cf" id="stepNav">
                 <li data-step="1" class="on">① 创意问答</li>

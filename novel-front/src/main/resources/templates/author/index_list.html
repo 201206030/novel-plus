@@ -13,29 +13,11 @@
 </head>
 <body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book on" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
-                <li><a class="link_profile" href="/author/author_info.html">作者信息</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('book')"></div>
         <div class="my_r">
             <div class="book_brief cf" id="bookBrief">
                 <a href="/author/index.html" class="back_link">← 返回小说列表</a>
@@ -63,14 +45,14 @@
                     <table cellpadding="0" cellspacing="0">
                         <thead>
                         <tr>
-                            <th class="goread col_idx">
-                                序号
-                            </th>
                             <th class="name">
                                 章节名
                             </th>
                             <th class="goread col_time">
                                 更新时间
+                            </th>
+                            <th class="goread col_status">
+                                发布状态
                             </th>
                             <th class="goread col_vip">
                                 是否收费
@@ -152,8 +134,8 @@
 
         $.ajax({
             type: "get",
-            url: "/book/queryIndexList",
-            data: {'bookId': bookId, 'curr': curr, 'limit': limit, 'orderBy': 'index_num desc'},
+            url: "/author/listIndexByPage",
+            data: {'bookId': bookId, 'curr': curr, 'limit': limit},
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
@@ -167,13 +149,20 @@
                         for (var i = 0; i < bookList.length; i++) {
                             var book = bookList[i];
                             bookListHtml += '<tr class="book_list">'
-                                + '<td class="goread"><span class="idx_no">' + book.indexNum + '</span></td>'
                                 + '<td class="name" id="name' + book.id + '" title="' + escapeHtml(book.indexName) + '">' + escapeHtml(book.indexName) + '</td>'
                                 + '<td class="goread time_cell">' + fmtTime(book.updateTime) + '</td>'
+                                + '<td class="goread status_cell">' + statusTag(book) + '</td>'
                                 + '<td class="goread">' + (book.isVip == 1 ? '<span class="tag tag_vip">收费</span>' : '<span class="tag tag_free">免费</span>') + '</td>'
                                 + '<td class="goread opt" id="opt' + book.id + '">'
-                                + '<a href="javascript:updateIndex(\'' + book.id + '\',' + book.isVip + ')">修改</a>'
-                                + '<a class="opt_del" href="javascript:deleteIndex(\'' + book.id + '\')">删除</a>'
+                                + '<a href="javascript:updateIndex(\'' + book.id + '\',' + book.isVip + ')">修改</a>';
+                            //草稿/定时章节提供发布入口；已发布章节不回退，不提供定时入口
+                            if (book.status == 0 || book.status == 2) {
+                                bookListHtml += '<a href="javascript:publishIndex(\'' + book.id + '\')">立即发布</a>';
+                            }
+                            if (book.status == 0) {
+                                bookListHtml += '<a href="javascript:scheduleIndex(\'' + book.id + '\')">定时发布</a>';
+                            }
+                            bookListHtml += '<a class="opt_del" href="javascript:deleteIndex(\'' + book.id + '\')">删除</a>'
                                 + '</td></tr>';
                         }
                         $("#bookList").html(bookListHtml);
@@ -214,6 +203,100 @@
             }
         })
 
+    }
+
+    //发布状态徽章：草稿暖橙 / 定时蓝（附发布时刻） / 已发布绿
+    function statusTag(book) {
+        if (book.status == 0) {
+            return '<span class="tag tag_draft">草稿</span>';
+        } else if (book.status == 2) {
+            var plan = book.publishTime ? fmtTime(book.publishTime) : '';
+            return '<span class="tag tag_schedule" title="' + plan + '">定时 ' + plan + '</span>';
+        }
+        return '<span class="tag tag_online">已发布</span>';
+    }
+
+    //立即发布草稿/定时章节
+    function publishIndex(indexId) {
+        layer.confirm('确认立即发布该章节吗？发布后读者即可阅读。', {
+            btn: ['确定', '取消']
+        }, function (index) {
+            layer.close(index);
+            $.ajax({
+                type: "post",
+                url: "/author/publishIndex/" + indexId,
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.msg('发布成功');
+                        search(1, 20);
+                        loadBookBrief();
+                    } else if (data.code == 1001) {
+                        location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            });
+        });
+    }
+
+    //草稿章节设为定时发布：层内选发布时刻
+    function scheduleIndex(indexId) {
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            layer.open({
+                type: 1,
+                title: '定时发布',
+                area: ['380px', '210px'],
+                content: '<div style="padding:26px 24px;font-size:13px;color:#5c6b64">发布时刻'
+                    + '<input type="text" id="scheduleTimeInput" class="publish_time_input" style="display:inline-block;width:190px;margin-left:10px" placeholder="yyyy-MM-dd HH:mm" readonly/>'
+                    + '<p style="margin-top:14px;font-size:12px;color:#99a59e">到时自动发布，发布前读者不可见</p></div>',
+                btn: ['确定', '取消'],
+                success: function () {
+                    $("#scheduleTimeInput").val('');
+                    // laydate 2.4.5 兼容：min 传时间戳（传 Date 对象会因无 .match 方法报错导致面板崩溃），readonly 输入框需 click 触发
+                    laydate.render({
+                        elem: '#scheduleTimeInput',
+                        type: 'datetime',
+                        trigger: 'click',
+                        format: 'yyyy-MM-dd HH:mm',
+                        min: Date.now()
+                    });
+                },
+                yes: function (index) {
+                    var publishTime = $.trim($("#scheduleTimeInput").val());
+                    if (!publishTime) {
+                        layer.msg('请选择发布时刻');
+                        return;
+                    }
+                    $.ajax({
+                        type: "post",
+                        url: "/author/scheduleIndex",
+                        data: {'indexId': indexId, 'publishTime': publishTime},
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 200) {
+                                layer.close(index);
+                                layer.msg('已设为定时发布');
+                                search(1, 20);
+                            } else if (data.code == 1001) {
+                                location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                            } else {
+                                layer.alert(data.msg);
+                            }
+                        },
+                        error: function () {
+                            layer.alert('网络异常');
+                        }
+                    });
+                }
+            });
+        });
     }
 
     function addContent() {

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 作家专区公共头部：参照管理后台 adm_header 设计（绿色渐变吸顶 + 品牌区 + 右侧操作区）。
+     脚本用原生 ES5 + fetch，不依赖 jQuery（各作者页 body 末尾才加载 jQuery），与 admin/header.html 同款做法 -->
+<div th:fragment="header" class="auth_header">
+    <div class="auth_header_in">
+        <a class="auth_header_logo" href="/author/index.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>小说精品屋作家中心</span>
+        </a>
+        <div class="auth_header_right">
+            <a class="auth_header_btn" href="/" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <path d="M15 3h6v6"></path>
+                    <path d="M10 14L21 3"></path>
+                </svg>
+                前台站点
+            </a>
+            <a class="auth_header_btn" href="/author/message_list.html">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                消息<span class="auth_msg_badge js_msg_badge" style="display:none"></span>
+            </a>
+            <span class="auth_header_user">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span id="hdAuthorName">作家</span>
+            </span>
+            <a class="auth_header_btn auth_header_logout" id="hdLogoutBtn" href="javascript:;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <path d="M16 17l5-5-5-5"></path>
+                    <path d="M21 12H9"></path>
+                </svg>
+                退出
+            </a>
+        </div>
+    </div>
+    <script>
+        (function () {
+            // 未读消息角标：头部与左侧导航共用 .js_msg_badge，统一由 AuthHeader 刷新
+            window.AuthHeader = {
+                setMsgBadge: function (n) {
+                    n = Number(n) || 0;
+                    var badges = document.querySelectorAll('.js_msg_badge');
+                    for (var i = 0; i < badges.length; i++) {
+                        if (n > 0) {
+                            badges[i].textContent = n > 99 ? '99+' : String(n);
+                            badges[i].style.display = 'inline-block';
+                        } else {
+                            badges[i].style.display = 'none';
+                        }
+                    }
+                },
+                refreshMsgBadge: function () {
+                    fetchMsgBadge();
+                }
+            };
+
+            function fetchMsgBadge() {
+                if (!window.fetch) {
+                    return;
+                }
+                fetch('/user/message/unreadCount').then(function (r) {
+                    return r.json();
+                }).then(function (res) {
+                    if (res && res.code === 200) {
+                        window.AuthHeader.setMsgBadge(res.data);
+                    }
+                })['catch'](function () { /* 未登录或异常，静默降级不显示角标 */ });
+            }
+
+            // 当前作家笔名（未登录时接口返回未登录码，静默保留“作家”文案）
+            if (window.fetch) {
+                fetch('/author/authorInfo').then(function (r) {
+                    return r.json();
+                }).then(function (res) {
+                    if (res && res.code === 200 && res.data && res.data.penName) {
+                        document.getElementById('hdAuthorName').textContent = res.data.penName;
+                    }
+                })['catch'](function () { /* 静默降级 */ });
+            }
+
+            // 退出登录：前台用户态存于 Authorization cookie（JWT），清 cookie 后回首页
+            document.getElementById('hdLogoutBtn').onclick = function () {
+                if (window.confirm('确定退出登录吗？')) {
+                    document.cookie = 'Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                    location.href = '/';
+                }
+            };
+
+            // 立即刷新头部角标；左侧导航片段在本脚本之后渲染，等 DOM ready 再刷一次
+            fetchMsgBadge();
+            if (document.addEventListener) {
+                document.addEventListener('DOMContentLoaded', fetchMsgBadge);
+            }
+        })();
+    </script>
+</div>
+</body>
+</html>

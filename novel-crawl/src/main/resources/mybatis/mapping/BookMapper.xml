@@ -16,7 +16,7 @@
 
     <select id="queryTotalWordCount" parameterType="long" resultType="int">
 
-        select sum(word_count) from book_index where book_id = #{bookId}
+        select sum(word_count) from book_index where book_id = #{bookId} and status = 1
     </select>
 
     <update id="updateCrawlLastTime">

@@ -8,35 +8,19 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/author.css"/>
         <style type="text/css">
             .opacity{-khtml-opacity:0.0;-moz-opacity:0.0;filter:alpha(opacity=0);filter:"alpha(opacity=0)";opacity:0.0; filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);/*兼容ie8及以下*/}
         </style>
     </head>
 </head>
-<body class="">
+<body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book on" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('book')"></div>
         <div class="my_r">
             <div class="my_bookshelf">
 

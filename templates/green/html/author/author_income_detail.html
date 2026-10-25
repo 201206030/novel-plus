@@ -8,38 +8,41 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/author.css"/>
+        <style type="text/css">
+            .idm_cards { display:flex; flex-wrap:wrap; margin:4px 0 18px }
+            .idm_card { min-width:200px; flex:1; margin:0 14px 14px 0; padding:16px 18px; border:1px solid #e6f0ea; border-radius:10px; background:linear-gradient(135deg,#f2faf6,#fbfdfc) }
+            .idm_card .bn { font-size:14px; color:#333; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+            .idm_card .money { font-size:22px; color:#2c8a61; font-weight:600; margin:8px 0 4px }
+            .idm_card .sub { font-size:12px; color:#99a59e }
+            .idm_card a { display:inline-block; margin-top:8px; font-size:12px; color:#3eaf7c; text-decoration:none }
+            .idm_rule { margin:0 0 16px; border:1px solid #e6f0ea; border-radius:10px; overflow:hidden }
+            .idm_rule .hd { padding:12px 16px; background:#f2faf6; color:#2c8a61; font-size:13px; cursor:pointer; font-weight:600 }
+            .idm_rule .bd { padding:14px 16px; font-size:13px; color:#5c6b64; line-height:1.9; display:none }
+            .idm_rule .bd.open { display:block }
+            .idm_rule .bd b { color:#2c8a61 }
+            .idm_rule .bd .ex { margin-top:8px; padding:10px 12px; background:#fbfdfc; border-radius:8px; color:#2c8a61 }
+        </style>
     </head>
 </head>
-<body class="">
+<body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income on" href="/author/author_income_detail.html">稿费收入</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('income')"></div>
         <div class="my_r">
             <div class="my_bookshelf">
-                <div class="title cf">
-                    <h2 class="fl ml10"><a href="/author/author_income_detail.html" class="red">订阅明细</a></h2><i
-                        class="fl ml20 mr20 font16">|</i>
-                    <h2 class="fl"><a href="/author/author_income.html">稿费汇总</a></h2>
+                <div class="title cf income_tabs">
+                    <a href="/author/author_income_detail.html" class="itab active">订阅明细</a>
+                    <a href="/author/author_income.html" class="itab">稿费汇总</a>
+                </div>
+
+                <div id="summaryCards" class="idm_cards" style="display:none"></div>
+                <div class="idm_rule">
+                    <div class="hd" id="ruleToggle">分成规则说明 ▾</div>
+                    <div class="bd" id="ruleBody">加载中…</div>
                 </div>
 
                 <div id="divData" class="updateTable">
@@ -115,6 +118,81 @@
 <script language="javascript" type="text/javascript">
     var bookId = getSearchString("bookId");
     search(1, 10);
+    loadSummary();
+    loadRule();
+
+    //数字缩写：超过10万用“万”作单位
+    function fmtNum(n) {
+        var num = Number(n || 0);
+        if (isNaN(num)) {
+            num = 0;
+        }
+        return num >= 100000 ? (num / 10000).toFixed(1).replace(/\.0$/, '') + '万' : String(num);
+    }
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    //按书汇总卡片：bookId>0 时仅当前书，否则逐书展示
+    function loadSummary() {
+        var data = {};
+        if (bookId) {
+            data.bookId = bookId;
+        }
+        $.ajax({
+            type: 'get',
+            url: '/author/bookIncomeSummary',
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.code == 200 && result.data && result.data.length > 0) {
+                    var html = '';
+                    for (var i = 0; i < result.data.length; i++) {
+                        var s = result.data[i];
+                        html += '<div class="idm_card">'
+                            + '<div class="bn" title="' + escapeHtml(s.bookName) + '">' + escapeHtml(s.bookName) + '</div>'
+                            + '<div class="money">' + fmtNum(s.incomeAccount) + ' 屋币</div>'
+                            + '<div class="sub">订阅 ' + fmtNum(s.incomeCount) + ' 次 · ' + fmtNum(s.incomeNumber) + ' 人</div>'
+                            + (bookId ? '' : '<a target="_blank" href="/author/author_income_detail.html?bookId=' + s.bookId + '">查看该书明细 ›</a>')
+                            + '</div>';
+                    }
+                    $("#summaryCards").html(html).show();
+                }
+            }
+        });
+    }
+
+    //分成规则说明
+    function loadRule() {
+        $.ajax({
+            type: 'get',
+            url: '/author/incomeRule',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code == 200 && result.data) {
+                    var r = result.data;
+                    var pre = 100 * r.shareProportion * r.exchangeProportion;
+                    var after = pre * r.taxRate;
+                    var html = '读者订阅花费的屋币，按以下规则按月结算给作者（税后金额精确到分）：'
+                        + '<br/>· 分成比例：<b>' + Math.round(r.shareProportion * 100) + '%</b>（作者获得订阅金额的该比例）'
+                        + '<br/>· 兑换比率：<b>1 屋币 = ' + r.exchangeProportion + ' 元</b>'
+                        + '<br/>· 税后所得比率：<b>' + Math.round(r.taxRate * 100) + '%</b>（即代扣 ' + (100 - Math.round(r.taxRate * 100)) + '% 税费）'
+                        + '<div class="ex">换算示例：读者消费 100 屋币 → 作者税前约 ' + pre.toFixed(2) + ' 元 → 税后约 ' + after.toFixed(2) + ' 元。</div>';
+                    $('#ruleBody').html(html);
+                } else {
+                    $('#ruleBody').text('暂无规则信息');
+                }
+            },
+            error: function () {
+                $('#ruleBody').text('规则加载失败');
+            }
+        });
+    }
+
+    $('#ruleToggle').on('click', function () {
+        $('#ruleBody').toggleClass('open');
+    });
 
     function search(curr, limit) {
 

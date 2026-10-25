@@ -35,29 +35,11 @@
 </head>
 <body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
-                <li><a class="link_profile on" href="/author/author_info.html">作者信息</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('profile')"></div>
         <div class="my_r author_info">
             <h2 class="info_title">作者信息</h2>
             <p class="info_sub">修改笔名不影响历史作品的署名（作品页仍展示创建时的笔名）。联系方式仅用于编辑与您沟通，不会公开展示。<br/>带 <span style="color:#3eaf7c">*</span> 的项为必填。</p>

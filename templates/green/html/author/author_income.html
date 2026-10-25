@@ -8,38 +8,21 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/author.css"/>
     </head>
 </head>
-<body class="">
+<body class="author_zone">
 
-<div class="header">
-    <div class="mainNav" id="mainNav">
-        <div class="box_center cf"
-             style="text-align: center;height: 44px;line-height: 48px;color: #fff;font-size: 16px;">
-
-            小说精品屋作家管理
-
-        </div>
-    </div>
-</div>
+<div th:replace="author/common/header :: header"></div>
 
 <div class="main box_center cf">
     <div class="userBox cf">
-        <div class="my_l">
-
-            <ul class="log_list">
-                <li><a class="link_book" href="/author/index.html">小说管理</a></li>
-                <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
-                <li><a class="link_income on" href="/author/author_income_detail.html">稿费收入</a></li>
-            </ul>
-
-        </div>
+        <div th:replace="author/common/menu :: menu('income')"></div>
         <div class="my_r">
             <div class="my_bookshelf">
-                <div class="title cf">
-                    <h2 class="fl ml10"><a href="/author/author_income_detail.html">订阅明细</a></h2><i
-                        class="fl ml20 mr20 font16">|</i>
-                    <h2 class="fl"><a href="/author/author_income.html" class="red">稿费汇总</a></h2>
+                <div class="title cf income_tabs">
+                    <a href="/author/author_income_detail.html" class="itab">订阅明细</a>
+                    <a href="/author/author_income.html" class="itab active">稿费汇总</a>
                 </div>
 
                 <div id="divData" class="updateTable">

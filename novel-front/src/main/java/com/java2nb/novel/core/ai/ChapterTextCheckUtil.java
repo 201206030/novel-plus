@@ -35,6 +35,11 @@ public final class ChapterTextCheckUtil {
      */
     private static final double DUP_RATIO_THRESHOLD = 0.12;
 
+    /**
+     * 段落长度上限（超过建议拆分）
+     */
+    private static final int MAX_PARAGRAPH_LEN = 800;
+
     private ChapterTextCheckUtil() {
     }
 
@@ -93,6 +98,53 @@ public final class ChapterTextCheckUtil {
         if (total >= 5 && (double) duplicated / total > DUP_RATIO_THRESHOLD) {
             problems.add("存在" + duplicated + "处重复段落，疑似内容复读");
         }
+    }
+
+    /**
+     * 段落格式自查（发布前提示用，仅建议不拦截）：连续空行/超长段落/段首缩进习惯
+     *
+     * @param content 章节正文（原始换行文本）
+     * @return 格式建议列表；空列表表示无明显格式问题
+     */
+    public static List<String> formatTips(String content) {
+        List<String> tips = new ArrayList<>();
+        if (content == null || content.isBlank()) {
+            return tips;
+        }
+        String[] lines = content.split("\n", -1);
+        int maxBlankRun = 0;
+        int blankRun = 0;
+        int longParagraphs = 0;
+        int paragraphs = 0;
+        int noIndent = 0;
+        for (String line : lines) {
+            String paragraph = line.trim();
+            if (paragraph.isEmpty()) {
+                blankRun++;
+                maxBlankRun = Math.max(maxBlankRun, blankRun);
+                continue;
+            }
+            blankRun = 0;
+            paragraphs++;
+            if (paragraph.length() > MAX_PARAGRAPH_LEN) {
+                longParagraphs++;
+            }
+            // 段首未用全角空格缩进（兼容半角空格缩进）
+            String raw = line.replaceAll("\r", "");
+            if (!raw.isEmpty() && !raw.startsWith("\u3000") && !raw.startsWith(" ")) {
+                noIndent++;
+            }
+        }
+        if (maxBlankRun >= 3) {
+            tips.add("存在连续" + maxBlankRun + "个空行，建议清理");
+        }
+        if (longParagraphs > 0) {
+            tips.add("有" + longParagraphs + "段超过" + MAX_PARAGRAPH_LEN + "字的长段落，建议按情节拆分");
+        }
+        if (paragraphs >= 5 && (double) noIndent / paragraphs > 0.8) {
+            tips.add("多数段落未缩进，网文惯例段首空两格");
+        }
+        return tips;
     }
 
     /**

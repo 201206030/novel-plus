@@ -7,7 +7,7 @@
 
 
         select id,index_name,update_time
-        from book_index where book_id = #{bookId}
+        from book_index where book_id = #{bookId} and status = 1
         order by index_num DESC limit 1
 
     </select>

@@ -15,6 +15,7 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
@@ -37,7 +38,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface BookIndexMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, bookId, indexNum, indexName, wordCount, isVip, bookPrice, storageType, createTime, updateTime);
+    BasicColumn[] selectList = BasicColumn.columnList(id, bookId, indexNum, indexName, wordCount, isVip, status, publishTime, bookPrice, storageType, createTime, updateTime);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -69,12 +70,21 @@ public interface BookIndexMapper {
         @Result(column="index_name", property="indexName", jdbcType=JdbcType.VARCHAR),
         @Result(column="word_count", property="wordCount", jdbcType=JdbcType.INTEGER),
         @Result(column="is_vip", property="isVip", jdbcType=JdbcType.TINYINT),
+        @Result(column="status", property="status", jdbcType=JdbcType.TINYINT),
+        @Result(column="publish_time", property="publishTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="book_price", property="bookPrice", jdbcType=JdbcType.INTEGER),
         @Result(column="storage_type", property="storageType", jdbcType=JdbcType.VARCHAR),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP)
     })
     List<BookIndex> selectMany(SelectStatementProvider selectStatement);
+
+    /**
+     * 聚合统计查询（如 sum(word_count)），与 AuthorIncomeDetailMapper.selectStatistic 同款写法
+     */
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @ResultType(value = Long.class)
+    Long selectStatistic(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
@@ -106,6 +116,8 @@ public interface BookIndexMapper {
             .map(indexName).toProperty("indexName")
             .map(wordCount).toProperty("wordCount")
             .map(isVip).toProperty("isVip")
+            .map(status).toProperty("status")
+            .map(publishTime).toProperty("publishTime")
             .map(bookPrice).toProperty("bookPrice")
             .map(storageType).toProperty("storageType")
             .map(createTime).toProperty("createTime")
@@ -122,6 +134,8 @@ public interface BookIndexMapper {
             .map(indexName).toProperty("indexName")
             .map(wordCount).toProperty("wordCount")
             .map(isVip).toProperty("isVip")
+            .map(status).toProperty("status")
+            .map(publishTime).toProperty("publishTime")
             .map(bookPrice).toProperty("bookPrice")
             .map(storageType).toProperty("storageType")
             .map(createTime).toProperty("createTime")
@@ -138,6 +152,8 @@ public interface BookIndexMapper {
             .map(indexName).toPropertyWhenPresent("indexName", record::getIndexName)
             .map(wordCount).toPropertyWhenPresent("wordCount", record::getWordCount)
             .map(isVip).toPropertyWhenPresent("isVip", record::getIsVip)
+            .map(status).toPropertyWhenPresent("status", record::getStatus)
+            .map(publishTime).toPropertyWhenPresent("publishTime", record::getPublishTime)
             .map(bookPrice).toPropertyWhenPresent("bookPrice", record::getBookPrice)
             .map(storageType).toPropertyWhenPresent("storageType", record::getStorageType)
             .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
@@ -180,6 +196,8 @@ public interface BookIndexMapper {
                 .set(indexName).equalTo(record::getIndexName)
                 .set(wordCount).equalTo(record::getWordCount)
                 .set(isVip).equalTo(record::getIsVip)
+                .set(status).equalTo(record::getStatus)
+                .set(publishTime).equalTo(record::getPublishTime)
                 .set(bookPrice).equalTo(record::getBookPrice)
                 .set(storageType).equalTo(record::getStorageType)
                 .set(createTime).equalTo(record::getCreateTime)
@@ -194,6 +212,8 @@ public interface BookIndexMapper {
                 .set(indexName).equalToWhenPresent(record::getIndexName)
                 .set(wordCount).equalToWhenPresent(record::getWordCount)
                 .set(isVip).equalToWhenPresent(record::getIsVip)
+                .set(status).equalToWhenPresent(record::getStatus)
+                .set(publishTime).equalToWhenPresent(record::getPublishTime)
                 .set(bookPrice).equalToWhenPresent(record::getBookPrice)
                 .set(storageType).equalToWhenPresent(record::getStorageType)
                 .set(createTime).equalToWhenPresent(record::getCreateTime)
@@ -208,6 +228,8 @@ public interface BookIndexMapper {
             .set(indexName).equalTo(record::getIndexName)
             .set(wordCount).equalTo(record::getWordCount)
             .set(isVip).equalTo(record::getIsVip)
+            .set(status).equalTo(record::getStatus)
+            .set(publishTime).equalTo(record::getPublishTime)
             .set(bookPrice).equalTo(record::getBookPrice)
             .set(storageType).equalTo(record::getStorageType)
             .set(createTime).equalTo(record::getCreateTime)
@@ -224,6 +246,8 @@ public interface BookIndexMapper {
             .set(indexName).equalToWhenPresent(record::getIndexName)
             .set(wordCount).equalToWhenPresent(record::getWordCount)
             .set(isVip).equalToWhenPresent(record::getIsVip)
+            .set(status).equalToWhenPresent(record::getStatus)
+            .set(publishTime).equalToWhenPresent(record::getPublishTime)
             .set(bookPrice).equalToWhenPresent(record::getBookPrice)
             .set(storageType).equalToWhenPresent(record::getStorageType)
             .set(createTime).equalToWhenPresent(record::getCreateTime)

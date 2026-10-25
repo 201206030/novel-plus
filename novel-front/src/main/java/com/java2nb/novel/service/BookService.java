@@ -240,6 +240,53 @@ public interface BookService {
      * @param authorId 作者ID   */
     void addBookContent(Long bookId, String indexName, String content, Byte isVip, Long authorId);
 
+    /**
+     * 发布章节内容（支持草稿/定时发布）
+     * @param bookId 小说ID
+     * @param indexName 章节名
+     * @param content 章节内容
+     * @param isVip 是否收费
+     * @param authorId 作者ID
+     * @param publishStatus 发布状态：0存草稿，1立即发布，2定时发布
+     * @param publishTime 定时发布时间（publishStatus=2时必填）
+     * */
+    void addBookContent(Long bookId, String indexName, String content, Byte isVip, Long authorId,
+        Byte publishStatus, Date publishTime);
+
+    /**
+     * 作者端分页查询章节列表（含草稿/定时发布状态）
+     * @param bookId 小说ID
+     * @param authorId 作者ID（校验归属）
+     * @param page 页码
+     * @param pageSize 分页大小
+     * @return 章节分页数据
+     * */
+    PageBean<BookIndex> queryAuthorIndexPage(Long bookId, Long authorId, int page, int pageSize);
+
+    /**
+     * 发布章节（草稿/定时 → 已发布），同步补计字数与最新章节
+     * @param indexId 章节ID
+     * @param authorId 作者ID，传 null 表示系统（定时任务）触发
+     * */
+    void publishIndex(Long indexId, Long authorId);
+
+    /**
+     * 将章节设为定时发布（仅草稿章节可用）
+     * @param indexId 章节ID
+     * @param authorId 作者ID
+     * @param publishTime 定时发布时间
+     * */
+    void scheduleIndex(Long indexId, Long authorId, Date publishTime);
+
+    /**
+     * 查询已到时但未发布的定时章节ID（供定时任务发布）
+     * @param now 当前时间
+     * @param limit 最大条数
+     * @return 章节ID列表
+     * */
+    List<Long> queryDueScheduledIndexIds(Date now, int limit);
+
+
 
     /**
      * 根据更新时间分页查询书籍列表
