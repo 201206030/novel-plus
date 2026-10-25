@@ -32,6 +32,7 @@
                 <li><a class="link_book on" href="/author/index.html">小说管理</a></li>
                 <li><a class="link_ai" href="/author/ai_assistant.html">AI创作助手</a></li>
                 <li><a class="link_income" href="/author/author_income_detail.html">稿费收入</a></li>
+                <li><a class="link_profile" href="/author/author_info.html">作者信息</a></li>
             </ul>
 
         </div>
@@ -121,6 +122,29 @@
         return d.Format('yyyy-MM-dd hh:mm');
     }
 
+    //相对时间：刚/分钟/小时/天，超过7天回退为日期
+    function relTime(t) {
+        if (!t) {
+            return '';
+        }
+        var d = new Date(Date.parse(t));
+        var diff = Date.now() - d.getTime();
+        if (isNaN(diff)) {
+            return '';
+        }
+        var min = 60 * 1000, hour = 60 * min, day = 24 * hour;
+        if (diff < min) {
+            return '刚刚';
+        } else if (diff < hour) {
+            return Math.floor(diff / min) + '分钟前';
+        } else if (diff < day) {
+            return Math.floor(diff / hour) + '小时前';
+        } else if (diff < 7 * day) {
+            return Math.floor(diff / day) + '天前';
+        }
+        return d.Format('yyyy-MM-dd');
+    }
+
     //HTML转义，防止书名/章节名破坏表格结构
     function escapeHtml(str) {
         return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -161,7 +185,8 @@
                         var bookListHtml = "";
                         for (var i = 0; i < bookList.length; i++) {
                             var book = bookList[i];
-                            var updTime = fmtTime(book.lastIndexUpdateTime ? book.lastIndexUpdateTime : book.updateTime);
+                            var updTime = relTime(book.lastIndexUpdateTime ? book.lastIndexUpdateTime : book.updateTime);
+                            var updFull = fmtTime(book.lastIndexUpdateTime ? book.lastIndexUpdateTime : book.updateTime);
                             bookListHtml += '<tr class="book_list">'
                                 + '<td class="name">'
                                 + '  <div class="book_cell">'
@@ -173,12 +198,13 @@
                                 + '    <div class="book_info">'
                                 + '      <a class="book_name" target="_blank" href="/book/' + book.id + '.html" title="' + escapeHtml(book.bookName) + '">' + escapeHtml(book.bookName) + '</a>'
                                 + '      <p class="book_cat">' + escapeHtml(book.catName || '') + '</p>'
+                                + '      <p class="book_last">更新至：' + escapeHtml(book.lastIndexName || '') + '</p>'
                                 + '    </div>'
                                 + '  </div>'
                                 + '</td>'
                                 + '<td class="goread"><span class="num">' + fmtNum(book.visitCount) + '</span></td>'
                                 + '<td class="goread"><span class="num">' + fmtNum(book.yesterdayBuy) + '</span></td>'
-                                + '<td class="goread time_cell">' + updTime + '</td>'
+                                + '<td class="goread time_cell" title="' + updFull + '">' + updTime + '</td>'
                                 + '<td class="goread"><span class="num">' + fmtNum(book.wordCount) + '</span></td>'
                                 + '<td class="goread status_cell">'
                                 + (book.bookStatus == 0 ? '<span class="tag tag_serial">连载中</span>' : '<span class="tag tag_done">已完结</span>')

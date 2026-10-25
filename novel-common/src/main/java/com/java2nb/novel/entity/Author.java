@@ -26,6 +26,12 @@ public class Author {
     private String email;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String picUrl;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String intro;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte workDirection;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -102,6 +108,26 @@ public class Author {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEmail(String email) {
         this.email = email == null ? null : email.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl == null ? null : picUrl.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getIntro() {
+        return intro;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setIntro(String intro) {
+        this.intro = intro == null ? null : intro.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

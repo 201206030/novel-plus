@@ -16,6 +16,8 @@ CREATE TABLE `author`
     `tel_phone`      varchar(20) DEFAULT NULL COMMENT '手机号码',
     `chat_account`   varchar(50) DEFAULT NULL COMMENT 'QQ或微信账号',
     `email`          varchar(50) DEFAULT NULL COMMENT '电子邮箱',
+    `pic_url`        varchar(200) DEFAULT NULL COMMENT '作者头像',
+    `intro`          varchar(500) DEFAULT NULL COMMENT '作者简介',
     `work_direction` tinyint(4)  DEFAULT NULL COMMENT '作品方向，0：男频，1：女频',
     `status`         tinyint(4)  DEFAULT '0' COMMENT '0：正常，1：封禁',
     `create_time`    datetime    DEFAULT NULL COMMENT '创建时间',
@@ -28,9 +30,9 @@ CREATE TABLE `author`
 -- Records of author
 -- ----------------------------
 INSERT INTO `author`
-VALUES ('1', null, 'reerer', 'abc', '13560487656', '23484388', '23484388@qq.com', '0', '0', null);
+VALUES ('1', null, 'reerer', 'abc', '13560487656', '23484388', '23484388@qq.com', null, null, '0', '0', null);
 INSERT INTO `author`
-VALUES ('2', '1255060328322027520', 'rwrr445554', '梦入神机', '13560421324', '1179705413', 'reerer@qq.com', '0', '0',
+VALUES ('2', '1255060328322027520', 'rwrr445554', '梦入神机', '13560421324', '1179705413', 'reerer@qq.com', null, null, '0', '0',
         '2020-05-13 14:01:31');
 
 -- ----------------------------

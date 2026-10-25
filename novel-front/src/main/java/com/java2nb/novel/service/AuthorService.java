@@ -4,6 +4,8 @@ package com.java2nb.novel.service;
 import com.java2nb.novel.entity.Author;
 import com.java2nb.novel.entity.AuthorIncome;
 import com.java2nb.novel.entity.AuthorIncomeDetail;
+import com.java2nb.novel.vo.BookIncomeSummaryVO;
+import com.java2nb.novel.vo.IncomeRuleVO;
 import io.github.xxyopen.model.page.PageBean;
 
 import java.util.Date;
@@ -21,6 +23,57 @@ public interface AuthorService {
      * @return true：存在该笔名，false: 不存在该笔名
      */
     Boolean checkPenName(String penName);
+
+    /**
+     * 校验笔名是否存在（可排除指定作者自身，供资料页改笔名查重用）
+     *
+     * @param penName          校验的笔名
+     * @param excludeAuthorId  需要排除的作者ID（为空则不排除）
+     * @return true：存在该笔名，false：不存在该笔名
+     */
+    Boolean checkPenName(String penName, Long excludeAuthorId);
+
+    /**
+     * 查询作家完整信息（含头像/简介等全部字段）
+     *
+     * @param userId 用户ID
+     * @return 作家对象
+     */
+    Author queryAuthorAll(Long userId);
+
+    /**
+     * 根据作家ID（author.id，即 book.author_id）查询作家完整信息
+     *
+     * @param authorId 作家主键
+     * @return 作家对象，不存在返回 null
+     */
+    Author queryAuthorById(Long authorId);
+
+    /**
+     * 更新作家资料（仅笔名、头像、简介、联系方式，作品方向与状态不可改）
+     *
+     * @param userId 用户ID
+     * @param form   待更新字段
+     */
+    void updateAuthorInfo(Long userId, Author form);
+
+    /**
+     * 查询稿费分成规则（供收入明细页说明用）
+     *
+     * @return 分成规则
+     */
+    IncomeRuleVO incomeRule();
+
+    /**
+     * 按作品汇总订阅收入
+     *
+     * @param userId    用户ID
+     * @param bookId    作品ID（0表示全部）
+     * @param startTime 收入起始日期
+     * @param endTime   收入结束日期
+     * @return 每个作品的汇总
+     */
+    List<BookIncomeSummaryVO> bookIncomeSummary(Long userId, Long bookId, Date startTime, Date endTime);
 
     /**
      * 作家注册

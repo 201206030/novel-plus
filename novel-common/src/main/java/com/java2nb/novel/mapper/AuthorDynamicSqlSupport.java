@@ -32,6 +32,12 @@ public final class AuthorDynamicSqlSupport {
     public static final SqlColumn<String> email = author.email;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> picUrl = author.picUrl;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> intro = author.intro;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> workDirection = author.workDirection;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -55,6 +61,10 @@ public final class AuthorDynamicSqlSupport {
         public final SqlColumn<String> chatAccount = column("chat_account", JDBCType.VARCHAR);
 
         public final SqlColumn<String> email = column("email", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> picUrl = column("pic_url", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> intro = column("intro", JDBCType.VARCHAR);
 
         public final SqlColumn<Byte> workDirection = column("work_direction", JDBCType.TINYINT);
 

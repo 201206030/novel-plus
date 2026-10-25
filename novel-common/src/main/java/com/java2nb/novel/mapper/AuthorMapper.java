@@ -35,7 +35,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface AuthorMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, userId, inviteCode, penName, telPhone, chatAccount, email, workDirection, status, createTime);
+    BasicColumn[] selectList = BasicColumn.columnList(id, userId, inviteCode, penName, telPhone, chatAccount, email, picUrl, intro, workDirection, status, createTime);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -68,6 +68,8 @@ public interface AuthorMapper {
         @Result(column="tel_phone", property="telPhone", jdbcType=JdbcType.VARCHAR),
         @Result(column="chat_account", property="chatAccount", jdbcType=JdbcType.VARCHAR),
         @Result(column="email", property="email", jdbcType=JdbcType.VARCHAR),
+        @Result(column="pic_url", property="picUrl", jdbcType=JdbcType.VARCHAR),
+        @Result(column="intro", property="intro", jdbcType=JdbcType.VARCHAR),
         @Result(column="work_direction", property="workDirection", jdbcType=JdbcType.TINYINT),
         @Result(column="status", property="status", jdbcType=JdbcType.TINYINT),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP)
@@ -105,6 +107,8 @@ public interface AuthorMapper {
             .map(telPhone).toProperty("telPhone")
             .map(chatAccount).toProperty("chatAccount")
             .map(email).toProperty("email")
+            .map(picUrl).toProperty("picUrl")
+            .map(intro).toProperty("intro")
             .map(workDirection).toProperty("workDirection")
             .map(status).toProperty("status")
             .map(createTime).toProperty("createTime")
@@ -121,6 +125,8 @@ public interface AuthorMapper {
             .map(telPhone).toProperty("telPhone")
             .map(chatAccount).toProperty("chatAccount")
             .map(email).toProperty("email")
+            .map(picUrl).toProperty("picUrl")
+            .map(intro).toProperty("intro")
             .map(workDirection).toProperty("workDirection")
             .map(status).toProperty("status")
             .map(createTime).toProperty("createTime")
@@ -137,6 +143,8 @@ public interface AuthorMapper {
             .map(telPhone).toPropertyWhenPresent("telPhone", record::getTelPhone)
             .map(chatAccount).toPropertyWhenPresent("chatAccount", record::getChatAccount)
             .map(email).toPropertyWhenPresent("email", record::getEmail)
+            .map(picUrl).toPropertyWhenPresent("picUrl", record::getPicUrl)
+            .map(intro).toPropertyWhenPresent("intro", record::getIntro)
             .map(workDirection).toPropertyWhenPresent("workDirection", record::getWorkDirection)
             .map(status).toPropertyWhenPresent("status", record::getStatus)
             .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
@@ -179,6 +187,8 @@ public interface AuthorMapper {
                 .set(telPhone).equalTo(record::getTelPhone)
                 .set(chatAccount).equalTo(record::getChatAccount)
                 .set(email).equalTo(record::getEmail)
+                .set(picUrl).equalTo(record::getPicUrl)
+                .set(intro).equalTo(record::getIntro)
                 .set(workDirection).equalTo(record::getWorkDirection)
                 .set(status).equalTo(record::getStatus)
                 .set(createTime).equalTo(record::getCreateTime);
@@ -193,6 +203,8 @@ public interface AuthorMapper {
                 .set(telPhone).equalToWhenPresent(record::getTelPhone)
                 .set(chatAccount).equalToWhenPresent(record::getChatAccount)
                 .set(email).equalToWhenPresent(record::getEmail)
+                .set(picUrl).equalToWhenPresent(record::getPicUrl)
+                .set(intro).equalToWhenPresent(record::getIntro)
                 .set(workDirection).equalToWhenPresent(record::getWorkDirection)
                 .set(status).equalToWhenPresent(record::getStatus)
                 .set(createTime).equalToWhenPresent(record::getCreateTime);
@@ -207,6 +219,8 @@ public interface AuthorMapper {
             .set(telPhone).equalTo(record::getTelPhone)
             .set(chatAccount).equalTo(record::getChatAccount)
             .set(email).equalTo(record::getEmail)
+            .set(picUrl).equalTo(record::getPicUrl)
+            .set(intro).equalTo(record::getIntro)
             .set(workDirection).equalTo(record::getWorkDirection)
             .set(status).equalTo(record::getStatus)
             .set(createTime).equalTo(record::getCreateTime)
@@ -223,6 +237,8 @@ public interface AuthorMapper {
             .set(telPhone).equalToWhenPresent(record::getTelPhone)
             .set(chatAccount).equalToWhenPresent(record::getChatAccount)
             .set(email).equalToWhenPresent(record::getEmail)
+            .set(picUrl).equalToWhenPresent(record::getPicUrl)
+            .set(intro).equalToWhenPresent(record::getIntro)
             .set(workDirection).equalToWhenPresent(record::getWorkDirection)
             .set(status).equalToWhenPresent(record::getStatus)
             .set(createTime).equalToWhenPresent(record::getCreateTime)

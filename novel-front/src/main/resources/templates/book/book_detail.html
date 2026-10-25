@@ -8,7 +8,7 @@
     <meta name="description"
           th:content="${book.bookName}+','+${book.bookName}+'小说阅读,'+${book.bookName}+'由作家'+${book.authorName}+'创作,'+${application.website.name}+'提供'+${book.bookName}+'首发最新章节及txt下载,'+${book.bookName}+'最新更新章节,精彩尽在'+${application.website.name}+'。'"/>
     <link rel="stylesheet" href="/css/main.css"/>
-    <link href="/css/book.css?v=2019" rel="stylesheet"/>
+    <link href="/css/book.css?v=2027" rel="stylesheet"/>
 </head>
 <body>
 
@@ -168,7 +168,7 @@
             <div class="wrap_inner author_info mb20">
 
                 <div class="author_head cf">
-                    <a href="javascript:void(0);" class="head"><img src="/images/author_head.png" alt="作者头像"
+                    <a href="javascript:void(0);" class="head"><img th:src="${!#strings.isEmpty(authorPicUrl)} ? ${authorPicUrl} : '/images/author_head.png'" alt="作者头像"
                                                                     id="authorLogoImg"/></a>
                     <div class="msg">
                         <span class="icon_qyzz">签约作家</span>
@@ -178,7 +178,7 @@
                 </div>
                 <div class="author_intro cf">
                     <h4>作者有话说</h4>
-                    <div class="intro_txt" id="authorNote">
+                    <div class="intro_txt" id="authorNote" th:text="${!#strings.isEmpty(authorIntro)} ? ${authorIntro} : '亲亲们，你们的支持是我最大的动力！求点击、求推荐、求书评哦！'">
                         亲亲们，你们的支持是我最大的动力！求点击、求推荐、求书评哦！
                     </div>
                 </div>

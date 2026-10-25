@@ -78,6 +78,7 @@
 .author_zone .book_info .book_name { display:block; height:auto; line-height:1.4; font-size:14px; color:#333; white-space:nowrap }
 .author_zone .book_info .book_name:hover { color:#3eaf7c }
 .author_zone .book_info .book_cat { font-size:12px; color:#99a59e; margin-top:4px; line-height:1 }
+.author_zone .book_info .book_last { font-size:12px; color:#7d8a83; margin-top:6px; line-height:1; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
 
 /* ---------- 章节序号 ---------- */
 .author_zone .idx_no { display:inline-block; min-width:28px; padding:2px 6px; border-radius:10px; background:#f2faf6; color:#2c8a61; font-size:12px; text-align:center }

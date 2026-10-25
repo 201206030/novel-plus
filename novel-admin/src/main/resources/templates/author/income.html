@@ -37,7 +37,8 @@
     }
 
     function settleIncome(row) {
-        layer.confirm('确定结算「' + (row.penName || '') + '」' + monthText(row) + '《' + (row.bookName || '') + '》的稿费（税后 ' + yuan(row.afterTaxIncome) + '）吗？', {icon: 3, title: '提示'}, function (idx) {
+        var scope = row.bookId == 0 ? '全部作品合计' : ('《' + (row.bookName || '') + '》');
+        layer.confirm('确定结算「' + (row.penName || '') + '」' + monthText(row) + scope + '的稿费（税后 ' + yuan(row.afterTaxIncome) + '）吗？', {icon: 3, title: '提示'}, function (idx) {
             layer.close(idx);
             Admin.post('/author/income/settle', {id: row.id}, function () {
                 layer.msg('结算成功');
@@ -54,7 +55,7 @@
         api: '/author/income',
         listUrl: '/author/income/list',
         title: '作家收入管理',
-        searchPlaceholder: '输入书名/笔名搜索',
+        searchPlaceholder: '输入笔名搜索',
         hasAdd: false,
         hasEdit: false,
         hasDel: false,
@@ -64,7 +65,9 @@
         toolbar: '<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal" id="aSettleAllBtn">一键结算全部待结算</a>',
         columns: [
             {title: '笔名', field: 'penName', thClass: 'col_ell', ellipsis: true},
-            {title: '作品', field: 'bookName', thClass: 'col_book', ellipsis: true},
+            {title: '作品', thClass: 'col_book', render: function (row) {
+                return row.bookId == 0 ? '全部作品（合计）' : (row.bookName || '-');
+            }},
             {title: '收入月份', render: function (row) {
                 return row.incomeMonth ? Admin.fmt(row.incomeMonth).substring(0, 7) : '-';
             }},

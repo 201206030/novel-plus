@@ -12,10 +12,13 @@ import com.java2nb.novel.entity.AuthorIncomeDetail;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
+import com.java2nb.novel.vo.BookIncomeSummaryVO;
+import com.java2nb.novel.vo.IncomeRuleVO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 11797
@@ -46,12 +50,74 @@ public class AuthorController extends BaseController {
     private final OpenAiChatModel chatModel;
 
     /**
-     * 校验笔名是否存在
+     * 校验笔名是否存在（资料页改笔名时可传 excludeAuthorId 排除自身）
      */
     @GetMapping("checkPenName")
-    public RestResult<Boolean> checkPenName(String penName) {
+    public RestResult<Boolean> checkPenName(String penName,
+        @RequestParam(value = "excludeAuthorId", required = false) Long excludeAuthorId) {
 
-        return RestResult.ok(authorService.checkPenName(penName));
+        return RestResult.ok(authorService.checkPenName(penName, excludeAuthorId));
+    }
+
+    /**
+     * 查询当前作家完整资料（供作者信息页回显）
+     */
+    @GetMapping("authorInfo")
+    public RestResult<Author> authorInfo(HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (userDetails == null) {
+            throw new BusinessException(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(authorService.queryAuthorAll(userDetails.getId()));
+    }
+
+    /**
+     * 更新当前作家资料（笔名/头像/简介/联系方式）
+     */
+    @PostMapping("updateAuthorInfo")
+    public RestResult<Void> updateAuthorInfo(Author form, HttpServletRequest request) {
+        Author current = checkAuthor(request);
+        Long userId = getUserDetails(request).getId();
+
+        String penName = StringUtils.trimToEmpty(form.getPenName());
+        String telPhone = StringUtils.trimToEmpty(form.getTelPhone());
+        String email = StringUtils.trimToEmpty(form.getEmail());
+        // 服务端同步校验格式
+        if (!penName.matches("^[\\u4e00-\\u9fa5a-zA-Z]{2,8}$")
+            || !telPhone.matches("^1[3-9]\\d{9}$")
+            || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            throw new BusinessException(ResponseStatus.AUTHOR_INFO_INVALID);
+        }
+        // 笔名发生变更时才查重，排除自身
+        if (!penName.equals(current.getPenName())
+            && Boolean.TRUE.equals(authorService.checkPenName(penName, current.getId()))) {
+            throw new BusinessException(ResponseStatus.PEN_NAME_EXISTS);
+        }
+        form.setPenName(penName);
+        authorService.updateAuthorInfo(userId, form);
+        return RestResult.ok();
+    }
+
+    /**
+     * 查询稿费分成规则（供收入明细页说明用）
+     */
+    @GetMapping("incomeRule")
+    public RestResult<IncomeRuleVO> incomeRule() {
+        return RestResult.ok(authorService.incomeRule());
+    }
+
+    /**
+     * 按作品汇总订阅收入（收入明细页顶部卡片）
+     */
+    @GetMapping("bookIncomeSummary")
+    public RestResult<List<BookIncomeSummaryVO>> bookIncomeSummary(
+        @RequestParam(value = "bookId", defaultValue = "0") Long bookId,
+        @RequestParam(value = "startTime", defaultValue = "2020-05-01") Date startTime,
+        @RequestParam(value = "endTime", defaultValue = "2030-01-01") Date endTime,
+        HttpServletRequest request) {
+
+        return RestResult.ok(
+            authorService.bookIncomeSummary(getUserDetails(request).getId(), bookId, startTime, endTime));
     }
 
     /**

@@ -289,6 +289,16 @@ public class PageController extends BaseController {
         model.addAttribute("recBooks", recBookCompletableFuture.get());
         model.addAttribute("bookCommentPageBean", bookCommentPageBeanCompletableFuture.get());
 
+        // 加载作者头像与简介（爬虫书可能无关联作者，不报错）
+        Book book = bookCompletableFuture.get();
+        if (book.getAuthorId() != null) {
+            Author author = authorService.queryAuthorById(book.getAuthorId());
+            if (author != null) {
+                model.addAttribute("authorPicUrl", author.getPicUrl());
+                model.addAttribute("authorIntro", author.getIntro());
+            }
+        }
+
         return ThreadLocalUtil.getTemplateDir() + "book/book_detail";
     }
 
