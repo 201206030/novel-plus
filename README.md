@@ -74,13 +74,10 @@ bin/novel-front.sh start
 
 ### 绿色主题模版
 
-#### 老版本UI（2023年）
-[![点击查看大图](https://www.xxyopen.com/images/green_novel.png)](https://www.xxyopen.com/images/green_novel.png)
-[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green3.png)
-[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)](https://www.xxyopen.com/images/resource/os/novel-plus/green2.png)
 
-#### 新版本UI（2026年）
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/new_green1.png)](https://www.xxyopen.com/images/resource/os/novel-plus/new_green1.png)
+[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/new_pc.png)](https://www.xxyopen.com/images/resource/os/novel-plus/new_pc.png)
+[![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/new_author.png)](https://www.xxyopen.com/images/resource/os/novel-plus/new_author.png)
 [![点击查看大图](https://www.xxyopen.com/images/resource/os/novel-plus/new_admin.png)](https://www.xxyopen.com/images/resource/os/novel-plus/new_admin.png)
 
 
