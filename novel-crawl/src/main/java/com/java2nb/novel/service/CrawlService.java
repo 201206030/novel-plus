@@ -23,6 +23,13 @@ public interface CrawlService {
      * @param source
      */
     void updateCrawlSource(CrawlSource source);
+
+    /**
+     * 删除爬虫源（仅限已停止的源），同时清理该源的单本采集任务，不删除已采集的小说
+     * @param sourceId 爬虫源ID
+     * */
+    void delCrawlSource(Integer sourceId);
+
     /**
      * 爬虫源分页列表
      * @param page 当前页码

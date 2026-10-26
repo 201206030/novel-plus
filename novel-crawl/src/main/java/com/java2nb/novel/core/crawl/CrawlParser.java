@@ -2,6 +2,7 @@ package com.java2nb.novel.core.crawl;
 
 import com.java2nb.novel.core.utils.RandomBookInfoUtil;
 import com.java2nb.novel.core.utils.StringUtil;
+import com.java2nb.novel.core.utils.UrlUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
@@ -18,8 +19,6 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 爬虫解析器
@@ -78,104 +77,105 @@ public class CrawlParser {
     public void parseBook(RuleBean ruleBean, String bookId, CrawlBookHandler handler)
         throws InterruptedException {
         Book book = new Book();
-        String bookDetailUrl = ruleBean.getBookDetailUrl().replace("{bookId}", bookId);
+        String bookDetailUrl = resolveUrl(ruleBean, ruleBean.getBookDetailUrl().replace("{bookId}", bookId));
         String bookDetailHtml = crawlHttpClient.get(bookDetailUrl, ruleBean.getCharset());
         if (bookDetailHtml != null) {
-            Pattern bookNamePatten = PatternFactory.getPattern(ruleBean.getBookNamePatten());
-            Matcher bookNameMatch = bookNamePatten.matcher(bookDetailHtml);
-            boolean isFindBookName = bookNameMatch.find();
+            RuleExtractor extractor = RuleExtractor.create(ruleBean.getParseType(), bookDetailHtml);
+            String bookName = extractor.extractFirst(ruleBean.getBookNamePatten());
+            boolean isFindBookName = bookName != null;
             if (isFindBookName) {
-                String bookName = bookNameMatch.group(1);
                 //设置小说名
                 book.setBookName(bookName);
-                Pattern authorNamePatten = PatternFactory.getPattern(ruleBean.getAuthorNamePatten());
-                Matcher authorNameMatch = authorNamePatten.matcher(bookDetailHtml);
-                boolean isFindAuthorName = authorNameMatch.find();
+                String authorName = extractor.extractFirst(ruleBean.getAuthorNamePatten());
+                boolean isFindAuthorName = authorName != null;
                 if (isFindAuthorName) {
-                    String authorName = authorNameMatch.group(1);
                     //设置作者名
                     book.setAuthorName(authorName);
                     if (StringUtils.isNotBlank(ruleBean.getPicUrlPatten())) {
-                        Pattern picUrlPatten = PatternFactory.getPattern(ruleBean.getPicUrlPatten());
-                        Matcher picUrlMatch = picUrlPatten.matcher(bookDetailHtml);
-                        boolean isFindPicUrl = picUrlMatch.find();
+                        String picUrl = extractor.extractFirst(ruleBean.getPicUrlPatten());
+                        boolean isFindPicUrl = picUrl != null;
                         if (isFindPicUrl) {
-                            String picUrl = picUrlMatch.group(1);
                             if (StringUtils.isNotBlank(picUrl) && StringUtils.isNotBlank(ruleBean.getPicUrlPrefix())) {
                                 picUrl = ruleBean.getPicUrlPrefix() + picUrl;
+                            } else {
+                                picUrl = resolveUrl(ruleBean, picUrl);
                             }
                             //设置封面图片路径
                             book.setPicUrl(picUrl);
                         }
                     }
                     if (StringUtils.isNotBlank(ruleBean.getScorePatten())) {
-                        Pattern scorePatten = PatternFactory.getPattern(ruleBean.getScorePatten());
-                        Matcher scoreMatch = scorePatten.matcher(bookDetailHtml);
-                        boolean isFindScore = scoreMatch.find();
-                        if (isFindScore) {
-                            String score = scoreMatch.group(1);
-                            //设置评分
-                            book.setScore(Float.parseFloat(score));
+                        String score = extractor.extractFirst(ruleBean.getScorePatten());
+                        if (score != null) {
+                            try {
+                                //设置评分
+                                book.setScore(Float.parseFloat(score.trim()));
+                            } catch (NumberFormatException e) {
+                                log.error("解析小说评分出错：{}", score);
+                            }
                         }
                     }
                     if (StringUtils.isNotBlank(ruleBean.getVisitCountPatten())) {
-                        Pattern visitCountPatten = PatternFactory.getPattern(ruleBean.getVisitCountPatten());
-                        Matcher visitCountMatch = visitCountPatten.matcher(bookDetailHtml);
-                        boolean isFindVisitCount = visitCountMatch.find();
-                        if (isFindVisitCount) {
-                            String visitCount = visitCountMatch.group(1);
-                            //设置访问次数
-                            book.setVisitCount(Long.parseLong(visitCount));
+                        String visitCount = extractor.extractFirst(ruleBean.getVisitCountPatten());
+                        if (visitCount != null) {
+                            try {
+                                //设置访问次数
+                                book.setVisitCount(Long.parseLong(visitCount.trim()));
+                            } catch (NumberFormatException e) {
+                                log.error("解析小说访问次数出错：{}", visitCount);
+                            }
                         }
                     }
 
-                    String desc = bookDetailHtml.substring(
-                        bookDetailHtml.indexOf(ruleBean.getDescStart()) + ruleBean.getDescStart().length());
-                    desc = desc.substring(0, desc.indexOf(ruleBean.getDescEnd()));
-                    //过滤掉简介中的特殊标签
-                    desc = desc.replaceAll("<a[^<]+</a>", "")
-                        .replaceAll("<font[^<]+</font>", "")
-                        .replaceAll("<p>\\s*</p>", "")
-                        .replaceAll("<p>", "")
-                        .replaceAll("</p>", "<br/>");
-                    // 小说简介过滤
-                    String filterDesc = ruleBean.getFilterDesc();
-                    if (StringUtils.isNotBlank(filterDesc)) {
-                        String[] filterRules = filterDesc.replace("\r\n", "\n").split("\n");
-                        for (String filterRule : filterRules) {
-                            if (StringUtils.isNotBlank(filterRule)) {
-                                desc = desc.replaceAll(filterRule, "");
+                    //提取简介：优先使用descPatten规则，否则按起止标记截取（兼容老规则）
+                    String desc = null;
+                    if (StringUtils.isNotBlank(ruleBean.getDescPatten())) {
+                        desc = extractor.extractFirst(ruleBean.getDescPatten());
+                    } else if (StringUtils.isNotBlank(ruleBean.getDescStart()) && StringUtils.isNotBlank(
+                        ruleBean.getDescEnd()) && bookDetailHtml.contains(ruleBean.getDescStart()) && bookDetailHtml
+                        .contains(ruleBean.getDescEnd())) {
+                        desc = bookDetailHtml.substring(
+                            bookDetailHtml.indexOf(ruleBean.getDescStart()) + ruleBean.getDescStart().length());
+                        desc = desc.substring(0, desc.indexOf(ruleBean.getDescEnd()));
+                    }
+                    if (desc != null) {
+                        //过滤掉简介中的特殊标签
+                        desc = desc.replaceAll("<a[^<]+</a>", "")
+                            .replaceAll("<font[^<]+</font>", "")
+                            .replaceAll("<p>\\s*</p>", "")
+                            .replaceAll("<p>", "")
+                            .replaceAll("</p>", "<br/>");
+                        // 小说简介过滤
+                        String filterDesc = ruleBean.getFilterDesc();
+                        if (StringUtils.isNotBlank(filterDesc)) {
+                            String[] filterRules = filterDesc.replace("\r\n", "\n").split("\n");
+                            for (String filterRule : filterRules) {
+                                if (StringUtils.isNotBlank(filterRule)) {
+                                    desc = desc.replaceAll(filterRule, "");
+                                }
                             }
                         }
+                        // 去除小说简介前后空格
+                        desc = desc.trim();
+                        // 去除小说简介末尾冗余的小说名
+                        if (desc.endsWith(bookName)) {
+                            desc = desc.substring(0, desc.length() - bookName.length());
+                        }
+                        //设置书籍简介
+                        book.setBookDesc(desc);
                     }
-                    // 去除小说简介前后空格
-                    desc = desc.trim();
-                    // 去除小说简介末尾冗余的小说名
-                    if (desc.endsWith(bookName)) {
-                        desc = desc.substring(0, desc.length() - bookName.length());
-                    }
-                    //设置书籍简介
-                    book.setBookDesc(desc);
                     if (StringUtils.isNotBlank(ruleBean.getStatusPatten())) {
-                        Pattern bookStatusPatten = PatternFactory.getPattern(ruleBean.getStatusPatten());
-                        Matcher bookStatusMatch = bookStatusPatten.matcher(bookDetailHtml);
-                        boolean isFindBookStatus = bookStatusMatch.find();
-                        if (isFindBookStatus) {
-                            String bookStatus = bookStatusMatch.group(1);
-                            if (ruleBean.getBookStatusRule().get(bookStatus) != null) {
-                                //设置更新状态
-                                book.setBookStatus(ruleBean.getBookStatusRule().get(bookStatus));
-                            }
+                        String bookStatus = extractor.extractFirst(ruleBean.getStatusPatten());
+                        if (bookStatus != null && ruleBean.getBookStatusRule().get(bookStatus) != null) {
+                            //设置更新状态
+                            book.setBookStatus(ruleBean.getBookStatusRule().get(bookStatus));
                         }
                     }
 
                     if (StringUtils.isNotBlank(ruleBean.getUpadateTimePatten()) && StringUtils.isNotBlank(
                         ruleBean.getUpadateTimeFormatPatten())) {
-                        Pattern updateTimePatten = PatternFactory.getPattern(ruleBean.getUpadateTimePatten());
-                        Matcher updateTimeMatch = updateTimePatten.matcher(bookDetailHtml);
-                        boolean isFindUpdateTime = updateTimeMatch.find();
-                        if (isFindUpdateTime) {
-                            String updateTime = updateTimeMatch.group(1);
+                        String updateTime = extractor.extractFirst(ruleBean.getUpadateTimePatten());
+                        if (updateTime != null) {
                             //设置更新时间
                             try {
                                 book.setLastIndexUpdateTime(
@@ -217,38 +217,24 @@ public class CrawlParser {
 
         List<BookIndex> indexList = new ArrayList<>();
         List<BookContent> contentList = new ArrayList<>();
-        //读取目录
-        String indexListUrl = ruleBean.getBookIndexUrl().replace("{bookId}", sourceBookId);
-        String indexListHtml = crawlHttpClient.get(indexListUrl, ruleBean.getCharset());
+        //读取目录（支持“下一页”分页，按页序汇总章节）
+        List<String[]> indexPairs = collectIndexPairs(ruleBean, sourceBookId);
 
-        if (indexListHtml != null) {
-            if (StringUtils.isNotBlank(ruleBean.getBookIndexStart())) {
-                indexListHtml = indexListHtml.substring(
-                    indexListHtml.indexOf(ruleBean.getBookIndexStart()) + ruleBean.getBookIndexStart().length());
-            }
-
-            Pattern indexIdPatten = PatternFactory.getPattern(ruleBean.getIndexIdPatten());
-            Matcher indexIdMatch = indexIdPatten.matcher(indexListHtml);
-
-            Pattern indexNamePatten = PatternFactory.getPattern(ruleBean.getIndexNamePatten());
-            Matcher indexNameMatch = indexNamePatten.matcher(indexListHtml);
-
-            boolean isFindIndex = indexIdMatch.find() & indexNameMatch.find();
-
-            int indexNum = 0;
+        if (!indexPairs.isEmpty()) {
+            int matchCount = indexPairs.size();
 
             //总字数
             int totalWordCount = book.getWordCount() == null ? 0 : book.getWordCount();
 
-            while (isFindIndex) {
+            for (int indexNum = 0; indexNum < matchCount; indexNum++) {
 
                 BookIndex hasIndex = existBookIndexMap.get(indexNum);
-                String indexName = indexNameMatch.group(1);
+                String indexName = indexPairs.get(indexNum)[0];
 
                 if (hasIndex == null || !StringUtils.deleteWhitespace(hasIndex.getIndexName())
                     .equals(StringUtils.deleteWhitespace(indexName))) {
 
-                    String sourceIndexId = indexIdMatch.group(1);
+                    String sourceIndexId = indexPairs.get(indexNum)[1];
                     String bookContentUrl = ruleBean.getBookContentUrl();
                     int calStart = bookContentUrl.indexOf("{cal_");
                     if (calStart != -1) {
@@ -279,15 +265,18 @@ public class CrawlParser {
 
                     }
 
-                    String contentUrl = bookContentUrl.replace("{bookId}", sourceBookId)
-                        .replace("{indexId}", sourceIndexId);
+                    String contentUrl = resolveUrl(ruleBean, bookContentUrl.replace("{bookId}", sourceBookId)
+                        .replace("{indexId}", sourceIndexId));
 
                     //查询章节内容
                     String contentHtml = crawlHttpClient.get(contentUrl, ruleBean.getCharset());
-                    if (contentHtml != null && !contentHtml.contains("正在手打中")) {
-                        String content = contentHtml.substring(
-                            contentHtml.indexOf(ruleBean.getContentStart()) + ruleBean.getContentStart().length());
-                        content = content.substring(0, content.indexOf(ruleBean.getContentEnd()));
+                    String content = (contentHtml == null || contentHtml.contains("正在手打中"))
+                        ? null : extractContent(ruleBean, contentHtml);
+                    if (content != null && StringUtils.isNotBlank(ruleBean.getNextContentUrlPatten())) {
+                        //正文分页拼接
+                        content = mergeNextContentPages(ruleBean, contentUrl, contentHtml, content);
+                    }
+                    if (content != null) {
                         // 小说内容过滤
                         String filterContent = ruleBean.getFilterContent();
                         if (StringUtils.isNotBlank(filterContent)) {
@@ -347,8 +336,6 @@ public class CrawlParser {
 
 
                 }
-                indexNum++;
-                isFindIndex = indexIdMatch.find() & indexNameMatch.find();
             }
 
             if (!indexList.isEmpty()) {
@@ -382,6 +369,128 @@ public class CrawlParser {
         }});
         return false;
 
+    }
+
+    /**
+     * 读取章节目录，支持按nextIndexUrlPatten“下一页”规则翻页，
+     * 返回按页序汇总的[章节名, 源章节ID]对；已访问页去重与页数上限防止链接成环
+     */
+    private List<String[]> collectIndexPairs(RuleBean ruleBean, String sourceBookId) throws InterruptedException {
+        List<String[]> pairs = new ArrayList<>();
+        String pageUrl = resolveUrl(ruleBean, ruleBean.getBookIndexUrl().replace("{bookId}", sourceBookId));
+        Set<String> visited = new HashSet<>();
+        int pageIndex = 0;
+        while (StringUtils.isNotBlank(pageUrl) && pageIndex < Constants.MAX_INDEX_PAGE && visited.add(pageUrl)) {
+            pageIndex++;
+            String indexListHtml = crawlHttpClient.get(pageUrl, ruleBean.getCharset());
+            if (indexListHtml == null) {
+                break;
+            }
+            if (pageIndex == 1 && StringUtils.isNotBlank(ruleBean.getBookIndexStart()) && indexListHtml
+                .contains(ruleBean.getBookIndexStart())) {
+                indexListHtml = indexListHtml.substring(
+                    indexListHtml.indexOf(ruleBean.getBookIndexStart()) + ruleBean.getBookIndexStart().length());
+            }
+
+            RuleExtractor indexExtractor = RuleExtractor.create(ruleBean.getParseType(), indexListHtml);
+            List<String> indexIds = indexExtractor.extractAll(ruleBean.getIndexIdPatten());
+            List<String> indexNames = indexExtractor.extractAll(ruleBean.getIndexNamePatten());
+            int matchCount = Math.min(indexIds.size(), indexNames.size());
+            for (int i = 0; i < matchCount; i++) {
+                pairs.add(new String[]{indexNames.get(i), indexIds.get(i)});
+            }
+
+            pageUrl = StringUtils.isBlank(ruleBean.getNextIndexUrlPatten()) ? null
+                : extractNextPageUrl(indexExtractor, ruleBean.getNextIndexUrlPatten(), pageUrl);
+        }
+        return pairs;
+    }
+
+    /**
+     * 按“下一页”规则从当前页面提取下一页地址，以当前页URL为基准补全为绝对地址；
+     * 伪链接（javascript:/#）或补全后仍非绝对地址时返回null
+     */
+    private String extractNextPageUrl(RuleExtractor extractor, String rule, String currentPageUrl) {
+        String next = extractor.extractFirst(rule);
+        if (StringUtils.isBlank(next)) {
+            return null;
+        }
+        next = next.trim();
+        if (next.startsWith("javascript") || next.startsWith("#") || "null".equals(next)) {
+            return null;
+        }
+        String absolute = UrlUtil.absolutize(currentPageUrl, next);
+        return UrlUtil.isAbsolute(absolute) ? absolute : null;
+    }
+
+    /**
+     * 正文分页拼接：按nextContentUrlPatten逐页抓取“下一页”正文并按页序追加，
+     * 直至无下一页、取不到正文或达到页数上限
+     */
+    private String mergeNextContentPages(RuleBean ruleBean, String firstPageUrl, String firstPageHtml,
+        String firstPageContent) throws InterruptedException {
+        StringBuilder merged = new StringBuilder(firstPageContent);
+        String pageUrl = firstPageUrl;
+        String pageHtml = firstPageHtml;
+        Set<String> visited = new HashSet<>();
+        visited.add(firstPageUrl);
+        int pageCount = 1;
+        while (pageCount < Constants.MAX_CONTENT_PAGE) {
+            String nextUrl = extractNextPageUrl(
+                RuleExtractor.create(ruleBean.getParseType(), pageHtml), ruleBean.getNextContentUrlPatten(), pageUrl);
+            if (nextUrl == null || !visited.add(nextUrl)) {
+                break;
+            }
+            String nextHtml = crawlHttpClient.get(nextUrl, ruleBean.getCharset());
+            if (nextHtml == null || nextHtml.contains("正在手打中")) {
+                break;
+            }
+            String nextContent = extractContent(ruleBean, nextHtml);
+            if (StringUtils.isBlank(nextContent)) {
+                break;
+            }
+            merged.append("\n").append(nextContent);
+            pageUrl = nextUrl;
+            pageHtml = nextHtml;
+            pageCount++;
+        }
+        return merged.toString();
+    }
+
+    /**
+     * 拼接后的URL不是绝对地址时，用规则的urlPrefix（源站origin）补全，urlPrefix为空时原样返回兼容老规则
+     */
+    private String resolveUrl(RuleBean ruleBean, String url) {
+        if (StringUtils.isBlank(ruleBean.getUrlPrefix())) {
+            return url;
+        }
+        return UrlUtil.absolutize(ruleBean.getUrlPrefix(), url);
+    }
+
+    /**
+     * 提取章节正文，优先使用contentPatten规则，否则按contentStart/contentEnd标记截取（兼容老的正则规则）
+     */
+    private String extractContent(RuleBean ruleBean, String contentHtml) {
+        if (StringUtils.isNotBlank(ruleBean.getContentPatten())) {
+            //正文规则可能按段落逐段匹配（如 .content p::text），需要把所有匹配段拼接起来
+            List<String> parts = RuleExtractor.create(ruleBean.getParseType(), contentHtml)
+                .extractAll(ruleBean.getContentPatten());
+            return parts.isEmpty() ? null : String.join("\n", parts);
+        }
+        String contentStart = ruleBean.getContentStart();
+        String contentEnd = ruleBean.getContentEnd();
+        if (StringUtils.isBlank(contentStart) || StringUtils.isBlank(contentEnd)
+            || !contentHtml.contains(contentStart)) {
+            log.error("章节正文未匹配到起止标记：{} / {}", contentStart, contentEnd);
+            return null;
+        }
+        String content = contentHtml.substring(contentHtml.indexOf(contentStart) + contentStart.length());
+        int endIndex = content.indexOf(contentEnd);
+        if (endIndex < 0) {
+            log.error("章节正文未匹配到结束标记：{}", contentEnd);
+            return null;
+        }
+        return content.substring(0, endIndex);
     }
 
     /**

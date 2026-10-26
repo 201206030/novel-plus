@@ -8,6 +8,7 @@
         <title>爬虫管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/crawl-list.css"/>
     </head>
 </head>
 <body class="">
@@ -32,7 +33,9 @@
             <div class="my_bookshelf">
                 <div class="title cf">
                     <h2 class="fl">爬虫源列表</h2>
-                    <div class="fr"><a href="/crawl/crawlSource_add.html" class="btn_red">增加爬虫源</a>
+                    <div class="fr">
+                        <a href="javascript:openImportDialog()" class="btn_red" style="margin-right: 10px;">导入第三方规则</a>
+                        <a href="/crawl/crawlSource_add.html" class="btn_red">增加爬虫源</a>
                     </div>
                 </div>
 
@@ -46,16 +49,19 @@
                             <th class="name">
                                 爬虫源
                             </th>
-                            <th class="name">
+                            <th class="col_from">
+                                规则来源
+                            </th>
+                            <th class="col_time">
                                 创建时间
                             </th>
-                            <th class="name">
+                            <th class="col_time">
                                 更新时间
                             </th>
-                            <th class="goread">
+                            <th class="col_num">
                                 采集数量
                             </th>
-                            <th class="goread">
+                            <th class="col_status">
                                 状态
                             </th>
                             <th class="goread">
@@ -107,6 +113,28 @@
     </div>
 </div>
 
+<!-- 第三方规则导入弹窗 -->
+<div id="importDialog" style="display: none; padding: 15px; overflow: auto;">
+    <div style="margin-bottom: 8px;">
+        <span style="margin-right: 8px;">规则类型：</span>
+        <select id="ruleSourceType" style="padding: 2px 6px; border: 1px solid #ddd;">
+            <option value="YUEDU3" selected>阅读3.0书源</option>
+        </select>
+        <span style="color: #999; margin-left: 10px;">后续支持更多规则类型</span>
+    </div>
+    <textarea id="bookSourceJson" rows="8" style="width: 98%; font-family: monospace; border: 1px solid #ddd; padding: 6px;"
+              placeholder="粘贴规则JSON（阅读3.0书源支持数组或单个书源对象）"></textarea>
+    <div style="margin-top: 8px;">
+        <input type="file" id="bookSourceFile" accept=".json,.txt"/>
+        <span style="color: #999;">选择文件后直接上传解析（大文件推荐用文件，单次最多5000条）</span>
+    </div>
+    <div style="margin-top: 10px;">
+        <a href="javascript:previewBookSource()" class="btn_red">解析预览</a>
+        <a href="javascript:confirmImportBookSource()" class="btn_red" style="margin-left: 10px;">确认导入</a>
+        <span style="color: #999; margin-left: 10px;">导入后默认停用采集源，请在列表中手动开启</span>
+    </div>
+    <div id="importPreviewBox" style="margin-top: 10px;"></div>
+</div>
 
 </body>
 <script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
@@ -137,25 +165,17 @@
                         var crawlSourceListHtml = "";
                         for (var i = 0; i < crawlSourceList.length; i++) {
                             var crawlSource = crawlSourceList[i];
-                            crawlSourceListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
-                                "                            <td class=\"style bookclass\">\n" +
-                                "                                [" + (i + 1) + "]\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"name\">\n" +
-                                "                                " + crawlSource.sourceName + "</td>\n" +
-                                "                            <td class=\"name\" valsc=\"291|2037554|1\">"
-                                + crawlSource.createTime + "</td>\n" +
-                                "                            <td class=\"name\">\n" +
-                                "                                " + crawlSource.updateTime + "\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"goread\">\n" +
-                                "                                " + crawlSource.chapterCount + "章</td>\n" +
-                                "                            <td class=\"goread\" id='sourceStatus" + crawlSource.id + "'>" + (crawlSource.sourceStatus == 0 ? '停止运行' : '正在运行') +
-                                "                            </td>\n" +
-
-                                " <td class=\"goread\" id='opt" + crawlSource.id + "'><a href='javascript:openOrStopCrawl(" + crawlSource.id + "," + crawlSource.sourceStatus + ")'>" + (crawlSource.sourceStatus == 0 ? '开启' : '关闭') + "  </a>" +
-                                "<a href='javascript:updateCrawlSource(" + crawlSource.id + ")'>修改  </a>" +
-                                "</td>                     </tr>");
+                            var running = crawlSource.sourceStatus == 1;
+                            crawlSourceListHtml += (' <tr class="book_list">' +
+                                '<td class="style bookclass">[' + (i + 1) + ']</td>' +
+                                '<td class="name">' + ellCell(crawlSource.sourceName) + '</td>' +
+                                '<td class="col_from">' + escapeHtml(crawlSource.sourceFrom || '小说精品屋') + '</td>' +
+                                '<td class="col_time">' + escapeHtml(crawlSource.createTime || '') + '</td>' +
+                                '<td class="col_time">' + escapeHtml(crawlSource.updateTime || '') + '</td>' +
+                                '<td class="col_num">' + (crawlSource.chapterCount || 0) + '章</td>' +
+                                '<td class="col_status" id="sourceStatus' + crawlSource.id + '"><span class="' + (running ? 'status_on' : 'status_off') + '">' + (running ? '正在运行' : '已停止') + '</span></td>' +
+                                '<td class="goread" id="opt' + crawlSource.id + '">' + rowActionsHtml(crawlSource.id, crawlSource.sourceStatus) + '</td>' +
+                                '</tr>');
                         }
                         $("#crawlSourceList").html(crawlSourceListHtml);
 
@@ -212,6 +232,15 @@
 
     }
 
+    /**
+     * 操作列按钮（竖排），列表渲染与开启/停止局部刷新共用
+     */
+    function rowActionsHtml(sourceId, status) {
+        return "<a href='javascript:openOrStopCrawl(" + sourceId + "," + status + ")'>" + (status == 0 ? '开启' : '关闭') + "</a>" +
+            "<a href='javascript:updateCrawlSource(" + sourceId + ")'>修改</a>" +
+            "<a href='javascript:delCrawlSource(" + sourceId + "," + status + ")' class='a_del'>删除</a>";
+    }
+
     function updateCrawlSource(crawlSourceId) {
 
         localStorage.setItem("crawlSourceId", crawlSourceId);
@@ -231,12 +260,12 @@
 
                     if (status == 0) {
                         //开启
-                        $("#sourceStatus" + sourceId).html("正在运行");
-                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 1 + ")'>关闭 </a>" + "<a href='javascript:updateCrawlSource(" + sourceId + ")'>修改  </a>");
+                        $("#sourceStatus" + sourceId).html("<span class='status_on'>正在运行</span>");
+                        $("#opt" + sourceId).html(rowActionsHtml(sourceId, 1));
                     } else {
                         //关闭
-                        $("#sourceStatus" + sourceId).html("停止运行");
-                        $("#opt" + sourceId).html("<a href='javascript:openOrStopCrawl(" + sourceId + "," + 0 + ")'>开启 </a>" + "<a href='javascript:updateCrawlSource(" + sourceId + ")'>修改  </a>");
+                        $("#sourceStatus" + sourceId).html("<span class='status_off'>已停止</span>");
+                        $("#opt" + sourceId).html(rowActionsHtml(sourceId, 0));
                     }
 
 
@@ -255,6 +284,383 @@
         })
 
 
+    }
+
+    /**
+     * 删除爬虫源：运行中不允许删，确认后调删除接口（已采集小说保留）
+     */
+    function delCrawlSource(sourceId, sourceStatus) {
+        if (sourceStatus == 1) {
+            layer.alert('爬虫源正在运行中，请先停止后再删除');
+            return;
+        }
+        layer.confirm('确定删除该爬虫源吗？该源已采集的小说会保留，仅删除采集规则与关联任务', {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                type: 'DELETE',
+                url: '/crawl/delCrawlSource/' + sourceId,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.msg('删除成功');
+                        search();
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                },
+                error: function () {
+                    layer.alert('网络异常');
+                }
+            });
+        });
+    }
+
+    // ---------------- 第三方规则导入 ----------------
+
+    var importPreviewList = [];
+
+    //当前选择的规则文件（走multipart直传），为空则使用粘贴的JSON文本
+    var selectedSourceFile = null;
+
+    // novel-plus固定分类槽catId1-7（与爬虫源编辑页一致）
+    var CAT_SLOTS = ['玄幻奇幻', '武侠仙侠', '都市言情', '历史军事', '科幻灵异', '网游竞技', '女生频道'];
+
+    function openImportDialog() {
+        importPreviewList = [];
+        selectedSourceFile = null;
+        $('#bookSourceFile').val('');
+        $('#importPreviewBox').html('');
+        layer.open({
+            type: 1,
+            title: '导入第三方规则',
+            area: ['920px', '680px'],
+            btn: ['关闭'],
+            yes: function (index) {
+                layer.close(index);
+            },
+            end: function () {
+                //弹窗关闭后把内容归还页面，保证可反复打开
+                $('body').append($('#importDialog'));
+                $('#importDialog').hide();
+            },
+            content: $('#importDialog')
+        });
+    }
+
+    $('#bookSourceFile').on('change', function () {
+        var file = this.files[0];
+        selectedSourceFile = file || null;
+        if (!file) {
+            return;
+        }
+        //大文件不再整体读入textarea（避免浏览器卡顿），提交时直接以multipart上传
+        var sizeKb = (file.size / 1024).toFixed(0);
+        $('#bookSourceJson').val('');
+        layer.msg('已选择文件：' + file.name + '（' + sizeKb + 'KB），将直接上传解析');
+    });
+
+    function previewBookSource() {
+        var json = $.trim($('#bookSourceJson').val());
+        if (!selectedSourceFile && !json) {
+            layer.alert('请粘贴规则JSON或选择规则文件');
+            return;
+        }
+        var loadingIndex = layer.load();
+        var option = {
+            type: 'POST',
+            url: '/crawl/bookSourceImport/preview',
+            dataType: 'json',
+            timeout: 120000,
+            success: function (data) {
+                layer.close(loadingIndex);
+                if (data.code == 200) {
+                    renderImportPreview(data.data);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function (xhr, status) {
+                layer.close(loadingIndex);
+                layer.alert(status === 'timeout' ? '解析超时，请拆分文件减少条数后重试' : '网络异常');
+            }
+        };
+        if (selectedSourceFile) {
+            //文件直传multipart，绕开表单体积上限
+            var fd = new FormData();
+            fd.append('file', selectedSourceFile);
+            fd.append('sourceType', $('#ruleSourceType').val());
+            option.data = fd;
+            option.processData = false;
+            option.contentType = false;
+        } else {
+            option.data = {'bookSourceJson': json, 'sourceType': $('#ruleSourceType').val()};
+        }
+        $.ajax(option);
+    }
+
+    function importStatusBadge(status) {
+        if (status == 'OK') {
+            return '<span style="color: #16b777;">可导入</span>';
+        } else if (status == 'PARTIAL') {
+            return '<span style="color: #ff9600;">部分可导入</span>';
+        }
+        return '<span style="color: #ff5722;">不可导入</span>';
+    }
+
+    /**
+     * 仅用于状态列展示：若规则本身没有任何错误，唯一的提示只是“发现分类共N个，请映射”，
+     * 说明分类采集可用、只需用户手动选择映射，不算信息损失，按“可导入”展示（排序与导入逻辑均不变）
+     */
+    function importDisplayStatus(item) {
+        if (item.status != 'PARTIAL') {
+            return item.status;
+        }
+        var errors = item.errors || [];
+        var warnings = item.warnings || [];
+        if (errors.length == 0 && warnings.length == 1 && /^发现分类共\d+个/.test(warnings[0])) {
+            return 'OK';
+        }
+        return item.status;
+    }
+
+    /**
+     * 排序权重：成功率越高越靠前（OK>PARTIAL>FAILED），同档次问题数越少越靠前
+     */
+    function importSortRank(item) {
+        if (item.status == 'OK') {
+            return 0;
+        } else if (item.status == 'PARTIAL') {
+            return 1;
+        }
+        return 2;
+    }
+
+    function importIssueCount(item) {
+        return (item.errors ? item.errors.length : 0) + (item.warnings ? item.warnings.length : 0);
+    }
+
+    function importExploreCount(item) {
+        return item.exploreOptions ? item.exploreOptions.length : 0;
+    }
+
+    function renderImportPreview(list) {
+        importPreviewList = list || [];
+        //成功率最高、问题数最少的排在最前面；同档同样问题数时分类映射最多的靠前
+        importPreviewList.sort(function (a, b) {
+            var rankDiff = importSortRank(a) - importSortRank(b);
+            if (rankDiff != 0) {
+                return rankDiff;
+            }
+            var issueDiff = importIssueCount(a) - importIssueCount(b);
+            if (issueDiff != 0) {
+                return issueDiff;
+            }
+            return importExploreCount(b) - importExploreCount(a);
+        });
+        if (importPreviewList.length == 0) {
+            $('#importPreviewBox').html('<span style="color: #999;">未解析到任何规则</span>');
+            return;
+        }
+        var html = '<table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse;">'
+            + '<tr style="background: #f5f5f5;">'
+            + '<th style="width: 36px; padding: 6px; border: 1px solid #eee;">选择</th>'
+            + '<th style="width: 130px; padding: 6px; border: 1px solid #eee;">规则名称</th>'
+            + '<th style="width: 80px; padding: 6px; border: 1px solid #eee;">状态</th>'
+            + '<th style="padding: 6px; border: 1px solid #eee;">警告 / 不可导入原因</th>'
+            + '<th style="width: 70px; padding: 6px; border: 1px solid #eee;">规则</th>'
+            + '</tr>';
+        for (var i = 0; i < importPreviewList.length; i++) {
+            var item = importPreviewList[i];
+            var msgHtml = '';
+            var j;
+            if (item.errors && item.errors.length > 0) {
+                for (j = 0; j < item.errors.length; j++) {
+                    msgHtml += '<div style="color: #ff5722;">✖ ' + escapeHtml(item.errors[j]) + '</div>';
+                }
+            }
+            if (item.warnings && item.warnings.length > 0) {
+                for (j = 0; j < item.warnings.length; j++) {
+                    msgHtml += '<div style="color: #ff9600;">⚠ ' + escapeHtml(item.warnings[j]) + '</div>';
+                }
+            }
+            if (!msgHtml) {
+                msgHtml = '<span style="color: #999;">无</span>';
+            }
+            var chkAttr = item.importable ? '' : ' disabled="disabled"';
+            html += '<tr>'
+                + '<td style="padding: 6px; border: 1px solid #eee; text-align: center;"><input type="checkbox" class="importChk" data-idx="' + i + '"' + chkAttr + '/></td>'
+                + '<td style="padding: 6px; border: 1px solid #eee;" title="' + escapeHtml(item.sourceUrl || '') + '">' + escapeHtml(item.sourceName || '(未命名)') + '</td>'
+                + '<td style="padding: 6px; border: 1px solid #eee; text-align: center;">' + importStatusBadge(importDisplayStatus(item)) + '</td>'
+                + '<td style="padding: 6px; border: 1px solid #eee; max-height: 90px; overflow: auto; font-size: 12px;">' + msgHtml + '</td>'
+                + '<td style="padding: 6px; border: 1px solid #eee; text-align: center;">' + (item.crawlRule ? '<a href="javascript:viewImportRule(' + i + ')">查看</a>' : '-') + '</td>'
+                + '</tr>';
+            //可导入且有发现分类时，提供手动分类映射选择
+            if (item.importable && item.exploreOptions && item.exploreOptions.length > 0) {
+                html += '<tr><td colspan="5" style="padding: 4px 8px; border: 1px solid #eee; background: #fafafa;">'
+                    + '<a href="javascript:toggleCatMap(' + i + ')">分类映射（' + item.exploreOptions.length + '个来源分类，点击选择对应的本系统分类）</a>'
+                    + '<div id="catMap' + i + '" style="display: none; margin-top: 6px;">' + buildCatMapTable(i, item) + '</div>'
+                    + '</td></tr>';
+            }
+        }
+        html += '</table>';
+        $('#importPreviewBox').html(html);
+    }
+
+    function toggleCatMap(idx) {
+        $('#catMap' + idx).toggle();
+    }
+
+    function buildCatMapTable(idx, item) {
+        var html = '<table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-size: 12px;">';
+        for (var j = 0; j < item.exploreOptions.length; j++) {
+            var opt = item.exploreOptions[j];
+            //不做默认映射，每个来源分类都由用户主动选择本系统分类槽
+            html += '<tr>'
+                + '<td style="padding: 2px 8px;">' + escapeHtml(opt.title || '(未命名分类)') + '</td>'
+                + '<td style="padding: 2px 8px; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="' + escapeHtml(opt.url) + '">' + escapeHtml(opt.url) + '</td>'
+                + '<td style="padding: 2px 8px;"><select class="catMapSel" data-item="' + idx + '" data-entry="' + j + '">'
+                + '<option value="" selected>不映射</option>';
+            for (var s = 0; s < 7; s++) {
+                html += '<option value="catId' + (s + 1) + '">'
+                    + (s + 1) + '-' + CAT_SLOTS[s] + '</option>';
+            }
+            html += '</select></td></tr>';
+        }
+        html += '</table>';
+        html += '<div style="color: #999; margin-top: 4px;">请为每个来源分类选择对应的本系统分类；保持“不映射”则不采集该分类；每个分类槽只能被一个来源分类占用</div>';
+        return html;
+    }
+
+    /**
+     * 按用户选择的分类映射重建crawlRule的catIdRule；返回null表示存在槽位冲突或未做任何映射
+     */
+    function applyCatMapping(idx, item) {
+        var ruleObj;
+        try {
+            ruleObj = JSON.parse(item.crawlRule);
+        } catch (e) {
+            return null;
+        }
+        if (!item.exploreOptions || item.exploreOptions.length == 0) {
+            //无来源分类可选（仅单本采集源），不需要映射
+            return JSON.stringify(ruleObj);
+        }
+        var catIdRule = {};
+        var conflict = null;
+        $('.catMapSel[data-item="' + idx + '"]').each(function () {
+            var slot = $(this).val();
+            if (!slot) {
+                return;
+            }
+            if (catIdRule[slot]) {
+                conflict = slot;
+                return;
+            }
+            var entryIdx = $(this).data('entry');
+            catIdRule[slot] = item.exploreOptions[entryIdx].url;
+        });
+        if (conflict) {
+            layer.alert('规则「' + escapeHtml(item.sourceName) + '」的来源分类重复映射到了分类槽 ' + conflict + '，请调整后再导入');
+            return null;
+        }
+        if (Object.keys(catIdRule).length == 0) {
+            //有来源分类可选时必须至少映射一个，否则导入后无法批量采集
+            layer.alert('规则「' + escapeHtml(item.sourceName) + '」尚未选择任何分类映射，请至少为一个来源分类选择对应的本系统分类后再导入');
+            return null;
+        }
+        ruleObj.catIdRule = catIdRule;
+        return JSON.stringify(ruleObj);
+    }
+
+    function viewImportRule(idx) {
+        var item = importPreviewList[idx];
+        if (!item || !item.crawlRule) {
+            return;
+        }
+        layer.open({
+            type: 1,
+            title: item.sourceName + ' 转换后采集规则',
+            area: ['640px', '520px'],
+            content: '<pre style="padding: 15px; font-size: 12px; overflow: auto; white-space: pre-wrap; word-break: break-all;">' + escapeHtml(item.crawlRule) + '</pre>'
+        });
+    }
+
+    function confirmImportBookSource() {
+        var items = [];
+        var hasError = false;
+        $('.importChk:checked').each(function () {
+            if (hasError) {
+                return;
+            }
+            var idx = $(this).data('idx');
+            var item = importPreviewList[idx];
+            if (!item || !item.crawlRule) {
+                return;
+            }
+            var ruleJson = applyCatMapping(idx, item);
+            if (ruleJson == null) {
+                hasError = true;
+                return;
+            }
+            items.push({'sourceName': item.sourceName, 'crawlRule': ruleJson,
+                'hasExploreOptions': !!(item.exploreOptions && item.exploreOptions.length > 0),
+                'sourceType': $('#ruleSourceType').val()});
+        });
+        if (hasError) {
+            return;
+        }
+        if (items.length == 0) {
+            layer.alert('请勾选要导入的规则（不可导入的规则无法勾选）');
+            return;
+        }
+        var loadingIndex = layer.load();
+        $.ajax({
+            type: 'POST',
+            url: '/crawl/bookSourceImport/confirm',
+            data: JSON.stringify(items),
+            contentType: 'application/json;charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                layer.close(loadingIndex);
+                if (data.code == 200) {
+                    var summary = data.data;
+                    var msg = '成功导入 ' + summary.successCount + ' 条规则（默认停用）';
+                    if (summary.skipItems && summary.skipItems.length > 0) {
+                        msg += '<br/>跳过：';
+                        for (var i = 0; i < summary.skipItems.length; i++) {
+                            msg += '<br/>' + escapeHtml(summary.skipItems[i].sourceName) + '（' + escapeHtml(summary.skipItems[i].reason) + '）';
+                        }
+                    }
+                    layer.alert(msg, {title: '导入结果', icon: 1}, function (index) {
+                        layer.close(index);
+                        layer.closeAll('page');
+                        search();
+                    });
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.close(loadingIndex);
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        if (str == null) {
+            return '';
+        }
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /**
+     * 单行省略单元格，悬停显示全文
+     */
+    function ellCell(str) {
+        var text = escapeHtml(str);
+        return '<span class="cell-ell" title="' + text + '">' + text + '</span>';
     }
 </script>
 </html>

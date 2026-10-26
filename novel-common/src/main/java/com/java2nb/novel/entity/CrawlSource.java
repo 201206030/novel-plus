@@ -11,6 +11,9 @@ public class CrawlSource {
     private String sourceName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String sourceFrom;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String crawlRule;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -40,6 +43,16 @@ public class CrawlSource {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName == null ? null : sourceName.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getSourceFrom() {
+        return sourceFrom;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setSourceFrom(String sourceFrom) {
+        this.sourceFrom = sourceFrom == null ? null : sourceFrom.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.CrawlParser;
+import com.java2nb.novel.core.crawl.RuleExtractor;
 import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.utils.UrlUtil;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
@@ -15,6 +17,7 @@ import com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport;
 import com.java2nb.novel.mapper.CrawlSourceMapper;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
+import com.java2nb.novel.utils.Constants;
 import com.java2nb.novel.utils.CrawlHttpClient;
 import com.java2nb.novel.vo.CrawlSingleTaskVO;
 import com.java2nb.novel.vo.CrawlSourceVO;
@@ -35,8 +38,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.java2nb.novel.mapper.CrawlSourceDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
@@ -70,6 +71,10 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public void addCrawlSource(CrawlSource source) {
         Date currentDate = new Date();
+        if (StringUtils.isBlank(source.getSourceFrom())) {
+            //未填写来源时默认小说精品屋
+            source.setSourceFrom(Constants.DEFAULT_SOURCE_FROM);
+        }
         source.setCreateTime(currentDate);
         source.setUpdateTime(currentDate);
         crawlSourceMapper.insertSelective(source);
@@ -90,15 +95,38 @@ public class CrawlServiceImpl implements CrawlService {
                 crawlSource.setUpdateTime(currentDate);
                 crawlSource.setCrawlRule(source.getCrawlRule());
                 crawlSource.setSourceName(source.getSourceName());
+                //来源未填写时保留库内原值（updateByPrimaryKey是全列更新，不赋值会写回查出的原值）
+                if (StringUtils.isNotBlank(source.getSourceFrom())) {
+                    crawlSource.setSourceFrom(source.getSourceFrom());
+                }
                 crawlSourceMapper.updateByPrimaryKey(crawlSource);
             }
         }
     }
 
     @Override
+    public void delCrawlSource(Integer sourceId) {
+        CrawlSource source = crawlSourceMapper.selectByPrimaryKey(sourceId).orElse(null);
+        if (source == null) {
+            throw new BusinessException(ResponseStatus.CRAWL_SOURCE_NOT_EXISTS);
+        }
+        //运行中只看内存实时状态（与列表展示口径一致）：DB的source_status字段已废弃，重启后内存清空即视为已停止
+        boolean running = Optional.ofNullable(crawlSourceStatusMap.get(sourceId)).orElse((byte) 0) == (byte) 1;
+        if (running) {
+            throw new BusinessException(ResponseStatus.CRAWL_SOURCE_RUNNING);
+        }
+        //清理该源的关联单本采集任务与内存状态，已采集小说保留不动
+        crawlSingleTaskMapper.delete(c -> c.where(CrawlSingleTaskDynamicSqlSupport.sourceId, isEqualTo(sourceId)));
+        crawlSourceStatusMap.remove(sourceId);
+        runningCrawlThread.remove(sourceId);
+        crawlSourceMapper.deleteByPrimaryKey(sourceId);
+        log.info("删除爬虫源：id={}, name={}", sourceId, source.getSourceName());
+    }
+
+    @Override
     public PageBean<CrawlSource> listCrawlByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        SelectStatementProvider render = select(id, sourceName, sourceStatus, createTime, updateTime)
+        SelectStatementProvider render = select(id, sourceName, sourceFrom, sourceStatus, createTime, updateTime)
             .from(crawlSource)
             .orderBy(updateTime.descending())
             .build()
@@ -267,7 +295,7 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public void parseBookList(int catId, RuleBean ruleBean, Integer sourceId) {
 
-        String catIdRule = ruleBean.getCatIdRule().get("catId" + catId);
+        String catIdRule = ruleBean.getCatIdRule() == null ? null : ruleBean.getCatIdRule().get("catId" + catId);
         if (StringUtils.isBlank(catIdRule)) {
             return;
         }
@@ -291,14 +319,25 @@ public class CrawlServiceImpl implements CrawlService {
                     // 拼接分类URL
                     catBookListUrl = catIdRule.replace("{page}", page + "");
                 }
+                // 导入书源的分类URL可能是相对路径，用urlPrefix补全为绝对地址
+                if (StringUtils.isNotBlank(ruleBean.getUrlPrefix())) {
+                    catBookListUrl = UrlUtil.absolutize(ruleBean.getUrlPrefix(), catBookListUrl);
+                }
+                // 规则里残留未替换的花括号会触发RestTemplate URI模板变量解析异常，直接跳过该分类
+                if (catBookListUrl.indexOf('{') >= 0 || catBookListUrl.indexOf('}') >= 0) {
+                    log.error("分类采集URL存在未解析的占位符，跳过该分类：{}", catBookListUrl);
+                    return;
+                }
                 log.info("catBookListUrl：{}", catBookListUrl);
 
                 String bookListHtml = crawlHttpClient.get(catBookListUrl, ruleBean.getCharset());
                 if (bookListHtml != null) {
-                    Pattern bookIdPatten = Pattern.compile(ruleBean.getBookIdPatten());
-                    Matcher bookIdMatcher = bookIdPatten.matcher(bookListHtml);
-                    boolean isFindBookId = bookIdMatcher.find();
-                    while (isFindBookId) {
+                    RuleExtractor extractor = RuleExtractor.create(ruleBean.getParseType(), bookListHtml);
+                    List<String> bookIds = extractor.extractAll(ruleBean.getBookIdPatten());
+                    if (bookIds.isEmpty()) {
+                        log.warn("列表页未提取到任何书籍，请核对书链接规则或站点是否有效（可能是反爬壳页/域名停放页）：{}", catBookListUrl);
+                    }
+                    for (String bookId : bookIds) {
                         try {
                             //1.阻塞过程（使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时）
                             //捕获中断异常InterruptedException来退出线程。
@@ -307,7 +346,6 @@ public class CrawlServiceImpl implements CrawlService {
                                 return;
                             }
 
-                            String bookId = bookIdMatcher.group(1);
                             parseBookAndSave(catId, ruleBean, sourceId, bookId, null);
                         } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
@@ -318,17 +356,17 @@ public class CrawlServiceImpl implements CrawlService {
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
-
-                        isFindBookId = bookIdMatcher.find();
                     }
 
-                    Pattern totalPagePatten = Pattern.compile(ruleBean.getTotalPagePatten());
-                    Matcher totalPageMatcher = totalPagePatten.matcher(bookListHtml);
-                    boolean isFindTotalPage = totalPageMatcher.find();
-                    if (isFindTotalPage) {
-
-                        totalPage = Integer.parseInt(totalPageMatcher.group(1));
-
+                    if (StringUtils.isNotBlank(ruleBean.getTotalPagePatten())) {
+                        String totalPageStr = extractor.extractFirst(ruleBean.getTotalPagePatten());
+                        if (totalPageStr != null) {
+                            try {
+                                totalPage = Integer.parseInt(totalPageStr.trim());
+                            } catch (NumberFormatException e) {
+                                log.error("解析总页数出错：{}", totalPageStr);
+                            }
+                        }
                     }
                 }
             } catch (InterruptedException e) {

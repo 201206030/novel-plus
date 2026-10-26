@@ -57,6 +57,13 @@
                                            placeholder="小说更新列表url"></li>-->
                                 示例：<b>utf-8</b>
                                 <li><input type="text" id="charset" class="s_input icon_name" placeholder="网站编码"></li>
+                                解析方式（所有规则字段均按此方式解析，选CSS/XPath/JSONPath时可在规则末尾用 |正则 二次截取，如 a::attr(href)|(\d+)）
+                                <li><select id="parseType" class="s_input icon_name">
+                                    <option value="REGEX">正则表达式 REGEX（默认）</option>
+                                    <option value="CSS">CSS选择器</option>
+                                    <option value="XPATH">XPath</option>
+                                    <option value="JSONPATH">JSONPath（接口返回JSON的源站）</option>
+                                </select></li>
                                 示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
                                 <li><input type="text" id="bookListUrl" class="s_input icon_key"
                                            placeholder="分类列表页URL规则"></li>
@@ -119,6 +126,9 @@
                                 示例：<b>&lt;/p&gt;</b>
                                 <li><input type="text" id="descEnd" class="s_input icon_key" placeholder="小说简介结束截取字符串：">
                                 </li>
+                                示例（非正则模式填写提取规则，填写后优先于上面两个截取标记）：<b>#intro::text　//div[@id='intro']　$.data.desc</b>
+                                <li><input type="text" id="descPatten" class="s_input icon_key"
+                                           placeholder="小说简介提取规则（CSS/XPath/JSONPath）："></li>
                                 示例：<b>&lt;span\s+class="allshow"&gt;([^/]+)&lt;/span&gt;</b>
                                 <li><textarea id="filterDesc"
                                               placeholder="过滤简介（多个内容换行）" rows="5" cols="52"></textarea></li>
@@ -150,6 +160,9 @@
                                 示例：<b>&lt;script&gt;</b>
                                 <li><input type="text" id="contentEnd" class="s_input icon_key"
                                            placeholder="小说内容结束截取字符串："></li>
+                                示例（非正则模式填写提取规则，填写后优先于上面两个截取标记）：<b>#content::html　//div[@id='content']::html　$.data.content</b>
+                                <li><input type="text" id="contentPatten" class="s_input icon_key"
+                                           placeholder="小说正文提取规则（CSS/XPath/JSONPath）："></li>
                                 示例：<b>&lt;div\s+id=&quot;content_tip&quot;&gt;\s*&lt;b&gt;([^/]+)&lt;/b&gt;\s*&lt;/div&gt;</b>
                                 <li><textarea id="filterContent"
                                               placeholder="过滤内容（多个内容换行）" rows="5" cols="52"></textarea></li>
@@ -269,6 +282,7 @@
             $("#visitCountPatten").val(crawlRule.visitCountPatten);
             $("#descStart").val(crawlRule.descStart);
             $("#descEnd").val(crawlRule.descEnd);
+            $("#descPatten").val(crawlRule.descPatten);
             $("#filterDesc").val(crawlRule.filterDesc);
             $("#upadateTimePatten").val(crawlRule.upadateTimePatten);
             $("#upadateTimeFormatPatten").val(crawlRule.upadateTimeFormatPatten);
@@ -279,8 +293,10 @@
             $("#bookContentUrl").val(crawlRule.bookContentUrl);
             $("#contentStart").val(crawlRule.contentStart);
             $("#contentEnd").val(crawlRule.contentEnd);
+            $("#contentPatten").val(crawlRule.contentPatten);
             $("#filterContent").val(crawlRule.filterContent);
             $("#charset").val(crawlRule.charset);
+            $("#parseType").val(crawlRule.parseType || 'REGEX');
 
         }
     }
@@ -296,6 +312,11 @@
         if (sourceName.length == 0) {
             layer.alert("源站名必填");
             return false;
+        }
+
+        var parseType = $("#parseType").val();
+        if (parseType && parseType != 'REGEX') {
+            crawlRule.parseType = parseType;
         }
 
         var bookListUrl = $("#bookListUrl").val();
@@ -410,23 +431,28 @@
             crawlRule.visitCountPatten = visitCountPatten;
         }
 
-        var descStart = $("#descStart").val();
+        var descPatten = $("#descPatten").val();
+        if (descPatten.length > 0) {
+            crawlRule.descPatten = descPatten;
+        } else {
+            var descStart = $("#descStart").val();
 
-        if (descStart.length == 0) {
-            layer.alert("小说简介开始截取字符串必填");
-            return false;
+            if (descStart.length == 0) {
+                layer.alert("未填简介提取规则时，小说简介开始截取字符串必填");
+                return false;
+            }
+
+            crawlRule.descStart = descStart;
+
+            var descEnd = $("#descEnd").val();
+
+            if (descEnd.length == 0) {
+                layer.alert("未填简介提取规则时，小说简介结束截取字符串必填");
+                return false;
+            }
+
+            crawlRule.descEnd = descEnd;
         }
-
-        crawlRule.descStart = descStart;
-
-        var descEnd = $("#descEnd").val();
-
-        if (descEnd.length == 0) {
-            layer.alert("小说简介结束截取字符串必填");
-            return false;
-        }
-
-        crawlRule.descEnd = descEnd;
 
         var filterDesc = $("#filterDesc").val();
         crawlRule.filterDesc = filterDesc;
@@ -486,22 +512,27 @@
 
         crawlRule.bookContentUrl = bookContentUrl;
 
-        var contentStart = $("#contentStart").val();
+        var contentPatten = $("#contentPatten").val();
+        if (contentPatten.length > 0) {
+            crawlRule.contentPatten = contentPatten;
+        } else {
+            var contentStart = $("#contentStart").val();
 
-        if (contentStart.length == 0) {
-            layer.alert("小说内容开始截取字符串必填");
-            return false;
+            if (contentStart.length == 0) {
+                layer.alert("未填正文提取规则时，小说内容开始截取字符串必填");
+                return false;
+            }
+            crawlRule.contentStart = contentStart;
+
+            var contentEnd = $("#contentEnd").val();
+
+            if (contentEnd.length == 0) {
+                layer.alert("未填正文提取规则时，小说内容结束截取字符串必填");
+                return false;
+            }
+
+            crawlRule.contentEnd = contentEnd;
         }
-        crawlRule.contentStart = contentStart;
-
-        var contentEnd = $("#contentEnd").val();
-
-        if (contentEnd.length == 0) {
-            layer.alert("小说内容结束截取字符串必填");
-            return false;
-        }
-
-        crawlRule.contentEnd = contentEnd;
 
         var filterContent = $("#filterContent").val();
         crawlRule.filterContent = filterContent;

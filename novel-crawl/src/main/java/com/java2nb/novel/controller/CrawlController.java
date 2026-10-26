@@ -2,6 +2,7 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
+import com.java2nb.novel.core.crawl.RuleExtractor;
 import com.java2nb.novel.core.utils.HttpUtil;
 import io.github.xxyopen.model.page.PageBean;
 
@@ -13,9 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Administrator
@@ -59,13 +59,14 @@ public class CrawlController {
 
     /**
      * 测试规则
-     * @param rule
-     * @param url
-     * @param isRefresh
+     * @param rule 提取规则
+     * @param url 页面地址
+     * @param isRefresh 是否强制刷新
+     * @param parseType 解析方式：REGEX(默认)/CSS/XPATH/JSONPATH
      * @return
      */
     @PostMapping("testParse")
-    public RestResult<Object> testParse(String rule,String url,String isRefresh){
+    public RestResult<Object> testParse(String rule,String url,String isRefresh,String parseType){
 
         Map<String,Object> resultMap=new HashMap<>();
         String html =null;
@@ -90,12 +91,20 @@ public class CrawlController {
             resultMap.put("html","url is null");
             return RestResult.ok(resultMap);
         }
-        Pattern pattern = Pattern.compile(rule);
-        Matcher matcher = pattern.matcher(html);
-        boolean isFind = matcher.find();
+        RuleExtractor extractor = RuleExtractor.create(parseType, html);
+        List<String> results;
+        try {
+            results = extractor.extractAll(rule);
+        } catch (IllegalArgumentException e) {
+            resultMap.put("msg", e.getMessage());
+            return RestResult.ok(resultMap);
+        }
+        boolean isFind = !results.isEmpty();
+        resultMap.put("解析方式", parseType == null || parseType.isEmpty() ? "REGEX" : parseType.toUpperCase());
         resultMap.put("是否匹配",isFind);
         if(isFind){
-            resultMap.put("匹配结果",matcher.group(1));
+            resultMap.put("匹配结果",results.get(0));
+            resultMap.put("全部结果",results);
         }
        // resultMap.put("url",url);
         return RestResult.ok(resultMap);
@@ -116,6 +125,17 @@ public class CrawlController {
     public RestResult<Void> openOrCloseCrawl(Integer sourceId,Byte sourceStatus){
 
         crawlService.openOrCloseCrawl(sourceId,sourceStatus);
+
+        return RestResult.ok();
+    }
+
+    /**
+     * 删除爬虫源（仅限已停止的源，不删除已采集小说）
+     * */
+    @DeleteMapping("delCrawlSource/{id}")
+    public RestResult<Void> delCrawlSource(@PathVariable("id") Integer id){
+
+        crawlService.delCrawlSource(id);
 
         return RestResult.ok();
     }

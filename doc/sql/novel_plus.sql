@@ -418,6 +418,7 @@ CREATE TABLE `crawl_source`
 (
     `id`            int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
     `source_name`   varchar(50) DEFAULT NULL COMMENT '源站名',
+    `source_from`   varchar(64) NOT NULL DEFAULT '小说精品屋' COMMENT '规则来源：小说精品屋（手工创建）/阅读3.0（导入）等',
     `crawl_rule`    text COMMENT '爬取规则（json串）',
     `source_status` tinyint(1)  DEFAULT '0' COMMENT '爬虫源状态，0：关闭，1：开启',
     `create_time`   datetime    DEFAULT NULL COMMENT '创建时间',

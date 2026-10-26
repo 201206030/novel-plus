@@ -4,10 +4,19 @@ server:
   servlet:
     session:
       timeout: 1D
+  tomcat:
+    #规整表单/文件上传体积上限，避免大书源文件请求被截断
+    max-http-form-post-size: 50MB
+    max-swallow-size: 50MB
 
 spring:
   profiles:
     active: dev
+  servlet:
+    multipart:
+      #大书源规则文件上传上限
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 #登录用户名密码
 admin:

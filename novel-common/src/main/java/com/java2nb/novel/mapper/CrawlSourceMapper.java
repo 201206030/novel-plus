@@ -35,7 +35,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CrawlSourceMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, sourceName, crawlRule, sourceStatus, createTime, updateTime);
+    BasicColumn[] selectList = BasicColumn.columnList(id, sourceName, sourceFrom, crawlRule, sourceStatus, createTime, updateTime);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -63,6 +63,7 @@ public interface CrawlSourceMapper {
     @Results(id="CrawlSourceResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
         @Result(column="source_name", property="sourceName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="source_from", property="sourceFrom", jdbcType=JdbcType.VARCHAR),
         @Result(column="crawl_rule", property="crawlRule", jdbcType=JdbcType.VARCHAR),
         @Result(column="source_status", property="sourceStatus", jdbcType=JdbcType.TINYINT),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
@@ -96,6 +97,7 @@ public interface CrawlSourceMapper {
         return MyBatis3Utils.insert(this::insert, record, crawlSource, c ->
             c.map(id).toProperty("id")
             .map(sourceName).toProperty("sourceName")
+            .map(sourceFrom).toProperty("sourceFrom")
             .map(crawlRule).toProperty("crawlRule")
             .map(sourceStatus).toProperty("sourceStatus")
             .map(createTime).toProperty("createTime")
@@ -108,6 +110,7 @@ public interface CrawlSourceMapper {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, crawlSource, c ->
             c.map(id).toProperty("id")
             .map(sourceName).toProperty("sourceName")
+            .map(sourceFrom).toProperty("sourceFrom")
             .map(crawlRule).toProperty("crawlRule")
             .map(sourceStatus).toProperty("sourceStatus")
             .map(createTime).toProperty("createTime")
@@ -120,6 +123,7 @@ public interface CrawlSourceMapper {
         return MyBatis3Utils.insert(this::insert, record, crawlSource, c ->
             c.map(id).toPropertyWhenPresent("id", record::getId)
             .map(sourceName).toPropertyWhenPresent("sourceName", record::getSourceName)
+            .map(sourceFrom).toPropertyWhenPresent("sourceFrom", record::getSourceFrom)
             .map(crawlRule).toPropertyWhenPresent("crawlRule", record::getCrawlRule)
             .map(sourceStatus).toPropertyWhenPresent("sourceStatus", record::getSourceStatus)
             .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
@@ -158,6 +162,7 @@ public interface CrawlSourceMapper {
     static UpdateDSL<UpdateModel> updateAllColumns(CrawlSource record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(sourceName).equalTo(record::getSourceName)
+                .set(sourceFrom).equalTo(record::getSourceFrom)
                 .set(crawlRule).equalTo(record::getCrawlRule)
                 .set(sourceStatus).equalTo(record::getSourceStatus)
                 .set(createTime).equalTo(record::getCreateTime)
@@ -168,6 +173,7 @@ public interface CrawlSourceMapper {
     static UpdateDSL<UpdateModel> updateSelectiveColumns(CrawlSource record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(sourceName).equalToWhenPresent(record::getSourceName)
+                .set(sourceFrom).equalToWhenPresent(record::getSourceFrom)
                 .set(crawlRule).equalToWhenPresent(record::getCrawlRule)
                 .set(sourceStatus).equalToWhenPresent(record::getSourceStatus)
                 .set(createTime).equalToWhenPresent(record::getCreateTime)
@@ -178,6 +184,7 @@ public interface CrawlSourceMapper {
     default int updateByPrimaryKey(CrawlSource record) {
         return update(c ->
             c.set(sourceName).equalTo(record::getSourceName)
+            .set(sourceFrom).equalTo(record::getSourceFrom)
             .set(crawlRule).equalTo(record::getCrawlRule)
             .set(sourceStatus).equalTo(record::getSourceStatus)
             .set(createTime).equalTo(record::getCreateTime)
@@ -190,6 +197,7 @@ public interface CrawlSourceMapper {
     default int updateByPrimaryKeySelective(CrawlSource record) {
         return update(c ->
             c.set(sourceName).equalToWhenPresent(record::getSourceName)
+            .set(sourceFrom).equalToWhenPresent(record::getSourceFrom)
             .set(crawlRule).equalToWhenPresent(record::getCrawlRule)
             .set(sourceStatus).equalToWhenPresent(record::getSourceStatus)
             .set(createTime).equalToWhenPresent(record::getCreateTime)

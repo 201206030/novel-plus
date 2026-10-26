@@ -90,6 +90,16 @@ public enum ResponseStatus implements IResultCode {
     FILE_SIZE_LIMIT(10003,"文件大小超出限制"),
 
     /**
+     * 第三方规则导入相关错误
+     * */
+    BOOK_SOURCE_EMPTY(11001, "导入内容不能为空！"),
+    BOOK_SOURCE_PARSE_FAIL(11002, "规则JSON解析失败，请确认符合所选规则类型格式！"),
+    RULE_SOURCE_TYPE_UNSUPPORTED(11003, "不支持的规则类型！"),
+    CRAWL_SOURCE_NOT_EXISTS(11004, "爬虫源不存在或已被删除！"),
+    CRAWL_SOURCE_RUNNING(11005, "爬虫源正在运行中，请先停止后再删除！"),
+    BOOK_SOURCE_TOO_MANY(11006, "规则条数过多，单次预览最多支持5000条，请拆分后再导入！"),
+
+    /**
      * 其他通用错误
      * */
     PASSWORD_ERROR(88001,"密码错误！");

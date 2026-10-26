@@ -1,0 +1,51 @@
+/* 爬虫源列表页表格皮肤：移植管理后台 admin.css 方案
+   （单元格强制单行、加宽时间列、操作按钮竖排），并统一标题栏按钮风格 */
+
+/* ---------------- 标题栏按钮（返回等）：覆盖旧的 btn_red 大红色 ---------------- */
+.my_bookshelf .title .fr .btn_red, .my_bookshelf .title .fr .btn_ora {
+    display: inline-block; height: 30px; line-height: 30px; padding: 0 16px; margin-top: 6px;
+    font-size: 13px; color: #fff; background: linear-gradient(135deg, #47bd88, #35a06f);
+    border-radius: 15px; box-shadow: 0 2px 8px rgba(62, 175, 124, .30); transition: all .2s ease;
+}
+.my_bookshelf .title .fr .btn_red:hover, .my_bookshelf .title .fr .btn_ora:hover {
+    color: #fff; transform: translateY(-1px); box-shadow: 0 5px 14px rgba(62, 175, 124, .42);
+}
+
+/* ---------------- 表格 ---------------- */
+/* 容器放宽并允许横向滚动，列多时不挤压换行 */
+.updateTable { width: 100%; max-width: 960px; overflow-x: auto; }
+.updateTable table th { white-space: nowrap; }
+/* 所有列表单元格强制单行显示，超宽时随容器横向滚动 */
+.updateTable table td { white-space: nowrap; }
+/* 序号列纯数字，收窄宽度 */
+.updateTable th.style, .updateTable td.style { width: 44px; padding-left: 6px; }
+.updateTable th.name, .updateTable td.name { width: auto; }
+/* 规则来源列（小说精品屋/阅读3.0等短文本） */
+.updateTable .col_from { width: 90px; padding-right: 10px; }
+/* 完整日期时间列（yyyy-MM-dd HH:mm 单行显示） */
+.updateTable .col_time { width: 128px; padding-right: 10px; white-space: nowrap; }
+/* 数字列居中对齐 */
+.updateTable .col_num { width: 86px; text-align: center; }
+/* 状态列 */
+.updateTable .col_status { width: 86px; text-align: center; }
+.cell-ell {
+    display: inline-block; max-width: 190px; vertical-align: bottom;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.status_on { color: #2c8a61; }
+.status_off { color: #999; }
+.status_err { color: #e05c3e; }
+
+/* ---------------- 表格行操作按钮（竖排，控制列宽） ---------------- */
+.updateTable th.goread, .updateTable td.goread { width: 88px; text-align: center; padding: 0; }
+.updateTable td.goread a {
+    display: block; width: 66px; margin: 3px auto; padding: 2px 0;
+    font-size: 12px; line-height: 20px; color: #2c8a61; background: #f2faf6;
+    border: 1px solid #cfe8db; border-radius: 11px; transition: all .2s ease;
+}
+.updateTable td.goread a:hover { color: #fff; background: #3eaf7c; border-color: #3eaf7c; box-shadow: 0 2px 6px rgba(62, 175, 124, .35); }
+.updateTable td.goread a.a_del { color: #e05c3e; background: #fdf3f0; border-color: #f6d5cd; }
+.updateTable td.goread a.a_del:hover { color: #fff; background: #ef5a3a; border-color: #ef5a3a; box-shadow: 0 2px 6px rgba(239, 90, 58, .35); }
+
+/* ---------------- 分页组件皮肤 ---------------- */
+.pageBox { padding: 14px 0; text-align: center; }

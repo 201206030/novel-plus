@@ -8,6 +8,7 @@
         <title>爬虫管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/crawl-list.css"/>
     </head>
 </head>
 <body class="">
@@ -48,16 +49,16 @@
                             <th class="name">
                                 采集小说作者名
                             </th>
-                            <th class="goread">
+                            <th class="col_num">
                                 采集进度
                             </th>
-                            <th class="goread">
+                            <th class="col_num">
                                 采集次数
                             </th>
-                            <th class="goread">
+                            <th class="col_status">
                                 状态
                             </th>
-                            <th class="name">
+                            <th class="col_time">
                                 创建时间
                             </th>
                             <th class="goread">
@@ -139,29 +140,21 @@
                         var crawlSourceListHtml = "";
                         for (var i = 0; i < crawlSourceList.length; i++) {
                             var crawlSource = crawlSourceList[i];
-                            crawlSourceListHtml += (" <tr class=\"book_list\" vals=\"291\">\n" +
-                                "                            <td class=\"style bookclass\">\n" +
-                                "                                [" + (i + 1) + "]\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"name\">\n" +
-                                "                                " + crawlSource.bookName + "\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"name\">\n" +
-                                "                                " + crawlSource.authorName + "\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"goread\">\n" +
-                                "                                " + crawlSource.crawlChapters + "\n" + "章" +
-                                "                            </td>\n" +
-                                "                            <td class=\"goread\">\n" +
-                                "                                " + crawlSource.excCount + "\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"goread\">\n" +
-                                "                                " + (crawlSource.taskStatus == 0 ? '采集失败' : (crawlSource.taskStatus == 1 ? '采集成功' : (crawlSource.taskStatus == 3 || crawlSource.excCount > 0 ? '采集中' : '排队中'))) + "\n" +
-                                "                            </td>\n" +
-                                "                            <td class=\"name\" valsc=\"291|2037554|1\">"
-                                + crawlSource.createTime + "</td>\n" +
-
-                                " <td class=\"goread\" id='opt" + crawlSource.id + "'><a href='javascript:del(" + crawlSource.id + ")'>删除  </a></td>                     </tr>");
+                            var statusText, statusCls;
+                            if (crawlSource.taskStatus == 0) { statusText = '采集失败'; statusCls = 'status_err'; }
+                            else if (crawlSource.taskStatus == 1) { statusText = '采集成功'; statusCls = 'status_on'; }
+                            else if (crawlSource.taskStatus == 3 || crawlSource.excCount > 0) { statusText = '采集中'; statusCls = 'status_on'; }
+                            else { statusText = '排队中'; statusCls = 'status_off'; }
+                            crawlSourceListHtml += (' <tr class="book_list">' +
+                                '<td class="style bookclass">[' + (i + 1) + ']</td>' +
+                                '<td class="name">' + ellCell(crawlSource.bookName) + '</td>' +
+                                '<td class="name">' + ellCell(crawlSource.authorName) + '</td>' +
+                                '<td class="col_num">' + (crawlSource.crawlChapters || 0) + '章</td>' +
+                                '<td class="col_num">' + (crawlSource.excCount || 0) + '</td>' +
+                                '<td class="col_status"><span class="' + statusCls + '">' + statusText + '</span></td>' +
+                                '<td class="col_time">' + escapeHtml(crawlSource.createTime || '') + '</td>' +
+                                '<td class="goread" id="opt' + crawlSource.id + '"><a href="javascript:del(' + crawlSource.id + ')" class="a_del">删除</a></td>' +
+                                '</tr>');
                         }
                         $("#crawlSourceList").html(crawlSourceListHtml);
 
@@ -242,6 +235,22 @@
         })
 
 
+    }
+
+    function escapeHtml(str) {
+        if (str == null) {
+            return '';
+        }
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /**
+     * 单行省略单元格，悬停显示全文
+     */
+    function ellCell(str) {
+        var text = escapeHtml(str);
+        return '<span class="cell-ell" title="' + text + '">' + text + '</span>';
     }
 </script>
 </html>

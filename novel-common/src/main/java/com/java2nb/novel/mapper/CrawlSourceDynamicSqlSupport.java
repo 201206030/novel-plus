@@ -17,6 +17,9 @@ public final class CrawlSourceDynamicSqlSupport {
     public static final SqlColumn<String> sourceName = crawlSource.sourceName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> sourceFrom = crawlSource.sourceFrom;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> crawlRule = crawlSource.crawlRule;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -33,6 +36,8 @@ public final class CrawlSourceDynamicSqlSupport {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
         public final SqlColumn<String> sourceName = column("source_name", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> sourceFrom = column("source_from", JDBCType.VARCHAR);
 
         public final SqlColumn<String> crawlRule = column("crawl_rule", JDBCType.VARCHAR);
 

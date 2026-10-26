@@ -54,6 +54,13 @@
                                            placeholder="url"></li>
 
                                 示例：<b>value=\"(\\d+)/\\d+\"</b>
+                                <li><select id="parseType" class="s_input icon_name">
+                                    <option value="REGEX">正则表达式 REGEX</option>
+                                    <option value="CSS">CSS选择器</option>
+                                    <option value="XPATH">XPath</option>
+                                    <option value="JSONPATH">JSONPath</option>
+                                </select></li>
+                                示例：<b>CSS：#author::attr(href)　XPath：//div[@id='intro']/text()　JSONPath：$.data.title　可用 |正则 二次截取，如 a::attr(href)|(\d+)</b>
                                 <li><input type="text" id="rule" class="s_input icon_name" placeholder="规则"></li>
                                 示例：<b>1强制刷新 空或0使用缓存</b>
                                 <li><input type="text" id="isRefresh" class="s_input icon_name" placeholder="是否强制刷新">
@@ -116,6 +123,10 @@
         $("#url").val(testParseUrl);
         var testParseRule = localStorage.getItem("testParseRule");
         $("#rule").val(testParseRule);
+        var testParseType = localStorage.getItem("testParseType");
+        if (testParseType) {
+            $("#parseType").val(testParseType);
+        }
     }
 
     function testCrawlSource() {
@@ -125,9 +136,10 @@
 
         var isRefresh = $("#isRefresh").val();
         data.isRefresh = isRefresh;
+        data.parseType = $("#parseType").val();
         var rule = $("#rule").val();
         if (rule.length == 0) {
-            layer.alert("正则必填");
+            layer.alert("规则必填");
             return false;
         }
         data.rule = rule;
@@ -140,6 +152,7 @@
 
         localStorage.setItem("testParseUrl", url);
         localStorage.setItem("testParseRule", rule);
+        localStorage.setItem("testParseType", data.parseType);
         $.ajax({
             type: "POST",
             url: "/crawl/testParse",
