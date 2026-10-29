@@ -1,5 +1,6 @@
 package com.java2nb.novel.service;
 
+import com.java2nb.novel.core.ai.PromptTemplateUtil;
 import com.java2nb.novel.mapper.FrontAuthorDashboardMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -115,6 +116,57 @@ public class AuthorDashboardService {
         result.put("draftWords", intValue(draft == null ? null : draft.get("draftWords")));
         result.put("scheduleCount", intValue(draft == null ? null : draft.get("scheduleCount")));
         return result;
+    }
+
+    /**
+     * 组装看板 AI 解读提示词：摘要指标 + 按天趋势表，数据口径与页面展示一致
+     *
+     * @param authorId 作家ID
+     * @param days     趋势天数（仅支持7或30，非法值回退30）
+     * @return 渲染后的完整提示词，交由模型流式生成解读
+     */
+    public String buildInsightPrompt(Long authorId, int days) {
+        Map<String, Object> s = summary(authorId);
+        Map<String, Object> t = trend(authorId, days);
+
+        StringBuilder summarySb = new StringBuilder();
+        summarySb.append("连续更新 ").append(s.get("streakDays")).append(" 天；");
+        Object gapDays = s.get("gapDays");
+        if (Integer.valueOf(-1).equals(gapDays)) {
+            summarySb.append("尚无已发布章节");
+        } else if (Integer.valueOf(0).equals(gapDays)) {
+            summarySb.append("今日已更新");
+        } else {
+            summarySb.append("已断更 ").append(gapDays).append(" 天（最近更新 ").append(s.get("lastUpdateDate")).append("）");
+        }
+        summarySb.append('\n')
+            .append("更新字数：今日 ").append(s.get("todayWords"))
+            .append(" / 本周 ").append(s.get("weekWords"))
+            .append(" / 近30日 ").append(s.get("monthWords")).append('\n')
+            .append("近30日追读 ").append(s.get("followRead30"))
+            .append("、新增收藏 ").append(s.get("collect30"))
+            .append("；累计收藏 ").append(s.get("collectTotal")).append('\n')
+            .append("存稿 ").append(s.get("draftCount")).append(" 章 ").append(s.get("draftWords")).append(" 字；定时发布 ")
+            .append(s.get("scheduleCount")).append(" 章");
+
+        List<String> dates = (List<String>) t.get("dates");
+        StringBuilder trendSb = new StringBuilder();
+        for (int i = 0; i < dates.size(); i++) {
+            trendSb.append(dates.get(i).substring(5)).append(" | ")
+                .append(seriesAt(t.get("words"), i)).append(" | ")
+                .append(seriesAt(t.get("followReads"), i)).append(" | ")
+                .append(seriesAt(t.get("collects"), i)).append('\n');
+        }
+
+        Map<String, String> vars = new HashMap<>(8);
+        vars.put("days", String.valueOf(dates.size()));
+        vars.put("summary", summarySb.toString());
+        vars.put("trend", trendSb.toString());
+        return PromptTemplateUtil.render("dashboard_insight", vars);
+    }
+
+    private Object seriesAt(Object series, int index) {
+        return series instanceof List ? ((List<?>) series).get(index) : 0;
     }
 
     /**

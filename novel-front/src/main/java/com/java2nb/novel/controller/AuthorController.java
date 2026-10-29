@@ -286,6 +286,20 @@ public class AuthorController extends BaseController {
         return RestResult.ok(authorDashboardService.trend(author.getId(), days));
     }
 
+    /**
+     * 看板AI解读：服务端组装摘要与趋势数据为提示词，流式输出分析结果
+     */
+    @GetMapping(value = "ai/stream/dashboardInsight", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamDashboardInsight(
+        @RequestParam(value = "days", defaultValue = "7") int days, HttpServletRequest request) {
+        Author author = checkAuthor(request);
+        String prompt = authorDashboardService.buildInsightPrompt(author.getId(), days);
+        return chatClient.prompt()
+            .user(prompt)
+            .stream()
+            .content();
+    }
+
 
     /**
      * 查询章节内容
