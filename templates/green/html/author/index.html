@@ -29,12 +29,18 @@
                             <option value="7" selected>近7日</option>
                             <option value="30">近30日</option>
                         </select>
+                        <a href="javascript:;" class="dash_ai_btn" id="dashAiBtn" title="基于当前趋势区间数据生成解读">AI解读</a>
                     </div>
                 </div>
                 <div class="dash_box" id="dashBox">
                     <div class="dash_cards" id="dashCards"></div>
                     <div class="dash_alert" id="dashAlert"></div>
                     <div class="dash_chart" id="dashChart"></div>
+                    <!-- 看板AI解读：流式逐段追加，纯文本展示 -->
+                    <div class="dash_ai" id="dashAiBox">
+                        <div class="dash_ai_head">AI数据解读<span class="dash_ai_stop" id="dashAiStop">停止</span></div>
+                        <div class="dash_ai_text" id="dashAiText"></div>
+                    </div>
                 </div>
             </div>
             <div id="noContentDiv">
@@ -223,6 +229,47 @@
     $("#dashDays").on('change', function () {
         renderDashTrend($(this).val());
     });
+
+    // ---------- 看板AI解读（SSE流式，与章节编辑器AI工具同一接口风格） ----------
+    var dashAiSource = null;
+
+    $("#dashAiBtn").on('click', startDashInsight);
+    $("#dashAiStop").on('click', function () {
+        closeDashInsight();
+    });
+
+    function closeDashInsight() {
+        if (dashAiSource) {
+            dashAiSource.close();
+            dashAiSource = null;
+        }
+        $("#dashAiBtn").removeClass('loading').text('AI解读');
+    }
+
+    function startDashInsight() {
+        closeDashInsight();
+        $("#dashAiBtn").addClass('loading').text('生成中');
+        $("#dashAiBox").show();
+        $("#dashAiText").text('');
+        var received = false;
+        var es = new EventSource('/author/ai/stream/dashboardInsight?days=' + $("#dashDays").val());
+        dashAiSource = es;
+        es.onmessage = function (event) {
+            received = true;
+            var box = $("#dashAiText");
+            box.text(box.text() + event.data);
+            //追加后自动滚到面板底部
+            box.parent().scrollTop(box.parent().prop('scrollHeight'));
+        };
+        es.onerror = function () {
+            es.close();
+            dashAiSource = null;
+            $("#dashAiBtn").removeClass('loading').text('AI解读');
+            if (!received) {
+                $("#dashAiText").text('解读生成失败，请确认已登录后重试；若仍未登录，刷新页面重新登录即可');
+            }
+        };
+    }
 
     //数字缩写：超过10万用“万”作单位，避免数字过长撑宽列
     function fmtNum(n) {

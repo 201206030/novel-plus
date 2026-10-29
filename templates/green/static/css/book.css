@@ -704,6 +704,7 @@
 .author_head .head img {
     width: 64px;
     height: 64px;
+    object-fit: cover;
     border-radius: 50%;
     background: #f6f6f6;
     display: block;
@@ -740,6 +741,28 @@
 
 .author_intro .intro_txt, .author_book .book_txt {
     line-height: 1.8;
+    padding-bottom: 10px
+}
+
+/* 作者有话说：标题与简介正文做视觉区分 */
+.author_intro h4 {
+    font-size: 13px;
+    font-weight: bold;
+    color: #3eaf7c;
+    line-height: 1.2;
+    padding: 12px 0 8px;
+    border-left: 3px solid #3eaf7c;
+    padding-left: 8px
+}
+
+.author_intro .intro_txt {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.9;
+    background: #f7f9f8;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-top: 8px;
     padding-bottom: 10px
 }
 
