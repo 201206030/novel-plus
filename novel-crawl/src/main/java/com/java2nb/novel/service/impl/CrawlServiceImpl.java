@@ -9,6 +9,7 @@ import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.UrlUtil;
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.mapper.CrawlSingleTaskDynamicSqlSupport;
@@ -174,13 +175,18 @@ public class CrawlServiceImpl implements CrawlService {
                 //该爬虫源已经停止运行了,启动线程爬取小说数据并将线程加入到runningCrawlThread中
                 RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
                 Set<Long> threadIds = new HashSet<>();
-                //按分类开始爬虫解析任务
-                for (int i = 1; i < 8; i++) {
-                    final int catId = i;
-                    Thread thread = new Thread(() -> CrawlServiceImpl.this.parseBookList(catId, ruleBean, sourceId));
-                    thread.start();
-                    //thread加入到监控缓存中
-                    threadIds.add(thread.getId());
+                //从book_category动态加载全部分类，按规则里配置了URL的分类启动采集线程；
+                //1对多：同一分类配了多个来源URL时每个URL各起一个线程（单URL采集是无限循环，同线程串行会导致后面的URL永远采不到）
+                for (BookCategory category : bookService.queryAllCategory()) {
+                    List<String> catUrlRules = ruleBean.getCatIdRuleValues(category.getId());
+                    for (String catUrlRule : catUrlRules) {
+                        final int catId = category.getId();
+                        Thread thread = new Thread(
+                            () -> CrawlServiceImpl.this.parseBookList(catId, catUrlRule, ruleBean, sourceId));
+                        thread.start();
+                        //thread加入到监控缓存中
+                        threadIds.add(thread.getId());
+                    }
                 }
                 runningCrawlThread.put(sourceId, threadIds);
             }
@@ -290,12 +296,11 @@ public class CrawlServiceImpl implements CrawlService {
     }
 
     /**
-     * 解析分类列表
+     * 解析单个来源分类列表并持续采集；1对多时同一catId的多个来源URL由各自线程并行采集
      */
     @Override
-    public void parseBookList(int catId, RuleBean ruleBean, Integer sourceId) {
+    public void parseBookList(int catId, String catIdRule, RuleBean ruleBean, Integer sourceId) {
 
-        String catIdRule = ruleBean.getCatIdRule() == null ? null : ruleBean.getCatIdRule().get("catId" + catId);
         if (StringUtils.isBlank(catIdRule)) {
             return;
         }
@@ -323,7 +328,7 @@ public class CrawlServiceImpl implements CrawlService {
                 if (StringUtils.isNotBlank(ruleBean.getUrlPrefix())) {
                     catBookListUrl = UrlUtil.absolutize(ruleBean.getUrlPrefix(), catBookListUrl);
                 }
-                // 规则里残留未替换的花括号会触发RestTemplate URI模板变量解析异常，直接跳过该分类
+                // 规则里残留未替换的花括号会触发RestTemplate URI模板变量解析异常，本URL直接停止采集
                 if (catBookListUrl.indexOf('{') >= 0 || catBookListUrl.indexOf('}') >= 0) {
                     log.error("分类采集URL存在未解析的占位符，跳过该分类：{}", catBookListUrl);
                     return;
@@ -415,15 +420,10 @@ public class CrawlServiceImpl implements CrawlService {
             if (existBook == null) {
                 //没有该书，可以入库
                 book.setCatId(catId);
-                //根据分类ID查询分类
+                //根据分类ID查询分类（book_category动态维护）
                 book.setCatName(bookService.queryCatNameByCatId(catId));
-                if (catId == 7) {
-                    //女频
-                    book.setWorkDirection((byte) 1);
-                } else {
-                    //男频
-                    book.setWorkDirection((byte) 0);
-                }
+                //作品方向以分类表配置的频道为准，不再按固定catId判断
+                book.setWorkDirection(bookService.queryWorkDirectionByCatId(catId));
                 book.setCrawlBookId(bookId);
                 book.setCrawlSourceId(sourceId);
                 book.setCrawlLastTime(new Date());

@@ -63,23 +63,11 @@
                                     <option value="XPATH">XPath</option>
                                     <option value="JSONPATH">JSONPath（接口返回JSON的源站）</option>
                                 </select></li>
-                                示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
+                                示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码；分类ID填完整URL时本项可不填)
                                 <li><input type="text" id="bookListUrl" class="s_input icon_key"
                                            placeholder="分类列表页URL规则"></li>
-                                示例：<b>1</b>
-                                <li><input type="text" id="catId1" class="s_input icon_key" placeholder="玄幻奇幻分类ID"></li>
-                                示例：<b>2</b>
-                                <li><input type="text" id="catId2" class="s_input icon_key" placeholder="武侠仙侠分类ID"></li>
-                                示例：<b>3</b>
-                                <li><input type="text" id="catId3" class="s_input icon_key" placeholder="都市言情分类ID"></li>
-                                示例：<b>4</b>
-                                <li><input type="text" id="catId4" class="s_input icon_key" placeholder="历史军事分类ID"></li>
-                                示例：<b>5</b>
-                                <li><input type="text" id="catId5" class="s_input icon_key" placeholder="科幻灵异分类ID"></li>
-                                示例：<b>6</b>
-                                <li><input type="text" id="catId6" class="s_input icon_key" placeholder="网游竞技分类ID"></li>
-                                示例：<b>7</b>
-                                <li><input type="text" id="catId7" class="s_input icon_key" placeholder="女生频道分类ID"></li>
+                                分类ID（由系统分类动态加载，填入源站对应分类的ID/路径，至少填一项；支持{page}占位或配合上方{catId}模板；1对多：同一分类可填多行，每行一个来源分类ID/URL，采集时每行各起一个线程）
+                                <li id="catIdList"><span style="color: #999;">分类加载中…</span></li>
                                 示例：<b>href="/ddk(\d+)/"</b>
                                 <li><input type="text" id="bookIdPatten" class="s_input icon_key"
                                            placeholder="列表页小说ID正则表达式："></li>
@@ -215,7 +203,53 @@
 <script src="/javascript/header.js" type="text/javascript"></script>
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
+    //系统分类列表（book_category动态加载）
+    var BOOK_CATS = [];
+
+    $(function () {
+        loadBookCategories();
+    });
+
+    /**
+     * 从后端加载全部分类并动态渲染分类ID输入框（新增页无历史值，填完即可）
+     */
+    function loadBookCategories() {
+        $.ajax({
+            type: "GET",
+            url: "/crawl/listBookCategory",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    BOOK_CATS = data.data || [];
+                    var html = '';
+                    for (var i = 0; i < BOOK_CATS.length; i++) {
+                        var cat = BOOK_CATS[i];
+                        //textarea支持多行：每行一个来源分类ID/URL，入库时按换行分隔存储（1对多）
+                        html += '<textarea id="catId' + cat.id + '" rows="2" cols="52" placeholder="' + cat.name + '分类ID，每行一个"></textarea><br>';
+                    }
+                    $("#catIdList").html(html);
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    $("#catIdList").html('<span style="color: #ff5722;">' + escapeHtml(data.msg || '分类加载失败') + '</span>');
+                }
+            },
+            error: function () {
+                $("#catIdList").html('<span style="color: #ff5722;">分类加载失败，请刷新重试</span>');
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     function addCrawlSource() {
+        if (BOOK_CATS.length == 0) {
+            layer.alert("分类尚未加载完成，请稍候再提交");
+            return false;
+        }
 
         var crawlRule = {};
         var sourceName = $("#sourceName").val();
@@ -229,25 +263,37 @@
             crawlRule.parseType = parseType;
         }
 
-        var bookListUrl = $("#bookListUrl").val();
-        if (bookListUrl.length == 0) {
-            layer.alert("分类列表页URL规则必填");
-            return false;
-        }
-        crawlRule.bookListUrl = bookListUrl;
+        var bookListUrl = $.trim($("#bookListUrl").val());
 
         var catIdRule = {};
+        var allCatFullUrl = true;
 
-        for (var i = 1; i <= 7; i++) {
-            var catId = $("#catId" + i).val();
-            if (catId.length > 0) {
-                catIdRule["catId" + i] = catId;
+        for (var i = 0; i < BOOK_CATS.length; i++) {
+            var key = "catId" + BOOK_CATS[i].id;
+            var catId = $("#" + key).val();
+            if (catId && $.trim(catId).length > 0) {
+                catIdRule[key] = catId;
+                //1对多逐行校验：非空行都是http/https完整URL才允许不填列表页URL模板
+                var lines = String(catId).split(/\r\n|\r|\n/);
+                for (var l = 0; l < lines.length; l++) {
+                    var line = $.trim(lines[l]);
+                    if (line && !/^https?:\/\//i.test(line)) {
+                        allCatFullUrl = false;
+                    }
+                }
             }
         }
 
         if (Object.keys(catIdRule).length == 0) {
             layer.alert("分类ID至少要填一项");
             return false;
+        }
+        if (bookListUrl.length == 0 && !allCatFullUrl) {
+            layer.alert("未填分类列表页URL规则时，分类ID必须填完整URL（http/https开头）");
+            return false;
+        }
+        if (bookListUrl.length > 0) {
+            crawlRule.bookListUrl = bookListUrl;
         }
         crawlRule.catIdRule = catIdRule;
 

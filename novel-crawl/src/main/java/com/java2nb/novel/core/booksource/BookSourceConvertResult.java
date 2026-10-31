@@ -59,7 +59,7 @@ public class BookSourceConvertResult {
     private String crawlRule;
 
     /**
-     * 解析出的发现（探索）分类条目，导入时由用户手动映射到novel-plus分类槽
+     * 解析出的发现（探索）分类条目，导入时由用户手动映射到本系统动态分类（book_category）
      */
     private final List<ExploreOption> exploreOptions = new ArrayList<>();
 

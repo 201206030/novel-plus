@@ -1,6 +1,7 @@
 package com.java2nb.novel.service.impl;
 
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.mapper.*;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -75,6 +77,39 @@ public class BookServiceImpl implements BookService {
                 .where(id, isEqualTo(catId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3)).get(0).getName();
+    }
+
+    @Override
+    public List<BookCategory> queryAllCategory() {
+        List<BookCategory> list = bookCategoryMapper.selectMany(select(BookCategoryDynamicSqlSupport.id,
+                BookCategoryDynamicSqlSupport.name, BookCategoryDynamicSqlSupport.workDirection,
+                BookCategoryDynamicSqlSupport.sort)
+                .from(BookCategoryDynamicSqlSupport.bookCategory)
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
+        //与后台分类管理排序口径一致：男频在前女频在后，同频道按sort升序（sort为空排最前）
+        list.sort((a, b) -> {
+            int dir = Optional.ofNullable(a.getWorkDirection()).orElse((byte) 0)
+                    .compareTo(Optional.ofNullable(b.getWorkDirection()).orElse((byte) 0));
+            if (dir != 0) {
+                return dir;
+            }
+            return Optional.ofNullable(a.getSort()).orElse((byte) 0)
+                    .compareTo(Optional.ofNullable(b.getSort()).orElse((byte) 0));
+        });
+        return list;
+    }
+
+    @Override
+    public byte queryWorkDirectionByCatId(int catId) {
+        return bookCategoryMapper.selectMany(select(BookCategoryDynamicSqlSupport.workDirection)
+                .from(BookCategoryDynamicSqlSupport.bookCategory)
+                .where(BookCategoryDynamicSqlSupport.id, isEqualTo(catId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3)).stream()
+                .findFirst()
+                .map(BookCategory::getWorkDirection)
+                .orElse((byte) 0);
     }
 
     @Transactional(rollbackFor = Exception.class)

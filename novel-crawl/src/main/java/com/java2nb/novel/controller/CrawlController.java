@@ -4,10 +4,12 @@ import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.RuleExtractor;
 import com.java2nb.novel.core.utils.HttpUtil;
+import com.java2nb.novel.entity.BookCategory;
 import io.github.xxyopen.model.page.PageBean;
 
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
+import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import io.github.xxyopen.model.resp.RestResult;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ import java.util.Map;
 public class CrawlController {
 
     private final CrawlService crawlService;
+
+    private final BookService bookService;
 
     private final CacheService cacheService;
     /**
@@ -55,6 +59,14 @@ public class CrawlController {
         CrawlSource crawlSource=  crawlService.getCrawlSource(id);
         return RestResult.ok(crawlSource);
 
+    }
+
+    /**
+     * 查询全部小说分类（book_category动态加载，供爬虫源编辑页/导入映射/单本采集分类下拉渲染）
+     * */
+    @GetMapping("listBookCategory")
+    public RestResult<List<BookCategory>> listBookCategory(){
+        return RestResult.ok(bookService.queryAllCategory());
     }
 
     /**

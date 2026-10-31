@@ -84,11 +84,6 @@ public class BookSourceRuleConverter {
     private static final Pattern PAGE_PLACEHOLDER =
         Pattern.compile("\\{+\\s*page\\s*\\}+|\\$\\{page\\}|(?<![A-Za-z])page(?![A-Za-z])");
 
-    /**
-     * novel-plus单源固定支持的分类槽数（引擎按catId1..catId7并发采集）
-     */
-    private static final int MAX_CAT_COUNT = 7;
-
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**
@@ -602,10 +597,7 @@ public class BookSourceRuleConverter {
             ctx.warn("发现分类不可用：列表书链接规则无法转换，仅支持按详情页地址单本采集");
             return;
         }
-        ctx.warn("发现分类共" + entries.size() + "个，请在预览中逐个选择对应的本系统分类（玄幻奇幻/武侠仙侠/都市言情/历史军事/科幻灵异/网游竞技/女生频道），未映射的分类不会批量采集");
-        if (entries.size() > MAX_CAT_COUNT) {
-            ctx.warn("发现分类超过" + MAX_CAT_COUNT + "个，本系统只有" + MAX_CAT_COUNT + "个分类槽，至多映射" + MAX_CAT_COUNT + "个分类");
-        }
+        ctx.warn("发现分类共" + entries.size() + "个，请在预览中逐个选择对应的本系统分类（分类列表由book_category动态加载），支持多个来源分类映射到同一本系统分类（1对多），未映射的分类不会批量采集");
     }
 
     /**

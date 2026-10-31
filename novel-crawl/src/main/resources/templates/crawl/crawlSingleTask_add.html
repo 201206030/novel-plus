@@ -45,13 +45,7 @@
                                 </select></li>
                                 <b>采集分类:</b>
                                 <li><select id="catId" class="s_input icon_key">
-                                    <option value="1">玄幻奇幻</option>
-                                    <option value="2">武侠仙侠</option>
-                                    <option value="3">都市言情</option>
-                                    <option value="4">历史军事</option>
-                                    <option value="5">科幻灵异</option>
-                                    <option value="6">网游竞技</option>
-                                    <option value="7">女生频道</option>
+                                    <option value="">分类加载中…</option>
                                 </select>
                                 </li>
                                 示例：<b>73_73911</b>
@@ -88,6 +82,7 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
     $(function () {
+        loadBookCategories();
         $.ajax({
             type: "get",
             url: "/crawl/listCrawlByPage",
@@ -123,12 +118,46 @@
         })
     });
 
+    /**
+     * 采集分类从book_category动态加载
+     */
+    function loadBookCategories() {
+        $.ajax({
+            type: "get",
+            url: "/crawl/listBookCategory",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var cats = data.data || [];
+                    var catListHtml = "";
+                    for (var i = 0; i < cats.length; i++) {
+                        catListHtml += '<option value="' + cats[i].id + '">' + cats[i].name + '</option>';
+                    }
+                    $("#catId").html(catListHtml || '<option value="">暂无分类</option>');
+                } else if (data.code == 1001) {
+                    //未登录
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    $("#catId").html('<option value="">分类加载失败</option>');
+                }
+            },
+            error: function () {
+                $("#catId").html('<option value="">分类加载失败</option>');
+            }
+        });
+    }
+
 
     function addCrawlSingleTask() {
 
         var sourceId = $("#sourceId").find("option:selected").val();
 
         var catId = $("#catId").find("option:selected").val();
+
+        if (!catId) {
+            layer.alert("采集分类加载异常，请刷新重试");
+            return;
+        }
 
         var sourceName = $("#sourceId").find("option:selected").html();
 

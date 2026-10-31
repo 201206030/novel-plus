@@ -72,12 +72,14 @@ public interface CrawlService {
     List<CrawlSource> queryCrawlSourceByStatus(Byte sourceStatus);
 
     /**
-     * 根据分类ID和规则解析分类列表
+     * 解析单个来源分类列表并持续采集（内部无限循环，由独立线程运行）；
+     * 1对多时同一catId会按每个来源URL分别起线程
      * @param catId 分类ID
+     * @param catIdRuleValue 单个来源分类的ID/URL规则（支持{page}占位）
      * @param ruleBean 规则对象
      * @param sourceId 爬虫源ID
      */
-    void parseBookList(int catId, RuleBean ruleBean, Integer sourceId);
+    void parseBookList(int catId, String catIdRuleValue, RuleBean ruleBean, Integer sourceId);
 
 
     /**
