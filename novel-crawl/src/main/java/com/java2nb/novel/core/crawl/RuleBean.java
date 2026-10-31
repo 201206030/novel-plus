@@ -36,7 +36,7 @@ public class RuleBean {
     private String bookListUrl;
 
     /**
-     * 分类URL规则，key为catId1..catId7，value为分类列表页URL（支持{page}占位）；
+     * 分类URL规则，key为catId+book_category分类ID（动态分类，如catId1/catId8），value为分类列表页URL（支持{page}占位）；
      * 默认空Map避免导入书源未配置分类时采集线程空指针
      */
     private Map<String, String> catIdRule = new HashMap<>();

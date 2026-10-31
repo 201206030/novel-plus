@@ -9,6 +9,7 @@ import com.java2nb.novel.core.crawl.RuleBean;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.UrlUtil;
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.mapper.CrawlSingleTaskDynamicSqlSupport;
@@ -174,9 +175,14 @@ public class CrawlServiceImpl implements CrawlService {
                 //该爬虫源已经停止运行了,启动线程爬取小说数据并将线程加入到runningCrawlThread中
                 RuleBean ruleBean = new ObjectMapper().readValue(source.getCrawlRule(), RuleBean.class);
                 Set<Long> threadIds = new HashSet<>();
-                //按分类开始爬虫解析任务
-                for (int i = 1; i < 8; i++) {
-                    final int catId = i;
+                //从book_category动态加载全部分类，按规则里配置了URL的分类启动采集线程（catIdRule的key为catId+分类ID）
+                Map<String, String> catIdRule = Optional.ofNullable(ruleBean.getCatIdRule()).orElseGet(HashMap::new);
+                for (BookCategory category : bookService.queryAllCategory()) {
+                    if (StringUtils.isBlank(catIdRule.get("catId" + category.getId()))) {
+                        //该分类未配置采集URL，不启动线程
+                        continue;
+                    }
+                    final int catId = category.getId();
                     Thread thread = new Thread(() -> CrawlServiceImpl.this.parseBookList(catId, ruleBean, sourceId));
                     thread.start();
                     //thread加入到监控缓存中
@@ -415,15 +421,10 @@ public class CrawlServiceImpl implements CrawlService {
             if (existBook == null) {
                 //没有该书，可以入库
                 book.setCatId(catId);
-                //根据分类ID查询分类
+                //根据分类ID查询分类（book_category动态维护）
                 book.setCatName(bookService.queryCatNameByCatId(catId));
-                if (catId == 7) {
-                    //女频
-                    book.setWorkDirection((byte) 1);
-                } else {
-                    //男频
-                    book.setWorkDirection((byte) 0);
-                }
+                //作品方向以分类表配置的频道为准，不再按固定catId判断
+                book.setWorkDirection(bookService.queryWorkDirectionByCatId(catId));
                 book.setCrawlBookId(bookId);
                 book.setCrawlSourceId(sourceId);
                 book.setCrawlLastTime(new Date());

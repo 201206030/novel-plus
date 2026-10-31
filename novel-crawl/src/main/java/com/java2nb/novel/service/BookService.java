@@ -1,6 +1,7 @@
 package com.java2nb.novel.service;
 
 import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.entity.BookContent;
 import com.java2nb.novel.entity.BookIndex;
 
@@ -35,6 +36,19 @@ public interface BookService {
      * @return 分类名
      * */
     String queryCatNameByCatId(int catId);
+
+    /**
+     * 查询全部小说分类（book_category动态加载，男频在前女频在后，同频道按sort升序）
+     * @return 分类对象集合（仅含id/name/workDirection）
+     * */
+    List<BookCategory> queryAllCategory();
+
+    /**
+     * 通过分类ID查询作品方向
+     * @param catId 分类ID
+     * @return 0男频，1女频；分类不存在或未设置频道时默认男频
+     * */
+    byte queryWorkDirectionByCatId(int catId);
 
     /**
      * 保存小说表，目录表，内容表数据
