@@ -139,6 +139,9 @@ public class AuthorDashboardService {
             summarySb.append("尚无已发布章节");
         } else if (Integer.valueOf(0).equals(gapDays)) {
             summarySb.append("今日已更新");
+        } else if (Integer.valueOf(1).equals(gapDays)) {
+            // T+1口径：gap=1即最近更新就是昨天，今天只是尚未统计，不计为断更（与 streakDays 起算规则一致）
+            summarySb.append("最近更新 ").append(s.get("lastUpdateDate")).append("（今日数据次日才统计，未断更）");
         } else {
             summarySb.append("已断更 ").append(gapDays).append(" 天（最近更新 ").append(s.get("lastUpdateDate")).append("）");
         }

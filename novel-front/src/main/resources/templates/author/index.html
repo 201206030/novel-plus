@@ -8,7 +8,7 @@
         <title>作家管理系统-小说精品屋</title>
         <link rel="stylesheet" href="/css/base.css?v=1"/>
         <link rel="stylesheet" href="/css/user.css"/>
-        <link rel="stylesheet" href="/css/author.css"/>
+        <link rel="stylesheet" href="/css/author.css?v=6"/>
     </head>
 </head>
 <body class="author_zone">
@@ -232,6 +232,8 @@
 
     // ---------- 看板AI解读（SSE流式，与章节编辑器AI工具同一接口风格） ----------
     var dashAiSource = null;
+    //流式累积的原始markdown，每收到一段全量重渲染（模型可能输出不完整标记，下次覆盖修正）
+    var dashAiRaw = '';
 
     $("#dashAiBtn").on('click', startDashInsight);
     $("#dashAiStop").on('click', function () {
@@ -250,14 +252,16 @@
         closeDashInsight();
         $("#dashAiBtn").addClass('loading').text('生成中');
         $("#dashAiBox").show();
-        $("#dashAiText").text('');
+        dashAiRaw = '';
+        $("#dashAiText").html('');
         var received = false;
         var es = new EventSource('/author/ai/stream/dashboardInsight?days=' + $("#dashDays").val());
         dashAiSource = es;
         es.onmessage = function (event) {
             received = true;
+            dashAiRaw += event.data;
             var box = $("#dashAiText");
-            box.text(box.text() + event.data);
+            box.html(mdToHtml(dashAiRaw));
             //追加后自动滚到面板底部
             box.parent().scrollTop(box.parent().prop('scrollHeight'));
         };
@@ -312,6 +316,47 @@
     //HTML转义，防止书名/章节名破坏表格结构
     function escapeHtml(str) {
         return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    /**
+     * AI解读的极简Markdown渲染：先整体HTML转义再按行转块级标签，
+     * 覆盖解读提示词约定的子集：## 标题、**加粗**、列表、普通段落；
+     * 列表行（兼容 - 、•、1.、1、等变体）统一按顺序补“N. ”纯文本序号，不依赖 list-style 标记渲染；空行跳过
+     */
+    function mdToHtml(md) {
+        var lines = escapeHtml(md).split(/\r\n|\r|\n/);
+        var html = '';
+        var inList = false;
+        var listNo = 0;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line === '') {
+                continue;
+            }
+            var m = line.match(/^(#{1,3})\s*(.+)$/);
+            if (m) {
+                if (inList) { html += '</ol>'; inList = false; }
+                html += '<h' + m[1].length + '>' + mdInline(m[2]) + '</h' + m[1].length + '>';
+                continue;
+            }
+            m = line.match(/^(?:[-*•·—－]|\d{1,2}[.、)])\s*(.+)$/);
+            if (m) {
+                if (!inList) { html += '<ol>'; inList = true; listNo = 0; }
+                html += '<li>' + (++listNo) + '. ' + mdInline(m[1]) + '</li>';
+                continue;
+            }
+            if (inList) { html += '</ol>'; inList = false; }
+            html += '<p>' + mdInline(line) + '</p>';
+        }
+        if (inList) {
+            html += '</ol>';
+        }
+        return html;
+    }
+
+    //行内语法：仅 **加粗**（转义后不含标签注入风险）
+    function mdInline(s) {
+        return s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     }
 
     function search(curr, limit) {
