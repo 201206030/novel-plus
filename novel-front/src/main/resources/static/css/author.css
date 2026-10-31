@@ -119,11 +119,22 @@
 .author_zone .dash_days .dash_ai_btn { display:inline-block; margin-left:12px; padding:5px 16px; border:1px solid #3eaf7c; border-radius:16px; background:rgba(62,175,124,.08); color:#2c8a61; font-size:12px; vertical-align:middle }
 .author_zone .dash_days .dash_ai_btn:hover { background:rgba(62,175,124,.16) }
 .author_zone .dash_days .dash_ai_btn.loading { border-color:#c8ead9; background:#f4f8f6; color:#98a8a1 }
-.author_zone .dash_ai { display:none; max-height:260px; overflow-y:auto; margin-top:16px; padding:14px 16px; border:1px solid #c8ead9; border-radius:8px; background:#f7fcfa }
-.author_zone .dash_ai_head { font-size:13px; color:#2c8a61; font-weight:600; margin-bottom:8px }
+.author_zone .dash_ai { display:none; max-height:340px; overflow-y:auto; margin-top:16px; padding:16px 18px; border:1px solid #d4ecdf; border-radius:10px; background:linear-gradient(180deg,#f8fdfb,#f4faf6); box-shadow:0 2px 8px rgba(62,175,124,.08) }
+.author_zone .dash_ai::-webkit-scrollbar { width:6px }
+.author_zone .dash_ai::-webkit-scrollbar-thumb { background:#c8e6d6; border-radius:3px }
+.author_zone .dash_ai_head { position:sticky; top:-2px; z-index:1; font-size:13px; color:#2c8a61; font-weight:600; margin-bottom:8px; padding:2px 0 6px; background:#f8fdfb }
 .author_zone .dash_ai_head .dash_ai_stop { float:right; font-weight:normal; font-size:12px; color:#98a8a1; cursor:pointer }
 .author_zone .dash_ai_head .dash_ai_stop:hover { color:#e05a5a }
-.author_zone .dash_ai_text { font-size:13px; color:#41504a; line-height:1.9; white-space:pre-wrap; word-break:break-all }
+/* break-all会把数字/英文拦腰断行，改为自然断词 */
+.author_zone .dash_ai_text { font-size:13px; color:#3e4b44; line-height:1.9; word-break:break-word; overflow-wrap:break-word }
+/* AI解读markdown渲染后的块级元素样式（## 标题、加粗、列表；序号由前端以纯文本补在 li 内，list-style 已关闭避免双重编号） */
+.author_zone .dash_ai_text h2, .author_zone .dash_ai_text h3 { font-size:14px; color:#2c8a61; font-weight:600; margin:14px 0 6px; padding-left:9px; border-left:3px solid #3eaf7c; border-radius:0 4px 4px 0; background:linear-gradient(90deg, rgba(62,175,124,.08), rgba(62,175,124,0)) }
+.author_zone .dash_ai_text h2:first-child { margin-top:2px }
+.author_zone .dash_ai_text p { margin:6px 0 }
+.author_zone .dash_ai_text ol { margin:6px 0; padding-left:0; list-style:none }
+/* 悬挂缩进：换行后与序号后的正文对齐，而不是顶到左边 */
+.author_zone .dash_ai_text li { margin:4px 0; padding-left:26px; text-indent:-26px }
+.author_zone .dash_ai_text strong { color:#c2570a; background:rgba(212,107,8,.09); padding:1px 4px; border-radius:4px; font-weight:600 }
 
 /* ---------- 章节编辑器（自动保存/自查） ---------- */
 .author_zone .editor_tipbar { display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:12px; color:#7d8a83 }
