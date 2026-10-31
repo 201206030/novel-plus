@@ -64,10 +64,10 @@
                                     <option value="XPATH">XPath</option>
                                     <option value="JSONPATH">JSONPath（接口返回JSON的源站）</option>
                                 </select></li>
-                                示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码)
+                                示例：<b>http://m.xdingdiann.com/sort/{catId}/{page}.html</b> ({catId}代表分类ID，{page}代表分页页码；分类ID填完整URL时本项可不填)
                                 <li><input type="text" id="bookListUrl" class="s_input icon_key"
                                            placeholder="分类列表页URL规则"></li>
-                                分类ID（由系统分类动态加载，填入源站对应分类的ID/路径，至少填一项；支持{page}占位或配合上方{catId}模板）
+                                分类ID（由系统分类动态加载，填入源站对应分类的ID/路径，至少填一项；支持{page}占位或配合上方{catId}模板；1对多：同一分类可填多行，每行一个来源分类ID/URL，采集时每行各起一个线程）
                                 <li id="catIdList"><span style="color: #999;">分类加载中…</span></li>
                                 示例：<b>href="/ddk(\d+)/"</b>
                                 <li><input type="text" id="bookIdPatten" class="s_input icon_key"
@@ -227,7 +227,8 @@
                     var html = '';
                     for (var i = 0; i < BOOK_CATS.length; i++) {
                         var cat = BOOK_CATS[i];
-                        html += '<input type="text" id="catId' + cat.id + '" class="s_input icon_key" placeholder="' + cat.name + '分类ID"><br>';
+                        //textarea支持多行回显/编辑：每行一个来源分类ID/URL（1对多，存储值本身就是换行分隔，直接回填）
+                        html += '<textarea id="catId' + cat.id + '" rows="2" cols="52" placeholder="' + cat.name + '分类ID，每行一个"></textarea><br>';
                     }
                     $("#catIdList").html(html);
                     fillCatIdRule();
@@ -245,10 +246,11 @@
     }
 
     /**
-     * 分类输入框就绪后，把已保存的catIdRule回填到对应输入框
+     * 分类与规则两边就绪后才回填：分类未加载完时输入框还不存在，
+     * 不能消费掉暂存规则，否则另一侧先到时会把规则置null导致永远回显不上（并行请求时序bug）
      */
     function fillCatIdRule() {
-        if (!pendingCatIdRule) {
+        if (!pendingCatIdRule || BOOK_CATS.length == 0) {
             return;
         }
         for (var i = 0; i < BOOK_CATS.length; i++) {
@@ -359,26 +361,37 @@
             crawlRule.parseType = parseType;
         }
 
-        var bookListUrl = $("#bookListUrl").val();
-        if (bookListUrl.length == 0) {
-            layer.alert("分类列表页URL规则必填");
-            return false;
-        }
-        crawlRule.bookListUrl = bookListUrl;
+        var bookListUrl = $.trim($("#bookListUrl").val());
 
         var catIdRule = {};
+        var allCatFullUrl = true;
 
         for (var i = 0; i < BOOK_CATS.length; i++) {
             var key = "catId" + BOOK_CATS[i].id;
             var catId = $("#" + key).val();
-            if (catId && catId.length > 0) {
+            if (catId && $.trim(catId).length > 0) {
                 catIdRule[key] = catId;
+                //1对多逐行校验：非空行都是http/https完整URL才允许不填列表页URL模板
+                var lines = String(catId).split(/\r\n|\r|\n/);
+                for (var l = 0; l < lines.length; l++) {
+                    var line = $.trim(lines[l]);
+                    if (line && !/^https?:\/\//i.test(line)) {
+                        allCatFullUrl = false;
+                    }
+                }
             }
         }
 
         if (Object.keys(catIdRule).length == 0) {
             layer.alert("分类ID至少要填一项");
             return false;
+        }
+        if (bookListUrl.length == 0 && !allCatFullUrl) {
+            layer.alert("未填分类列表页URL规则时，分类ID必须填完整URL（http/https开头）");
+            return false;
+        }
+        if (bookListUrl.length > 0) {
+            crawlRule.bookListUrl = bookListUrl;
         }
         crawlRule.catIdRule = catIdRule;
 

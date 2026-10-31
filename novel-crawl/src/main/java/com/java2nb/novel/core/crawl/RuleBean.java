@@ -1,9 +1,13 @@
 package com.java2nb.novel.core.crawl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.java2nb.novel.utils.Constants;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +41,7 @@ public class RuleBean {
 
     /**
      * 分类URL规则，key为catId+book_category分类ID（动态分类，如catId1/catId8），value为分类列表页URL（支持{page}占位）；
+     * 支持1对多：同一本站分类可对应多个来源分类URL，以换行分隔存储，采集时每个URL独立起线程；
      * 默认空Map避免导入书源未配置分类时采集线程空指针
      */
     private Map<String, String> catIdRule = new HashMap<>();
@@ -100,5 +105,21 @@ public class RuleBean {
 
     private String filterContent;
 
+    /**
+     * 取指定本站分类配置的全部来源分类URL（1对多）：
+     * 存储值按换行拆分，单行空白忽略；未配置时返回空List。
+     * 加@JsonIgnore避免序列化时多出一个只读属性污染入库的规则JSON
+     */
+    @JsonIgnore
+    public List<String> getCatIdRuleValues(int catId) {
+        String raw = catIdRule == null ? null : catIdRule.get("catId" + catId);
+        if (raw == null || raw.isBlank()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(raw.split("\\R"))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .toList();
+    }
 
 }

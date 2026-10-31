@@ -547,12 +547,13 @@
             html += '</select></td></tr>';
         }
         html += '</table>';
-        html += '<div style="color: #999; margin-top: 4px;">请为每个来源分类选择对应的本系统分类；保持“不映射”则不采集该分类；每个分类只能被一个来源分类占用</div>';
+        html += '<div style="color: #999; margin-top: 4px;">请为每个来源分类选择对应的本系统分类；保持“不映射”则不采集该分类；支持多个来源分类映射到同一本系统分类（1对多，采集时每个来源分类各起一个线程并行采集）</div>';
         return html;
     }
 
     /**
-     * 按用户选择的分类映射重建crawlRule的catIdRule；返回null表示存在槽位冲突或未做任何映射
+     * 按用户选择的分类映射重建crawlRule的catIdRule；
+     * 1对多：多个来源分类映射到同一本系统分类时，URL按选择顺序换行合并；返回null表示未做任何映射
      */
     function applyCatMapping(idx, item) {
         var ruleObj;
@@ -565,23 +566,27 @@
             //无来源分类可选（仅单本采集源），不需要映射
             return JSON.stringify(ruleObj);
         }
-        var catIdRule = {};
-        var conflict = null;
+        var slotUrls = {};
         $('.catMapSel[data-item="' + idx + '"]').each(function () {
             var slot = $(this).val();
             if (!slot) {
                 return;
             }
-            if (catIdRule[slot]) {
-                conflict = slot;
-                return;
-            }
             var entryIdx = $(this).data('entry');
-            catIdRule[slot] = item.exploreOptions[entryIdx].url;
+            var url = item.exploreOptions[entryIdx].url;
+            if (!slotUrls[slot]) {
+                slotUrls[slot] = [];
+            }
+            //同一URL去重（防止重复选了同一来源分类条目）
+            if (slotUrls[slot].indexOf(url) < 0) {
+                slotUrls[slot].push(url);
+            }
         });
-        if (conflict) {
-            layer.alert('规则「' + escapeHtml(item.sourceName) + '」的来源分类重复映射到了同一个本系统分类（' + conflict + '），请调整后再导入');
-            return null;
+        var catIdRule = {};
+        for (var slot in slotUrls) {
+            if (slotUrls.hasOwnProperty(slot)) {
+                catIdRule[slot] = slotUrls[slot].join('\n');
+            }
         }
         if (Object.keys(catIdRule).length == 0) {
             //有来源分类可选时必须至少映射一个，否则导入后无法批量采集

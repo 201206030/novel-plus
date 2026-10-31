@@ -597,7 +597,7 @@ public class BookSourceRuleConverter {
             ctx.warn("发现分类不可用：列表书链接规则无法转换，仅支持按详情页地址单本采集");
             return;
         }
-        ctx.warn("发现分类共" + entries.size() + "个，请在预览中逐个选择对应的本系统分类（分类列表由book_category动态加载），未映射的分类不会批量采集");
+        ctx.warn("发现分类共" + entries.size() + "个，请在预览中逐个选择对应的本系统分类（分类列表由book_category动态加载），支持多个来源分类映射到同一本系统分类（1对多），未映射的分类不会批量采集");
     }
 
     /**

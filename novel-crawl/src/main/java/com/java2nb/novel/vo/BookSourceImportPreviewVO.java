@@ -49,7 +49,7 @@ public class BookSourceImportPreviewVO {
     private String crawlRule;
 
     /**
-     * 发现分类条目列表，供前端手动映射到book_category动态加载的本系统分类
+     * 发现分类条目列表，供前端手动映射到book_category动态加载的本系统分类，支持1对多（多个来源分类合并到同一本站分类）
      */
     private List<BookSourceConvertResult.ExploreOption> exploreOptions;
 
