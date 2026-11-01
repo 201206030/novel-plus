@@ -1,13 +1,11 @@
 package com.java2nb.novel.service;
 
-import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.entity.BookCategory;
 import com.java2nb.novel.mapper.BookCategoryDynamicSqlSupport;
 import com.java2nb.novel.mapper.BookCategoryMapper;
 import com.java2nb.novel.mapper.BookDynamicSqlSupport;
 import com.java2nb.novel.mapper.BookMapper;
 import io.github.xxyopen.model.page.PageBean;
-import io.github.xxyopen.model.page.builder.pagehelper.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.java2nb.novel.core.utils.AdminUtil.biz;
 import static com.java2nb.novel.core.utils.AdminUtil.like;
@@ -43,26 +40,24 @@ public class BookCategoryService {
      */
     private static final int BUILTIN_CATEGORY_MAX_ID = 7;
 
-    public PageBean<BookCategory> categoryList(String keyword, int page, int pageSize) {
-        PageHelper.startPage(page, pageSize);
-        // 注意：不能 stream().toList()，否则丢失 PageHelper 的 Page 类型导致分页总数失效
+    /**
+     * 分类列表。分类总量很小（预置加上自定义也只有几十条），一次性返回全部，不做分页；
+     * 因此返回的 PageBean 里 pageNum 固定为 1、pageSize 与 total 都等于记录数，前端也不再渲染分页条。
+     * <p>
+     * 排序必须放在 SQL 里：男频（work_direction=0）排前面、女频（1）排后面，同频道内按 sort 升序，
+     * sort 相同时再按 id 升序，保证顺序稳定。
+     */
+    public PageBean<BookCategory> categoryList(String keyword) {
         List<BookCategory> list = bookCategoryMapper.select(c -> {
             if (StringUtils.isNotBlank(keyword)) {
-                return c.where(BookCategoryDynamicSqlSupport.name, isLike(like(keyword)));
+                return c.where(BookCategoryDynamicSqlSupport.name, isLike(like(keyword)))
+                        .orderBy(BookCategoryDynamicSqlSupport.workDirection, BookCategoryDynamicSqlSupport.sort,
+                                BookCategoryDynamicSqlSupport.id);
             }
-            return c;
+            return c.orderBy(BookCategoryDynamicSqlSupport.workDirection, BookCategoryDynamicSqlSupport.sort,
+                    BookCategoryDynamicSqlSupport.id);
         });
-        // 排序：男频在前女频在后，同频道内按 sort 升序（sort 为空排最前，与预置数据行为一致）
-        list.sort((a, b) -> {
-            int dir = Optional.ofNullable(a.getWorkDirection()).orElse((byte) 0)
-                    .compareTo(Optional.ofNullable(b.getWorkDirection()).orElse((byte) 0));
-            if (dir != 0) {
-                return dir;
-            }
-            return Optional.ofNullable(a.getSort()).orElse((byte) 0)
-                    .compareTo(Optional.ofNullable(b.getSort()).orElse((byte) 0));
-        });
-        return PageBuilder.build(list);
+        return PageBean.of(1, list.size(), list.size(), list);
     }
 
     public BookCategory categoryGet(Integer id) {
