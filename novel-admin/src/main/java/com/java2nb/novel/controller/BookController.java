@@ -155,11 +155,12 @@ public class BookController {
         return RestResult.ok();
     }
 
+    /**
+     * 小说分类列表：一次性返回全部（男频在前、女频在后），不分页
+     */
     @GetMapping("category/list")
-    public RestResult<PageBean<BookCategory>> categoryList(@RequestParam(required = false) String keyword,
-        @RequestParam(value = "curr", defaultValue = "1") int page,
-        @RequestParam(value = "limit", defaultValue = "10") int pageSize) {
-        return RestResult.ok(bookCategoryService.categoryList(keyword, page, pageSize));
+    public RestResult<PageBean<BookCategory>> categoryList(@RequestParam(required = false) String keyword) {
+        return RestResult.ok(bookCategoryService.categoryList(keyword));
     }
 
     @GetMapping("category/get")
