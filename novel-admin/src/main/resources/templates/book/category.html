@@ -32,9 +32,11 @@
 <script src="/javascript/admin.js" type="text/javascript"></script>
 <script th:inline="none">
     // 内置分类（id <= 7）不允许删除：不使用框架删除按钮，用自定义行操作按行控制删除入口
+    // 分类总量小，一次展示全部（后端已按男频在前、女频在后排序），不渲染分页条
     Admin.crud({
         api: '/book/category',
         title: '小说分类列表',
+        paginate: false,
         searchPlaceholder: '输入分类名称搜索',
         selectable: true,
         hasDel: false,

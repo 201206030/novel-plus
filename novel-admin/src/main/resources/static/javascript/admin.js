@@ -3,6 +3,7 @@
  * 依赖：jQuery 1.8 / layui（layer、laypage）
  * 对接统一端点约定：
  *   GET  {api}/list   参数 curr/limit + 搜索参数 + 固定参数，返回 RestResult<PageBean>
+ *                     （配置 paginate: false 时不传 curr/limit，也不渲染分页条）
  *   GET  {api}/get    参数 id
  *   POST {api}/save   表单字段
  *   POST {api}/update 表单字段（含 id）
@@ -347,7 +348,8 @@ var Admin = (function ($) {
 
     function listParams() {
         var cfg = state.cfg;
-        var params = {curr: state.curr, limit: state.limit};
+        // paginate: false 的列表（如小说分类）一次取全部，不传分页参数
+        var params = cfg.paginate === false ? {} : {curr: state.curr, limit: state.limit};
         if (cfg.searchKey !== false) {
             params[cfg.searchKey || 'keyword'] = state.keyword;
         }
@@ -478,6 +480,9 @@ var Admin = (function ($) {
         get(cfg.listUrl || (cfg.api + '/list'), listParams(), function (data) {
             var list = data.list || [];
             renderTable(list);
+            if (cfg.paginate === false) {
+                return;
+            }
             layui.use('laypage', function () {
                 var laypage = layui.laypage;
                 laypage.render({
@@ -605,7 +610,9 @@ var Admin = (function ($) {
         html += '</div>';
         // 表格
         html += '<table cellpadding="0" cellspacing="0"><thead><tr id="aHeadRow"></tr></thead><tbody id="aBody"></tbody></table>';
-        html += '<div class="pageBox cf" id="shellPage"></div>';
+        if (cfg.paginate !== false) {
+            html += '<div class="pageBox cf" id="shellPage"></div>';
+        }
         html += '</div>';
         $('#adminApp').html(html);
 
