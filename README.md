@@ -130,9 +130,20 @@ spring:
 
 ⚠️ novel-plus 项目默认使用的都是免费 AI 模型，生成效果有限。如果对生成质量和生成速度有更高的要求，建议选用付费的 AI 模型。
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=201206030%2Fnovel-plus&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=201206030/novel-plus&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=201206030/novel-plus&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=201206030/novel-plus&type=date&legend=top-left" />
+ </picture>
+</a>
+
 
 ## 免责声明
 
 本项目提供的爬虫工具仅用于采集项目初期的测试数据，请勿用于商业盈利。 用户使用本系统从事任何违法违规的事情，一切后果由用户自行承担，作者不承担任何责任。
+
 
 
