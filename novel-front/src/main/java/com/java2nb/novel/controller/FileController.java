@@ -2,27 +2,21 @@ package com.java2nb.novel.controller;
 
 
 import com.java2nb.novel.core.cache.CacheService;
-import com.java2nb.novel.core.enums.ResponseStatus;
-import com.java2nb.novel.core.utils.Constants;
-import com.java2nb.novel.core.utils.FileUtil;
 import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
+import com.java2nb.novel.service.FileService;
 import io.github.xxyopen.model.resp.RestResult;
-import io.github.xxyopen.util.UUIDUtil;
-import io.github.xxyopen.web.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.Date;
 
 /**
@@ -35,6 +29,8 @@ import java.util.Date;
 public class FileController {
 
     private final CacheService cacheService;
+
+    private final FileService fileService;
 
     @Value("${pic.save.path}")
     private String picSavePath;
@@ -61,6 +57,9 @@ public class FileController {
 
     /**
      * 图片上传
+     * <p>
+     * 根据配置文件 {@code pic.save.storage} 自动选择本地存储或 OSS 存储，
+     * 与爬取图片转存任务 {@code CrawlPicTransSchedule} 共用同一套存储策略。
      *
      * - 当使用 `$.ajax`发起异步请求时 ，设置`dataType: "json"`会在请求头中自动添加`Accept: application/json`，表示客户端期望服务器返回
      *   `JSON`格式的数据。
@@ -77,30 +76,8 @@ public class FileController {
     @ResponseBody
     @PostMapping(value = "/picUpload", produces = MediaType.APPLICATION_JSON_VALUE)
     RestResult<String> upload(@RequestParam("file") MultipartFile file) {
-        Date currentDate = new Date();
-        String savePath =
-            Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +
-                DateUtils.formatDate(currentDate, "MM") + "/" +
-                DateUtils.formatDate(currentDate, "dd");
-        String oriName = file.getOriginalFilename();
-        assert oriName != null;
-        String saveFileName = UUIDUtil.getUUID32() + oriName.substring(oriName.lastIndexOf("."));
-        File saveFile = new File(picSavePath + savePath, saveFileName);
-        if (!saveFile.getParentFile().exists()) {
-            boolean isSuccess = saveFile.getParentFile().mkdirs();
-            if (!isSuccess) {
-                throw new BusinessException(ResponseStatus.FILE_DIR_MAKE_FAIL);
-            }
-        }
-        file.transferTo(saveFile);
-        if (!FileUtil.isImage(saveFile)) {
-            //上传的文件不是图片
-            saveFile.delete();
-            throw new BusinessException(ResponseStatus.FILE_NOT_IMAGE);
-        }
-        ;
-        return RestResult.ok(savePath + "/" + saveFileName);
-
+        String picUrl = fileService.uploadFile(file, picSavePath);
+        return RestResult.ok(picUrl);
     }
 
 
