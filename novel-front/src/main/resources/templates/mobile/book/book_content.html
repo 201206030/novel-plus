@@ -534,70 +534,95 @@
 
         /* 主题变量接管页面各处硬编码色（放在最后，覆盖前面的规则） */
         html, body {
+            background: #ffffff;
             background: var(--rs-bg);
+            color: #333333;
             color: var(--rs-text);
         }
 
         .page-header {
+            background: linear-gradient(90deg, #3eaf7c, #2c8a61);
             background: var(--rs-header);
         }
 
         #footer {
+            background: #ffffff;
             background: var(--rs-panel);
+            border-top-color: #f0f5f2;
             border-top-color: var(--rs-line);
         }
 
         #footer .ft-item {
+            color: #5c6b64;
             color: var(--rs-nav-text);
         }
 
         .Readarea {
+            font-size: 18px;
             font-size: var(--rs-font-size);
+            line-height: 2;
             line-height: var(--rs-line-height);
+            color: #333333;
             color: var(--rs-text);
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
             font-family: var(--rs-font-family);
         }
 
         .chapter-title {
+            border-bottom-color: #f0f5f2;
             border-bottom-color: var(--rs-line);
         }
 
         .chapter-title h1 {
+            color: #1f2d26;
             color: var(--rs-title);
         }
 
         .chapter-title .ct-sub {
+            color: #98a8a1;
             color: var(--rs-sub);
         }
 
         .read-nav a {
+            background: #f2f6f4;
             background: var(--rs-nav-bg);
+            color: #5c6b64;
             color: var(--rs-nav-text);
         }
 
         .vip-panel {
+            background: #f4f7f5;
             background: var(--rs-chip);
+            border-color: #f0f5f2;
             border-color: var(--rs-line);
+            color: #5c6b64;
             color: var(--rs-nav-text);
         }
 
         .para-comment-btn {
+            background: #f2f5f3;
             background: var(--rs-badge-bg);
+            color: #b6c2bc;
             color: var(--rs-badge-text);
+            bottom: 17px;
             bottom: var(--rs-badge-bottom);
         }
 
         .para-comment-btn::after {
+            border-right-color: #f2f5f3;
             border-right-color: var(--rs-badge-bg);
         }
 
         /* 用 :not(.hot) 避免盖掉热评态的实色渐变 */
         .para-comment-btn.has:not(.hot) {
+            background: rgba(62, 175, 124, .14);
             background: var(--rs-badge-on-bg);
+            color: #2e8b62;
             color: var(--rs-badge-on-text);
         }
 
         .para-comment-btn.has:not(.hot)::after {
+            border-right-color: rgba(62, 175, 124, .14);
             border-right-color: var(--rs-badge-on-bg);
         }
 
@@ -608,35 +633,47 @@
 
         /* layer 弹层（评论面板 / 设置面板 / alert）跟随主题 */
         .layui-layer {
+            background: #ffffff !important;
             background: var(--rs-panel) !important;
+            color: #333333;
             color: var(--rs-text);
         }
 
         .layui-layer-title {
+            background: #ffffff !important;
             background: var(--rs-panel) !important;
+            color: #1f2d26 !important;
             color: var(--rs-title) !important;
+            border-bottom-color: #f0f5f2 !important;
             border-bottom-color: var(--rs-line) !important;
         }
 
         .pc-item, .pc-reply-item {
+            border-bottom-color: #f0f5f2 !important;
             border-bottom-color: var(--rs-line) !important;
         }
 
         .pc-content, .pc-r-content {
+            color: #333333 !important;
             color: var(--rs-text) !important;
         }
 
         .pc-reply-list {
+            background: #f4f7f5 !important;
             background: var(--rs-chip) !important;
         }
 
         .pc-textarea {
+            background: #ffffff !important;
             background: var(--rs-bg) !important;
+            color: #333333 !important;
             color: var(--rs-text) !important;
+            border-color: #f0f5f2 !important;
             border-color: var(--rs-line) !important;
         }
 
         .pc-input-box {
+            border-top-color: #f0f5f2 !important;
             border-top-color: var(--rs-line) !important;
         }
 
@@ -663,6 +700,7 @@
             -webkit-align-items: center;
             align-items: center;
             min-height: 48px;
+            border-bottom: 1px solid #f0f5f2;
             border-bottom: 1px solid var(--rs-line);
         }
 
@@ -670,6 +708,7 @@
             -webkit-flex: 0 0 58px;
             flex: 0 0 58px;
             font-size: 13px;
+            color: #98a8a1;
             color: var(--rs-sub);
         }
 
@@ -692,8 +731,11 @@
         }
 
         .rs-step, .rs-seg button, .rs-reset {
+            background: #f4f7f5;
             background: var(--rs-chip);
+            color: #5c6b64;
             color: var(--rs-nav-text);
+            border: 1px solid #f0f5f2;
             border: 1px solid var(--rs-line);
             border-radius: 8px;
             font-size: 12px;
@@ -732,7 +774,9 @@
         }
 
         .rs-seg button.on {
+            background: #3eaf7c;
             background: var(--rs-accent);
+            border-color: #3eaf7c;
             border-color: var(--rs-accent);
             color: #fff;
         }
@@ -751,11 +795,13 @@
             height: 30px;
             border-radius: 50%;
             border: 2px solid transparent;
+            box-shadow: 0 0 0 1px #f0f5f2;
             box-shadow: 0 0 0 1px var(--rs-line);
             -webkit-tap-highlight-color: transparent;
         }
 
         .rs-theme-dot.on {
+            border-color: #3eaf7c;
             border-color: var(--rs-accent);
             box-shadow: none;
         }
@@ -767,6 +813,7 @@
             top: 5px;
             width: 6px;
             height: 11px;
+            border: solid #3eaf7c;
             border: solid var(--rs-accent);
             border-width: 0 2px 2px 0;
             -webkit-transform: rotate(45deg);
@@ -778,7 +825,9 @@
             width: 44px;
             height: 26px;
             border-radius: 13px;
+            background: #f4f7f5;
             background: var(--rs-chip);
+            border: 1px solid #f0f5f2;
             border: 1px solid var(--rs-line);
             cursor: pointer;
             -webkit-transition: background .2s ease, border-color .2s ease;
@@ -786,7 +835,9 @@
         }
 
         .rs-switch.on {
+            background: #3eaf7c;
             background: var(--rs-accent);
+            border-color: #3eaf7c;
             border-color: var(--rs-accent);
         }
 
@@ -810,6 +861,7 @@
         .rs-hint {
             margin-left: 10px;
             font-size: 11px;
+            color: #98a8a1;
             color: var(--rs-sub);
         }
 
@@ -830,6 +882,7 @@
 
         .rs-tip {
             font-size: 11px;
+            color: #98a8a1;
             color: var(--rs-sub);
         }
 
@@ -924,32 +977,39 @@
     function rsApply() {
         var s = rsSettings;
         var t = RS_THEMES[s.theme] || RS_THEMES.white;
-        var st = document.documentElement.style;
-        st.setProperty('--rs-bg', t.bg);
-        st.setProperty('--rs-panel', t.panel);
-        st.setProperty('--rs-chip', t.chip);
-        st.setProperty('--rs-text', t.text);
-        st.setProperty('--rs-title', t.title);
-        st.setProperty('--rs-sub', t.sub);
-        st.setProperty('--rs-line', t.line);
-        st.setProperty('--rs-nav-bg', t.navBg);
-        st.setProperty('--rs-nav-text', t.navText);
-        st.setProperty('--rs-header', t.header);
-        st.setProperty('--rs-badge-bg', t.badgeBg);
-        st.setProperty('--rs-badge-text', t.badgeText);
-        st.setProperty('--rs-badge-on-bg', t.onBg);
-        st.setProperty('--rs-badge-on-text', t.onText);
-        st.setProperty('--rs-font-size', s.fontSize + 'px');
-        st.setProperty('--rs-line-height', String(s.lineHeight));
-        st.setProperty('--rs-font-family', (RS_FONTS[s.font] || RS_FONTS.system).css);
-        /* 段落底 8px + (行高 - 18px 气泡)/2，字号/行距变化后气泡仍贴末行居中 */
-        st.setProperty('--rs-badge-bottom', (8 + (s.fontSize * s.lineHeight - 18) / 2) + 'px');
-        document.documentElement.setAttribute('data-rs-theme', s.theme);
-        if (s.showBadge) {
-            document.documentElement.classList.remove('rs-badge-off');
-        } else {
-            document.documentElement.classList.add('rs-badge-off');
+        /* 老内核（Chrome < 49 等）不支持 CSS 自定义属性，setProperty 可能无效甚至抛错。
+           CSS 里已为每条 var() 声明准备了静态回退值，这里失败也不影响正文显示。 */
+        try {
+            var st = document.documentElement.style;
+            st.setProperty('--rs-bg', t.bg);
+            st.setProperty('--rs-panel', t.panel);
+            st.setProperty('--rs-chip', t.chip);
+            st.setProperty('--rs-text', t.text);
+            st.setProperty('--rs-title', t.title);
+            st.setProperty('--rs-sub', t.sub);
+            st.setProperty('--rs-line', t.line);
+            st.setProperty('--rs-nav-bg', t.navBg);
+            st.setProperty('--rs-nav-text', t.navText);
+            st.setProperty('--rs-header', t.header);
+            st.setProperty('--rs-badge-bg', t.badgeBg);
+            st.setProperty('--rs-badge-text', t.badgeText);
+            st.setProperty('--rs-badge-on-bg', t.onBg);
+            st.setProperty('--rs-badge-on-text', t.onText);
+            st.setProperty('--rs-font-size', s.fontSize + 'px');
+            st.setProperty('--rs-line-height', String(s.lineHeight));
+            st.setProperty('--rs-font-family', (RS_FONTS[s.font] || RS_FONTS.system).css);
+            /* 段落底 8px + (行高 - 18px 气泡)/2，字号/行距变化后气泡仍贴末行居中 */
+            st.setProperty('--rs-badge-bottom', (8 + (s.fontSize * s.lineHeight - 18) / 2) + 'px');
+        } catch (e) {
         }
+        var html = document.documentElement;
+        html.setAttribute('data-rs-theme', s.theme);
+        /* classList 在部分老 WebView 上缺失，改用 className 字符串操作（纯 ES5） */
+        var cls = String(html.className || '')
+            .replace(/\brs-badge-off\b/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/^\s+|\s+$/g, '');
+        html.className = s.showBadge ? cls : (cls ? cls + ' rs-badge-off' : 'rs-badge-off');
     }
 
     rsSettings = rsRead();
@@ -1012,6 +1072,38 @@
         <div id="contentRaw" style="display: none" th:utext="${bookContent.content}"></div>
         <div id="paragraphList"></div>
     </div>
+    <!-- 正文兜底：正文原本完全依赖主脚本拆段渲染（contentRaw 默认隐藏）。老内核一旦解析不了
+         主脚本里的语法，整页就会空白。这段独立的纯 ES5 脚本检测段落是否生成，没生成就直接
+         显示服务端原始正文，保证最差情况也能正常阅读。 -->
+    <script th:inline="none">
+    (function () {
+        function fallback() {
+            var list = document.getElementById('paragraphList');
+            var raw = document.getElementById('contentRaw');
+            if (!raw || (list && list.getElementsByTagName('div').length > 0)) {
+                return;
+            }
+            raw.style.display = 'block';
+            raw.style.padding = '0 18px';
+            raw.style.fontSize = '18px';
+            raw.style.lineHeight = '2';
+            raw.style.color = '#333333';
+            raw.style.wordWrap = 'break-word';
+        }
+        if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', fallback, false);
+            window.addEventListener('load', fallback, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('onreadystatechange', function () {
+                if (document.readyState === 'complete') {
+                    fallback();
+                }
+            });
+            window.attachEvent('onload', fallback);
+        }
+        window.setTimeout(fallback, 1200);
+    })();
+    </script>
     <div class="vip-panel" th:if="${needBuy}">
         <div class="vip-title">此章为VIP章节，需要订阅后才能继续阅读</div>
         价格：<span class="vip-price" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span>
@@ -1071,20 +1163,35 @@
 </script>
 
 <script language="javascript" th:inline="none">
-    var books = localStorage.getItem("historyBooks");
-    var item = parseInt($("#bookIdHidden").val());
-    if (books) {
-        var booksArr = JSON.parse(books);
-        if (booksArr.length >= 50) {
-            booksArr.splice(0, 1);
-        }
-        booksArr.remove(item);
-        booksArr[booksArr.length] = item;
-    } else {
-        var booksArr = [item];
+    /* 老浏览器无痕/隐私模式下 localStorage 会直接抛异常，而这里是主脚本第一段，
+       一旦抛错后面的 renderParagraphs() 就不执行，正文会整页空白。全部加保护。 */
+    var books = null;
+    try {
+        books = localStorage.getItem("historyBooks");
+    } catch (e) {
     }
-
-    localStorage.setItem("historyBooks", JSON.stringify(booksArr));//
+    var item = parseInt($("#bookIdHidden").val());
+    var booksArr = [item];
+    if (books) {
+        try {
+            var parsedBooks = JSON.parse(books);
+            if (parsedBooks && typeof parsedBooks.length === 'number') {
+                booksArr = parsedBooks;
+                if (booksArr.length >= 50) {
+                    booksArr.splice(0, 1);
+                }
+                if (typeof booksArr.remove === 'function') {
+                    booksArr.remove(item);
+                }
+                booksArr[booksArr.length] = item;
+            }
+        } catch (e) {
+        }
+    }
+    try {
+        localStorage.setItem("historyBooks", JSON.stringify(booksArr));
+    } catch (e) {
+    }
 
     function toMyCollect() {
         var token = localStorage.getItem("token");
@@ -1193,23 +1300,25 @@
      * @param  pitch  读取时声音的音高 0~2  正常1
      * @returns SpeechSynthesisUtterance
      */
-    function speak({text, speechRate, lang, volume, pitch, voice}, endEvent, startEvent) {
+    /* 兼容老内核：这里原来是 ES6 解构参数 + const，老 WebView 解析到它会让「整个」script
+       报 SyntaxError，连带后面的 renderParagraphs() 都不执行，正文一片空白。改用纯 ES5。 */
+    function speak(opts, endEvent, startEvent) {
         if (!window.SpeechSynthesisUtterance) {
-            console.warn('当前浏览器不支持文字转语音服务')
             return;
         }
-
+        opts = opts || {};
+        var text = opts.text;
         if (!text) {
             return;
         }
 
-        const speechUtterance = new SpeechSynthesisUtterance();
+        var speechUtterance = new SpeechSynthesisUtterance();
         speechUtterance.text = text;
-        speechUtterance.rate = speechRate || 1;
-        speechUtterance.lang = lang || 'zh-CN';
-        speechUtterance.volume = volume || 1;
-        speechUtterance.pitch = pitch || 1;
-        speechUtterance.voice = voice || null;
+        speechUtterance.rate = opts.speechRate || 1;
+        speechUtterance.lang = opts.lang || 'zh-CN';
+        speechUtterance.volume = opts.volume || 1;
+        speechUtterance.pitch = opts.pitch || 1;
+        speechUtterance.voice = opts.voice || null;
         speechUtterance.onend = function () {
             endEvent && endEvent();
         };
