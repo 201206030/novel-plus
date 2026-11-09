@@ -509,8 +509,452 @@
             border-color: #3eaf7c !important;
         }
 
+        /* ---------- 阅读设置：主题变量 ---------- */
+        :root {
+            --rs-bg: #ffffff;
+            --rs-panel: #ffffff;
+            --rs-chip: #f4f7f5;
+            --rs-text: #333333;
+            --rs-title: #1f2d26;
+            --rs-sub: #98a8a1;
+            --rs-line: #f0f5f2;
+            --rs-nav-bg: #f2f6f4;
+            --rs-nav-text: #5c6b64;
+            --rs-header: linear-gradient(90deg, #3eaf7c, #2c8a61);
+            --rs-badge-bg: #f2f5f3;
+            --rs-badge-text: #b6c2bc;
+            --rs-badge-on-bg: rgba(62, 175, 124, .14);
+            --rs-badge-on-text: #2e8b62;
+            --rs-accent: #3eaf7c;
+            --rs-font-size: 18px;
+            --rs-line-height: 2;
+            --rs-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            --rs-badge-bottom: 17px;
+        }
+
+        /* 主题变量接管页面各处硬编码色（放在最后，覆盖前面的规则） */
+        html, body {
+            background: var(--rs-bg);
+            color: var(--rs-text);
+        }
+
+        .page-header {
+            background: var(--rs-header);
+        }
+
+        #footer {
+            background: var(--rs-panel);
+            border-top-color: var(--rs-line);
+        }
+
+        #footer .ft-item {
+            color: var(--rs-nav-text);
+        }
+
+        .Readarea {
+            font-size: var(--rs-font-size);
+            line-height: var(--rs-line-height);
+            color: var(--rs-text);
+            font-family: var(--rs-font-family);
+        }
+
+        .chapter-title {
+            border-bottom-color: var(--rs-line);
+        }
+
+        .chapter-title h1 {
+            color: var(--rs-title);
+        }
+
+        .chapter-title .ct-sub {
+            color: var(--rs-sub);
+        }
+
+        .read-nav a {
+            background: var(--rs-nav-bg);
+            color: var(--rs-nav-text);
+        }
+
+        .vip-panel {
+            background: var(--rs-chip);
+            border-color: var(--rs-line);
+            color: var(--rs-nav-text);
+        }
+
+        .para-comment-btn {
+            background: var(--rs-badge-bg);
+            color: var(--rs-badge-text);
+            bottom: var(--rs-badge-bottom);
+        }
+
+        .para-comment-btn::after {
+            border-right-color: var(--rs-badge-bg);
+        }
+
+        /* 用 :not(.hot) 避免盖掉热评态的实色渐变 */
+        .para-comment-btn.has:not(.hot) {
+            background: var(--rs-badge-on-bg);
+            color: var(--rs-badge-on-text);
+        }
+
+        .para-comment-btn.has:not(.hot)::after {
+            border-right-color: var(--rs-badge-on-bg);
+        }
+
+        /* 段落气泡开关：关闭时只隐藏入口，不重建段落 DOM */
+        .rs-badge-off .para-comment-btn {
+            display: none !important;
+        }
+
+        /* layer 弹层（评论面板 / 设置面板 / alert）跟随主题 */
+        .layui-layer {
+            background: var(--rs-panel) !important;
+            color: var(--rs-text);
+        }
+
+        .layui-layer-title {
+            background: var(--rs-panel) !important;
+            color: var(--rs-title) !important;
+            border-bottom-color: var(--rs-line) !important;
+        }
+
+        .pc-item, .pc-reply-item {
+            border-bottom-color: var(--rs-line) !important;
+        }
+
+        .pc-content, .pc-r-content {
+            color: var(--rs-text) !important;
+        }
+
+        .pc-reply-list {
+            background: var(--rs-chip) !important;
+        }
+
+        .pc-textarea {
+            background: var(--rs-bg) !important;
+            color: var(--rs-text) !important;
+            border-color: var(--rs-line) !important;
+        }
+
+        .pc-input-box {
+            border-top-color: var(--rs-line) !important;
+        }
+
+        /* ---------- 阅读设置：面板 ---------- */
+        .rs-layer {
+            border-radius: 14px 14px 0 0 !important;
+            overflow: hidden;
+        }
+
+        .rs-layer .layui-layer-title {
+            font-size: 15px;
+        }
+
+        .rs-panel {
+            padding: 4px 14px 12px;
+            max-height: 68vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .rs-row {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            min-height: 48px;
+            border-bottom: 1px solid var(--rs-line);
+        }
+
+        .rs-label {
+            -webkit-flex: 0 0 58px;
+            flex: 0 0 58px;
+            font-size: 13px;
+            color: var(--rs-sub);
+        }
+
+        .rs-ctrl {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .rs-stepper {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rs-step, .rs-seg button, .rs-reset {
+            background: var(--rs-chip);
+            color: var(--rs-nav-text);
+            border: 1px solid var(--rs-line);
+            border-radius: 8px;
+            font-size: 12px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rs-step {
+            width: 42px;
+            height: 30px;
+            font-size: 13px;
+        }
+
+        .rs-step:active, .rs-seg button:active, .rs-reset:active {
+            opacity: .7;
+        }
+
+        .rs-value {
+            min-width: 44px;
+            text-align: center;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rs-seg {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex: 1;
+            flex: 1;
+            gap: 6px;
+        }
+
+        .rs-seg button {
+            -webkit-flex: 1;
+            flex: 1;
+            height: 30px;
+        }
+
+        .rs-seg button.on {
+            background: var(--rs-accent);
+            border-color: var(--rs-accent);
+            color: #fff;
+        }
+
+        .rs-themes {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex: 1;
+            flex: 1;
+            gap: 12px;
+        }
+
+        .rs-theme-dot {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            box-shadow: 0 0 0 1px var(--rs-line);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rs-theme-dot.on {
+            border-color: var(--rs-accent);
+            box-shadow: none;
+        }
+
+        .rs-theme-dot.on::after {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 5px;
+            width: 6px;
+            height: 11px;
+            border: solid var(--rs-accent);
+            border-width: 0 2px 2px 0;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        .rs-switch {
+            position: relative;
+            width: 44px;
+            height: 26px;
+            border-radius: 13px;
+            background: var(--rs-chip);
+            border: 1px solid var(--rs-line);
+            cursor: pointer;
+            -webkit-transition: background .2s ease, border-color .2s ease;
+            transition: background .2s ease, border-color .2s ease;
+        }
+
+        .rs-switch.on {
+            background: var(--rs-accent);
+            border-color: var(--rs-accent);
+        }
+
+        .rs-switch .rs-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            -webkit-transition: -webkit-transform .2s ease;
+            transition: transform .2s ease;
+        }
+
+        .rs-switch.on .rs-knob {
+            -webkit-transform: translateX(18px);
+            transform: translateX(18px);
+        }
+
+        .rs-hint {
+            margin-left: 10px;
+            font-size: 11px;
+            color: var(--rs-sub);
+        }
+
+        .rs-foot {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            padding-top: 12px;
+        }
+
+        .rs-reset {
+            height: 30px;
+            padding: 0 14px;
+        }
+
+        .rs-tip {
+            font-size: 11px;
+            color: var(--rs-sub);
+        }
+
 
     </style>
+<!--/* 本模板 JS 为纯客户端脚本，用 th:inline="none" 关闭 Thymeleaf 文本内联表达式解析，
+       避免 JS 中的二维数组字面量被误判为表达式；此注释不会输出到响应 */-->
+<script th:inline="none">
+    /* 阅读设置：主题表与应用逻辑前置到 head，翻章时先应用再渲染，避免闪一下默认皮肤 */
+    var RS_STORE_KEY = 'novelReaderSettings';
+    var RS_THEMES = {
+        white: {
+            name: '纯白', bg: '#ffffff', panel: '#ffffff', chip: '#f4f7f5',
+            text: '#333333', title: '#1f2d26', sub: '#98a8a1', line: '#f0f5f2',
+            navBg: '#f2f6f4', navText: '#5c6b64',
+            header: 'linear-gradient(90deg, #3eaf7c, #2c8a61)',
+            badgeBg: '#f2f5f3', badgeText: '#b6c2bc',
+            onBg: 'rgba(62, 175, 124, .14)', onText: '#2e8b62'
+        },
+        green: {
+            name: '护眼', bg: '#e7f0e5', panel: '#f3f8f2', chip: '#dcebda',
+            text: '#33413a', title: '#23382c', sub: '#7f9387', line: '#d3e3d2',
+            navBg: '#dcead9', navText: '#4a5f52',
+            header: 'linear-gradient(90deg, #5aa981, #3f8a66)',
+            badgeBg: '#d7e7d6', badgeText: '#8ba392',
+            onBg: 'rgba(46, 139, 98, .18)', onText: '#2e7a55'
+        },
+        sepia: {
+            name: '羊皮纸', bg: '#f5ecd9', panel: '#faf3e4', chip: '#eee1c6',
+            text: '#4a3f30', title: '#3d3222', sub: '#a08f72', line: '#e8dcc2',
+            navBg: '#eee1c6', navText: '#6b5b41',
+            header: 'linear-gradient(90deg, #8a7a55, #6b5c3c)',
+            badgeBg: '#ecdfc3', badgeText: '#a89673',
+            onBg: 'rgba(139, 109, 26, .16)', onText: '#7a5f18'
+        },
+        gray: {
+            name: '淡灰', bg: '#eceff0', panel: '#f5f7f8', chip: '#e2e8ea',
+            text: '#333a3d', title: '#252c2f', sub: '#929da1', line: '#dde3e5',
+            navBg: '#e0e6e8', navText: '#4f5b5f',
+            header: 'linear-gradient(90deg, #5f7d86, #405c64)',
+            badgeBg: '#dfe6e8', badgeText: '#9aa7ab',
+            onBg: 'rgba(46, 139, 98, .16)', onText: '#2e8b62'
+        },
+        night: {
+            name: '夜间', bg: '#1b211f', panel: '#212825', chip: '#2c3531',
+            text: '#a9b5af', title: '#d3ddd7', sub: '#6f7f77', line: '#2c3531',
+            navBg: '#262e2b', navText: '#9faea7',
+            header: 'linear-gradient(90deg, #27332e, #1d2622)',
+            badgeBg: '#2a332f', badgeText: '#6f7f77',
+            onBg: 'rgba(62, 175, 124, .26)', onText: '#7fd3aa'
+        }
+    };
+    var RS_FONTS = {
+        system: {name: '系统', css: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif'},
+        serif: {name: '宋体', css: '"Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif'},
+        sans: {name: '黑体', css: '"Heiti SC", "PingFang SC", "Microsoft YaHei", sans-serif'},
+        kai: {name: '楷体', css: '"Kaiti SC", KaiTi, STKaiti, "Noto Serif CJK SC", serif'}
+    };
+    var RS_DEFAULTS = {fontSize: 18, lineHeight: 2, font: 'system', theme: 'white', showBadge: true};
+    var rsSettings;
+
+    function rsClamp(n, min, max) {
+        return Math.min(max, Math.max(min, n));
+    }
+
+    function rsRead() {
+        var raw = {};
+        try {
+            raw = JSON.parse(localStorage.getItem(RS_STORE_KEY) || '{}') || {};
+        } catch (e) {
+            raw = {};
+        }
+        var d = RS_DEFAULTS;
+        var fs = parseInt(raw.fontSize, 10);
+        var lh = Number(raw.lineHeight);
+        return {
+            fontSize: isNaN(fs) ? d.fontSize : rsClamp(fs, 14, 28),
+            lineHeight: [1.6, 2, 2.4].indexOf(lh) >= 0 ? lh : d.lineHeight,
+            font: RS_FONTS[raw.font] ? raw.font : d.font,
+            theme: RS_THEMES[raw.theme] ? raw.theme : d.theme,
+            showBadge: typeof raw.showBadge === 'boolean' ? raw.showBadge : d.showBadge
+        };
+    }
+
+    function rsSave() {
+        try {
+            localStorage.setItem(RS_STORE_KEY, JSON.stringify(rsSettings));
+        } catch (e) {
+        }
+    }
+
+    function rsApply() {
+        var s = rsSettings;
+        var t = RS_THEMES[s.theme] || RS_THEMES.white;
+        var st = document.documentElement.style;
+        st.setProperty('--rs-bg', t.bg);
+        st.setProperty('--rs-panel', t.panel);
+        st.setProperty('--rs-chip', t.chip);
+        st.setProperty('--rs-text', t.text);
+        st.setProperty('--rs-title', t.title);
+        st.setProperty('--rs-sub', t.sub);
+        st.setProperty('--rs-line', t.line);
+        st.setProperty('--rs-nav-bg', t.navBg);
+        st.setProperty('--rs-nav-text', t.navText);
+        st.setProperty('--rs-header', t.header);
+        st.setProperty('--rs-badge-bg', t.badgeBg);
+        st.setProperty('--rs-badge-text', t.badgeText);
+        st.setProperty('--rs-badge-on-bg', t.onBg);
+        st.setProperty('--rs-badge-on-text', t.onText);
+        st.setProperty('--rs-font-size', s.fontSize + 'px');
+        st.setProperty('--rs-line-height', String(s.lineHeight));
+        st.setProperty('--rs-font-family', (RS_FONTS[s.font] || RS_FONTS.system).css);
+        /* 段落底 8px + (行高 - 18px 气泡)/2，字号/行距变化后气泡仍贴末行居中 */
+        st.setProperty('--rs-badge-bottom', (8 + (s.fontSize * s.lineHeight - 18) / 2) + 'px');
+        document.documentElement.setAttribute('data-rs-theme', s.theme);
+        if (s.showBadge) {
+            document.documentElement.classList.remove('rs-badge-off');
+        } else {
+            document.documentElement.classList.add('rs-badge-off');
+        }
+    }
+
+    rsSettings = rsRead();
+    rsApply();
+</script>
 </head>
 <body id="read">
 <div id="content">
@@ -626,7 +1070,7 @@
 
 </script>
 
-<script language="javascript">
+<script language="javascript" th:inline="none">
     var books = localStorage.getItem("historyBooks");
     var item = parseInt($("#bookIdHidden").val());
     if (books) {
@@ -1197,6 +1641,246 @@
 
     // 页面加载：拆分段落并初始化评论入口（VIP未购买章节无正文，自动跳过）
     renderParagraphs();
+
+    /************************************ 阅读设置 ************************************/
+    // 主题表 / 存储 / 样式应用定义在 head 的前置脚本里（避免翻章闪烁），这里只负责面板与交互
+    var RS_GEAR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        + '<circle cx="12" cy="12" r="3"></circle>'
+        + '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33'
+        + ' 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06'
+        + 'a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09'
+        + 'A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9'
+        + 'a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06'
+        + 'a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09'
+        + 'a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+
+    // 生成一组分段选择按钮
+    function rsSegHtml(key, opts) {
+        var html = '<div class="rs-seg" data-key="' + key + '">';
+        for (var i = 0; i < opts.length; i++) {
+            html += '<button type="button" data-val="' + opts[i][0] + '">' + opts[i][1] + '</button>';
+        }
+        return html + '</div>';
+    }
+
+    function rsPanelHtml() {
+        var dots = '';
+        for (var k in RS_THEMES) {
+            if (RS_THEMES.hasOwnProperty(k)) {
+                dots += '<span class="rs-theme-dot" data-val="' + k + '" title="' + RS_THEMES[k].name
+                    + '" style="background:' + RS_THEMES[k].bg + '"></span>';
+            }
+        }
+        return '' +
+            '<div class="rs-panel" id="readerSettingPanel">' +
+            '  <div class="rs-row">' +
+            '    <span class="rs-label">字号</span>' +
+            '    <div class="rs-ctrl"><div class="rs-stepper">' +
+            '      <button type="button" class="rs-step" data-act="fontDown">A-</button>' +
+            '      <span class="rs-value" id="rsFontSizeVal"></span>' +
+            '      <button type="button" class="rs-step" data-act="fontUp">A+</button>' +
+            '    </div></div>' +
+            '  </div>' +
+            '  <div class="rs-row"><span class="rs-label">行距</span><div class="rs-ctrl">' +
+            /* 注意：数组首元素前留一个空格写成 "[ ["，避免 "[["
+               被 Thymeleaf 当成内联表达式起始符（th:inline="none" 之外的第二道保险） */
+            rsSegHtml('lineHeight', [ [1.6, '紧凑'], [2, '标准'], [2.4, '宽松'] ]) +
+            '  </div></div>' +
+            '  <div class="rs-row"><span class="rs-label">字体</span><div class="rs-ctrl">' +
+            rsSegHtml('font', [ ['system', '系统'], ['serif', '宋体'], ['sans', '黑体'], ['kai', '楷体'] ]) +
+            '  </div></div>' +
+            '  <div class="rs-row"><span class="rs-label">背景</span><div class="rs-ctrl">' +
+            '    <div class="rs-themes">' + dots + '</div>' +
+            '  </div></div>' +
+            '  <div class="rs-row"><span class="rs-label">段落气泡</span><div class="rs-ctrl">' +
+            '    <span class="rs-switch"><span class="rs-knob"></span></span>' +
+            '    <span class="rs-hint">显示每段评论入口</span>' +
+            '  </div></div>' +
+            '  <div class="rs-foot">' +
+            '    <button type="button" class="rs-reset">恢复默认</button>' +
+            '    <span class="rs-tip">本机保存 · 换章生效 · 点击屏幕可收起</span>' +
+            '  </div>' +
+            '</div>';
+    }
+
+    // 把当前设置回填到面板控件
+    function rsSyncUi() {
+        var $p = $('#readerSettingPanel');
+        if (!$p.length) {
+            return;
+        }
+        $p.find('#rsFontSizeVal').text(rsSettings.fontSize + 'px');
+        $p.find('.rs-seg').each(function () {
+            var key = $(this).data('key');
+            $(this).children('button').each(function () {
+                $(this).toggleClass('on', String($(this).data('val')) === String(rsSettings[key]));
+            });
+        });
+        $p.find('.rs-theme-dot').each(function () {
+            $(this).toggleClass('on', $(this).data('val') === rsSettings.theme);
+        });
+        $p.find('.rs-switch').toggleClass('on', rsSettings.showBadge);
+    }
+
+    function rsUpdate(patch) {
+        var badgeWasOff = !rsSettings.showBadge;
+        $.extend(rsSettings, patch);
+        rsSave();
+        rsApply();
+        rsSyncUi();
+        // 气泡从关闭切回开启时补拉一次评论数
+        if (badgeWasOff && rsSettings.showBadge) {
+            refreshCountChips();
+        }
+    }
+
+    // 面板状态：所有入口（点屏幕 / 点齿轮 / 点遮罩 / 点关闭按钮）都走这一处，避免重复弹层
+    var rsLayerIndex = null;
+    var rsPanelOpen = false;
+    var rsTouchStart = null;
+    var rsTouchMoved = false;
+
+    function closeReaderSettings() {
+        if (!rsPanelOpen) {
+            return;
+        }
+        rsPanelOpen = false;
+        if (rsLayerIndex !== null) {
+            var idx = rsLayerIndex;
+            rsLayerIndex = null;
+            if (window.layer && $.isFunction(layer.close)) {
+                layer.close(idx);
+            }
+        }
+    }
+
+    function openReaderSettings() {
+        if (rsPanelOpen) {
+            return;
+        }
+        rsPanelOpen = true;
+        rsLayerIndex = layer.open({
+            type: 1,
+            title: '阅读设置',
+            closeBtn: 1,
+            offset: 'b',
+            area: '100%',
+            shade: 0.45,
+            // 遮罩点击由下面的统一委托处理，关掉 layer 自带的 shadeClose 避免双重关闭
+            shadeClose: false,
+            anim: 2,
+            skin: 'rs-layer',
+            scrollbar: false,
+            content: rsPanelHtml(),
+            end: function () {
+                // 点右上角 × 或 layer.closeAll 时也要把状态复位
+                rsPanelOpen = false;
+                rsLayerIndex = null;
+            },
+            success: function () {
+                var $p = $('#readerSettingPanel');
+                rsSyncUi();
+                $p.on('click', '[data-act]', function () {
+                    var step = $(this).data('act') === 'fontUp' ? 2 : -2;
+                    rsUpdate({fontSize: rsClamp(rsSettings.fontSize + step, 14, 28)});
+                });
+                $p.on('click', '.rs-seg button', function () {
+                    var key = $(this).parent().data('key');
+                    var val = $(this).data('val');
+                    if (key === 'lineHeight') {
+                        val = Number(val);
+                    }
+                    var patch = {};
+                    patch[key] = val;
+                    rsUpdate(patch);
+                });
+                $p.on('click', '.rs-theme-dot', function () {
+                    rsUpdate({theme: String($(this).data('val'))});
+                });
+                $p.on('click', '.rs-switch', function () {
+                    rsUpdate({showBadge: !rsSettings.showBadge});
+                });
+                $p.on('click', '.rs-reset', function () {
+                    var badgeWasOff = !rsSettings.showBadge;
+                    rsSettings = $.extend({}, RS_DEFAULTS);
+                    rsSave();
+                    rsApply();
+                    rsSyncUi();
+                    if (badgeWasOff) {
+                        refreshCountChips();
+                    }
+                });
+            }
+        });
+    }
+
+    function toggleReaderSettings() {
+        if (rsPanelOpen) {
+            closeReaderSettings();
+        } else {
+            openReaderSettings();
+        }
+    }
+
+    // 触屏滚动防误触：按下后位移超过 8px 视为滚动，忽略随后派发的 click
+    $(document).on('touchstart.rsSettings', function (e) {
+        var t = e.originalEvent && e.originalEvent.touches && e.originalEvent.touches[0];
+        rsTouchStart = t ? {x: t.clientX, y: t.clientY} : null;
+        rsTouchMoved = false;
+    }).on('touchmove.rsSettings', function (e) {
+        var t = e.originalEvent && e.originalEvent.touches && e.originalEvent.touches[0];
+        if (rsTouchStart && t &&
+            (Math.abs(t.clientX - rsTouchStart.x) > 8 || Math.abs(t.clientY - rsTouchStart.y) > 8)) {
+            rsTouchMoved = true;
+        }
+    });
+
+    // 点击屏幕唤出 / 收起阅读设置：点一下出现，再点一下隐藏
+    $(document).on('click.rsSettings', function (e) {
+        if (rsTouchMoved) {
+            rsTouchMoved = false;
+            return;
+        }
+        var $t = $(e.target);
+
+        // 页头齿轮同样是切换（不再用内联 javascript: 调用，避免和这里重复触发）
+        if ($t.closest('.rs-gear-btn').length) {
+            e.preventDefault();
+            toggleReaderSettings();
+            return;
+        }
+
+        // 任何 layer 弹层内部（设置面板、段落评论面板、alert）都不参与切换
+        if ($t.closest('.layui-layer').length) {
+            return;
+        }
+
+        // 已打开：点遮罩或页面任意空白处一律收起
+        if (rsPanelOpen) {
+            closeReaderSettings();
+            return;
+        }
+
+        // 未打开：只在阅读内容区、且点了非交互元素时唤出
+        if (!$t.closest('#content').length) {
+            return;
+        }
+        if ($t.closest('a, button, input, textarea, select, .para-comment-btn, .page-header, .read-nav, .vip-panel').length) {
+            return;
+        }
+        // 用户正在选中文字（复制/划线）时不打扰
+        var sel = window.getSelection && window.getSelection();
+        if (sel && String(sel).length > 0) {
+            return;
+        }
+        openReaderSettings();
+    });
+
+    // 页头保留一个可见入口（首页按钮左侧），提升可发现性；点击同样走上面的统一委托
+    $('.page-header').children('.ph-btn').last().before(
+        '<a class="ph-btn rs-gear-btn" href="javascript:;" aria-label="阅读设置" title="阅读设置">'
+        + RS_GEAR_ICON + '</a>'
+    );
 
 </script>
 
