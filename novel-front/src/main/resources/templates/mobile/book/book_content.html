@@ -235,9 +235,28 @@
             padding: 30px 0;
         }
 
+        /* 评论用户头像 */
+        .pc-avatar {
+            float: left;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #f2f2f2;
+        }
+
         .pc-item {
             padding: 10px 2px;
             border-bottom: 1px solid #f0f0f0;
+            overflow: hidden;
+        }
+
+        .pc-item .pc-avatar {
+            width: 32px;
+            height: 32px;
+        }
+
+        /* 头像右侧的评论主体 */
+        .pc-item .pc-main {
+            margin-left: 42px;
         }
 
         .pc-item .pc-user {
@@ -293,10 +312,20 @@
             padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
             font-size: 14px;
+            overflow: hidden;
         }
 
         .pc-reply-item:last-child {
             border-bottom: none;
+        }
+
+        .pc-reply-item .pc-avatar {
+            width: 24px;
+            height: 24px;
+        }
+
+        .pc-reply-item .pc-main {
+            margin-left: 34px;
         }
 
         .pc-reply-item .pc-r-user {
@@ -926,17 +955,33 @@
         });
     }
 
+    // 默认头像：接口未返回头像或图片加载失败时使用
+    var PC_DEFAULT_AVATAR = '/images/man.png';
+
+    // 构建评论用户头像，src只作为资源地址，不参与HTML拼接
+    function buildPcAvatar(photo) {
+        return $('<img class="pc-avatar"/>')
+            .attr('src', photo || PC_DEFAULT_AVATAR)
+            .on('error', function () {
+                if (this.getAttribute('src') !== PC_DEFAULT_AVATAR) {
+                    this.src = PC_DEFAULT_AVATAR;
+                }
+            });
+    }
+
     // 构建单条顶层评论（含回复子列表），全部用jQuery .text()填充避免HTML注入
     function buildPcItem(item) {
         var $item = $('<div class="pc-item"></div>');
+        $item.append(buildPcAvatar(item.createUserPhoto));
+        var $main = $('<div class="pc-main"></div>');
         var $user = $('<div class="pc-user"></div>');
         $user.append($('<span class="pc-name"></span>').text(item.createUserName));
         if (item.location) {
             $user.append($('<span class="pc-loc"></span>').text(item.location + '读者'));
         }
         $user.append($('<span class="pc-time" style="float:right"></span>').text(item.createTime));
-        $item.append($user);
-        $item.append($('<div class="pc-content"></div>').text(item.commentContent));
+        $main.append($user);
+        $main.append($('<div class="pc-content"></div>').text(item.commentContent));
 
         var replies = item.replies || [];
         if (replies.length > 0) {
@@ -944,30 +989,34 @@
             for (var j = 0; j < replies.length; j++) {
                 $rep.append(buildPcReplyItem(item.id, replies[j]));
             }
-            $item.append($rep);
+            $main.append($rep);
         }
         var $op = $('<div class="pc-op-bar"></div>');
         if (replies.length > 0) {
             $op.append($('<span class="pc-reply-num"></span>').text(replies.length + '条回复'));
         }
         $op.append($('<span class="pc-reply-btn">回复</span>').data('root', item.id).data('name', item.createUserName).data('uid', item.createUserId));
-        $item.append($op);
+        $main.append($op);
+        $item.append($main);
         return $item;
     }
 
     // 构建单条回复（回复目标始终是所属顶层评论）
     function buildPcReplyItem(rootId, r) {
         var $ri = $('<div class="pc-reply-item"></div>');
+        $ri.append(buildPcAvatar(r.createUserPhoto));
+        var $rmain = $('<div class="pc-main"></div>');
         var $ru = $('<div class="pc-r-user"></div>');
         $ru.append($('<span class="pc-name"></span>').text(r.createUserName));
         if (r.replyUserName) {
             $ru.append($('<span class="pc-to"></span>').text('回复 ' + r.replyUserName));
         }
         $ru.append($('<span style="float:right"></span>').text(r.createTime));
-        $ri.append($ru);
-        $ri.append($('<div class="pc-r-content"></div>').text(r.commentContent));
-        $ri.append($('<div class="pc-op-bar"></div>')
+        $rmain.append($ru);
+        $rmain.append($('<div class="pc-r-content"></div>').text(r.commentContent));
+        $rmain.append($('<div class="pc-op-bar"></div>')
             .append($('<span class="pc-reply-btn">回复</span>').data('root', rootId).data('name', r.createUserName).data('uid', r.createUserId)));
+        $ri.append($rmain);
         return $ri;
     }
 
