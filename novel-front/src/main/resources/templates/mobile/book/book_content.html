@@ -158,60 +158,158 @@
             cursor: pointer;
         }
 
-        /* 禁止左右滑动：气泡等元素允许挂在正文外，但页面整体横向裁剪 */
+        /* 兜底：任何元素都不允许撑出横向滚动条 */
         html, body {
             overflow-x: hidden;
         }
 
         /* ---------- 段落评论 ---------- */
-        /* 正文段落左右留白由段落列表自己控制，右侧留给气泡 */
+        /* 右侧只留 22px 窄批注栏（左 18px），正文右边缘与章节标题基本齐平 */
         #paragraphList {
-            padding: 0 18px;
+            padding: 0 22px 0 18px;
         }
 
         .para-item {
             position: relative;
-            padding: 2px 0 6px;
+            padding: 2px 0 8px;
         }
 
         .para-text {
             text-indent: 2em;
         }
 
-        /* 段落入口：纯气泡+数字，绝对定位在段落底部最右侧（挂进右侧留白区） */
+        /* 段落评论气泡：胶囊 + 指向所属段落的左下尖角，三态（静默 / 讨论 / 热评） */
         .para-comment-btn {
             position: absolute;
-            right: -24px;
-            bottom: 6px;
+            right: -18px;
+            /* 段落底 8px 内边距 + (36px 行高 - 18px 气泡)/2，与末行文字垂直居中 */
+            bottom: 17px;
+            display: -webkit-inline-flex;
             display: inline-flex;
+            -webkit-align-items: center;
             align-items: center;
-            font-size: 13px;
-            line-height: 22px;
-            color: #c9c9c9;
-            background: transparent;
-            border: none;
-            padding: 0 4px;
-            cursor: pointer;
-        }
-
-        .para-comment-btn .layui-icon {
-            font-size: 26px;
-        }
-
-        /* 评论数嵌在气泡图标内部居中 */
-        .para-comment-btn .para-comment-num {
-            position: absolute;
-            top: 46%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-style: normal;
-            font-weight: bold;
-            font-size: 11px;
+            -webkit-justify-content: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* 固定尺寸：气泡右边界距屏幕 4px、左边界正好贴正文右缘，零侵入 */
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border-radius: 9px;
+            /* 阻断 .para-text 的 text-indent:2em（计算值 36px）继承，否则数字会把胶囊撑成 50px+ 长条 */
+            text-indent: 0;
+            background: #f2f5f3;
+            color: #b6c2bc;
+            font-size: 10px;
+            font-weight: 600;
             line-height: 1;
+            /* 等宽数字，切换评论数时宽度不跳动 */
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-transition: background .18s ease, color .18s ease, box-shadow .18s ease, -webkit-transform .18s ease, transform .18s ease;
+            transition: background .18s ease, color .18s ease, box-shadow .18s ease, -webkit-transform .18s ease, transform .18s ease;
         }
 
+        /* 视觉只有 18×18px，但把可点区域扩到约 36×40px，符合指尖触控尺寸 */
+        .para-comment-btn::before {
+            content: '';
+            position: absolute;
+            top: -11px;
+            right: -10px;
+            bottom: -11px;
+            left: -8px;
+        }
+
+        /* 左下小尖角，把气泡和它所属的段落关联起来 */
+        .para-comment-btn::after {
+            content: '';
+            position: absolute;
+            left: -2px;
+            bottom: 2px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 3px 4px 3px 0;
+            border-color: transparent #f2f5f3 transparent transparent;
+            -webkit-transition: border-color .18s ease;
+            transition: border-color .18s ease;
+        }
+
+        /* 静默态：极淡的对话气泡轮廓，只提示「这里可以评论」，不抢正文注意力 */
+        .para-comment-btn .pc-bubble-icon {
+            display: block;
+            width: 10px;
+            height: 10px;
+            fill: currentColor;
+        }
+
+        .para-comment-btn .para-comment-num {
+            display: none;
+            font-style: normal;
+            text-indent: 0;
+        }
+
+        /* 100 条以上显示 99+，字号与字距再收一点，避免把 18px 胶囊顶满 */
+        .para-comment-btn.lots {
+            font-size: 9px;
+            letter-spacing: -.3px;
+        }
+
+        /* 讨论态：轮廓换成数字，浅绿底强调 */
         .para-comment-btn.has {
-            color: #3eaf7c;
+            background: rgba(62, 175, 124, .14);
+            color: #2e8b62;
+        }
+
+        .para-comment-btn.has::after {
+            border-right-color: rgba(62, 175, 124, .14);
+        }
+
+        .para-comment-btn.has .pc-bubble-icon {
+            display: none;
+        }
+
+        .para-comment-btn.has .para-comment-num {
+            display: inline;
+        }
+
+        /* 热评态（≥10 条）：实色渐变 + 白字 + 柔光 */
+        .para-comment-btn.hot {
+            background: linear-gradient(135deg, #4bbd88, #2e8b62);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(46, 139, 98, .28);
+        }
+
+        .para-comment-btn.hot::after {
+            border-right-color: #3aa578;
+        }
+
+        /* 正在查看评论的段落：外圈高亮环 */
+        .para-comment-btn.active {
+            box-shadow: 0 0 0 2px rgba(62, 175, 124, .35);
+        }
+
+        .para-comment-btn.hot.active {
+            box-shadow: 0 2px 8px rgba(46, 139, 98, .28), 0 0 0 2px rgba(62, 175, 124, .45);
+        }
+
+        .para-comment-btn:active {
+            -webkit-transform: scale(.86);
+            transform: scale(.86);
+        }
+
+        /* 评论数变化时的轻微弹跳 */
+        @keyframes pcBump {
+            0% { -webkit-transform: scale(.7); transform: scale(.7); }
+            60% { -webkit-transform: scale(1.18); transform: scale(1.18); }
+            100% { -webkit-transform: scale(1); transform: scale(1); }
+        }
+
+        .para-comment-btn.bump {
+            -webkit-animation: pcBump .32s ease;
+            animation: pcBump .32s ease;
         }
 
         .pc-panel {
@@ -686,7 +784,10 @@
         var $paras = $('#paragraphList .para-text');
         if ($paras.length > 0) {
             return $paras.map(function () {
-                return $(this).text();
+                // 正文是纯文本节点，评论气泡是子元素；只取文本节点，避免把评论数读出来
+                return $(this).contents().filter(function () {
+                    return this.nodeType === 3;
+                }).text();
             }).get().join('\n');
         }
         return $('#chaptercontent').text();
@@ -796,9 +897,9 @@
             var $item = $('<div class="para-item"></div>');
             // 用.text()插入，避免正文内容作为HTML二次解析
             var $p = $('<p class="para-text"></p>').text(paras[i]).appendTo($item);
-            var $btn = $('<span class="para-comment-btn" data-idx="' + i + '"></span>');
-            // 纯气泡图标，数字角标由 refreshCountChips 填充；float:right 贴在段落最后一行右侧
-            $btn.append('<i class="layui-icon">&#xe606;</i>');
+            var $btn = $('<span class="para-comment-btn" data-idx="' + i + '" role="button" aria-label="本段暂无评论，点击发表"></span>');
+            // 静默态显示气泡轮廓，评论数与热评/高亮态由 refreshCountChips 填充
+            $btn.append('<svg class="pc-bubble-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>');
             $btn.append('<em class="para-comment-num"></em>');
             $p.append($btn);
             $list.append($item);
@@ -806,15 +907,36 @@
         refreshCountChips();
     }
 
-    // 刷新每段气泡角标：有评论高亮并显示总数（含回复），无评论置灰无数字
+    // 首次加载只初始化，之后评论数发生变化才给气泡弹跳反馈
+    var pcCountsLoaded = false;
+
+    // 刷新每段气泡角标：静默态只留轮廓，1~9 条浅绿数字，≥10 条热评实色
     function refreshCountChips() {
         ParagraphApi.loadCounts().then(function (counts) {
             paraCountMap = counts || {};
             $('.para-comment-btn').each(function () {
-                var num = paraCountMap[String($(this).data('idx'))] || 0;
-                $(this).toggleClass('has', num > 0);
-                $(this).find('.para-comment-num').text(num > 0 ? num : '');
+                var $btn = $(this);
+                var num = paraCountMap[String($btn.data('idx'))] || 0;
+                var label = num > 99 ? '99+' : String(num);
+                var prev = $btn.data('num');
+                $btn.toggleClass('has', num > 0)
+                    .toggleClass('hot', num >= 10)
+                    .toggleClass('lots', num > 99)
+                    .attr('aria-label', num > 0
+                        ? ('本段 ' + label + ' 条评论，点击查看')
+                        : '本段暂无评论，点击发表');
+                $btn.find('.para-comment-num').text(num > 0 ? label : '');
+                if (pcCountsLoaded && prev !== undefined && prev !== num) {
+                    $btn.removeClass('bump');
+                    void $btn[0].offsetWidth; // 强制重排，保证连续两次变化都能重播动画
+                    $btn.addClass('bump');
+                    setTimeout(function () {
+                        $btn.removeClass('bump');
+                    }, 340);
+                }
+                $btn.data('num', num);
             });
+            pcCountsLoaded = true;
         });
     }
 
@@ -869,7 +991,8 @@
                 kbFixCleanup = fixPanelKeyboard(layero);
             },
             end: function () {
-                // 面板销毁：解除页面锁定并移除键盘监听
+                // 面板销毁：解除页面锁定、移除键盘监听、取消气泡高亮
+                $('.para-comment-btn.active').removeClass('active');
                 unlockBodyScroll();
                 if (kbFixCleanup) {
                     kbFixCleanup();
@@ -1065,8 +1188,10 @@
         });
     }
 
-    // 评论入口事件委派
+    // 评论入口事件委派：打开面板期间高亮当前段落气泡
     $('#paragraphList').on('click', '.para-comment-btn', function () {
+        $('.para-comment-btn.active').removeClass('active');
+        $(this).addClass('active');
         openCommentPanel(parseInt($(this).data('idx')));
     });
 
