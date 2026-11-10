@@ -11,10 +11,12 @@ import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
+import com.java2nb.novel.utils.Constants;
 import io.github.xxyopen.model.resp.RestResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,25 +77,38 @@ public class CrawlController {
      * @param url 页面地址
      * @param isRefresh 是否强制刷新
      * @param parseType 解析方式：REGEX(默认)/CSS/XPATH/JSONPATH
+     * @param charset 网站编码，留空按爬虫默认编码 UTF-8，需与爬虫源配置保持一致
      * @return
      */
     @PostMapping("testParse")
-    public RestResult<Object> testParse(String rule,String url,String isRefresh,String parseType){
+    public RestResult<Object> testParse(String rule,String url,String isRefresh,String parseType,String charset){
 
         Map<String,Object> resultMap=new HashMap<>();
+        //规范化编码名称（utf-8 -> UTF-8），同时校验合法性，避免非法编码名导致抓页时抛异常
+        String pageCharset = charset == null || charset.trim().isEmpty()
+                ? Constants.CRAWL_DEFAULT_CHARSET : charset.trim();
+        try {
+            pageCharset = Charset.forName(pageCharset).name();
+        } catch (IllegalArgumentException e) {
+            resultMap.put("msg", "网站编码无效：" + pageCharset);
+            return RestResult.ok(resultMap);
+        }
+
         String html =null;
+        //同一 URL 用不同编码解码得到的正文不同，缓存必须按编码区分，否则切换编码仍会命中旧的乱码内容
+        String cacheKey = CacheKey.BOOK_TEST_PARSE + pageCharset + ":" + url;
         if(url.startsWith("https://")||url.startsWith("http://")){
             String refreshCache="1";
             if(!refreshCache.equals(isRefresh)) {
-                html = cacheService.get(CacheKey.BOOK_TEST_PARSE + url);
+                html = cacheService.get(cacheKey);
                 if (html == null) {
                     isRefresh="1";
                 }
             }
             if(refreshCache.equals(isRefresh)){
-                html = HttpUtil.getByHttpClientWithChrome(url);
+                html = HttpUtil.getByHttpClientWithChrome(url, pageCharset);
                 if (html != null) {
-                    cacheService.set(CacheKey.BOOK_TEST_PARSE + url, html, 60 * 10);
+                    cacheService.set(cacheKey, html, 60 * 10);
                 }else{
                     resultMap.put("msg","html is null");
                     return RestResult.ok(resultMap);
@@ -112,6 +127,7 @@ public class CrawlController {
             return RestResult.ok(resultMap);
         }
         boolean isFind = !results.isEmpty();
+        resultMap.put("网站编码", pageCharset);
         resultMap.put("解析方式", parseType == null || parseType.isEmpty() ? "REGEX" : parseType.toUpperCase());
         resultMap.put("是否匹配",isFind);
         if(isFind){

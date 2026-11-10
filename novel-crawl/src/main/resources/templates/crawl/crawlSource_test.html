@@ -46,12 +46,23 @@
                                 <p class="frm_tip">与爬虫源配置中的解析方式保持一致</p>
                             </div>
                             <div class="frm_row">
+                                <label for="charset">网站编码</label>
+                                <select id="charset" class="frm_input">
+                                    <option value="utf-8">UTF-8（默认）</option>
+                                    <option value="gbk">GBK</option>
+                                    <option value="gb2312">GB2312</option>
+                                    <option value="gb18030">GB18030</option>
+                                    <option value="big5">Big5</option>
+                                </select>
+                                <p class="frm_tip">默认 <code>utf-8</code>；GBK / GB2312 站点需与爬虫源配置保持一致，不同编码分别缓存</p>
+                            </div>
+                            <div class="frm_row">
                                 <label for="isRefresh">是否强制刷新</label>
                                 <select id="isRefresh" class="frm_input">
                                     <option value="">使用缓存（默认）</option>
                                     <option value="1">强制刷新</option>
                                 </select>
-                                <p class="frm_tip">填 <code>1</code> 强制重新抓取页面，留空或 <code>0</code> 使用缓存</p>
+                                <p class="frm_tip">填 <code>1</code> 强制重新抓取页面，留空或 <code>0</code> 使用当前编码的 10 分钟缓存</p>
                             </div>
                             <div class="frm_row wide">
                                 <label for="rule">提取规则 <span class="frm_req">*</span></label>
@@ -98,6 +109,12 @@
         if (testParseType) {
             $("#parseType").val(testParseType);
         }
+        var testParseCharset = localStorage.getItem("testParseCharset") || "utf-8";
+        //兼容旧版可手填任意编码：候选项里没有时临时补一项，保证历史值不丢
+        if ($("#charset option").filter(function () { return this.value == testParseCharset; }).length == 0) {
+            $("<option></option>").val(testParseCharset).text(testParseCharset).appendTo("#charset");
+        }
+        $("#charset").val(testParseCharset);
     }
 
     function testCrawlSource() {
@@ -108,6 +125,7 @@
         var isRefresh = $("#isRefresh").val();
         data.isRefresh = isRefresh;
         data.parseType = $("#parseType").val();
+        data.charset = $.trim($("#charset").val());
         var rule = $("#rule").val();
         if (rule.length == 0) {
             layer.alert("规则必填");
@@ -124,6 +142,7 @@
         localStorage.setItem("testParseUrl", url);
         localStorage.setItem("testParseRule", rule);
         localStorage.setItem("testParseType", data.parseType);
+        localStorage.setItem("testParseCharset", data.charset);
         $.ajax({
             type: "POST",
             url: "/crawl/testParse",
