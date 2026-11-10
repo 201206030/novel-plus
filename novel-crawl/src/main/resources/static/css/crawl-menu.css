@@ -1,0 +1,56 @@
+@charset "utf-8";
+/* 爬虫管理系统公共左侧菜单皮肤（配合 crawl/menu.html 片段使用）
+   所有页面统一引用本文件；选择器带 .crawl_menu 前缀以覆盖 user.css 的旧 .my_l li a 规则 */
+
+.crawl_menu.my_l {
+    float: left; width: 168px; margin: 15px 0 0 30px; padding: 12px 0 14px;
+    box-sizing: border-box; background: #fff; border: 1px solid #e6f0ea; border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(62, 175, 124, .10);
+}
+.crawl_menu_title {
+    padding: 2px 16px 10px; font-size: 11px; font-weight: 600; letter-spacing: 1px; color: #a8b5ad;
+}
+.crawl_menu .log_list { width: auto; margin: 0; padding: 0; }
+.crawl_menu .log_list li { margin: 0 8px 6px; }
+
+/* 链接：左侧绿色竖条 + 图标 + 箭头，与 header 的绿色主题一致 */
+.crawl_menu .log_list li a.crawl_menu_link {
+    display: flex; align-items: center; gap: 9px; height: 40px; line-height: 40px;
+    padding: 0 12px; margin-bottom: 0; font-size: 13px; color: #5c6b64;
+    border-left: 3px solid transparent; border-radius: 0 8px 8px 0;
+    background: transparent; transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.crawl_menu .log_list li a.crawl_menu_link svg {
+    flex-shrink: 0; width: 15px; height: 15px; color: #a8c9b8; transition: color .2s ease;
+}
+.crawl_menu .log_list li a.crawl_menu_link .crawl_menu_arrow {
+    margin-left: auto; font-size: 16px; line-height: 1; color: #c6d8ce;
+}
+.crawl_menu .log_list li a.crawl_menu_link:hover {
+    color: #2c8a61; text-decoration: none; background: #f2faf6;
+    border-left-color: #8fd6b8; transform: translateX(2px);
+}
+.crawl_menu .log_list li a.crawl_menu_link:hover svg { color: #3eaf7c; }
+
+/* 当前栏目：浅绿渐变 + 加粗 + 内描边 */
+.crawl_menu .log_list li a.crawl_menu_link.on {
+    color: #2c8a61; font-weight: 600;
+    background: linear-gradient(90deg, #e9f7f0, #f6fbf8);
+    border-left-color: #3eaf7c; box-shadow: inset 0 0 0 1px rgba(62, 175, 124, .10);
+}
+.crawl_menu .log_list li a.crawl_menu_link.on:hover { transform: none; }
+.crawl_menu .log_list li a.crawl_menu_link.on svg { color: #3eaf7c; }
+.crawl_menu .log_list li a.crawl_menu_link.on .crawl_menu_arrow { color: #7cc4a0; }
+
+.crawl_menu_foot {
+    margin: 10px 16px 0; padding-top: 10px; border-top: 1px dashed #eaf2ec;
+    font-size: 11px; line-height: 1.7; color: #a8b5ad;
+}
+
+/* 窄屏：菜单退化为横向排列，避免与右侧内容挤压 */
+@media (max-width: 760px) {
+    .crawl_menu.my_l { float: none; width: auto; margin: 0 0 12px; }
+    .crawl_menu .log_list { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 8px; }
+    .crawl_menu .log_list li { margin: 0; }
+    .crawl_menu_foot { display: none; }
+}

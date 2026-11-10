@@ -965,3 +965,18 @@ i.vip_b {
 .userBox {
     margin: 0 auto
 }
+
+/* ---------------- 公共头部（与 novel-admin 的 admin.css 保持同一视觉方案） ---------------- */
+/* 吸顶固定：长表单/长列表下滑时仍可随时访问导航与退出 */
+.adm_header { position: sticky; top: 0; z-index: 990; height: 48px; background: linear-gradient(90deg, #2c8a61, #3eaf7c); box-shadow: 0 2px 8px rgba(44, 138, 97, .25); margin-bottom: 16px; }
+/* 全宽布局：两侧留出适中边距，避免贴屏太近 */
+.adm_header_in { height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
+.adm_header_logo { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 16px; font-weight: bold; }
+.adm_header_logo:hover { color: #fff; opacity: .9; }
+.adm_header_right { display: inline-flex; align-items: center; gap: 14px; }
+.adm_header_user { display: inline-flex; align-items: center; gap: 6px; color: rgba(255, 255, 255, .85); font-size: 13px; }
+.adm_header_btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 6px; color: #fff; font-size: 13px; transition: background .15s, border-color .15s; }
+.adm_header_btn:hover { color: #fff; background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .8); }
+.adm_header_logout { border-color: transparent; background: rgba(0, 0, 0, .12); }
+.adm_header_logout:hover { background: rgba(0, 0, 0, .22); border-color: transparent; }
+@media (max-width: 1100px) { .adm_header_in { padding: 0 20px; } .adm_header_right { gap: 8px; } }
