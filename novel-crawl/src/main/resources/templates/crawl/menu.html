@@ -1,0 +1,57 @@
+<!-- 爬虫管理系统公共左侧菜单
+     用法：<div th:replace="crawl/menu :: menu('source')"></div>
+     active 取值：home / source / single / test，空字符串表示都不高亮 -->
+<div th:fragment="menu(active)" class="my_l crawl_menu">
+    <div class="crawl_menu_title">功能导航</div>
+    <ul class="log_list">
+        <li>
+            <a class="crawl_menu_link" th:classappend="${active == 'home'} ? 'on' : ''" href="/">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M7 15l4-5 3 3 5-7"></path>
+                </svg>
+                <span>采集概览</span>
+                <span class="crawl_menu_arrow">&rsaquo;</span>
+            </a>
+        </li>
+        <li>
+            <a class="crawl_menu_link" th:classappend="${active == 'source'} ? 'on' : ''"
+               href="/crawl/crawlSource_list.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>爬虫源管理</span>
+                <span class="crawl_menu_arrow">&rsaquo;</span>
+            </a>
+        </li>
+        <li>
+            <a class="crawl_menu_link" th:classappend="${active == 'single'} ? 'on' : ''"
+               href="/crawl/crawlSingleTask_list.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span>单本采集管理</span>
+                <span class="crawl_menu_arrow">&rsaquo;</span>
+            </a>
+        </li>
+        <li>
+            <a class="crawl_menu_link" th:classappend="${active == 'test'} ? 'on' : ''"
+               href="/crawl/crawlSource_test.html" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 17l6-6-6-6"></path>
+                    <path d="M12 19h8"></path>
+                </svg>
+                <span>规则测试</span>
+                <span class="crawl_menu_arrow">&rsaquo;</span>
+            </a>
+        </li>
+    </ul>
+    <div class="crawl_menu_foot">规则测试在新窗口打开<br/>采集配置修改后请及时保存</div>
+</div>

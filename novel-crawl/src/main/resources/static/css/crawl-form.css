@@ -1,0 +1,126 @@
+@charset "utf-8";
+/* 爬虫管理系统表单页皮肤：与后台管理 admin.css 同一套绿色主题
+   适用范围：crawlSource_add / crawlSource_update / crawlSingleTask_add / crawlSource_test */
+
+/* ---------------- 页面容器：表单页用灰底 + 白色卡片，列表页保持原样 ---------------- */
+/* 左侧菜单已抽取为 crawl/menu.html + crawl-menu.css，此处不再覆盖菜单样式 */
+.crawl_form_page .userBox { background: transparent; }
+
+/* ---------------- 页头 ---------------- */
+.my_r .crawl_form { font-size: 13px; color: #42514a; }
+.frm_head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 20px; margin-bottom: 14px; background: #fff;
+    border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .08);
+}
+.frm_head h3 { font-size: 17px; font-weight: 600; line-height: 1.5; color: #2c8a61; }
+.frm_head p { margin-top: 3px; font-size: 12px; line-height: 1.6; color: #9aa8a0; }
+.frm_back {
+    flex-shrink: 0; padding: 6px 14px; font-size: 12px; color: #3eaf7c;
+    border: 1px solid #cfe8db; border-radius: 15px; background: #f6fbf8; transition: all .2s ease;
+}
+.frm_back:hover { color: #fff; background: #3eaf7c; border-color: #3eaf7c; }
+
+/* ---------------- 分区卡片 ---------------- */
+.frm_section {
+    padding: 16px 20px 20px; margin-bottom: 14px; background: #fff;
+    border: 1px solid #e6f0ea; border-radius: 10px; box-shadow: 0 2px 12px rgba(62, 175, 124, .06);
+}
+.frm_section > h4 {
+    display: flex; align-items: center; gap: 8px; padding-bottom: 12px; margin-bottom: 16px;
+    font-size: 14px; font-weight: 600; color: #42514a; border-bottom: 1px solid #eef4f0;
+}
+.frm_step {
+    display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+    font-size: 11px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #47bd88, #35a06f);
+    border-radius: 50%; box-shadow: 0 2px 6px rgba(62, 175, 124, .30);
+}
+.frm_badge {
+    padding: 2px 8px; font-size: 11px; font-weight: normal; color: #e05c3e;
+    background: #fdf3f0; border: 1px solid #f6d5cd; border-radius: 10px;
+}
+.frm_section > .frm_tip { margin: -6px 0 14px; }
+
+/* ---------------- 字段布局 ---------------- */
+.frm_grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+.frm_row { min-width: 0; }
+.frm_row.wide { grid-column: 1 / -1; }
+.frm_row > label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 600; color: #42514a; }
+.frm_req { margin-left: 2px; color: #f0523c; font-weight: normal; }
+.frm_input, .frm_area {
+    width: 100%; box-sizing: border-box; color: #333; background: #fff;
+    border: 1px solid #dfe8e3; border-radius: 6px; font-size: 13px;
+    transition: border-color .2s, box-shadow .2s;
+}
+.frm_input { height: 36px; line-height: 36px; padding: 0 11px; }
+select.frm_input { height: 36px; padding: 0 8px; cursor: pointer; }
+.frm_area { min-height: 64px; padding: 8px 11px; line-height: 1.6; resize: vertical; }
+.frm_rule { font-family: Menlo, Consolas, "SFMono-Regular", "Courier New", monospace; font-size: 12.5px; }
+.frm_result { min-height: 320px; background: #fafcfb; }
+.frm_input:focus, .frm_area:focus {
+    outline: none; border-color: #3eaf7c; box-shadow: 0 0 0 3px rgba(62, 175, 124, .12);
+}
+.frm_input::-moz-focus-inner { border: 0; }
+.frm_tip { margin-top: 6px; font-size: 12px; line-height: 1.6; color: #9aa8a0; word-break: break-all; }
+.frm_tip code {
+    padding: 1px 5px; font-family: Menlo, Consolas, "Courier New", monospace; font-size: 12px;
+    color: #2c8a61; background: #f2faf6; border: 1px solid #e0f0e7; border-radius: 4px;
+}
+.frm_loading { display: block; padding: 18px 0; font-size: 12px; color: #9aa8a0; text-align: center; }
+.frm_error { display: block; padding: 18px 0; font-size: 12px; color: #e05c3e; text-align: center; }
+
+/* ---------------- 男频/女频分类映射 ---------------- */
+.cat_tabs { display: flex; align-items: center; gap: 4px; margin-bottom: 14px; border-bottom: 1px solid #eef4f0; }
+button.cat_tab {
+    position: relative; padding: 8px 18px 10px; font-family: inherit; font-size: 13px; color: #5c6b64;
+    background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer;
+    transition: color .2s, border-color .2s;
+}
+button.cat_tab:hover { color: #3eaf7c; }
+button.cat_tab.on { color: #2c8a61; font-weight: 600; border-bottom-color: #3eaf7c; }
+button.cat_tab em {
+    display: inline-block; min-width: 18px; margin-left: 4px; padding: 0 5px; font-style: normal;
+    font-size: 11px; line-height: 17px; color: #8a988f; background: #f0f4f1; border-radius: 9px;
+}
+button.cat_tab.on em { color: #fff; background: #3eaf7c; }
+.cat_summary { margin-left: auto; padding-right: 4px; font-size: 12px; color: #9aa8a0; }
+.cat_summary strong { color: #2c8a61; font-size: 13px; }
+.cat_panel { display: none; }
+.cat_panel.on { display: block; }
+.cat_grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+.cat_item {
+    padding: 10px 12px 12px; background: #f8fbf9; border: 1px solid #e9f2ec;
+    border-radius: 8px; transition: border-color .2s, background .2s;
+}
+.cat_item.has_value { background: #f0faf4; border-color: #9fd8bd; }
+.cat_item label { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; font-size: 13px; font-weight: 600; color: #42514a; }
+.cat_item label span { font-size: 11px; font-weight: normal; color: #a8b5ad; }
+.cat_item textarea { min-height: 52px; }
+.cat_empty { padding: 24px 0; font-size: 12px; color: #9aa8a0; text-align: center; }
+
+/* ---------------- 底部操作条 ---------------- */
+.frm_actions {
+    position: sticky; bottom: 0; z-index: 20; display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+    padding: 13px 20px; background: rgba(255, 255, 255, .97); border: 1px solid #e6f0ea;
+    border-radius: 10px; box-shadow: 0 -4px 16px rgba(44, 138, 97, .10);
+}
+.frm_actions .frm_note { margin-right: auto; font-size: 12px; color: #9aa8a0; }
+.frm_btn, .frm_btn_ghost {
+    display: inline-block; height: 34px; line-height: 34px; padding: 0 26px; box-sizing: border-box;
+    font-family: inherit; font-size: 13px; text-align: center; cursor: pointer;
+    border-radius: 17px; transition: all .2s ease;
+}
+.frm_btn {
+    color: #fff; border: none; background: linear-gradient(135deg, #47bd88, #35a06f);
+    box-shadow: 0 2px 8px rgba(62, 175, 124, .35);
+}
+.frm_btn:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 5px 14px rgba(62, 175, 124, .45); }
+.frm_btn_ghost { color: #5c6b64; background: #fff; border: 1px solid #dfe8e3; }
+.frm_btn_ghost:hover { color: #3eaf7c; border-color: #9fd8bd; background: #f6fbf8; }
+
+/* 窄屏降级：分类与字段改为单列（页面主体沿用 1020px 定宽） */
+@media (max-width: 760px) {
+    .frm_grid, .cat_grid { grid-template-columns: 1fr; }
+    .frm_head { flex-direction: column; align-items: flex-start; }
+    .frm_actions { flex-wrap: wrap; }
+}
