@@ -2,6 +2,8 @@ package com.java2nb.novel.controller;
 
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.java2nb.novel.core.ai.AiRateLimitProperties;
+import com.java2nb.novel.core.ai.AiTextSanitizer;
+import com.java2nb.novel.core.ai.AuthorWritingPrompts;
 import com.java2nb.novel.core.ai.ChapterTextCheckUtil;
 import com.java2nb.novel.core.config.AiApiAuthInterceptor;
 import io.github.xxyopen.model.page.PageBean;
@@ -60,6 +62,8 @@ public class AuthorController extends BaseController {
     private final OpenAiChatModel chatModel;
 
     private final AiRateLimitProperties aiRateLimitProperties;
+
+    private final AuthorWritingPrompts authorWritingPrompts;
 
     /**
      * 校验笔名是否存在（资料页改笔名时可传 excludeAuthorId 排除自身）
@@ -425,11 +429,8 @@ public class AuthorController extends BaseController {
     public RestResult<String> expandText(@RequestParam("text") String text, @RequestParam("ratio") Double ratio) {
         checkAiText(text);
         checkExpandRatio(ratio);
-        String prompt = "请将以下文本扩写为原长度的" + ratio / 100 + "倍：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.EXPAND, text,
+            Map.of("ratio", String.valueOf(ratio / 100))));
     }
 
     /**
@@ -439,11 +440,8 @@ public class AuthorController extends BaseController {
     public RestResult<String> condenseText(@RequestParam("text") String text, @RequestParam("ratio") Integer ratio) {
         checkAiText(text);
         checkCondenseRatio(ratio);
-        String prompt = "请将以下文本缩写为原长度的" + 100 / ratio + "分之一：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.CONDENSE, text,
+            Map.of("ratio", String.valueOf(100 / ratio))));
     }
 
     /**
@@ -453,11 +451,8 @@ public class AuthorController extends BaseController {
     public RestResult<String> continueText(@RequestParam("text") String text, @RequestParam("length") Integer length) {
         checkAiText(text);
         checkContinueLength(length);
-        String prompt = "请续写以下文本，续写长度约为" + length + "字：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.CONTINUE, text,
+            Map.of("length", String.valueOf(length))));
     }
 
     /**
@@ -466,11 +461,7 @@ public class AuthorController extends BaseController {
     @PostMapping("ai/polish")
     public RestResult<String> polishText(@RequestParam("text") String text) {
         checkAiText(text);
-        String prompt = "请润色优化以下文本，保持原意：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.POLISH, text, Map.of()));
     }
 
     /**
@@ -480,11 +471,8 @@ public class AuthorController extends BaseController {
     public Flux<String> streamExpandText(@RequestParam("text") String text, @RequestParam("ratio") Double ratio) {
         checkAiText(text);
         checkExpandRatio(ratio);
-        String prompt = "请将以下文本扩写为原长度的" + ratio / 100 + "倍：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+        return streamAi(AuthorWritingPrompts.Op.EXPAND, text,
+            Map.of("ratio", String.valueOf(ratio / 100)));
     }
 
     /**
@@ -494,11 +482,8 @@ public class AuthorController extends BaseController {
     public Flux<String> streamCondenseText(@RequestParam("text") String text, @RequestParam("ratio") Integer ratio) {
         checkAiText(text);
         checkCondenseRatio(ratio);
-        String prompt = "请将以下文本缩写为原长度的" + 100 / ratio + "分之一：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+        return streamAi(AuthorWritingPrompts.Op.CONDENSE, text,
+            Map.of("ratio", String.valueOf(100 / ratio)));
     }
 
     /**
@@ -508,11 +493,8 @@ public class AuthorController extends BaseController {
     public Flux<String> streamContinueText(@RequestParam("text") String text, @RequestParam("length") Integer length) {
         checkAiText(text);
         checkContinueLength(length);
-        String prompt = "请续写以下文本，续写长度约为" + length + "字：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+        return streamAi(AuthorWritingPrompts.Op.CONTINUE, text,
+            Map.of("length", String.valueOf(length)));
     }
 
     /**
@@ -521,11 +503,33 @@ public class AuthorController extends BaseController {
     @GetMapping(value = "/ai/stream/polish", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamPolishText(@RequestParam("text") String text) {
         checkAiText(text);
-        String prompt = "请润色优化以下文本，保持原意：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
+        return streamAi(AuthorWritingPrompts.Op.POLISH, text, Map.of());
+    }
+
+    /**
+     * 统一构建提示词并调用模型：system 约束只输出纯正文，user 用一次性随机边界标签包裹素材。
+     * 非流式拿到完整结果后做一次清洗兜底。
+     */
+    private String callAi(AuthorWritingPrompts.Op op, String text, Map<String, String> vars) {
+        AuthorWritingPrompts.WritingPrompt prompt = authorWritingPrompts.build(op, text, vars);
+        String raw = chatClient.prompt()
+            .system(prompt.system())
+            .user(prompt.user())
+            .call()
             .content();
+        return AiTextSanitizer.clean(raw);
+    }
+
+    /**
+     * 流式版本：提示词与非流式完全一致，输出经过增量清洗，命中说明块立即截断。
+     */
+    private Flux<String> streamAi(AuthorWritingPrompts.Op op, String text, Map<String, String> vars) {
+        AuthorWritingPrompts.WritingPrompt prompt = authorWritingPrompts.build(op, text, vars);
+        return AiTextSanitizer.cleanStream(chatClient.prompt()
+            .system(prompt.system())
+            .user(prompt.user())
+            .stream()
+            .content());
     }
 
     /**
