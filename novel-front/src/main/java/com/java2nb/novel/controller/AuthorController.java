@@ -1,7 +1,11 @@
 package com.java2nb.novel.controller;
 
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
+import com.java2nb.novel.core.ai.AiRateLimitProperties;
+import com.java2nb.novel.core.ai.AiTextSanitizer;
+import com.java2nb.novel.core.ai.AuthorWritingPrompts;
 import com.java2nb.novel.core.ai.ChapterTextCheckUtil;
+import com.java2nb.novel.core.config.AiApiAuthInterceptor;
 import io.github.xxyopen.model.page.PageBean;
 
 import com.java2nb.novel.core.bean.UserDetails;
@@ -56,6 +60,10 @@ public class AuthorController extends BaseController {
     private final ChatClient chatClient;
 
     private final OpenAiChatModel chatModel;
+
+    private final AiRateLimitProperties aiRateLimitProperties;
+
+    private final AuthorWritingPrompts authorWritingPrompts;
 
     /**
      * 校验笔名是否存在（资料页改笔名时可传 excludeAuthorId 排除自身）
@@ -400,10 +408,18 @@ public class AuthorController extends BaseController {
 
     /**
      * 查询AI生成图片
+     *
+     * <p>仅允许查询当前登录作者名下作品，避免传入任意 bookId 越权读取他人的生成结果。
+     * 登录态与作家身份由 {@link AiApiAuthInterceptor} 统一校验。</p>
      */
     @GetMapping("queryAiGenPic")
-    public RestResult<String> queryAiGenPic(@RequestParam("bookId") Long bookId) {
-        return RestResult.ok(bookService.queryAiGenPic(bookId));
+    public RestResult<String> queryAiGenPic(@RequestParam("bookId") Long bookId,
+        HttpServletRequest request) {
+        Long authorId = (Long) request.getAttribute(AiApiAuthInterceptor.ATTR_AUTHOR_ID);
+        if (authorId == null) {
+            throw new BusinessException(ResponseStatus.NO_LOGIN);
+        }
+        return RestResult.ok(bookService.queryAiGenPic(bookId, authorId));
     }
 
     /**
@@ -411,11 +427,10 @@ public class AuthorController extends BaseController {
      */
     @PostMapping("ai/expand")
     public RestResult<String> expandText(@RequestParam("text") String text, @RequestParam("ratio") Double ratio) {
-        String prompt = "请将以下文本扩写为原长度的" + ratio / 100 + "倍：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        checkAiText(text);
+        checkExpandRatio(ratio);
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.EXPAND, text,
+            Map.of("ratio", String.valueOf(ratio / 100))));
     }
 
     /**
@@ -423,11 +438,10 @@ public class AuthorController extends BaseController {
      */
     @PostMapping("ai/condense")
     public RestResult<String> condenseText(@RequestParam("text") String text, @RequestParam("ratio") Integer ratio) {
-        String prompt = "请将以下文本缩写为原长度的" + 100 / ratio + "分之一：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        checkAiText(text);
+        checkCondenseRatio(ratio);
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.CONDENSE, text,
+            Map.of("ratio", String.valueOf(100 / ratio))));
     }
 
     /**
@@ -435,11 +449,10 @@ public class AuthorController extends BaseController {
      */
     @PostMapping("ai/continue")
     public RestResult<String> continueText(@RequestParam("text") String text, @RequestParam("length") Integer length) {
-        String prompt = "请续写以下文本，续写长度约为" + length + "字：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
-            .call()
-            .content());
+        checkAiText(text);
+        checkContinueLength(length);
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.CONTINUE, text,
+            Map.of("length", String.valueOf(length))));
     }
 
     /**
@@ -447,59 +460,107 @@ public class AuthorController extends BaseController {
      */
     @PostMapping("ai/polish")
     public RestResult<String> polishText(@RequestParam("text") String text) {
-        String prompt = "请润色优化以下文本，保持原意：" + text;
-        return RestResult.ok(chatClient.prompt()
-            .user(prompt)
+        checkAiText(text);
+        return RestResult.ok(callAi(AuthorWritingPrompts.Op.POLISH, text, Map.of()));
+    }
+
+    /**
+     * AI扩写（流式）
+     */
+    @GetMapping(value = "ai/stream/expand", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamExpandText(@RequestParam("text") String text, @RequestParam("ratio") Double ratio) {
+        checkAiText(text);
+        checkExpandRatio(ratio);
+        return streamAi(AuthorWritingPrompts.Op.EXPAND, text,
+            Map.of("ratio", String.valueOf(ratio / 100)));
+    }
+
+    /**
+     * AI缩写（流式）
+     */
+    @GetMapping(value = "ai/stream/condense", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamCondenseText(@RequestParam("text") String text, @RequestParam("ratio") Integer ratio) {
+        checkAiText(text);
+        checkCondenseRatio(ratio);
+        return streamAi(AuthorWritingPrompts.Op.CONDENSE, text,
+            Map.of("ratio", String.valueOf(100 / ratio)));
+    }
+
+    /**
+     * AI续写（流式）
+     */
+    @GetMapping(value = "ai/stream/continue", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamContinueText(@RequestParam("text") String text, @RequestParam("length") Integer length) {
+        checkAiText(text);
+        checkContinueLength(length);
+        return streamAi(AuthorWritingPrompts.Op.CONTINUE, text,
+            Map.of("length", String.valueOf(length)));
+    }
+
+    /**
+     * AI润色（流式）
+     */
+    @GetMapping(value = "/ai/stream/polish", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamPolishText(@RequestParam("text") String text) {
+        checkAiText(text);
+        return streamAi(AuthorWritingPrompts.Op.POLISH, text, Map.of());
+    }
+
+    /**
+     * 统一构建提示词并调用模型：system 约束只输出纯正文，user 用一次性随机边界标签包裹素材。
+     * 非流式拿到完整结果后做一次清洗兜底。
+     */
+    private String callAi(AuthorWritingPrompts.Op op, String text, Map<String, String> vars) {
+        AuthorWritingPrompts.WritingPrompt prompt = authorWritingPrompts.build(op, text, vars);
+        String raw = chatClient.prompt()
+            .system(prompt.system())
+            .user(prompt.user())
             .call()
+            .content();
+        return AiTextSanitizer.clean(raw);
+    }
+
+    /**
+     * 流式版本：提示词与非流式完全一致，输出经过增量清洗，命中说明块立即截断。
+     */
+    private Flux<String> streamAi(AuthorWritingPrompts.Op op, String text, Map<String, String> vars) {
+        AuthorWritingPrompts.WritingPrompt prompt = authorWritingPrompts.build(op, text, vars);
+        return AiTextSanitizer.cleanStream(chatClient.prompt()
+            .system(prompt.system())
+            .user(prompt.user())
+            .stream()
             .content());
     }
 
     /**
-     * AI扩写
+     * AI 接口参数校验。拦截器里已有一份同样的硬校验（保证 SSE 接口返回明确错误，
+     * 而不是 Content-Type 协商失败），这里再兜一层，防止拦截器漏配时参数失控。
      */
-    @GetMapping(value = "ai/stream/expand", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamExpandText(@RequestParam("text") String text, @RequestParam("ratio") Double ratio) {
-        String prompt = "请将以下文本扩写为原长度的" + ratio / 100 + "倍：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+    private void checkAiText(String text) {
+        if (StringUtils.isBlank(text) || text.length() > aiRateLimitProperties.getMaxTextLength()) {
+            throw new BusinessException(ResponseStatus.AI_PARAMS_INVALID);
+        }
     }
 
-    /**
-     * AI缩写
-     */
-    @GetMapping(value = "ai/stream/condense", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamCondenseText(@RequestParam("text") String text, @RequestParam("ratio") Integer ratio) {
-        String prompt = "请将以下文本缩写为原长度的" + 100 / ratio + "分之一：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+    private void checkExpandRatio(Double ratio) {
+        // 同时挡住 NaN / Infinity / 0 / 负数 / 超大倍数
+        if (ratio == null || !Double.isFinite(ratio) || ratio <= 0
+            || ratio > aiRateLimitProperties.getMaxExpandRatio()) {
+            throw new BusinessException(ResponseStatus.AI_PARAMS_INVALID);
+        }
     }
 
-    /**
-     * AI续写
-     */
-    @GetMapping(value = "ai/stream/continue", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamContinueText(@RequestParam("text") String text, @RequestParam("length") Integer length) {
-        String prompt = "请续写以下文本，续写长度约为" + length + "字：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+    private void checkCondenseRatio(Integer ratio) {
+        // ratio 为 0 时 100 / ratio 会抛 ArithmeticException，这里先挡住
+        if (ratio == null || ratio <= 0 || ratio > aiRateLimitProperties.getMaxCondenseRatio()) {
+            throw new BusinessException(ResponseStatus.AI_PARAMS_INVALID);
+        }
     }
 
-    /**
-     * AI润色
-     */
-    @GetMapping(value = "/ai/stream/polish", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamPolishText(@RequestParam("text") String text) {
-        String prompt = "请润色优化以下文本，保持原意：" + text;
-        return chatClient.prompt()
-            .user(prompt)
-            .stream()
-            .content();
+    private void checkContinueLength(Integer length) {
+        if (length == null || length <= 0 || length > aiRateLimitProperties.getMaxContinueLength()) {
+            throw new BusinessException(ResponseStatus.AI_PARAMS_INVALID);
+        }
     }
 
 }

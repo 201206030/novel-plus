@@ -43,6 +43,48 @@ book:
     #价值(屋币)
     value: 5
 
+# AI 创作接口防护（鉴权 + 额度限流 + 参数上限），详见 AiApiRateLimitProperties
+novel:
+  ai:
+    rate-limit:
+      # 限流总开关，关闭后仍保留登录/作家身份与参数校验
+      enabled: true
+      # 单用户每分钟点数
+      per-minute: 20
+      # 单用户每天点数
+      per-day: 300
+      # 全站每分钟点数（防止多账号同时刷额度）
+      global-per-minute: 200
+      # 单次输入文本最大字符数
+      max-text-length: 5000
+      # 扩写倍数上限（百分比）
+      max-expand-ratio: 400
+      # 缩写比例上限（100/ratio 分之一）
+      max-condense-ratio: 100
+      # 续写目标字数上限
+      max-continue-length: 3000
+      # 每多少字符折算 1 点
+      cost-per-chars: 500
+      # 单次请求最多折算点数
+      max-cost-per-request: 20
+      # 不消耗额度的 AI 助手接口（含 2.5 秒一次的任务轮询）单用户每分钟上限
+      light-per-minute: 120
+      # 提交一次异步生成任务消耗点数
+      task-cost: 10
+      # 保存章节（会间接触发 AI 摘要任务）消耗点数
+      summary-cost: 2
+      # AI 助手长文本参数（正文/方案/偏好等）最大字符数
+      max-content-length: 200000
+
+  # 图片上传限流（单用户 + 全站），详见 UploadRateLimitProperties
+  upload:
+    rate-limit:
+      enabled: true
+      # 单用户每分钟最大上传次数
+      per-minute: 10
+      # 全站每分钟最大上传次数（防多账号并发刷）
+      global-per-minute: 200
+
 
 --- #--------------------- Spring AI 配置----------------------
 spring:
