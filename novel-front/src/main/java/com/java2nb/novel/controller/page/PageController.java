@@ -1,6 +1,7 @@
 package com.java2nb.novel.controller.page;
 
 import com.java2nb.novel.controller.BaseController;
+import com.java2nb.novel.core.ai.AiRateLimitProperties;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
@@ -47,6 +48,8 @@ public class PageController extends BaseController {
     private final Map<String, BookContentService> bookContentServiceMap;
 
     private final CacheService cacheService;
+
+    private final AiRateLimitProperties aiRateLimitProperties;
 
     @RequestMapping("{url}.html")
     public String module(@PathVariable("url") String url) {
@@ -462,6 +465,18 @@ public class PageController extends BaseController {
             model.addAttribute("author", author);
         }
         return "author/register";
+    }
+
+    /**
+     * 章节发布页面
+     */
+    @RequestMapping("author/content_add.html")
+    public String contentAdd(Model model) {
+        model.addAttribute("aiMaxTextLength", aiRateLimitProperties.getMaxTextLength());
+        model.addAttribute("aiMaxExpandRatio", aiRateLimitProperties.getMaxExpandRatio());
+        model.addAttribute("aiMaxCondenseRatio", aiRateLimitProperties.getMaxCondenseRatio());
+        model.addAttribute("aiMaxContinueLength", aiRateLimitProperties.getMaxContinueLength());
+        return "author/content_add";
     }
 
     private String getRootUrl(HttpServletRequest request) {
