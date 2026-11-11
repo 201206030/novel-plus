@@ -558,13 +558,32 @@
     });
 
     function sendRequest(type, params, loading, textarea) {
-        const url = `/author/ai/${type}?text=${encodeURIComponent(params.text)}&ratio=${params.ratio}&length=${params.length}`;
+        // polish 接口没有 ratio / length 参数，拼接时排除掉
+        const parts = [`text=${encodeURIComponent(params.text)}`];
+        if (params.ratio != null) parts.push(`ratio=${params.ratio}`);
+        if (params.length != null) parts.push(`length=${params.length}`);
+        const url = `/author/ai/${type}?${parts.join('&')}`;
         const eventSource = new EventSource(url);
+        var received = false;
 
         // 监听消息事件
         eventSource.onmessage = function (event) {
-            layer.close(loading);
             const data = event.data;
+
+            // 拦截器（AiApiAuthInterceptor）在鉴权/限流/参数校验失败时返回 HTTP 200 + JSON 业务码，
+            // EventSource 会把它当成正常消息触发 onmessage。这里检测 JSON 错误体并提示用户。
+            if (!received) {
+                var parsed = tryParseAiError(data);
+                if (parsed) {
+                    eventSource.close();
+                    layer.close(loading);
+                    handleAiError(parsed);
+                    return;
+                }
+            }
+
+            received = true;
+            layer.close(loading);
             console.log('Received data:', data);
 
             textarea.val(textarea.val() + data);
@@ -577,8 +596,49 @@
             layer.close(loading);
             console.error('EventSource failed:', error);
             eventSource.close(); // 关闭连接
+            if (!received) {
+                // 没收到任何有效数据就断开，说明请求未成功（网络异常 / 服务端错误 / 登录态过期）
+                layer.alert('AI 请求失败，请确认已登录后重试；若请求过于频繁，请稍后再试', {icon: 2});
+            }
         };
 
+    }
+
+    // 尝试解析拦截器返回的 JSON 错误体（格式：{"code":1001,"msg":"..."}）
+    // 非错误响应（纯文本 AI 输出）返回 null
+    function tryParseAiError(data) {
+        if (typeof data !== 'string') return null;
+        var trimmed = data.trim();
+        if (!trimmed.startsWith('{') || !trimmed.endsWith('}')) return null;
+        try {
+            var obj = JSON.parse(trimmed);
+            if (obj && typeof obj.code === 'number' && obj.code !== 200) {
+                return obj;
+            }
+        } catch (e) {
+            // 不是合法 JSON，说明是正常的 AI 文本输出
+        }
+        return null;
+    }
+
+    // 根据业务码给出用户友好的提示
+    function handleAiError(resp) {
+        var code = resp.code;
+        var msg = resp.msg || '请求失败';
+        if (code === 1001) {
+            // 未登录：跳转登录页，保留当前页 URL 以便登录后回来
+            location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+        } else if (code === 7011) {
+            layer.alert('AI 请求过于频繁，请稍后再试', {icon: 2});
+        } else if (code === 7012) {
+            layer.alert('仅签约作家可使用 AI 辅助写作功能', {icon: 2});
+        } else if (code === 7005) {
+            layer.alert('输入参数不合法：' + msg, {icon: 2});
+        } else if (code === 4002) {
+            layer.alert('您的作家账号已被封禁，无法使用 AI 功能', {icon: 2});
+        } else {
+            layer.alert(msg, {icon: 2});
+        }
     }
 
 </script>
