@@ -6,8 +6,10 @@ import io.github.xxyopen.web.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,10 +31,12 @@ public class CommonExceptionHandler {
         return RestResult.fail(SysResultCode.PARAM_ERROR);
     }
 
-    @ExceptionHandler({BusinessException.class})
-    public RestResult<Void> handlerBusinessException(BusinessException e) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<RestResult<Void>> handlerBusinessException(BusinessException e) {
         log.error(e.getMessage(), e);
-        return RestResult.fail(e.getResultCode());
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(RestResult.fail(e.getResultCode()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -46,6 +50,8 @@ public class CommonExceptionHandler {
             return new ModelAndView("404");
         }
     }
+
+
 
     private boolean isJsonRequest(HttpServletRequest request) {
         String acceptHeader = request.getHeader("Accept");
