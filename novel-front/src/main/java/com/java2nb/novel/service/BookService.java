@@ -344,9 +344,12 @@ public interface BookService {
     void updateBookPic(Long bookId, String bookPic, Long authorId);
 
     /**
-     * 查询AI生成图片
+     * 查询AI生成图片（校验作品归属，只能查询当前作者名下作品）
+     *
+     * @param bookId   作品ID
+     * @param authorId 当前登录作者ID
      */
-    String queryAiGenPic(Long bookId);
+    String queryAiGenPic(Long bookId, Long authorId);
 
     /**
      * 新增回复

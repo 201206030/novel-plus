@@ -76,6 +76,9 @@ public enum ResponseStatus implements IResultCode {
     AI_CHAPTER_PLAN_NOT_EXISTS(7008, "该章节不在章节规划中，请先检查创作方案！"),
     AI_DRAFT_NOT_EXISTS(7009, "暂无章节草稿，请先生成正文！"),
     AI_GEN_TIMEOUT(7010, "AI生成超时，请重试或适当调低单章目标字数！"),
+    AI_RATE_LIMIT(7011, "AI 请求过于频繁，请稍后再试！"),
+    AI_AUTHOR_ONLY(7012, "仅认证作家可使用 AI 创作功能！"),
+    AI_BOOK_NOT_OWNED(7013, "无权访问该作品！"),
 
     /**
      * 搜索引擎相关错误

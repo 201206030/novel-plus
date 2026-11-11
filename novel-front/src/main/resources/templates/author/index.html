@@ -270,7 +270,7 @@
             dashAiSource = null;
             $("#dashAiBtn").removeClass('loading').text('AI解读');
             if (!received) {
-                $("#dashAiText").text('解读生成失败，请确认已登录后重试；若仍未登录，刷新页面重新登录即可');
+                $("#dashAiText").text('解读生成失败：请确认已登录；若请求过于频繁，请稍后再试');
             }
         };
     }
