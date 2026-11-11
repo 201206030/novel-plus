@@ -3,10 +3,14 @@ package com.java2nb.novel.controller;
 
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.upload.UploadApiRateLimiter;
 import com.java2nb.novel.core.utils.Constants;
 import com.java2nb.novel.core.utils.FileUtil;
 import com.java2nb.novel.core.utils.IpUtil;
+import com.java2nb.novel.core.utils.JwtTokenUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
+import com.java2nb.novel.core.bean.UserDetails;
+import com.java2nb.novel.core.utils.CookieUtil;
 import io.github.xxyopen.model.resp.RestResult;
 import io.github.xxyopen.util.UUIDUtil;
 import io.github.xxyopen.web.exception.BusinessException;
@@ -32,9 +36,11 @@ import java.util.Date;
 @RequestMapping("file")
 @Slf4j
 @RequiredArgsConstructor
-public class FileController {
+public class FileController extends BaseController{
 
     private final CacheService cacheService;
+    private final UploadApiRateLimiter uploadRateLimiter;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Value("${pic.save.path}")
     private String picSavePath;
@@ -76,7 +82,17 @@ public class FileController {
     @SneakyThrows
     @ResponseBody
     @PostMapping(value = "/picUpload", produces = MediaType.APPLICATION_JSON_VALUE)
-    RestResult<String> upload(@RequestParam("file") MultipartFile file) {
+    RestResult<String> upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        // 登录态校验
+        UserDetails user = getUserDetails(request);
+        if(user == null) {
+            throw new BusinessException(ResponseStatus.NO_LOGIN);
+        }
+        // 单用户 + 全站限流
+        if (!uploadRateLimiter.tryAcquire(user.getId())) {
+            throw new BusinessException(ResponseStatus.UPLOAD_RATE_LIMIT);
+        }
+
         Date currentDate = new Date();
         String savePath =
             Constants.LOCAL_PIC_PREFIX + DateUtils.formatDate(currentDate, "yyyy") + "/" +

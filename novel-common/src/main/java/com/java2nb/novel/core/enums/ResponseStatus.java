@@ -91,6 +91,7 @@ public enum ResponseStatus implements IResultCode {
     FILE_DIR_MAKE_FAIL(10001,"目录创建失败"),
     FILE_NOT_IMAGE(10002,"请上传图片类型的文件"),
     FILE_SIZE_LIMIT(10003,"文件大小超出限制"),
+    UPLOAD_RATE_LIMIT(10004,"上传过于频繁，请稍后再试"),
 
     /**
      * 其他通用错误
