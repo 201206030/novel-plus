@@ -1156,7 +1156,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String queryAiGenPic(Long bookId) {
+    public String queryAiGenPic(Long bookId, Long authorId) {
+        // 生成结果按 bookId 存在缓存中，接口可被任意 bookId 调用，必须先校验作品归属
+        long owned = bookMapper.count(c -> c.where(id, isEqualTo(bookId))
+            .and(BookDynamicSqlSupport.authorId, isEqualTo(authorId)));
+        if (owned == 0) {
+            throw new BusinessException(ResponseStatus.AI_BOOK_NOT_OWNED);
+        }
         return cacheService.get(CacheKey.AI_GEN_PIC + bookId);
     }
 

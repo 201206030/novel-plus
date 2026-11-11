@@ -39,24 +39,41 @@ public final class PromptTemplateUtil {
      * 加载模板内容（带缓存）
      */
     public static String load(String key) {
-        return TEMPLATE_CACHE.computeIfAbsent(key, k -> {
-            try (InputStream is = new ClassPathResource(TEMPLATE_DIR + k + ".txt").getInputStream()) {
+        return load(TEMPLATE_DIR, key);
+    }
+
+    /**
+     * 加载指定目录下的模板内容（带缓存，缓存键包含目录避免重名冲突）
+     *
+     * @param dir 相对 classpath 的目录，需以 / 结尾，如 {@code prompts/author-writing/}
+     */
+    public static String load(String dir, String key) {
+        String cacheKey = dir + key;
+        return TEMPLATE_CACHE.computeIfAbsent(cacheKey, k -> {
+            try (InputStream is = new ClassPathResource(dir + key + ".txt").getInputStream()) {
                 return new String(is.readAllBytes(), StandardCharsets.UTF_8);
             } catch (Exception e) {
-                log.error("加载AI提示词模板失败: {}", k, e);
-                throw new IllegalStateException("提示词模板缺失: " + k);
+                log.error("加载AI提示词模板失败: {}{}", dir, key, e);
+                throw new IllegalStateException("提示词模板缺失: " + dir + key);
             }
         });
     }
 
     /**
-     * 渲染模板，将 {key} 占位符替换为变量值，缺省变量填充为“未提供”
+     * 渲染默认目录下的模板，将 {key} 占位符替换为变量值，缺省变量填充为“未提供”
      */
     public static String render(String key, Map<String, String> vars) {
-        String template = load(key);
+        return render(TEMPLATE_DIR, key, vars);
+    }
+
+    /**
+     * 渲染指定目录下的模板。单次扫描原模板，已替换内容不再参与匹配，
+     * 因此变量值里含有 {xxx} 或 $ 等字符也不会被二次解析或破坏。
+     */
+    public static String render(String dir, String key, Map<String, String> vars) {
+        String template = load(dir, key);
         Matcher matcher = PLACEHOLDER_PATTERN.matcher(template);
         StringBuilder sb = new StringBuilder();
-        // 单次扫描原模板：未提供的变量填充为缺省值，已替换内容不再参与匹配，防止变量值含占位符时死循环
         while (matcher.find()) {
             String value = vars.get(matcher.group(1));
             if (value == null || value.isBlank()) {

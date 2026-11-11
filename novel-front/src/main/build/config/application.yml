@@ -53,6 +53,32 @@ http:
     # 代理密码
     password: SX_P
 
+# AI 创作接口防护（鉴权 + 额度限流 + 参数上限），详见 AiApiRateLimitProperties
+novel:
+  ai:
+    rate-limit:
+      enabled: true
+      per-minute: 20
+      per-day: 300
+      global-per-minute: 200
+      max-text-length: 5000
+      max-expand-ratio: 400
+      max-condense-ratio: 100
+      max-continue-length: 3000
+      cost-per-chars: 500
+      max-cost-per-request: 20
+      light-per-minute: 120
+      task-cost: 10
+      summary-cost: 2
+      max-content-length: 200000
+
+  # 图片上传限流（单用户 + 全站），详见 UploadRateLimitProperties
+  upload:
+    rate-limit:
+      enabled: true
+      per-minute: 10
+      global-per-minute: 200
+
 
 --- #--------------------- Spring AI 配置----------------------
 spring:
