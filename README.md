@@ -83,15 +83,18 @@ bin/novel-front.sh start
 
 ## AI 功能
 
-novel-plus 5.x 已集成 Spring 官方最新发布的 Spring AI 框架，并推出多项 AI 功能：
+novel-plus 5.x 开始集成 Spring 官方推出的 Spring AI 框架，并在后续版本中持续完善 AI 能力，逐步覆盖小说编辑、封面生成、长篇创作和创作分析等多个场景。
 
-1. v5.0.0 版本在小说章节发布页面的文本编辑器中集成了多项智能编辑功能，包括 AI 扩写、缩写、续写及文本润色等。这些功能的设计灵感来源于百家号文章编辑器中的 AI 助手。
-2. v5.1.0 版本在小说发布页面，新增 AI 生成封面图功能。若作家未上传自定义封面图，系统将根据小说信息自动生成封面图。
-3. 最新版本在作家后台新增「AI 长篇创作助手」，覆盖从创意问答、设定大纲到逐章正文创作的完整长篇小说创作工作流，详见下文小节。
+- **v5.0.0：AI 编辑**。
+在小说章节发布页面的文本编辑器中集成多项 AI 编辑功能，支持 AI 扩写、缩写、续写和文本润色等操作，辅助作家优化章节内容。
+- **v5.1.0：AI 封面图**。
+在小说发布页面新增 AI 封面图生成功能。当作家未上传自定义封面时，系统可根据小说相关信息自动生成封面图。
+- **v6.0.0：AI 长篇创作助手**。
+在作家后台新增 AI 长篇创作助手，覆盖从创意问答、角色设定、大纲规划到逐章正文生成的完整创作工作流，帮助作家完成长篇小说创作，详见下文小节。
+- **v6.3.0：AI 智能解读**。
+在作家后台新增 AI 智能解读功能，结合创作及经营数据生成分析报告，为作家提供创作分析和经营建议。
 
-目前，AI 功能仍处于实验阶段。我们非常重视用户的实际使用体验和反馈，未来将根据用户需求和使用情况，持续优化和调整该功能。如果用户反馈积极，我们计划进一步开发更高级的 AI 功能，以全面提升 novel-plus 的创作能力和用户体验。
-
-我们将持续关注 AI 技术的发展，并致力于将其与小说创作场景深度融合，为用户带来更智能、更便捷的创作工具。
+> 我们将持续关注 AI 技术的发展，并致力于将其与小说创作场景深度融合，为用户带来更智能、更便捷的创作工具。
 
 ### AI 长篇创作助手
 
@@ -129,17 +132,6 @@ spring:
 ```
 
 ⚠️ novel-plus 项目默认使用的都是免费 AI 模型，生成效果有限。如果对生成质量和生成速度有更高的要求，建议选用付费的 AI 模型。
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=201206030%2Fnovel-plus&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=201206030/novel-plus&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=201206030/novel-plus&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=201206030/novel-plus&type=date&legend=top-left" />
- </picture>
-</a>
-
 
 ## 免责声明
 
