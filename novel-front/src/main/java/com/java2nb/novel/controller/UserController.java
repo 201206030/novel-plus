@@ -250,7 +250,7 @@ public class UserController extends BaseController {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
         if (!(StringUtils.isNotBlank(newPassword1) && newPassword1.equals(newPassword2))) {
-            RestResult.fail(ResponseStatus.TWO_PASSWORD_DIFF);
+            return RestResult.fail(ResponseStatus.TWO_PASSWORD_DIFF);
         }
         userService.updatePassword(userDetails.getId(), oldPassword, newPassword1);
         return RestResult.ok();
