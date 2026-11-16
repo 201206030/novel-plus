@@ -8,7 +8,6 @@ import com.java2nb.novel.entity.UserFeedback;
 import com.java2nb.novel.vo.BookReadHistoryVO;
 import com.java2nb.novel.vo.BookShelfVO;
 import com.java2nb.novel.entity.User;
-import com.java2nb.novel.vo.UserFeedbackVO;
 
 import java.util.Date;
 import java.util.List;
@@ -176,4 +175,11 @@ public interface UserService {
      * @return 订阅人数
      */
     int queryBuyTotalMember(List<Long> bookIds, Date startTime, Date endTime);
+
+    /**
+     * 校验昵称是否存在
+     * @param nickName 需要校验的昵称
+     * @return true：昵称已存在，false：昵称不存在
+     * */
+    boolean checkNickName(String nickName);
 }

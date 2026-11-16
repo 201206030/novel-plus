@@ -17,44 +17,44 @@ public enum ResponseStatus implements IResultCode {
 
     /**
      * 用户相关错误
-     * */
-   NO_LOGIN(1001, "未登录或登录失效！"),
+     */
+    NO_LOGIN(1001, "未登录或登录失效！"),
     VEL_CODE_ERROR(1002, "验证码错误！"),
-    USERNAME_EXIST(1003,"该手机号已注册！"),
-    USERNAME_PASS_ERROR(1004,"手机号或密码错误！"),
+    USERNAME_EXIST(1003, "该手机号已注册！"),
+    USERNAME_PASS_ERROR(1004, "手机号或密码错误！"),
     TWO_PASSWORD_DIFF(1005, "两次输入的新密码不匹配!"),
     OLD_PASSWORD_ERROR(1006, "旧密码不匹配!"),
     USER_NO_BALANCE(1007, "用户余额不足"),
     USER_STATUS_FORBIDDEN(1008, "账号已被封禁，请联系管理员！"),
+    NICKNAME_EXIST(1009, "昵称已存在！"),
 
     /**
      * 评论相关错误
-     * */
+     */
     HAS_COMMENTS(3001, "已评价过该书籍！"),
     PARA_COMMENT_CONTENT_INVALID(3002, "段落评论不能为空且不能超过200个字！"),
     PARA_COMMENT_PARAM_INVALID(3003, "段落评论参数有误！"),
 
     /**
      * 作者相关错误
-     * */
+     */
     INVITE_CODE_INVALID(4001, "邀请码无效！"),
-    AUTHOR_STATUS_FORBIDDEN(4002, "作者状态异常，暂不能管理小说！")
-    , BOOKNAME_EXISTS(4003,"已发布过同名小说！"),
-    PEN_NAME_EXISTS(4004,"笔名已被使用，请更换一个！"),
-    AUTHOR_INFO_INVALID(4005,"资料填写有误，请检查笔名/手机号/邮箱格式！"),
+    AUTHOR_STATUS_FORBIDDEN(4002, "作者状态异常，暂不能管理小说！"), BOOKNAME_EXISTS(4003, "已发布过同名小说！"),
+    PEN_NAME_EXISTS(4004, "笔名已被使用，请更换一个！"),
+    AUTHOR_INFO_INVALID(4005, "资料填写有误，请检查笔名/手机号/邮箱格式！"),
 
     /**
      * 小说相关错误
      */
-    BOOK_EXISTS(5001,"该小说已存在"),
-    INDEX_NOT_EXISTS(5002,"该章节不存在！"),
-    NEWS_NOT_EXISTS(5003,"该新闻不存在！"),
-    INDEX_PUBLISH_TIME_INVALID(5004,"定时发布时间需晚于当前时间！"),
-    INDEX_ALREADY_PUBLISHED(5005,"章节已发布，不能再撤回或改期！"),
+    BOOK_EXISTS(5001, "该小说已存在"),
+    INDEX_NOT_EXISTS(5002, "该章节不存在！"),
+    NEWS_NOT_EXISTS(5003, "该新闻不存在！"),
+    INDEX_PUBLISH_TIME_INVALID(5004, "定时发布时间需晚于当前时间！"),
+    INDEX_ALREADY_PUBLISHED(5005, "章节已发布，不能再撤回或改期！"),
 
     /**
      * 书单相关错误
-     * */
+     */
     LIST_NOT_EXISTS(6001, "书单不存在或已删除！"),
     NOT_MY_LIST(6002, "只能操作自己创建的书单！"),
     BOOK_IN_LIST(6003, "该书籍已在书单中！"),
@@ -65,7 +65,7 @@ public enum ResponseStatus implements IResultCode {
 
     /**
      * AI创作助手相关错误
-     * */
+     */
     AI_PLAN_NOT_EXISTS(7001, "创作方案不存在或无权访问！"),
     AI_TASK_RUNNING(7002, "该创作任务正在执行中，请勿重复提交！"),
     AI_GEN_FAILED(7003, "AI生成失败，请重试！"),
@@ -82,21 +82,21 @@ public enum ResponseStatus implements IResultCode {
 
     /**
      * 搜索引擎相关错误
-     * */
-    ES_SEARCH_FAIL(9001,"搜索引擎查询错误！"),
+     */
+    ES_SEARCH_FAIL(9001, "搜索引擎查询错误！"),
 
     /**
      * 文件相关错误
-     * */
-    FILE_DIR_MAKE_FAIL(10001,"目录创建失败"),
-    FILE_NOT_IMAGE(10002,"请上传图片类型的文件"),
-    FILE_SIZE_LIMIT(10003,"文件大小超出限制"),
-    UPLOAD_RATE_LIMIT(10004,"上传过于频繁，请稍后再试"),
-    FILE_UPLOAD_FAIL(10005,"文件上传失败"),
+     */
+    FILE_DIR_MAKE_FAIL(10001, "目录创建失败"),
+    FILE_NOT_IMAGE(10002, "请上传图片类型的文件"),
+    FILE_SIZE_LIMIT(10003, "文件大小超出限制"),
+    UPLOAD_RATE_LIMIT(10004, "上传过于频繁，请稍后再试"),
+    FILE_UPLOAD_FAIL(10005, "文件上传失败"),
 
     /**
      * 第三方规则导入相关错误
-     * */
+     */
     BOOK_SOURCE_EMPTY(11001, "导入内容不能为空！"),
     BOOK_SOURCE_PARSE_FAIL(11002, "规则JSON解析失败，请确认符合所选规则类型格式！"),
     RULE_SOURCE_TYPE_UNSUPPORTED(11003, "不支持的规则类型！"),
@@ -106,8 +106,8 @@ public enum ResponseStatus implements IResultCode {
 
     /**
      * 其他通用错误
-     * */
-    PASSWORD_ERROR(88001,"密码错误！");
+     */
+    PASSWORD_ERROR(88001, "密码错误！");
 
     private int code;
     private String msg;

@@ -348,5 +348,12 @@ public class UserServiceImpl implements UserService {
             .render(RenderingStrategies.MYBATIS3));
     }
 
-
+    @Override
+    public boolean checkNickName(String nickName) {
+        return userMapper.selectStatistic(select(count(UserDynamicSqlSupport.id))
+            .from(UserDynamicSqlSupport.user)
+            .where(UserDynamicSqlSupport.nickName, isEqualTo(nickName))
+            .build()
+            .render(RenderingStrategies.MYBATIS3)) > 0;
+    }
 }
