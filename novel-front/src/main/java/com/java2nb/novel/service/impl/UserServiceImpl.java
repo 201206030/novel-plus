@@ -3,6 +3,7 @@ package com.java2nb.novel.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.utils.NicknameGenerator;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.entity.*;
 import com.java2nb.novel.mapper.*;
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
         //数据库生成注册记录
         Long id = idWorker.nextId();
         entity.setId(id);
-        entity.setNickName(entity.getUsername());
+        entity.setNickName(NicknameGenerator.generate());
         Date currentDate = new Date();
         entity.setCreateTime(currentDate);
         entity.setUpdateTime(currentDate);
