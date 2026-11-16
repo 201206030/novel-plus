@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://sx.org/c/NOVEL4"><img src="https://www.xxyopen.com/images/ad3.jpg" alt="SX.ORG" ></a>
+    <a href="https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console"><img src="https://youdoc.github.io/img/tencent.jpg" alt="AD" ></a>
 </p>
 <p align="center">
     <img src="https://gitranks.com/badges/201206030/stars-score.svg" alt="GitHub 总收藏">
@@ -10,7 +10,7 @@
    </p>
 
 <p align="center">
-      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> |  👉 <a href='https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=736e609d66e0ac4e57813316cec6fd0b&from=console'>特惠服务器</a>
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV1u7H56CEwi'>演示视频</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> 
 </p> 
 
 ## 项目介绍
