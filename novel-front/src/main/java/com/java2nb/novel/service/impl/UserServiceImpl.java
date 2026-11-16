@@ -83,6 +83,8 @@ public class UserServiceImpl implements UserService {
         entity.setCreateTime(currentDate);
         entity.setUpdateTime(currentDate);
         entity.setPassword(MD5Util.MD5Encode(entity.getPassword(), Charsets.UTF_8.name()));
+        //注册送20币
+        entity.setAccountBalance(20L);
         userMapper.insertSelective(entity);
         //生成UserDetail对象并返回
         UserDetails userDetails = new UserDetails();
