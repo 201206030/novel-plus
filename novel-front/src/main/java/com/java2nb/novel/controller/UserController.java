@@ -67,8 +67,8 @@ public class UserController extends BaseController {
         @RequestParam(value = "velCode", defaultValue = "") String velCode, HttpServletRequest request) {
 
         //判断验证码是否正确
-        if (!velCode.equals(
-            cacheService.get(RandomValidateCodeUtil.RANDOM_CODE_KEY + ":" + IpUtil.getRealIp(request)))) {
+        String randomCodeKey = RandomValidateCodeUtil.RANDOM_CODE_KEY + ":" + IpUtil.getRealIp(request);
+        if (!velCode.equals(cacheService.get(randomCodeKey))) {
             return RestResult.fail(ResponseStatus.VEL_CODE_ERROR);
         }
 
@@ -76,6 +76,9 @@ public class UserController extends BaseController {
         UserDetails userDetails = userService.register(user);
         Map<String, Object> data = new HashMap<>(1);
         data.put("token", jwtTokenUtil.generateToken(userDetails));
+
+        //删除验证码
+        cacheService.del(randomCodeKey);
 
         return RestResult.ok(data);
 
@@ -279,7 +282,8 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
-        return RestResult.ok(bookParagraphCommentService.listMyParagraphCommentByPage(userDetails.getId(), page, pageSize));
+        return RestResult.ok(
+            bookParagraphCommentService.listMyParagraphCommentByPage(userDetails.getId(), page, pageSize));
     }
 
 
