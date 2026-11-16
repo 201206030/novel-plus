@@ -6,7 +6,7 @@
 
     <update id="addUserBalance" >
         update user set account_balance = account_balance + ${amount}
-        where id = #{userId}
+        where id = #{userId} and account_balance + ${amount} >= 0
     </update>
 
 

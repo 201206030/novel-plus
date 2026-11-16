@@ -9,7 +9,7 @@ public interface FrontUserMapper extends UserMapper {
 
 
 
-    void addUserBalance(@Param("userId") Long userId, @Param("amount") Integer amount);
+    int addUserBalance(@Param("userId") Long userId, @Param("amount") Integer amount);
 
 
 }

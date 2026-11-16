@@ -295,12 +295,12 @@ public class UserServiceImpl implements UserService {
         userBuyRecordMapper.insertSelective(buyRecord);
 
         //减少用户余额
-        userMapper.update(update(user)
-            .set(UserDynamicSqlSupport.accountBalance)
-            .equalTo(balance - buyRecord.getBuyAmount())
-            .where(id, isEqualTo(userId))
-            .build()
-            .render(RenderingStrategies.MYBATIS3));
+        int rows = userMapper.addUserBalance(userId, -buyRecord.getBuyAmount());
+        log.debug("用户余额更新影响行数：{}", rows);
+        if (rows == 0) {
+            throw new BusinessException(ResponseStatus.USER_NO_BALANCE);
+        }
+
     }
 
     @Override
