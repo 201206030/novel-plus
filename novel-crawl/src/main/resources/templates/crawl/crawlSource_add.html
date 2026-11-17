@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/base.css?v=2"/>
     <link rel="stylesheet" href="/css/user.css"/>
     <link rel="stylesheet" href="/css/crawl-menu.css?v=1"/>
-    <link rel="stylesheet" href="/css/crawl-form.css?v=1"/>
+    <link rel="stylesheet" href="/css/crawl-form.css?v=2"/>
 </head>
 <body>
 
@@ -55,6 +55,34 @@
                                 <input type="text" id="bookListUrl" class="frm_input frm_rule" placeholder="例如：http://m.xdingdiann.com/sort/{catId}/{page}.html"/>
                                 <p class="frm_tip">示例：<code>http://m.xdingdiann.com/sort/{catId}/{page}.html</code>；<code>{catId}</code> 代表分类ID，<code>{page}</code> 代表分页页码；分类ID填完整URL时本项可不填</p>
                             </div>
+                        </div>
+                    </section>
+
+                    <section class="frm_section ai_panel">
+                        <h4><span class="ai_badge">AI</span>AI 辅助生成规则 <span class="frm_badge">无需逐条手写</span></h4>
+                        <p class="frm_tip">填写源站各类页面的真实示例 URL，AI 会抓取页面结构并自动推导下方规则填入表单。至少填「列表页」；提供的页面越全，生成的规则越完整。<strong>AI 固定使用「CSS 选择器」解析方式（对 AI 最准确），生成后会自动把上方「解析方式」切换为 CSS。</strong>网站编码采用上方「基础配置」的值。生成结果请务必用「规则测试」核对后再保存。</p>
+                        <div class="frm_grid">
+                            <div class="frm_row wide">
+                                <label for="aiListUrl">列表页示例 URL <span class="frm_req">*</span></label>
+                                <input type="text" id="aiListUrl" class="frm_input frm_rule" placeholder="例如：http://m.xdingdiann.com/sort/1/1.html"/>
+                                <p class="frm_tip">填入一个真实可访问的分类列表页地址，用于推导小说ID、详情页链接、翻页等规则</p>
+                            </div>
+                            <div class="frm_row">
+                                <label for="aiDetailUrl">详情页示例 URL</label>
+                                <input type="text" id="aiDetailUrl" class="frm_input frm_rule" placeholder="例如：http://m.xdingdiann.com/ddk123"/>
+                            </div>
+                            <div class="frm_row">
+                                <label for="aiIndexUrl">目录页示例 URL</label>
+                                <input type="text" id="aiIndexUrl" class="frm_input frm_rule" placeholder="例如：http://m.xdingdiann.com/ddk123/all.html"/>
+                            </div>
+                            <div class="frm_row wide">
+                                <label for="aiContentUrl">正文页示例 URL</label>
+                                <input type="text" id="aiContentUrl" class="frm_input frm_rule" placeholder="例如：http://m.xdingdiann.com/ddk123/456.html"/>
+                            </div>
+                        </div>
+                        <div class="ai_actions">
+                            <span class="ai_status" id="aiStatus">生成通常需要几十秒，请耐心等待；结果仅用于回填，不会自动提交。</span>
+                            <input type="button" class="ai_btn" id="aiGenBtn" onclick="aiGenerateRules()" value="AI 生成规则"/>
                         </div>
                     </section>
 
@@ -349,6 +377,72 @@
         return String(str == null ? '' : str)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /**
+     * AI 辅助生成规则：调用后端抓取示例页面并让大模型推导规则，回填到本页输入框
+     */
+    function aiGenerateRules() {
+        var listUrl = $.trim($("#aiListUrl").val());
+        if (listUrl.length == 0) {
+            layer.alert("请至少填写列表页示例 URL");
+            return false;
+        }
+        var btn = $("#aiGenBtn");
+        var status = $("#aiStatus");
+        btn.prop("disabled", true).val("生成中…");
+        status.removeClass("ok err").addClass("frm_loading").text("正在抓取页面并调用 AI 推导规则，通常需要几十秒…");
+
+        $.ajax({
+            type: "POST",
+            url: "/crawl/aiGenerateRule",
+            timeout: 600000,
+            data: {
+                listUrl: listUrl,
+                detailUrl: $.trim($("#aiDetailUrl").val()),
+                indexUrl: $.trim($("#aiIndexUrl").val()),
+                contentUrl: $.trim($("#aiContentUrl").val()),
+                charset: $.trim($("#charset").val())
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var rules = data.data || {};
+                    var count = fillRules(rules);
+                    // AI 生成的都是 CSS 选择器规则，解析方式必须同步切换为 CSS，否则规则无法正确解析
+                    $("#parseType").val("CSS").addClass("ai_filled");
+                    status.removeClass("frm_loading err").addClass("ok")
+                        .text("已生成并回填 " + count + " 项规则（黄色标记），解析方式已自动切换为 CSS。请核对并用「规则测试」验证后再保存。");
+                } else {
+                    status.removeClass("frm_loading").addClass("err").text(data.msg || "生成失败，请重试");
+                }
+            },
+            error: function (xhr) {
+                var msg = "网络异常或生成超时，请稍后重试";
+                if (xhr.responseJSON && xhr.responseJSON.msg) {
+                    msg = xhr.responseJSON.msg;
+                }
+                status.removeClass("frm_loading").addClass("err").text(msg);
+            },
+            complete: function () {
+                btn.prop("disabled", false).val("AI 生成规则");
+            }
+        });
+    }
+
+    /**
+     * 将 AI 返回的规则按字段名回填到同名输入框，并高亮
+     */
+    function fillRules(rules) {
+        var count = 0;
+        $.each(rules, function (key, value) {
+            var el = $("#" + key);
+            if (el.length && (el.is("input") || el.is("textarea"))) {
+                el.val(value).addClass("ai_filled");
+                count++;
+            }
+        });
+        return count;
     }
 
     function addCrawlSource() {

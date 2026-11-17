@@ -1,0 +1,44 @@
+你是一名资深爬虫工程师，正在修复一批已经生成但校验失败的爬虫规则。本次只修复详情页字段。
+
+## 一、详情页真实 HTML
+
+__PAGE_HTML__
+
+## 二、上一轮生成的规则（JSON）
+
+__CURRENT_RULES__
+
+## 三、用上述 HTML 实际回放后的校验失败项
+
+__ISSUES__
+
+## 四、全部真实示例 URL（URL 模板的协议与域名必须取自这里）
+
+- 列表页 URL：__LIST_URL__
+- 详情页 URL：__DETAIL_URL__
+- 目录页 URL：__INDEX_URL__
+- 正文页 URL：__CONTENT_URL__
+
+网站编码：__CHARSET__
+
+## 五、修复规则（强制）
+
+1. **只输出失败项涉及的字段**。没有出现在失败项里的字段一个都不要输出。失败项涉及 statusPatten 时可一并输出 bookStatus0/bookStatus1；涉及 upadateTimePatten 时可一并输出 upadateTimeFormatPatten。
+2. 所有 Patten 一律用 CSS 选择器，禁止裸正则、XPath、JSONPath。
+3. **严禁使用 `:eq(n)`、`:nth-child(n)`、`:first-child`、`:last-child` 等任何位置选择器**。页面上「分类」行常在作者上方，靠数索引会整体偏移一行，这正是本次失败的根因。
+4. **严禁选中包住整块信息的大容器**（如 `.info::text`、`dl dd::text`）。`text()` 会拼接所有子孙文字，再剥前缀就会取到前一个字段。
+5. **必须按「标签文字」锚定当前字段自己的那一行**，jsoup 原生支持 `:containsOwn(文字)`（元素直接包含该文字）和 `+` 相邻兄弟选择器。按真实结构选用，不要照抄示例：
+   - `<span>作者：</span><a>张三</a>` → `span:containsOwn(作者) + a::text`
+   - `<p class="author">作者：张三</p>` → `p:containsOwn(作者)::text##^\s*作者[：:]?\s*##`
+   - `<td>状态：</td><td>连载中</td>` → `td:containsOwn(状态) + td::text`
+   - `<span>更新：2024-01-05 12:30</span>` → `span:containsOwn(更新)::text##^\s*更新(时间)?[：:]?\s*##`
+   标签文字必须与 HTML 里真实出现的字完全一致，不要带空格。
+6. 剥前缀用 `##正则##`（替换段省略即删除），剥完必须只剩纯值，不能残留「作者：」「状态：」「更新：」或多余空白。
+7. statusPatten 取出的字符串必须与 bookStatus0 或 bookStatus1 的字面值**完全相等**，一字不差；两个状态值不能填成同一个，也不要臆造 HTML 里没有的状态文字。
+8. upadateTimePatten 取出的字符串必须能被 upadateTimeFormatPatten 用 Java SimpleDateFormat 严格解析：年 `yyyy`、月 `MM`、日 `dd`、24 小时 `HH`、分 `mm`、秒 `ss`。取出 `2024-01-05` 就写 `yyyy-MM-dd`，不要多写或少写字段。相对时间（「3小时前」「昨天」）无法解析，遇到就省略这两个字段。
+9. 在本批次 HTML 里找不到该字段的标签文字就**不要输出该字段**，绝不用位置索引硬凑，也不要臆想 class/id。
+10. 规则里的 id/class/标签层级必须与 HTML 源码完全一致，大小写敏感。
+
+## 六、输出格式
+
+只输出一个 JSON 对象，不要解释文字，不要 markdown 代码围栏。键只能来自失败项涉及的字段（及其配套字段），值一律是字符串。输出前把每条规则套回上面的 HTML，确认它命中的正是当前字段那一行，而不是上方分类行或父容器。

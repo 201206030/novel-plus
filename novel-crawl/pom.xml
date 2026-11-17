@@ -56,6 +56,12 @@
             <version>2.9.0</version>
         </dependency>
 
+        <!-- AI 辅助生成爬虫规则（版本由父工程 spring-ai-bom 统一管理） -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -74,4 +74,28 @@ disk-monitor:
   # 告警邮件接收人列表（支持多个邮箱）
   recipients: xxyopen@foxmail.com,12345678@qq.com
 
+---
+# --------------------- Spring AI 配置（AI 辅助生成爬虫规则）----------------------
+# api-key 优先读环境变量 AI_API_KEY；默认值与 novel-front 保持一致，仅用于开箱即用。
+# 生产环境请务必通过环境变量覆盖，避免密钥明文入库。
+spring:
+  ai:
+    openai:
+      api-key: ${AI_API_KEY:sk-xfobmihqsrdsepveoxqkgetafrelariuquzstquoeunkszgl}
+      base-url: ${AI_BASE_URL:https://api.siliconflow.cn}
+      chat:
+        options:
+          model: ${AI_MODEL:tencent/Hy4-preview}
+
+# AI 规则生成的调用参数（超时/截断长度/简单频率限制）
+crawl:
+  ai:
+    # 单次模型调用硬超时（秒）
+    timeout-seconds: 300
+    # 每个示例页面送入模型的 HTML 最大字符数（剔除 script/style/注释后截断）
+    # 采用按页面分批发给模型，单批只含一个页面，故可调大以覆盖页面中后部的字段
+    max-html-chars: 24000
+    # 同一 IP 两次生成请求的最小间隔（秒），防止连点刷额度
+    min-interval-seconds: 5
+
 
