@@ -4,15 +4,18 @@ import com.java2nb.novel.core.cache.CacheKey;
 import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.crawl.RuleExtractor;
 import com.java2nb.novel.core.utils.HttpUtil;
+import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.entity.BookCategory;
 import io.github.xxyopen.model.page.PageBean;
 
 import com.java2nb.novel.entity.CrawlSingleTask;
 import com.java2nb.novel.entity.CrawlSource;
+import com.java2nb.novel.service.AiRuleService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.CrawlService;
 import com.java2nb.novel.utils.Constants;
 import io.github.xxyopen.model.resp.RestResult;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +37,8 @@ public class CrawlController {
     private final BookService bookService;
 
     private final CacheService cacheService;
+
+    private final AiRuleService aiRuleService;
     /**
      * 新增爬虫源
      * */
@@ -137,6 +142,22 @@ public class CrawlController {
        // resultMap.put("url",url);
         return RestResult.ok(resultMap);
     }
+    /**
+     * AI 辅助生成爬虫规则：根据示例页面 URL 抓取 HTML，调用大模型推导规则，返回供前端回填
+     */
+    @PostMapping("aiGenerateRule")
+    public RestResult<Map<String, String>> aiGenerateRule(
+            @RequestParam(value = "listUrl", required = false) String listUrl,
+            @RequestParam(value = "detailUrl", required = false) String detailUrl,
+            @RequestParam(value = "indexUrl", required = false) String indexUrl,
+            @RequestParam(value = "contentUrl", required = false) String contentUrl,
+            @RequestParam(value = "parseType", required = false) String parseType,
+            @RequestParam(value = "charset", required = false) String charset,
+            HttpServletRequest request) {
+        return RestResult.ok(aiRuleService.generateRules(listUrl, detailUrl, indexUrl, contentUrl,
+            parseType, charset, IpUtil.getRealIp(request)));
+    }
+
     /**
      * 修改爬虫源
      * */

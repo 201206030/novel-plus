@@ -13,6 +13,9 @@ import io.github.xxyopen.util.IdWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -386,10 +389,16 @@ public class CrawlParser {
             if (indexListHtml == null) {
                 break;
             }
-            if (pageIndex == 1 && StringUtils.isNotBlank(ruleBean.getBookIndexStart()) && indexListHtml
-                .contains(ruleBean.getBookIndexStart())) {
-                indexListHtml = indexListHtml.substring(
-                    indexListHtml.indexOf(ruleBean.getBookIndexStart()) + ruleBean.getBookIndexStart().length());
+            if (pageIndex == 1 && StringUtils.isNotBlank(ruleBean.getBookIndexStart())
+                && indexListHtml.contains(ruleBean.getBookIndexStart())) {
+                String marker = ruleBean.getBookIndexStart();
+                // CSS/XPATH 规则基于完整目录页生成，必须用 DOM 级裁剪，不能物理截断 HTML：
+                // substring 会把 <dl>/<div id=list> 等开标签切掉，使祖先锚点失效。
+                if (CrawlParseType.of(ruleBean.getParseType()) == CrawlParseType.REGEX) {
+                    indexListHtml = indexListHtml.substring(indexListHtml.indexOf(marker) + marker.length());
+                } else {
+                    indexListHtml = cutIndexHtmlByDom(indexListHtml, marker);
+                }
             }
 
             RuleExtractor indexExtractor = RuleExtractor.create(ruleBean.getParseType(), indexListHtml);
@@ -404,6 +413,93 @@ public class CrawlParser {
                 : extractNextPageUrl(indexExtractor, ruleBean.getNextIndexUrlPatten(), pageUrl);
         }
         return pairs;
+    }
+
+    /**
+     * 按「目录内容开始截取字符串」裁剪 HTML，保留完整的祖先容器结构。
+     * <p>
+     * 部分目录页会在完整章节列表之前，把最新几十章按倒序再放一遍（与后面完整列表重复），
+     * bookIndexStart 用于定位「完整列表起点」，把前面那段倒序章节去掉，避免采集到重复脏数据。
+     * <p>
+     * 不能对 HTML 直接 substring：标记位于章节列表内部（如 {@code <dt>《}），
+     * 截断会把 {@code <dl>}、{@code <div id="list">} 等开标签一起切掉，jsoup 重新解析后
+     * DOM 残缺，基于完整目录页生成的 CSS/XPath 规则（如 {@code #list dd a}）就全部失效。
+     * 这里改为 DOM 级裁剪：定位标记所在元素，逐层删除它之前的兄弟元素（即倒序最新章节），
+     * 保留标记之后的完整列表与整个祖先链。
+     *
+     * @param html   完整目录页 HTML
+     * @param marker 用户配置的目录内容开始截取字符串
+     * @return 裁剪后的 HTML；定位不到标记时原样返回，避免误伤
+     */
+    private String cutIndexHtmlByDom(String html, String marker) {
+        if (StringUtils.isBlank(html) || StringUtils.isBlank(marker)) {
+            return html;
+        }
+        try {
+            Document doc = Jsoup.parse(html);
+            // 关闭美化输出，避免重新序列化时注入多余换行影响 ::html 取值
+            doc.outputSettings().prettyPrint(false);
+            Element anchor = findMarkerAnchor(doc, marker);
+            if (anchor == null) {
+                log.warn("目录起始标记在页面中未定位到，改用完整HTML解析：{}", marker);
+                return html;
+            }
+            Element current = anchor;
+            while (current != null && current.parent() != null) {
+                Element previous = current.previousElementSibling();
+                while (previous != null) {
+                    previous.remove();
+                    previous = current.previousElementSibling();
+                }
+                current = current.parent();
+            }
+            return doc.html();
+        } catch (Exception e) {
+            log.warn("目录起始标记DOM裁剪失败，改用完整HTML解析：{}", e.getMessage());
+            return html;
+        }
+    }
+
+    /**
+     * 定位起始标记对应的元素：优先按原始标记在 outerHtml 中精确匹配（如 {@code <dt>《}），
+     * 未命中再按标记里的纯文字匹配；都取内容最短（层级最深）的元素，避免命中大容器。
+     */
+    private Element findMarkerAnchor(Document doc, String marker) {
+        Element best = null;
+        int bestLength = Integer.MAX_VALUE;
+        for (Element element : doc.getAllElements()) {
+            if (isNoiseElement(element)) {
+                continue;
+            }
+            String outer = element.outerHtml();
+            if (outer.contains(marker) && outer.length() < bestLength) {
+                best = element;
+                bestLength = outer.length();
+            }
+        }
+        if (best != null) {
+            return best;
+        }
+        String text = marker.replaceAll("<[^>]*>", "").trim();
+        if (text.isEmpty()) {
+            return null;
+        }
+        bestLength = Integer.MAX_VALUE;
+        for (Element element : doc.getAllElements()) {
+            if (isNoiseElement(element)) {
+                continue;
+            }
+            if (element.text().contains(text) && element.outerHtml().length() < bestLength) {
+                best = element;
+                bestLength = element.outerHtml().length();
+            }
+        }
+        return best;
+    }
+
+    private boolean isNoiseElement(Element element) {
+        String name = element.normalName();
+        return "script".equals(name) || "style".equals(name);
     }
 
     /**

@@ -1,0 +1,140 @@
+你是一名资深爬虫工程师，为中文小说网站编写采集规则。本次任务：根据给出的【全部真实示例 URL】和【本批次页面 HTML】，产出 __TASK_DESC__ 的规则。
+
+## 一、唯一解析方式：CSS 选择器（强制）
+
+生成的提取规则一律使用 CSS 选择器，不要输出正则表达式、XPath 或 JSONPath 作为规则主体。语法如下：
+
+- 选择器默认取元素文本，如 `.bookname`、`#author`。
+- 取属性：`选择器::attr(属性名)`，如 `a.cover::attr(href)`、`img::attr(src)`。
+- 取内部 HTML（正文/简介需保留标签时）：`选择器::html`，如 `#content::html`。
+- 只取元素自身直接文本：`选择器::ownText`。
+- 取第 n 个匹配元素：`选择器:eq(n)`，如 `.list a:eq(0)::attr(href)`。
+- 二次截取：`选择器|正则`，先按选择器取到值，再用正则的 1 号捕获组加工，如 `a::attr(href)|(\d+)\.html`。
+- 文本替换：`选择器##正则##替换`（替换段省略即删除），如 `.content::html##<div class="ad">.*?</div>##`。
+
+### 两条铁律（违反会导致匹配失败或误匹配）
+
+1. 选择器必须有唯一上下文锚点：优先用 `id`（`#pagestats`），其次用具体 `class`，或「容器 class + 标签 + 属性」组合。禁止只写裸标签名（`a`、`em`、`span`、`div`）或过于宽泛的 class 作为整个选择器。
+
+2. `|正则` 只用于对「已由选择器精确定位的单个元素的值」做二次截取，绝不能当作全页搜索的正则。不要输出 `(\d+)`、`([\d]+)` 这类没有选择器前缀的裸正则。二次正则中不要用 `|` 表示“或”，改用字符类如 `[\d\w]+`。
+
+### 分页数字的正确写法
+
+分页 HTML 常形如 `<em id="pagestats">1/10</em>`（当前页/总页数）：
+- 当前页 pagePatten：`#pagestats::text|(\d+)/`
+- 总页数 totalPagePatten：`#pagestats::text|/(\d+)`
+错误写法：`([\d]+)`、裸 `(\d+)/\d+`、正则标签写法 `<em\s+id=...>`。
+
+## 二、URL 模板硬性要求（涉及 URL 字段时必读）
+
+下方「四、全部真实示例 URL」给出了用户提供的真实地址。生成 URL 模板（bookListUrl/bookDetailUrl/bookIndexUrl/bookContentUrl）时：
+1. 协议（http/https）与域名（含端口）必须原样取自这些真实示例 URL，必须写完整 `https://真实域名/...`，不得省略。
+2. 严禁照抄提示词里的示例域名（m.x.com、x.com），也不要臆造任何域名。
+3. 只把真实 URL 中随内容变化的部分换成占位符，固定路径、文件名、扩展名原样保留。
+
+系统只认识四个固定占位符：{bookId}、{indexId}、{catId}、{page}，禁止 {bookId1}/{bookId2} 之类带编号变体。
+- {bookId} 不是数据库主键，而是「详情页 URL 中随小说变化、决定是哪本书的那段字符串」。正确示例：`https://www.example.com/bookinfo/{bookId}.html`；错误示例：`.../bookinfo/{bookId1}/{bookId2}.html`。多段都变化也只用一个 {bookId}，让 bookIdPatten 一次取出整段。
+- {indexId} 同理表示正文页随章节变化的那段，每处只写一次。
+
+## 三、字段写法参考（本批次只需产出 __TASK_FIELDS__）
+
+- bookListUrl：分类列表页 URL 模板，{catId} 分类ID、{page} 页码，协议域名取自真实列表页 URL。若分类ID本身是完整URL可不填。
+- bookDetailUrl：详情页 URL 模板，协议域名取自真实详情页 URL，变化段用 {bookId}。
+- bookIndexUrl：目录页 URL 模板，用 {bookId}。
+- bookContentUrl：正文页 URL 模板，用 {bookId} 和 {indexId}。
+- picUrlPrefix：图片相对路径前缀（绝对地址时留空）。
+- bookIdPatten：从列表页提取“决定是哪本书的变化字符串”，必须与 bookDetailUrl 的 {bookId} 严格对应——取出的值填进 {bookId} 后要能拼回真实详情页 URL。CSS 写法如 `.booklist li a::attr(href)|/bookinfo/(\d+)\.html`。
+- pagePatten / totalPagePatten：当前页/总页数，按上文分页写法。
+- bookNamePatten：小说名，如 `#bookname::text`、`h1.title::text`。要锚定到只含书名的元素。
+- authorNamePatten：作者名（最易错，务必看下方专项说明），必须锚定到作者所在的那一小块区域，例如 `#author::text`、`.info p.author::text`；不要写 `.info a[href*="author"]` 这种臆想的模式。
+- picUrlPatten：封面图，如 `.cover img::attr(src)`。statusPatten：连载状态（见下方状态专项，必须与状态显示值严格配对）。
+- bookStatus0 / bookStatus1：详情页表示“连载中”“已完结”的字面文字（如 连载 / 完结），见下方状态专项。
+- scorePatten：评分。visitCountPatten：点击量。
+- descPatten：简介提取（优先，如 `#intro::text`、`#intro::html`）；无独立简介节点时改用 descStart + descEnd（简介开始/结束的标记字符串）。
+- upadateTimePatten：更新时间，如 `.info span.update::text`。upadateTimeFormatPatten：Java SimpleDateFormat 格式（见下方时间专项，必须与取出字符串严格匹配）。
+- filterDesc：简介中需过滤的噪声片段，多个换行分隔。
+- indexIdPatten：章节ID，如 `.chapterlist a::attr(href)|/(\d+)\.html`。indexNamePatten：章节名，如 `.chapterlist a::text`。
+- bookIndexStart：目录内容开始截取字符串（可选）。用途是**去掉重复脏数据**：部分目录页会在完整章节列表之前，把最新的几十章按倒序再放一遍（和后面的完整列表重复），需要填一个只出现在「完整列表起点」的标记，让系统从这里开始采集，从而跳过前面那段倒序的最新章节。可填页面里真实出现的一段标记文字或标签片段（如 `<dt>《`）。**本批次 HTML 是完整目录页，indexIdPatten/indexNamePatten 必须基于完整页面来写**；系统运行时会丢弃该标记之前的元素（即那段倒序章节），并保留标记之后的完整列表，不会破坏容器结构，所以选择器要锚定到容纳完整章节列表的稳定容器，不要依赖标记之前的前序兄弟或位置索引。找不到明确标记就不要输出本字段。
+- contentPatten：正文提取（优先，取 HTML 写法如 `#content::html`）；无独立正文容器时用 contentStart + contentEnd。
+- filterContent：正文中需过滤的广告/提示片段，多个换行分隔。
+
+### 字段错位专项（最高优先级：作者 / 状态 / 更新时间）
+
+这三个字段最常出现「取到上一行内容」的错误：作者没匹配到、状态取到上方的分类、更新时间取到状态那一行。根因固定为两类，必须避免：
+
+1. **位置选择器数错行**：如 `.info dd:eq(1)`、`.info span:nth-child(2)`。页面里「分类」行常在作者上方，按「作者/状态/更新」数索引会整体偏移一行，取到上一行。**单值字段一律禁止 `:eq(n)`、`:nth-child(n)`、`:first-child`、`:last-child` 等任何位置选择器。**
+2. **选中了父容器**：如 `.info::text`、`dl.info dd::text`。`text()` 会拼接容器内所有子孙文字（例如「分类：玄幻 作者：张三 状态：连载中 更新：2024-01-05」），再用 `##` 剥前缀时极易取到前一个字段。**必须锚定到当前字段自己那一行/那个节点，不要选包住整块信息的容器。**
+
+采集端对单值字段使用「取第一个匹配值」（extractFirst）。因此选择器只要匹配到多个元素，就永远拿到 DOM 里最靠前的那个——通常就是上方的分类行。选择器必须唯一命中当前字段。
+
+**推荐写法：按「标签文字」锚定当前行（jsoup 原生支持，不需要位置索引）**
+
+- `元素:containsOwn(标签文字)`：只匹配「直接包含该文字」的元素，不会命中包住整块信息的大容器，是本场景首选。
+- `元素:contains(标签文字)`：自身或子孙含该文字即匹配，容易命中大容器；仅在标签文字确实位于子节点时才用，且必须加具体标签/class 缩小范围。
+
+按本批次 HTML 的真实结构选用（下面只是形态示例，绝不要照抄结构）：
+
+| 真实 HTML 形态 | 正确规则 |
+| --- | --- |
+| `<span>作者：</span><a>张三</a>` | `span:containsOwn(作者) + a::text` |
+| `<p class="author">作者：张三</p>` | `p:containsOwn(作者)::text##^\s*作者[：:]?\s*##` |
+| `<td>状态：</td><td>连载中</td>` | `td:containsOwn(状态) + td::text` |
+| `<span>更新：2024-01-05 12:30</span>` | `span:containsOwn(更新)::text##^\s*更新(时间)?[：:]?\s*##` |
+
+补充要点：
+- 标签文字必须与本批次 HTML 里真实出现的字完全一致（页面写「类别」就不要写「分类」），且不要带空格。
+- 标签在父元素、值在子元素时用 `::ownText` 只取父元素自身文本，避免把子元素文字带进来。
+- 标签和值在同一元素时，`::text` 后必须用 `##正则##` 剥掉「作者：」「状态：」「更新：」前缀，剥完必须只剩纯值。
+- 在本批次 HTML 里找不到该字段的标签文字就省略该字段，绝不用位置索引硬凑。
+
+### 作者名 authorNamePatten 专项（最易错，必须逐条对照本批次 HTML）
+
+采集时作者名用「取第一个匹配值」的方式提取，所以选择器必须唯一命中作者本人，否则取到的第一个往往是导航链接、书名链接或分类链接。先遵守上方「字段错位专项」的标签文字锚定，再处理以下问题：
+
+1. 作者名常和「作者：」标签写在同一元素里，如 `<p class="author">作者：张三</p>`。直接用 `.author::text` 会得到「作者：张三」这种带前缀的脏值。要用文本替换剥掉前缀：`.author::text##^\s*作者[：:]?\s*##`（`##正则##替换`，替换段留空表示删除）。
+
+2. 若「作者：」和名字在不同元素，如 `<span>作者：</span><a href="/author/1">张三</a>`，应锚定到名字那个元素，如 `.author-info a::text`，不要选到含「作者：」的容器。
+
+3. 作者名有时在多段文字中，用 `::ownText` 只取元素自身文本（不含子元素），避免把子元素文字一起带进来。
+
+4. 必须先在本批次详情页 HTML 里找到作者名字样，按真实标签/层级写选择器；找不到就省略该字段，绝不套用上面任何示例结构，也不要用 `a[href*="author"]` 这类臆想的模式——真实站点的作者链接路径千差万别。
+
+### 小说状态 statusPatten + bookStatus0/bookStatus1 专项（易错）
+
+三者是一组，必须严格配套：采集时 statusPatten 取出的字符串会被拿去精确匹配 bookStatus0（代表连载中）和 bookStatus1（代表已完结）的值，完全一致才生效，否则状态丢失。页面上「分类」行常在状态行上方，务必先按「字段错位专项」锚定状态自己的标签文字，再处理以下问题：
+
+1. 先在 HTML 里找到真实的状态文字（如「连载中」「已完结」「完本」），把它的字面值原样填进 bookStatus0（连载类）或 bookStatus1（完结类），一字不改。
+2. statusPatten 必须只取出这个纯字面值，不能带「状态：」等前缀或多余空白。如 `<p class="status">状态：连载中</p>` 且 bookStatus0 填「连载中」，则用 `.status::text##^\s*状态[：:]?\s*##` 剥掉前缀，使取出值恰好等于「连载中」。
+3. 不要臆造状态值（如 HTML 里是「连载中」却填「连载」），也不要让 bookStatus0 与 bookStatus1 填成同一个值。
+4. HTML 里找不到明确状态文字就这三个字段全部省略，不要猜。
+
+### 更新时间 upadateTimePatten + upadateTimeFormatPatten 专项（易错）
+
+两者也是一组：upadateTimePatten 取出的字符串会被 Java SimpleDateFormat 按 upadateTimeFormatPatten 解析，必须严格匹配，否则时间丢失且不会报错给你。页面上状态行常在更新时间行上方，务必先按「字段错位专项」锚定更新时间自己的标签文字，再处理以下问题：
+
+1. upadateTimePatten 只取纯日期时间串，剥掉「更新时间：」等前缀和多余文字。如 `<span class="uptime">更新：2024-01-05 12:30</span>`，用 `.uptime::text##^\s*更新[：:]?\s*##` 得到 `2024-01-05 12:30`。
+2. upadateTimeFormatPatten 用 Java SimpleDateFormat 占位符，必须与上一步取出的串逐字对应：年 `yyyy`、月 `MM`（大写）、日 `dd`、24 小时 `HH`（大写）、分 `mm`（小写）、秒 `ss`。常见错误：把月份写成小写 `mm`、把分钟写成大写 `MM`、把 24 小时写成 `hh`（那是 12 小时制）、格式里带中文或多余空格。
+3. 严格按实际串的长度写格式：取出 `2024-01-05` 就写 `yyyy-MM-dd`，取出 `2024-01-05 12:30:00` 才写 `yyyy-MM-dd HH:mm:ss`，不能多写或少写字段。
+4. 若页面显示的是相对时间（如「3小时前」「昨天」）或 HTML 里根本没有时间，两个字段都省略，不要臆造格式。
+
+## 四、全部真实示例 URL（URL 模板的协议与域名必须取自这里）
+
+- 列表页 URL：__LIST_URL__
+- 详情页 URL：__DETAIL_URL__
+- 目录页 URL：__INDEX_URL__
+- 正文页 URL：__CONTENT_URL__
+
+网站编码：__CHARSET__
+
+## 五、本批次页面 HTML（=== __PAGE_LABEL__ ===）
+
+__PAGE_HTML__
+
+## 六、输出要求（非常重要）
+
+- 只输出一个 JSON 对象，不要解释文字，不要 markdown 代码围栏。
+- 只输出本批次任务字段（__TASK_FIELDS__）：页面上存在就尽量多输出，把这些字段一次性写全；确实不存在的才省略。不要输出其它批次字段。
+- 键只能来自字段清单；值一律是字符串；不要臆造、不要填示例占位内容。
+- 所有 Patten 字段必须是带唯一锚点的 CSS 选择器，禁止裸正则/XPath/JSONPath。
+- 规则 id/class/标签层级要和本批次 HTML 源码完全一致，大小写敏感。
+- 输出前自检：① 每条 Patten 以 CSS 选择器开头，无孤立 `(\d+)`；② URL 模板以真实域名的完整 `协议://域名` 开头；③ {bookId}/{indexId} 各最多出现一次；④ bookIdPatten 取值填入 {bookDetailUrl 的 bookId} 能拼回真实详情页地址；⑤ 作者/状态/更新时间规则不含 `:eq(n)`/`:nth-child(n)` 等位置选择器，且锚定的是当前字段自己的标签文字而非父容器；⑥ 逐条在脑中套回本批次 HTML，确认命中的是当前那一行，剥前缀后只剩纯值。

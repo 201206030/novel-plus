@@ -118,6 +118,34 @@ button.cat_tab.on em { color: #fff; background: #3eaf7c; }
 .frm_btn_ghost { color: #5c6b64; background: #fff; border: 1px solid #dfe8e3; }
 .frm_btn_ghost:hover { color: #3eaf7c; border-color: #9fd8bd; background: #f6fbf8; }
 
+/* ---------------- AI 辅助生成规则面板（crawlSource_add / crawlSource_update 共用） ---------------- */
+.ai_panel { border: 1px solid #cfe8db; background: linear-gradient(180deg, #f7fdfa, #fff 60px); }
+.ai_panel > h4 { color: #2c8a61; }
+.ai_badge {
+    display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+    font-size: 11px; font-weight: 600; color: #fff; background: #3eaf7c; border-radius: 6px;
+}
+.ai_actions {
+    display: flex; align-items: center; gap: 12px; margin-top: 16px;
+    padding-top: 14px; border-top: 1px dashed #dceee4;
+}
+.ai_status { flex: 1; font-size: 12px; line-height: 1.6; color: #8a988f; }
+.ai_status.ok { color: #2c8a61; }
+.ai_status.err { color: #e05c3e; }
+.ai_btn {
+    height: 34px; padding: 0 24px; font-family: inherit; font-size: 13px; color: #fff;
+    background: linear-gradient(135deg, #47bd88, #35a06f); border: none; border-radius: 17px;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(62,175,124,.35);
+}
+.ai_btn:hover { filter: brightness(1.05); }
+.ai_btn:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
+/* AI 回填字段高亮：黄色底色 + 橙黄边框，覆盖 input/textarea/select */
+input.ai_filled, textarea.ai_filled, select.ai_filled {
+    border-color: #efb427 !important;
+    background: #fff9e0 !important;
+    box-shadow: 0 0 0 3px rgba(239, 180, 39, .15);
+}
+
 /* 窄屏降级：分类与字段改为单列（页面主体沿用 1020px 定宽） */
 @media (max-width: 760px) {
     .frm_grid, .cat_grid { grid-template-columns: 1fr; }
