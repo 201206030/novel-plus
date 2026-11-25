@@ -78,3 +78,14 @@ disk-monitor:
   # 告警邮件接收人列表（支持多个邮箱）
   recipients: xxyopen@foxmail.com,12345678@qq.com
 
+---
+# --------------------- Spring AI 配置（AI 辅助生成爬虫规则）----------------------
+spring:
+  ai:
+    openai:
+      api-key: ${AI_API_KEY:sk-xfobmihqsrdsepveoxqkgetafrelariuquzstquoeunkszgl}
+      base-url: ${AI_BASE_URL:https://api.siliconflow.cn}
+      chat:
+        options:
+          model: ${AI_MODEL:tencent/Hy4-preview}
+
