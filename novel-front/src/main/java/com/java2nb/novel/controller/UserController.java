@@ -6,6 +6,8 @@ import com.java2nb.novel.core.cache.CacheService;
 import com.java2nb.novel.core.enums.ResponseStatus;
 import com.java2nb.novel.core.utils.IpUtil;
 import com.java2nb.novel.core.utils.RandomValidateCodeUtil;
+import com.java2nb.novel.entity.Book;
+import com.java2nb.novel.entity.BookIndex;
 import com.java2nb.novel.entity.User;
 import com.java2nb.novel.entity.UserBuyRecord;
 import com.java2nb.novel.service.BookParagraphCommentService;
@@ -302,7 +304,13 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
-        buyRecord.setBuyAmount(bookService.queryBookIndex(buyRecord.getBookIndexId()).getBookPrice());
+        BookIndex bookIndex = bookService.queryBookIndex(buyRecord.getBookIndexId());
+        Book book = bookService.queryBookDetail(bookIndex.getBookId());
+        // 书名和章节名由服务端根据章节ID补全，避免客户端漏传导致订阅明细显示“未知小说/未知章节”
+        buyRecord.setBookId(bookIndex.getBookId());
+        buyRecord.setBookName(book == null ? null : book.getBookName());
+        buyRecord.setBookIndexName(bookIndex.getIndexName());
+        buyRecord.setBuyAmount(bookIndex.getBookPrice());
         userService.buyBookIndex(userDetails.getId(), buyRecord);
         return RestResult.ok();
     }
