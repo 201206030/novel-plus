@@ -158,60 +158,158 @@
             cursor: pointer;
         }
 
-        /* 禁止左右滑动：气泡等元素允许挂在正文外，但页面整体横向裁剪 */
+        /* 兜底：任何元素都不允许撑出横向滚动条 */
         html, body {
             overflow-x: hidden;
         }
 
         /* ---------- 段落评论 ---------- */
-        /* 正文段落左右留白由段落列表自己控制，右侧留给气泡 */
+        /* 右侧只留 22px 窄批注栏（左 18px），正文右边缘与章节标题基本齐平 */
         #paragraphList {
-            padding: 0 18px;
+            padding: 0 22px 0 18px;
         }
 
         .para-item {
             position: relative;
-            padding: 2px 0 6px;
+            padding: 2px 0 8px;
         }
 
         .para-text {
             text-indent: 2em;
         }
 
-        /* 段落入口：纯气泡+数字，绝对定位在段落底部最右侧（挂进右侧留白区） */
+        /* 段落评论气泡：胶囊 + 指向所属段落的左下尖角，三态（静默 / 讨论 / 热评） */
         .para-comment-btn {
             position: absolute;
-            right: -24px;
-            bottom: 6px;
+            right: -18px;
+            /* 段落底 8px 内边距 + (36px 行高 - 18px 气泡)/2，与末行文字垂直居中 */
+            bottom: 17px;
+            display: -webkit-inline-flex;
             display: inline-flex;
+            -webkit-align-items: center;
             align-items: center;
-            font-size: 13px;
-            line-height: 22px;
-            color: #c9c9c9;
-            background: transparent;
-            border: none;
-            padding: 0 4px;
-            cursor: pointer;
-        }
-
-        .para-comment-btn .layui-icon {
-            font-size: 26px;
-        }
-
-        /* 评论数嵌在气泡图标内部居中 */
-        .para-comment-btn .para-comment-num {
-            position: absolute;
-            top: 46%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-style: normal;
-            font-weight: bold;
-            font-size: 11px;
+            -webkit-justify-content: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* 固定尺寸：气泡右边界距屏幕 4px、左边界正好贴正文右缘，零侵入 */
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border-radius: 9px;
+            /* 阻断 .para-text 的 text-indent:2em（计算值 36px）继承，否则数字会把胶囊撑成 50px+ 长条 */
+            text-indent: 0;
+            background: #f2f5f3;
+            color: #b6c2bc;
+            font-size: 10px;
+            font-weight: 600;
             line-height: 1;
+            /* 等宽数字，切换评论数时宽度不跳动 */
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-transition: background .18s ease, color .18s ease, box-shadow .18s ease, -webkit-transform .18s ease, transform .18s ease;
+            transition: background .18s ease, color .18s ease, box-shadow .18s ease, -webkit-transform .18s ease, transform .18s ease;
         }
 
+        /* 视觉只有 18×18px，但把可点区域扩到约 36×40px，符合指尖触控尺寸 */
+        .para-comment-btn::before {
+            content: '';
+            position: absolute;
+            top: -11px;
+            right: -10px;
+            bottom: -11px;
+            left: -8px;
+        }
+
+        /* 左下小尖角，把气泡和它所属的段落关联起来 */
+        .para-comment-btn::after {
+            content: '';
+            position: absolute;
+            left: -2px;
+            bottom: 2px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 3px 4px 3px 0;
+            border-color: transparent #f2f5f3 transparent transparent;
+            -webkit-transition: border-color .18s ease;
+            transition: border-color .18s ease;
+        }
+
+        /* 静默态：极淡的对话气泡轮廓，只提示「这里可以评论」，不抢正文注意力 */
+        .para-comment-btn .pc-bubble-icon {
+            display: block;
+            width: 10px;
+            height: 10px;
+            fill: currentColor;
+        }
+
+        .para-comment-btn .para-comment-num {
+            display: none;
+            font-style: normal;
+            text-indent: 0;
+        }
+
+        /* 100 条以上显示 99+，字号与字距再收一点，避免把 18px 胶囊顶满 */
+        .para-comment-btn.lots {
+            font-size: 9px;
+            letter-spacing: -.3px;
+        }
+
+        /* 讨论态：轮廓换成数字，浅绿底强调 */
         .para-comment-btn.has {
-            color: #3eaf7c;
+            background: rgba(62, 175, 124, .14);
+            color: #2e8b62;
+        }
+
+        .para-comment-btn.has::after {
+            border-right-color: rgba(62, 175, 124, .14);
+        }
+
+        .para-comment-btn.has .pc-bubble-icon {
+            display: none;
+        }
+
+        .para-comment-btn.has .para-comment-num {
+            display: inline;
+        }
+
+        /* 热评态（≥10 条）：实色渐变 + 白字 + 柔光 */
+        .para-comment-btn.hot {
+            background: linear-gradient(135deg, #4bbd88, #2e8b62);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(46, 139, 98, .28);
+        }
+
+        .para-comment-btn.hot::after {
+            border-right-color: #3aa578;
+        }
+
+        /* 正在查看评论的段落：外圈高亮环 */
+        .para-comment-btn.active {
+            box-shadow: 0 0 0 2px rgba(62, 175, 124, .35);
+        }
+
+        .para-comment-btn.hot.active {
+            box-shadow: 0 2px 8px rgba(46, 139, 98, .28), 0 0 0 2px rgba(62, 175, 124, .45);
+        }
+
+        .para-comment-btn:active {
+            -webkit-transform: scale(.86);
+            transform: scale(.86);
+        }
+
+        /* 评论数变化时的轻微弹跳 */
+        @keyframes pcBump {
+            0% { -webkit-transform: scale(.7); transform: scale(.7); }
+            60% { -webkit-transform: scale(1.18); transform: scale(1.18); }
+            100% { -webkit-transform: scale(1); transform: scale(1); }
+        }
+
+        .para-comment-btn.bump {
+            -webkit-animation: pcBump .32s ease;
+            animation: pcBump .32s ease;
         }
 
         .pc-panel {
@@ -235,9 +333,28 @@
             padding: 30px 0;
         }
 
+        /* 评论用户头像 */
+        .pc-avatar {
+            float: left;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #f2f2f2;
+        }
+
         .pc-item {
             padding: 10px 2px;
             border-bottom: 1px solid #f0f0f0;
+            overflow: hidden;
+        }
+
+        .pc-item .pc-avatar {
+            width: 32px;
+            height: 32px;
+        }
+
+        /* 头像右侧的评论主体 */
+        .pc-item .pc-main {
+            margin-left: 42px;
         }
 
         .pc-item .pc-user {
@@ -255,6 +372,21 @@
             color: #bbb;
             margin-right: 8px;
             font-size: 12px;
+        }
+
+        /* 作者账号标识 */
+        .pc-author-badge {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 0 5px;
+            height: 16px;
+            line-height: 16px;
+            font-size: 11px;
+            font-style: normal;
+            color: #fff;
+            background: #e9542c;
+            border-radius: 3px;
+            vertical-align: middle;
         }
 
         .pc-item .pc-content {
@@ -293,10 +425,20 @@
             padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
             font-size: 14px;
+            overflow: hidden;
         }
 
         .pc-reply-item:last-child {
             border-bottom: none;
+        }
+
+        .pc-reply-item .pc-avatar {
+            width: 24px;
+            height: 24px;
+        }
+
+        .pc-reply-item .pc-main {
+            margin-left: 34px;
         }
 
         .pc-reply-item .pc-r-user {
@@ -382,8 +524,512 @@
             border-color: #3eaf7c !important;
         }
 
+        /* ---------- 阅读设置：主题变量 ---------- */
+        :root {
+            --rs-bg: #ffffff;
+            --rs-panel: #ffffff;
+            --rs-chip: #f4f7f5;
+            --rs-text: #333333;
+            --rs-title: #1f2d26;
+            --rs-sub: #98a8a1;
+            --rs-line: #f0f5f2;
+            --rs-nav-bg: #f2f6f4;
+            --rs-nav-text: #5c6b64;
+            --rs-header: linear-gradient(90deg, #3eaf7c, #2c8a61);
+            --rs-badge-bg: #f2f5f3;
+            --rs-badge-text: #b6c2bc;
+            --rs-badge-on-bg: rgba(62, 175, 124, .14);
+            --rs-badge-on-text: #2e8b62;
+            --rs-accent: #3eaf7c;
+            --rs-font-size: 18px;
+            --rs-line-height: 2;
+            --rs-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            --rs-badge-bottom: 17px;
+        }
+
+        /* 主题变量接管页面各处硬编码色（放在最后，覆盖前面的规则） */
+        html, body {
+            background: #ffffff;
+            background: var(--rs-bg);
+            color: #333333;
+            color: var(--rs-text);
+        }
+
+        .page-header {
+            background: linear-gradient(90deg, #3eaf7c, #2c8a61);
+            background: var(--rs-header);
+        }
+
+        #footer {
+            background: #ffffff;
+            background: var(--rs-panel);
+            border-top-color: #f0f5f2;
+            border-top-color: var(--rs-line);
+        }
+
+        #footer .ft-item {
+            color: #5c6b64;
+            color: var(--rs-nav-text);
+        }
+
+        .Readarea {
+            font-size: 18px;
+            font-size: var(--rs-font-size);
+            line-height: 2;
+            line-height: var(--rs-line-height);
+            color: #333333;
+            color: var(--rs-text);
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            font-family: var(--rs-font-family);
+        }
+
+        .chapter-title {
+            border-bottom-color: #f0f5f2;
+            border-bottom-color: var(--rs-line);
+        }
+
+        .chapter-title h1 {
+            color: #1f2d26;
+            color: var(--rs-title);
+        }
+
+        .chapter-title .ct-sub {
+            color: #98a8a1;
+            color: var(--rs-sub);
+        }
+
+        .read-nav a {
+            background: #f2f6f4;
+            background: var(--rs-nav-bg);
+            color: #5c6b64;
+            color: var(--rs-nav-text);
+        }
+
+        .vip-panel {
+            background: #f4f7f5;
+            background: var(--rs-chip);
+            border-color: #f0f5f2;
+            border-color: var(--rs-line);
+            color: #5c6b64;
+            color: var(--rs-nav-text);
+        }
+
+        .para-comment-btn {
+            background: #f2f5f3;
+            background: var(--rs-badge-bg);
+            color: #b6c2bc;
+            color: var(--rs-badge-text);
+            bottom: 17px;
+            bottom: var(--rs-badge-bottom);
+        }
+
+        .para-comment-btn::after {
+            border-right-color: #f2f5f3;
+            border-right-color: var(--rs-badge-bg);
+        }
+
+        /* 用 :not(.hot) 避免盖掉热评态的实色渐变 */
+        .para-comment-btn.has:not(.hot) {
+            background: rgba(62, 175, 124, .14);
+            background: var(--rs-badge-on-bg);
+            color: #2e8b62;
+            color: var(--rs-badge-on-text);
+        }
+
+        .para-comment-btn.has:not(.hot)::after {
+            border-right-color: rgba(62, 175, 124, .14);
+            border-right-color: var(--rs-badge-on-bg);
+        }
+
+        /* 段落气泡开关：关闭时只隐藏入口，不重建段落 DOM */
+        .rs-badge-off .para-comment-btn {
+            display: none !important;
+        }
+
+        /* layer 弹层（评论面板 / 设置面板 / alert）跟随主题 */
+        .layui-layer {
+            background: #ffffff !important;
+            background: var(--rs-panel) !important;
+            color: #333333;
+            color: var(--rs-text);
+        }
+
+        .layui-layer-title {
+            background: #ffffff !important;
+            background: var(--rs-panel) !important;
+            color: #1f2d26 !important;
+            color: var(--rs-title) !important;
+            border-bottom-color: #f0f5f2 !important;
+            border-bottom-color: var(--rs-line) !important;
+        }
+
+        .pc-item, .pc-reply-item {
+            border-bottom-color: #f0f5f2 !important;
+            border-bottom-color: var(--rs-line) !important;
+        }
+
+        .pc-content, .pc-r-content {
+            color: #333333 !important;
+            color: var(--rs-text) !important;
+        }
+
+        .pc-reply-list {
+            background: #f4f7f5 !important;
+            background: var(--rs-chip) !important;
+        }
+
+        .pc-textarea {
+            background: #ffffff !important;
+            background: var(--rs-bg) !important;
+            color: #333333 !important;
+            color: var(--rs-text) !important;
+            border-color: #f0f5f2 !important;
+            border-color: var(--rs-line) !important;
+        }
+
+        .pc-input-box {
+            border-top-color: #f0f5f2 !important;
+            border-top-color: var(--rs-line) !important;
+        }
+
+        /* ---------- 阅读设置：面板 ---------- */
+        .rs-layer {
+            border-radius: 14px 14px 0 0 !important;
+            overflow: hidden;
+        }
+
+        .rs-layer .layui-layer-title {
+            font-size: 15px;
+        }
+
+        .rs-panel {
+            padding: 4px 14px 12px;
+            max-height: 68vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .rs-row {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            min-height: 48px;
+            border-bottom: 1px solid #f0f5f2;
+            border-bottom: 1px solid var(--rs-line);
+        }
+
+        .rs-label {
+            -webkit-flex: 0 0 58px;
+            flex: 0 0 58px;
+            font-size: 13px;
+            color: #98a8a1;
+            color: var(--rs-sub);
+        }
+
+        .rs-ctrl {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .rs-stepper {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rs-step, .rs-seg button, .rs-reset {
+            background: #f4f7f5;
+            background: var(--rs-chip);
+            color: #5c6b64;
+            color: var(--rs-nav-text);
+            border: 1px solid #f0f5f2;
+            border: 1px solid var(--rs-line);
+            border-radius: 8px;
+            font-size: 12px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rs-step {
+            width: 42px;
+            height: 30px;
+            font-size: 13px;
+        }
+
+        .rs-step:active, .rs-seg button:active, .rs-reset:active {
+            opacity: .7;
+        }
+
+        .rs-value {
+            min-width: 44px;
+            text-align: center;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rs-seg {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex: 1;
+            flex: 1;
+            gap: 6px;
+        }
+
+        .rs-seg button {
+            -webkit-flex: 1;
+            flex: 1;
+            height: 30px;
+        }
+
+        .rs-seg button.on {
+            background: #3eaf7c;
+            background: var(--rs-accent);
+            border-color: #3eaf7c;
+            border-color: var(--rs-accent);
+            color: #fff;
+        }
+
+        .rs-themes {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex: 1;
+            flex: 1;
+            gap: 12px;
+        }
+
+        .rs-theme-dot {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            box-shadow: 0 0 0 1px #f0f5f2;
+            box-shadow: 0 0 0 1px var(--rs-line);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rs-theme-dot.on {
+            border-color: #3eaf7c;
+            border-color: var(--rs-accent);
+            box-shadow: none;
+        }
+
+        .rs-theme-dot.on::after {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 5px;
+            width: 6px;
+            height: 11px;
+            border: solid #3eaf7c;
+            border: solid var(--rs-accent);
+            border-width: 0 2px 2px 0;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        .rs-switch {
+            position: relative;
+            width: 44px;
+            height: 26px;
+            border-radius: 13px;
+            background: #f4f7f5;
+            background: var(--rs-chip);
+            border: 1px solid #f0f5f2;
+            border: 1px solid var(--rs-line);
+            cursor: pointer;
+            -webkit-transition: background .2s ease, border-color .2s ease;
+            transition: background .2s ease, border-color .2s ease;
+        }
+
+        .rs-switch.on {
+            background: #3eaf7c;
+            background: var(--rs-accent);
+            border-color: #3eaf7c;
+            border-color: var(--rs-accent);
+        }
+
+        .rs-switch .rs-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            -webkit-transition: -webkit-transform .2s ease;
+            transition: transform .2s ease;
+        }
+
+        .rs-switch.on .rs-knob {
+            -webkit-transform: translateX(18px);
+            transform: translateX(18px);
+        }
+
+        .rs-hint {
+            margin-left: 10px;
+            font-size: 11px;
+            color: #98a8a1;
+            color: var(--rs-sub);
+        }
+
+        .rs-foot {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            padding-top: 12px;
+        }
+
+        .rs-reset {
+            height: 30px;
+            padding: 0 14px;
+        }
+
+        .rs-tip {
+            font-size: 11px;
+            color: #98a8a1;
+            color: var(--rs-sub);
+        }
+
 
     </style>
+<!--/* 本模板 JS 为纯客户端脚本，用 th:inline="none" 关闭 Thymeleaf 文本内联表达式解析，
+       避免 JS 中的二维数组字面量被误判为表达式；此注释不会输出到响应 */-->
+<script th:inline="none">
+    /* 阅读设置：主题表与应用逻辑前置到 head，翻章时先应用再渲染，避免闪一下默认皮肤 */
+    var RS_STORE_KEY = 'novelReaderSettings';
+    var RS_THEMES = {
+        white: {
+            name: '纯白', bg: '#ffffff', panel: '#ffffff', chip: '#f4f7f5',
+            text: '#333333', title: '#1f2d26', sub: '#98a8a1', line: '#f0f5f2',
+            navBg: '#f2f6f4', navText: '#5c6b64',
+            header: 'linear-gradient(90deg, #3eaf7c, #2c8a61)',
+            badgeBg: '#f2f5f3', badgeText: '#b6c2bc',
+            onBg: 'rgba(62, 175, 124, .14)', onText: '#2e8b62'
+        },
+        green: {
+            name: '护眼', bg: '#e7f0e5', panel: '#f3f8f2', chip: '#dcebda',
+            text: '#33413a', title: '#23382c', sub: '#7f9387', line: '#d3e3d2',
+            navBg: '#dcead9', navText: '#4a5f52',
+            header: 'linear-gradient(90deg, #5aa981, #3f8a66)',
+            badgeBg: '#d7e7d6', badgeText: '#8ba392',
+            onBg: 'rgba(46, 139, 98, .18)', onText: '#2e7a55'
+        },
+        sepia: {
+            name: '羊皮纸', bg: '#f5ecd9', panel: '#faf3e4', chip: '#eee1c6',
+            text: '#4a3f30', title: '#3d3222', sub: '#a08f72', line: '#e8dcc2',
+            navBg: '#eee1c6', navText: '#6b5b41',
+            header: 'linear-gradient(90deg, #8a7a55, #6b5c3c)',
+            badgeBg: '#ecdfc3', badgeText: '#a89673',
+            onBg: 'rgba(139, 109, 26, .16)', onText: '#7a5f18'
+        },
+        gray: {
+            name: '淡灰', bg: '#eceff0', panel: '#f5f7f8', chip: '#e2e8ea',
+            text: '#333a3d', title: '#252c2f', sub: '#929da1', line: '#dde3e5',
+            navBg: '#e0e6e8', navText: '#4f5b5f',
+            header: 'linear-gradient(90deg, #5f7d86, #405c64)',
+            badgeBg: '#dfe6e8', badgeText: '#9aa7ab',
+            onBg: 'rgba(46, 139, 98, .16)', onText: '#2e8b62'
+        },
+        night: {
+            name: '夜间', bg: '#1b211f', panel: '#212825', chip: '#2c3531',
+            text: '#a9b5af', title: '#d3ddd7', sub: '#6f7f77', line: '#2c3531',
+            navBg: '#262e2b', navText: '#9faea7',
+            header: 'linear-gradient(90deg, #27332e, #1d2622)',
+            badgeBg: '#2a332f', badgeText: '#6f7f77',
+            onBg: 'rgba(62, 175, 124, .26)', onText: '#7fd3aa'
+        }
+    };
+    var RS_FONTS = {
+        system: {name: '系统', css: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif'},
+        serif: {name: '宋体', css: '"Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif'},
+        sans: {name: '黑体', css: '"Heiti SC", "PingFang SC", "Microsoft YaHei", sans-serif'},
+        kai: {name: '楷体', css: '"Kaiti SC", KaiTi, STKaiti, "Noto Serif CJK SC", serif'}
+    };
+    var RS_DEFAULTS = {fontSize: 18, lineHeight: 2, font: 'system', theme: 'white', showBadge: true};
+    var rsSettings;
+
+    function rsClamp(n, min, max) {
+        return Math.min(max, Math.max(min, n));
+    }
+
+    function rsRead() {
+        var raw = {};
+        try {
+            raw = JSON.parse(localStorage.getItem(RS_STORE_KEY) || '{}') || {};
+        } catch (e) {
+            raw = {};
+        }
+        var d = RS_DEFAULTS;
+        var fs = parseInt(raw.fontSize, 10);
+        var lh = Number(raw.lineHeight);
+        return {
+            fontSize: isNaN(fs) ? d.fontSize : rsClamp(fs, 14, 28),
+            lineHeight: [1.6, 2, 2.4].indexOf(lh) >= 0 ? lh : d.lineHeight,
+            font: RS_FONTS[raw.font] ? raw.font : d.font,
+            theme: RS_THEMES[raw.theme] ? raw.theme : d.theme,
+            showBadge: typeof raw.showBadge === 'boolean' ? raw.showBadge : d.showBadge
+        };
+    }
+
+    function rsSave() {
+        try {
+            localStorage.setItem(RS_STORE_KEY, JSON.stringify(rsSettings));
+        } catch (e) {
+        }
+    }
+
+    function rsApply() {
+        var s = rsSettings;
+        var t = RS_THEMES[s.theme] || RS_THEMES.white;
+        /* 老内核（Chrome < 49 等）不支持 CSS 自定义属性，setProperty 可能无效甚至抛错。
+           CSS 里已为每条 var() 声明准备了静态回退值，这里失败也不影响正文显示。 */
+        try {
+            var st = document.documentElement.style;
+            st.setProperty('--rs-bg', t.bg);
+            st.setProperty('--rs-panel', t.panel);
+            st.setProperty('--rs-chip', t.chip);
+            st.setProperty('--rs-text', t.text);
+            st.setProperty('--rs-title', t.title);
+            st.setProperty('--rs-sub', t.sub);
+            st.setProperty('--rs-line', t.line);
+            st.setProperty('--rs-nav-bg', t.navBg);
+            st.setProperty('--rs-nav-text', t.navText);
+            st.setProperty('--rs-header', t.header);
+            st.setProperty('--rs-badge-bg', t.badgeBg);
+            st.setProperty('--rs-badge-text', t.badgeText);
+            st.setProperty('--rs-badge-on-bg', t.onBg);
+            st.setProperty('--rs-badge-on-text', t.onText);
+            st.setProperty('--rs-font-size', s.fontSize + 'px');
+            st.setProperty('--rs-line-height', String(s.lineHeight));
+            st.setProperty('--rs-font-family', (RS_FONTS[s.font] || RS_FONTS.system).css);
+            /* 段落底 8px + (行高 - 18px 气泡)/2，字号/行距变化后气泡仍贴末行居中 */
+            st.setProperty('--rs-badge-bottom', (8 + (s.fontSize * s.lineHeight - 18) / 2) + 'px');
+        } catch (e) {
+        }
+        var html = document.documentElement;
+        html.setAttribute('data-rs-theme', s.theme);
+        /* classList 在部分老 WebView 上缺失，改用 className 字符串操作（纯 ES5） */
+        var cls = String(html.className || '')
+            .replace(/\brs-badge-off\b/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/^\s+|\s+$/g, '');
+        html.className = s.showBadge ? cls : (cls ? cls + ' rs-badge-off' : 'rs-badge-off');
+    }
+
+    rsSettings = rsRead();
+    rsApply();
+</script>
 </head>
 <body id="read">
 <div id="content">
@@ -441,6 +1087,38 @@
         <div id="contentRaw" style="display: none" th:utext="${bookContent.content}"></div>
         <div id="paragraphList"></div>
     </div>
+    <!-- 正文兜底：正文原本完全依赖主脚本拆段渲染（contentRaw 默认隐藏）。老内核一旦解析不了
+         主脚本里的语法，整页就会空白。这段独立的纯 ES5 脚本检测段落是否生成，没生成就直接
+         显示服务端原始正文，保证最差情况也能正常阅读。 -->
+    <script th:inline="none">
+    (function () {
+        function fallback() {
+            var list = document.getElementById('paragraphList');
+            var raw = document.getElementById('contentRaw');
+            if (!raw || (list && list.getElementsByTagName('div').length > 0)) {
+                return;
+            }
+            raw.style.display = 'block';
+            raw.style.padding = '0 18px';
+            raw.style.fontSize = '18px';
+            raw.style.lineHeight = '2';
+            raw.style.color = '#333333';
+            raw.style.wordWrap = 'break-word';
+        }
+        if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', fallback, false);
+            window.addEventListener('load', fallback, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('onreadystatechange', function () {
+                if (document.readyState === 'complete') {
+                    fallback();
+                }
+            });
+            window.attachEvent('onload', fallback);
+        }
+        window.setTimeout(fallback, 1200);
+    })();
+    </script>
     <div class="vip-panel" th:if="${needBuy}">
         <div class="vip-title">此章为VIP章节，需要订阅后才能继续阅读</div>
         价格：<span class="vip-price" th:text="${bookIndex.bookPrice}+'屋币(1元=100屋币)'"></span>
@@ -499,21 +1177,36 @@
 
 </script>
 
-<script language="javascript">
-    var books = localStorage.getItem("historyBooks");
-    var item = parseInt($("#bookIdHidden").val());
-    if (books) {
-        var booksArr = JSON.parse(books);
-        if (booksArr.length >= 50) {
-            booksArr.splice(0, 1);
-        }
-        booksArr.remove(item);
-        booksArr[booksArr.length] = item;
-    } else {
-        var booksArr = [item];
+<script language="javascript" th:inline="none">
+    /* 老浏览器无痕/隐私模式下 localStorage 会直接抛异常，而这里是主脚本第一段，
+       一旦抛错后面的 renderParagraphs() 就不执行，正文会整页空白。全部加保护。 */
+    var books = null;
+    try {
+        books = localStorage.getItem("historyBooks");
+    } catch (e) {
     }
-
-    localStorage.setItem("historyBooks", JSON.stringify(booksArr));//
+    var item = parseInt($("#bookIdHidden").val());
+    var booksArr = [item];
+    if (books) {
+        try {
+            var parsedBooks = JSON.parse(books);
+            if (parsedBooks && typeof parsedBooks.length === 'number') {
+                booksArr = parsedBooks;
+                if (booksArr.length >= 50) {
+                    booksArr.splice(0, 1);
+                }
+                if (typeof booksArr.remove === 'function') {
+                    booksArr.remove(item);
+                }
+                booksArr[booksArr.length] = item;
+            }
+        } catch (e) {
+        }
+    }
+    try {
+        localStorage.setItem("historyBooks", JSON.stringify(booksArr));
+    } catch (e) {
+    }
 
     function toMyCollect() {
         var token = localStorage.getItem("token");
@@ -622,23 +1315,25 @@
      * @param  pitch  读取时声音的音高 0~2  正常1
      * @returns SpeechSynthesisUtterance
      */
-    function speak({text, speechRate, lang, volume, pitch, voice}, endEvent, startEvent) {
+    /* 兼容老内核：这里原来是 ES6 解构参数 + const，老 WebView 解析到它会让「整个」script
+       报 SyntaxError，连带后面的 renderParagraphs() 都不执行，正文一片空白。改用纯 ES5。 */
+    function speak(opts, endEvent, startEvent) {
         if (!window.SpeechSynthesisUtterance) {
-            console.warn('当前浏览器不支持文字转语音服务')
             return;
         }
-
+        opts = opts || {};
+        var text = opts.text;
         if (!text) {
             return;
         }
 
-        const speechUtterance = new SpeechSynthesisUtterance();
+        var speechUtterance = new SpeechSynthesisUtterance();
         speechUtterance.text = text;
-        speechUtterance.rate = speechRate || 1;
-        speechUtterance.lang = lang || 'zh-CN';
-        speechUtterance.volume = volume || 1;
-        speechUtterance.pitch = pitch || 1;
-        speechUtterance.voice = voice || null;
+        speechUtterance.rate = opts.speechRate || 1;
+        speechUtterance.lang = opts.lang || 'zh-CN';
+        speechUtterance.volume = opts.volume || 1;
+        speechUtterance.pitch = opts.pitch || 1;
+        speechUtterance.voice = opts.voice || null;
         speechUtterance.onend = function () {
             endEvent && endEvent();
         };
@@ -657,7 +1352,10 @@
         var $paras = $('#paragraphList .para-text');
         if ($paras.length > 0) {
             return $paras.map(function () {
-                return $(this).text();
+                // 正文是纯文本节点，评论气泡是子元素；只取文本节点，避免把评论数读出来
+                return $(this).contents().filter(function () {
+                    return this.nodeType === 3;
+                }).text();
             }).get().join('\n');
         }
         return $('#chaptercontent').text();
@@ -767,9 +1465,9 @@
             var $item = $('<div class="para-item"></div>');
             // 用.text()插入，避免正文内容作为HTML二次解析
             var $p = $('<p class="para-text"></p>').text(paras[i]).appendTo($item);
-            var $btn = $('<span class="para-comment-btn" data-idx="' + i + '"></span>');
-            // 纯气泡图标，数字角标由 refreshCountChips 填充；float:right 贴在段落最后一行右侧
-            $btn.append('<i class="layui-icon">&#xe606;</i>');
+            var $btn = $('<span class="para-comment-btn" data-idx="' + i + '" role="button" aria-label="本段暂无评论，点击发表"></span>');
+            // 静默态显示气泡轮廓，评论数与热评/高亮态由 refreshCountChips 填充
+            $btn.append('<svg class="pc-bubble-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>');
             $btn.append('<em class="para-comment-num"></em>');
             $p.append($btn);
             $list.append($item);
@@ -777,15 +1475,36 @@
         refreshCountChips();
     }
 
-    // 刷新每段气泡角标：有评论高亮并显示总数（含回复），无评论置灰无数字
+    // 首次加载只初始化，之后评论数发生变化才给气泡弹跳反馈
+    var pcCountsLoaded = false;
+
+    // 刷新每段气泡角标：静默态只留轮廓，1~9 条浅绿数字，≥10 条热评实色
     function refreshCountChips() {
         ParagraphApi.loadCounts().then(function (counts) {
             paraCountMap = counts || {};
             $('.para-comment-btn').each(function () {
-                var num = paraCountMap[String($(this).data('idx'))] || 0;
-                $(this).toggleClass('has', num > 0);
-                $(this).find('.para-comment-num').text(num > 0 ? num : '');
+                var $btn = $(this);
+                var num = paraCountMap[String($btn.data('idx'))] || 0;
+                var label = num > 99 ? '99+' : String(num);
+                var prev = $btn.data('num');
+                $btn.toggleClass('has', num > 0)
+                    .toggleClass('hot', num >= 10)
+                    .toggleClass('lots', num > 99)
+                    .attr('aria-label', num > 0
+                        ? ('本段 ' + label + ' 条评论，点击查看')
+                        : '本段暂无评论，点击发表');
+                $btn.find('.para-comment-num').text(num > 0 ? label : '');
+                if (pcCountsLoaded && prev !== undefined && prev !== num) {
+                    $btn.removeClass('bump');
+                    void $btn[0].offsetWidth; // 强制重排，保证连续两次变化都能重播动画
+                    $btn.addClass('bump');
+                    setTimeout(function () {
+                        $btn.removeClass('bump');
+                    }, 340);
+                }
+                $btn.data('num', num);
             });
+            pcCountsLoaded = true;
         });
     }
 
@@ -840,7 +1559,8 @@
                 kbFixCleanup = fixPanelKeyboard(layero);
             },
             end: function () {
-                // 面板销毁：解除页面锁定并移除键盘监听
+                // 面板销毁：解除页面锁定、移除键盘监听、取消气泡高亮
+                $('.para-comment-btn.active').removeClass('active');
                 unlockBodyScroll();
                 if (kbFixCleanup) {
                     kbFixCleanup();
@@ -926,17 +1646,37 @@
         });
     }
 
+    // 默认头像：接口未返回头像或图片加载失败时使用
+    var PC_DEFAULT_AVATAR = '/images/man.png';
+
+    // 构建评论用户头像，src只作为资源地址，不参与HTML拼接
+    function buildPcAvatar(photo) {
+        return $('<img class="pc-avatar"/>')
+            .attr('src', photo || PC_DEFAULT_AVATAR)
+            .on('error', function () {
+                if (this.getAttribute('src') !== PC_DEFAULT_AVATAR) {
+                    this.src = PC_DEFAULT_AVATAR;
+                }
+            });
+    }
+
     // 构建单条顶层评论（含回复子列表），全部用jQuery .text()填充避免HTML注入
     function buildPcItem(item) {
         var $item = $('<div class="pc-item"></div>');
+        // 作者回复：笔名/头像 + 「作者」标识；普通回复：用户昵称/头像 + 属地读者
+        var topAuthor = !!item.authorReply;
+        $item.append(buildPcAvatar(topAuthor ? item.authorPicUrl : item.createUserPhoto));
+        var $main = $('<div class="pc-main"></div>');
         var $user = $('<div class="pc-user"></div>');
-        $user.append($('<span class="pc-name"></span>').text(item.createUserName));
-        if (item.location) {
+        $user.append($('<span class="pc-name"></span>').text(topAuthor ? (item.authorPenName || '作者') : item.createUserName));
+        if (topAuthor) {
+            $user.append($('<em class="pc-author-badge"></em>').text('作者'));
+        } else if (item.location) {
             $user.append($('<span class="pc-loc"></span>').text(item.location + '读者'));
         }
         $user.append($('<span class="pc-time" style="float:right"></span>').text(item.createTime));
-        $item.append($user);
-        $item.append($('<div class="pc-content"></div>').text(item.commentContent));
+        $main.append($user);
+        $main.append($('<div class="pc-content"></div>').text(item.commentContent));
 
         var replies = item.replies || [];
         if (replies.length > 0) {
@@ -944,30 +1684,38 @@
             for (var j = 0; j < replies.length; j++) {
                 $rep.append(buildPcReplyItem(item.id, replies[j]));
             }
-            $item.append($rep);
+            $main.append($rep);
         }
         var $op = $('<div class="pc-op-bar"></div>');
         if (replies.length > 0) {
             $op.append($('<span class="pc-reply-num"></span>').text(replies.length + '条回复'));
         }
         $op.append($('<span class="pc-reply-btn">回复</span>').data('root', item.id).data('name', item.createUserName).data('uid', item.createUserId));
-        $item.append($op);
+        $main.append($op);
+        $item.append($main);
         return $item;
     }
 
     // 构建单条回复（回复目标始终是所属顶层评论）
     function buildPcReplyItem(rootId, r) {
+        var replyAuthor = !!r.authorReply;
         var $ri = $('<div class="pc-reply-item"></div>');
+        $ri.append(buildPcAvatar(replyAuthor ? r.authorPicUrl : r.createUserPhoto));
+        var $rmain = $('<div class="pc-main"></div>');
         var $ru = $('<div class="pc-r-user"></div>');
-        $ru.append($('<span class="pc-name"></span>').text(r.createUserName));
+        $ru.append($('<span class="pc-name"></span>').text(replyAuthor ? (r.authorPenName || '作者') : r.createUserName));
+        if (replyAuthor) {
+            $ru.append($('<em class="pc-author-badge"></em>').text('作者'));
+        }
         if (r.replyUserName) {
             $ru.append($('<span class="pc-to"></span>').text('回复 ' + r.replyUserName));
         }
         $ru.append($('<span style="float:right"></span>').text(r.createTime));
-        $ri.append($ru);
-        $ri.append($('<div class="pc-r-content"></div>').text(r.commentContent));
-        $ri.append($('<div class="pc-op-bar"></div>')
+        $rmain.append($ru);
+        $rmain.append($('<div class="pc-r-content"></div>').text(r.commentContent));
+        $rmain.append($('<div class="pc-op-bar"></div>')
             .append($('<span class="pc-reply-btn">回复</span>').data('root', rootId).data('name', r.createUserName).data('uid', r.createUserId)));
+        $ri.append($rmain);
         return $ri;
     }
 
@@ -1016,13 +1764,255 @@
         });
     }
 
-    // 评论入口事件委派
+    // 评论入口事件委派：打开面板期间高亮当前段落气泡
     $('#paragraphList').on('click', '.para-comment-btn', function () {
+        $('.para-comment-btn.active').removeClass('active');
+        $(this).addClass('active');
         openCommentPanel(parseInt($(this).data('idx')));
     });
 
     // 页面加载：拆分段落并初始化评论入口（VIP未购买章节无正文，自动跳过）
     renderParagraphs();
+
+    /************************************ 阅读设置 ************************************/
+    // 主题表 / 存储 / 样式应用定义在 head 的前置脚本里（避免翻章闪烁），这里只负责面板与交互
+    var RS_GEAR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        + '<circle cx="12" cy="12" r="3"></circle>'
+        + '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33'
+        + ' 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06'
+        + 'a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09'
+        + 'A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9'
+        + 'a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06'
+        + 'a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09'
+        + 'a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+
+    // 生成一组分段选择按钮
+    function rsSegHtml(key, opts) {
+        var html = '<div class="rs-seg" data-key="' + key + '">';
+        for (var i = 0; i < opts.length; i++) {
+            html += '<button type="button" data-val="' + opts[i][0] + '">' + opts[i][1] + '</button>';
+        }
+        return html + '</div>';
+    }
+
+    function rsPanelHtml() {
+        var dots = '';
+        for (var k in RS_THEMES) {
+            if (RS_THEMES.hasOwnProperty(k)) {
+                dots += '<span class="rs-theme-dot" data-val="' + k + '" title="' + RS_THEMES[k].name
+                    + '" style="background:' + RS_THEMES[k].bg + '"></span>';
+            }
+        }
+        return '' +
+            '<div class="rs-panel" id="readerSettingPanel">' +
+            '  <div class="rs-row">' +
+            '    <span class="rs-label">字号</span>' +
+            '    <div class="rs-ctrl"><div class="rs-stepper">' +
+            '      <button type="button" class="rs-step" data-act="fontDown">A-</button>' +
+            '      <span class="rs-value" id="rsFontSizeVal"></span>' +
+            '      <button type="button" class="rs-step" data-act="fontUp">A+</button>' +
+            '    </div></div>' +
+            '  </div>' +
+            '  <div class="rs-row"><span class="rs-label">行距</span><div class="rs-ctrl">' +
+            /* 注意：数组首元素前留一个空格写成 "[ ["，避免 "[["
+               被 Thymeleaf 当成内联表达式起始符（th:inline="none" 之外的第二道保险） */
+            rsSegHtml('lineHeight', [ [1.6, '紧凑'], [2, '标准'], [2.4, '宽松'] ]) +
+            '  </div></div>' +
+            '  <div class="rs-row"><span class="rs-label">字体</span><div class="rs-ctrl">' +
+            rsSegHtml('font', [ ['system', '系统'], ['serif', '宋体'], ['sans', '黑体'], ['kai', '楷体'] ]) +
+            '  </div></div>' +
+            '  <div class="rs-row"><span class="rs-label">背景</span><div class="rs-ctrl">' +
+            '    <div class="rs-themes">' + dots + '</div>' +
+            '  </div></div>' +
+            '  <div class="rs-row"><span class="rs-label">段落气泡</span><div class="rs-ctrl">' +
+            '    <span class="rs-switch"><span class="rs-knob"></span></span>' +
+            '    <span class="rs-hint">显示每段评论入口</span>' +
+            '  </div></div>' +
+            '  <div class="rs-foot">' +
+            '    <button type="button" class="rs-reset">恢复默认</button>' +
+            '    <span class="rs-tip">本机保存 · 换章生效 · 点击屏幕可收起</span>' +
+            '  </div>' +
+            '</div>';
+    }
+
+    // 把当前设置回填到面板控件
+    function rsSyncUi() {
+        var $p = $('#readerSettingPanel');
+        if (!$p.length) {
+            return;
+        }
+        $p.find('#rsFontSizeVal').text(rsSettings.fontSize + 'px');
+        $p.find('.rs-seg').each(function () {
+            var key = $(this).data('key');
+            $(this).children('button').each(function () {
+                $(this).toggleClass('on', String($(this).data('val')) === String(rsSettings[key]));
+            });
+        });
+        $p.find('.rs-theme-dot').each(function () {
+            $(this).toggleClass('on', $(this).data('val') === rsSettings.theme);
+        });
+        $p.find('.rs-switch').toggleClass('on', rsSettings.showBadge);
+    }
+
+    function rsUpdate(patch) {
+        var badgeWasOff = !rsSettings.showBadge;
+        $.extend(rsSettings, patch);
+        rsSave();
+        rsApply();
+        rsSyncUi();
+        // 气泡从关闭切回开启时补拉一次评论数
+        if (badgeWasOff && rsSettings.showBadge) {
+            refreshCountChips();
+        }
+    }
+
+    // 面板状态：所有入口（点屏幕 / 点齿轮 / 点遮罩 / 点关闭按钮）都走这一处，避免重复弹层
+    var rsLayerIndex = null;
+    var rsPanelOpen = false;
+    var rsTouchStart = null;
+    var rsTouchMoved = false;
+
+    function closeReaderSettings() {
+        if (!rsPanelOpen) {
+            return;
+        }
+        rsPanelOpen = false;
+        if (rsLayerIndex !== null) {
+            var idx = rsLayerIndex;
+            rsLayerIndex = null;
+            if (window.layer && $.isFunction(layer.close)) {
+                layer.close(idx);
+            }
+        }
+    }
+
+    function openReaderSettings() {
+        if (rsPanelOpen) {
+            return;
+        }
+        rsPanelOpen = true;
+        rsLayerIndex = layer.open({
+            type: 1,
+            title: '阅读设置',
+            closeBtn: 1,
+            offset: 'b',
+            area: '100%',
+            shade: 0.45,
+            // 遮罩点击由下面的统一委托处理，关掉 layer 自带的 shadeClose 避免双重关闭
+            shadeClose: false,
+            anim: 2,
+            skin: 'rs-layer',
+            scrollbar: false,
+            content: rsPanelHtml(),
+            end: function () {
+                // 点右上角 × 或 layer.closeAll 时也要把状态复位
+                rsPanelOpen = false;
+                rsLayerIndex = null;
+            },
+            success: function () {
+                var $p = $('#readerSettingPanel');
+                rsSyncUi();
+                $p.on('click', '[data-act]', function () {
+                    var step = $(this).data('act') === 'fontUp' ? 2 : -2;
+                    rsUpdate({fontSize: rsClamp(rsSettings.fontSize + step, 14, 28)});
+                });
+                $p.on('click', '.rs-seg button', function () {
+                    var key = $(this).parent().data('key');
+                    var val = $(this).data('val');
+                    if (key === 'lineHeight') {
+                        val = Number(val);
+                    }
+                    var patch = {};
+                    patch[key] = val;
+                    rsUpdate(patch);
+                });
+                $p.on('click', '.rs-theme-dot', function () {
+                    rsUpdate({theme: String($(this).data('val'))});
+                });
+                $p.on('click', '.rs-switch', function () {
+                    rsUpdate({showBadge: !rsSettings.showBadge});
+                });
+                $p.on('click', '.rs-reset', function () {
+                    var badgeWasOff = !rsSettings.showBadge;
+                    rsSettings = $.extend({}, RS_DEFAULTS);
+                    rsSave();
+                    rsApply();
+                    rsSyncUi();
+                    if (badgeWasOff) {
+                        refreshCountChips();
+                    }
+                });
+            }
+        });
+    }
+
+    function toggleReaderSettings() {
+        if (rsPanelOpen) {
+            closeReaderSettings();
+        } else {
+            openReaderSettings();
+        }
+    }
+
+    // 触屏滚动防误触：按下后位移超过 8px 视为滚动，忽略随后派发的 click
+    $(document).on('touchstart.rsSettings', function (e) {
+        var t = e.originalEvent && e.originalEvent.touches && e.originalEvent.touches[0];
+        rsTouchStart = t ? {x: t.clientX, y: t.clientY} : null;
+        rsTouchMoved = false;
+    }).on('touchmove.rsSettings', function (e) {
+        var t = e.originalEvent && e.originalEvent.touches && e.originalEvent.touches[0];
+        if (rsTouchStart && t &&
+            (Math.abs(t.clientX - rsTouchStart.x) > 8 || Math.abs(t.clientY - rsTouchStart.y) > 8)) {
+            rsTouchMoved = true;
+        }
+    });
+
+    // 点击屏幕唤出 / 收起阅读设置：点一下出现，再点一下隐藏
+    $(document).on('click.rsSettings', function (e) {
+        if (rsTouchMoved) {
+            rsTouchMoved = false;
+            return;
+        }
+        var $t = $(e.target);
+
+        // 页头齿轮同样是切换（不再用内联 javascript: 调用，避免和这里重复触发）
+        if ($t.closest('.rs-gear-btn').length) {
+            e.preventDefault();
+            toggleReaderSettings();
+            return;
+        }
+
+        // 任何 layer 弹层内部（设置面板、段落评论面板、alert）都不参与切换
+        if ($t.closest('.layui-layer').length) {
+            return;
+        }
+
+        // 已打开：点遮罩或页面任意空白处一律收起
+        if (rsPanelOpen) {
+            closeReaderSettings();
+            return;
+        }
+
+        // 未打开：只在阅读内容区、且点了非交互元素时唤出
+        if (!$t.closest('#content').length) {
+            return;
+        }
+        if ($t.closest('a, button, input, textarea, select, .para-comment-btn, .page-header, .read-nav, .vip-panel').length) {
+            return;
+        }
+        // 用户正在选中文字（复制/划线）时不打扰
+        var sel = window.getSelection && window.getSelection();
+        if (sel && String(sel).length > 0) {
+            return;
+        }
+        openReaderSettings();
+    });
+
+    // 页头保留一个可见入口（首页按钮左侧），提升可发现性；点击同样走上面的统一委托
+    $('.page-header').children('.ph-btn').last().before(
+        '<a class="ph-btn rs-gear-btn" href="javascript:;" aria-label="阅读设置" title="阅读设置">'
+        + RS_GEAR_ICON + '</a>'
+    );
 
 </script>
 

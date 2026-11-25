@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>评论管理-作家管理系统</title>
+        <link rel="stylesheet" href="/css/base.css?v=1"/>
+        <link rel="stylesheet" href="/css/user.css"/>
+        <link rel="stylesheet" href="/css/author.css"/>
+        <style type="text/css">
+            .author_zone .cm_bar { padding:14px 0 0 }
+            .author_zone .cm_bar select { height:30px; padding:0 8px; border:1px solid #d8e6de; border-radius:4px;
+                color:#5c6b64; font-size:13px; background:#fff }
+            .author_zone .updateTable td.cm_content { white-space:normal; line-height:1.6; word-break:break-all;
+                padding:10px 8px; max-width:420px }
+            .author_zone .updateTable td.cm_opt a { font-size:12px; color:#2c8a61; cursor:pointer }
+            .author_zone .updateTable td.cm_opt a:hover { text-decoration:underline }
+            .author_zone .cm_empty { padding:50px 0; text-align:center; color:#98a8a1; font-size:14px }
+            .author_zone .cm_user_avatar { width:34px; height:34px; border-radius:50%; object-fit:cover;
+                vertical-align:middle; margin-right:8px; background:#f6f6f6 }
+            .author_zone .cm_author_badge { display:inline-block; margin-left:6px; padding:0 7px; height:19px;
+                line-height:19px; font-size:11px; font-style:normal; font-weight:600; letter-spacing:.5px;
+                color:#fff; background:linear-gradient(135deg,#ff8a4c,#e8451f); border:1px solid #d93d18;
+                border-radius:4px; vertical-align:middle; box-shadow:0 1px 3px rgba(232,69,31,.28) }
+
+            /* 回复弹窗：layer 会把内容移到 body 下独立渲染，故样式不依赖 .author_zone 前缀 */
+            .acm-wrap { padding:8px 24px 18px; font-size:13px; color:#5c6b64 }
+            .acm-origin { background:#f7faf8; border:1px solid #e8f0eb; border-radius:6px;
+                padding:10px 14px; margin:14px 0 18px }
+            .acm-origin-tit { font-size:12px; color:#98a8a1; margin-bottom:6px }
+            .acm-origin-body { line-height:1.7; color:#3d4a44; word-break:break-all }
+            .acm-sec-tit { font-size:13px; color:#3d4a44; font-weight:bold; margin-bottom:8px;
+                padding-left:8px; border-left:3px solid #3eaf7c }
+            .acm-sec-tit span { color:#98a8a1; font-weight:normal }
+            .acm-list { max-height:280px; overflow-y:auto; margin-bottom:14px }
+            .acm-row { overflow:hidden; padding:10px 0; border-bottom:1px solid #eef4f0 }
+            .acm-row:last-child { border-bottom:0 }
+            .acm-avatar { width:38px; height:38px; border-radius:50%; float:left; object-fit:cover;
+                background:#f6f6f6 }
+            .acm-main { margin-left:50px }
+            .acm-head { font-size:13px; color:#444; margin-bottom:4px; overflow:hidden }
+            .acm-name { color:#3eaf7c; font-weight:bold; margin-right:8px }
+            .acm-name-clickable { cursor:pointer }
+            .acm-name-clickable:hover { text-decoration:underline }
+            .acm-name-active { color:#e9542c }
+            .acm-to { color:#98a8a1; margin-right:8px }
+            .acm-loc { color:#bbb; font-size:12px; margin-right:8px }
+            .acm-time { color:#b0b0b0; font-size:12px; float:right }
+            .acm-badge { display:inline-block; margin-right:8px; padding:0 7px; height:19px; line-height:19px;
+                font-size:11px; font-style:normal; font-weight:600; letter-spacing:.5px; color:#fff;
+                background:linear-gradient(135deg,#ff8a4c,#e8451f); border:1px solid #d93d18;
+                border-radius:4px; vertical-align:middle; box-shadow:0 1px 3px rgba(232,69,31,.28) }
+            .acm-content { color:#333; line-height:1.7; word-break:break-all }
+            .acm-empty { color:#98a8a1; font-size:12px; padding:18px 0; text-align:center }
+            .acm-reply-target { font-size:12px; color:#98a8a1; margin-bottom:6px }
+            .acm-reply-target b { color:#e9542c }
+            .acm-reply-target a { color:#3eaf7c; margin-left:10px }
+            .acm-reply-target a:hover { text-decoration:underline }
+            .acm-editor textarea { width:100%; height:90px; padding:8px 10px; box-sizing:border-box;
+                border:1px solid #d8e6de; border-radius:4px; font-size:13px; color:#333; resize:vertical;
+                font-family:inherit; line-height:1.6 }
+            .acm-editor-tip { margin-top:8px; font-size:12px; color:#98a8a1; text-align:right }
+        </style>
+    </head>
+</head>
+<body class="author_zone">
+
+<div th:replace="author/common/header :: header"></div>
+
+<div class="main box_center cf">
+    <div class="userBox cf">
+        <div th:replace="author/common/menu :: menu('comment')"></div>
+        <div class="my_r">
+            <div class="my_bookshelf">
+                <div class="title cf">
+                    <h2 class="fl">评论管理</h2>
+                    <div class="fr cm_bar">
+                        <select id="bookSelect" onchange="switchBook()"></select>
+                    </div>
+                </div>
+
+                <div class="title income_tabs" id="tabBar">
+                    <a href="javascript:;" class="itab active" data-tab="book" onclick="switchTab('book')">书评</a>
+                    <a href="javascript:;" class="itab" data-tab="paragraph" onclick="switchTab('paragraph')">段评</a>
+                </div>
+
+                <div id="noBookDiv" style="display:none">
+                    <div class="cm_empty">还没有作品，暂无评论可管理～</div>
+                </div>
+
+                <div id="commentPanel" style="display:none">
+                    <div id="divData" class="updateTable">
+                        <table cellpadding="0" cellspacing="0">
+                            <thead>
+                            <tr id="listHead"></tr>
+                            </thead>
+                            <tbody id="commentList"></tbody>
+                        </table>
+                        <div class="pageBox cf" id="shellPage"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 回复弹窗内容：布局对齐前台评论区（头像 + 昵称 + 作者标识 + 时间 + 内容） -->
+<div id="replyDialog" class="acm-wrap">
+    <div class="acm-origin">
+        <div class="acm-origin-tit">原评论</div>
+        <div class="acm-origin-body" id="replyOrigin"></div>
+    </div>
+    <div class="acm-sec-tit">全部回复 <span id="replyCount">(0)</span></div>
+    <div class="acm-list" id="replyHistory"></div>
+    <div class="acm-editor">
+        <div class="acm-reply-target" id="replyTargetTip" style="display:none">
+            回复目标：<b id="replyTargetName"></b><a href="javascript:;" id="resetReplyTarget">回复楼主</a>
+        </div>
+        <textarea id="replyContent" maxlength="200" placeholder="输入回复内容，最多200字"></textarea>
+        <div class="acm-editor-tip">回复后读者端会收到通知；作家端不能修改或删除评论</div>
+    </div>
+</div>
+
+</body>
+<script src="/javascript/jquery-1.8.0.min.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script src="/javascript/header.js" type="text/javascript"></script>
+<script src="/javascript/user.js" type="text/javascript"></script>
+<script src="/javascript/common.js" type="text/javascript"></script>
+
+<script language="javascript" type="text/javascript">
+    var currentTab = 'book';
+    var currentBookId = null;
+    var pageCurr = 1;
+    var pageSize = 10;
+    // 当前页列表数据（回复弹窗取上下文用）
+    var bookRows = [];
+    var paragraphRows = [];
+    // 当前弹窗目标
+    var replyTarget = null;
+    // 弹窗内容模板（避免 layer 复用已挂载 DOM 出错）
+    var replyDialogHtml = null;
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // 加载作者名下作品下拉
+    function loadBooks() {
+        $.ajax({
+            type: 'get',
+            url: '/author/comment/bookList',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 200) {
+                    var books = data.data || [];
+                    if (!books.length) {
+                        $('#noBookDiv').show();
+                        $('#commentPanel').hide();
+                        return;
+                    }
+                    var html = '';
+                    for (var i = 0; i < books.length; i++) {
+                        html += '<option value="' + books[i].id + '">' + escapeHtml(books[i].bookName) + '</option>';
+                    }
+                    $('#bookSelect').html(html);
+                    currentBookId = books[0].id;
+                    search(1);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () { layer.alert('网络异常'); }
+        });
+    }
+
+    function switchBook() {
+        currentBookId = $('#bookSelect').val();
+        switchTab(currentTab);
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        $('#tabBar .itab').each(function () {
+            $(this).toggleClass('active', $(this).attr('data-tab') === tab);
+        });
+        search(1);
+    }
+
+    function search(curr) {
+        if (!currentBookId) { return; }
+        pageCurr = curr;
+        var url = currentTab === 'book' ? '/author/comment/bookPage' : '/author/comment/paragraphPage';
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {bookId: currentBookId, curr: curr, limit: pageSize},
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 200) {
+                    render(data.data);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () { layer.alert('网络异常'); }
+        });
+    }
+
+    function render(pageBean) {
+        var list = pageBean.list || [];
+        var isBook = currentTab === 'book';
+        $('#listHead').html(isBook
+            ? '<th class="name">评论用户</th><th>评论内容</th><th class="goread" style="width:80px">回复数</th>'
+              + '<th class="goread col_time">评论时间</th><th class="goread col_opt">操作</th>'
+            : '<th class="name">章节 / 段落</th><th class="goread" style="width:110px">评论用户</th>'
+              + '<th>评论内容</th><th class="goread" style="width:80px">回复数</th>'
+              + '<th class="goread col_time">评论时间</th><th class="goread col_opt">操作</th>');
+        var html = '';
+        if (!list.length) {
+            html = '<tr><td colspan="' + (isBook ? 5 : 6) + '"><div class="cm_empty">'
+                + (isBook ? '该作品暂无书评' : '该作品暂无段评') + '</div></td></tr>';
+        } else {
+            paragraphRows = isBook ? [] : list;
+            bookRows = isBook ? list : [];
+            for (var i = 0; i < list.length; i++) {
+                html += isBook ? buildBookRow(list[i]) : buildParagraphRow(list[i]);
+            }
+        }
+        $('#commentList').html(html);
+        $('#commentPanel').show();
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'shellPage',
+                count: pageBean.total,
+                curr: pageBean.pageNum,
+                limit: pageBean.pageSize,
+                theme: '#3eaf7c',
+                jump: function (obj, first) {
+                    if (!first) { search(obj.curr); }
+                }
+            });
+        });
+    }
+
+    // 用户列：作者显示笔名 + 作者标识，普通用户显示昵称；均带头像
+    function buildUserCell(row) {
+        var isAuthor = !!row.authorReply;
+        var photo = isAuthor ? (row.authorPicUrl || '/images/man.png') : (row.createUserPhoto || '/images/man.png');
+        var name = isAuthor ? (row.authorPenName || '作者') : row.createUserName;
+        var badge = isAuthor ? '<em class="cm_author_badge">作者</em>' : '';
+        return '<img class="cm_user_avatar" src="' + escapeHtml(photo)
+            + '" onerror="this.src=\'/images/man.png\'">'
+            + escapeHtml(name) + badge;
+    }
+
+    function buildBookRow(row) {
+        var replies = row.replyCount || 0;
+        return '<tr>'
+            + '<td class="name">' + buildUserCell(row) + '</td>'
+            + '<td class="cm_content">' + escapeHtml(row.commentContent) + '</td>'
+            + '<td class="goread">' + replies + '</td>'
+            + '<td class="goread time_cell">' + escapeHtml(row.createTime) + '</td>'
+            + '<td class="goread cm_opt"><a onclick="openBookReply(' + row.id + ')">回复</a></td>'
+            + '</tr>';
+    }
+
+    function buildParagraphRow(row) {
+        var section = escapeHtml(row.indexName || '未知章节') + ' · 第' + ((row.paragraphIdx || 0) + 1) + '段';
+        var replies = (row.replies && row.replies.length) ? row.replies.length : (row.replyCount || 0);
+        return '<tr>'
+            + '<td class="name">' + section + '</td>'
+            + '<td class="goread">' + buildUserCell(row) + '</td>'
+            + '<td class="cm_content">' + escapeHtml(row.commentContent) + '</td>'
+            + '<td class="goread">' + replies + '</td>'
+            + '<td class="goread time_cell">' + escapeHtml(row.createTime) + '</td>'
+            + '<td class="goread cm_opt"><a onclick="openParagraphReply(' + row.id + ')">回复</a></td>'
+            + '</tr>';
+    }
+
+    // 昵称 span：段评可点击（带 uid/name 供切换回复目标），书评仅展示
+    function buildName(name, uid, clickable) {
+        if (!clickable || uid == null || uid === '') {
+            return '<span class="acm-name">' + escapeHtml(name) + '</span>';
+        }
+        return '<span class="acm-name acm-name-clickable" data-uid="' + escapeHtml(uid)
+            + '" data-name="' + escapeHtml(name) + '" title="点击回复该用户">'
+            + escapeHtml(name) + '</span>';
+    }
+
+    // 原评论展示（弹窗内）：头像 + 昵称 + 作者标识 + 内容，布局对齐前台
+    function buildOrigin(row, authorInfo, clickable) {
+        var info = authorInfo || {};
+        var isAuthor = !!info.authorReply;
+        var photo = isAuthor ? (info.authorPicUrl || '/images/man.png') : (info.createUserPhoto || '/images/man.png');
+        var name = isAuthor ? (info.authorPenName || '作者') : info.createUserName;
+        var badge = isAuthor ? '<em class="acm-badge">作者</em>' : '';
+        return '<div style="overflow:hidden">'
+            + '<img class="acm-avatar" src="' + escapeHtml(photo) + '" onerror="this.src=\'/images/man.png\'">'
+            + '<div class="acm-main">'
+            + '<div class="acm-head">' + buildName(name, info.createUserId, clickable) + badge + '</div>'
+            + '<div class="acm-content">' + (row.contentHtml || '') + '</div>'
+            + '</div></div>';
+    }
+
+    // 单条回复展示：头像 + 昵称 + 作者标识 + 回复对象 + 时间 + 内容，布局对齐前台评论区
+    function buildReplyRow(r, contentField, clickable) {
+        var isAuthor = !!r.authorReply;
+        var photo = isAuthor ? (r.authorPicUrl || '/images/man.png') : (r.createUserPhoto || '/images/man.png');
+        var name = isAuthor ? (r.authorPenName || '作者') : r.createUserName;
+        var badge = isAuthor ? '<em class="acm-badge">作者</em>' : '';
+        var loc = (!isAuthor && r.location) ? '<span class="acm-loc">' + escapeHtml(r.location) + '读者</span>' : '';
+        var to = r.replyUserName ? '<span class="acm-to">回复 ' + escapeHtml(r.replyUserName) + '</span>' : '';
+        var content = r[contentField];
+        return '<div class="acm-row">'
+            + '<img class="acm-avatar" src="' + escapeHtml(photo) + '" onerror="this.src=\'/images/man.png\'">'
+            + '<div class="acm-main">'
+            + '<div class="acm-head">' + buildName(name, r.createUserId, clickable)
+            + badge + loc + to + '<span class="acm-time">' + escapeHtml(r.createTime) + '</span></div>'
+            + '<div class="acm-content">' + escapeHtml(content) + '</div>'
+            + '</div></div>';
+    }
+
+    // 更新弹窗内「回复目标」提示与昵称高亮
+    function refreshReplyTargetTip(layero) {
+        var $tip = $(layero).find('#replyTargetTip');
+        var isParagraph = replyTarget && replyTarget.type === 'paragraph';
+        if (!isParagraph) {
+            $tip.hide();
+            return;
+        }
+        $tip.show();
+        $(layero).find('#replyTargetName').text(replyTarget.replyUserName || '楼主');
+        // 高亮当前目标昵称：按 uid 匹配（uid 为空时为楼主，不高亮具体昵称）
+        $(layero).find('.acm-name-clickable').removeClass('acm-name-active');
+        if (replyTarget.replyUserId != null && replyTarget.replyUserId !== '') {
+            $(layero).find('.acm-name-clickable[data-uid="' + replyTarget.replyUserId + '"]')
+                .addClass('acm-name-active');
+        }
+    }
+
+    function showReplyLayer(title, originHtml, historyHtml, replyCount) {
+        if (!replyDialogHtml) {
+            replyDialogHtml = $('#replyDialog').html();
+        }
+        layer.open({
+            type: 1,
+            title: title,
+            area: ['600px', 'auto'],
+            content: replyDialogHtml,
+            btn: ['提交回复', '取消'],
+            success: function (layero) {
+                $(layero).find('#replyOrigin').html(originHtml);
+                $(layero).find('#replyHistory').html(historyHtml);
+                $(layero).find('#replyCount').text('(' + (replyCount || 0) + ')');
+                // 段评：点击昵称切换回复目标（事件委托到弹窗根节点）
+                $(layero).on('click', '.acm-name-clickable', function () {
+                    var uid = $(this).attr('data-uid');
+                    var name = $(this).attr('data-name');
+                    if (!replyTarget || replyTarget.type !== 'paragraph') { return; }
+                    replyTarget.replyUserId = uid;
+                    replyTarget.replyUserName = name;
+                    refreshReplyTargetTip(layero);
+                    $(layero).find('#replyContent').focus();
+                });
+                // 恢复回复楼主
+                $(layero).on('click', '#resetReplyTarget', function () {
+                    if (!replyTarget || replyTarget.type !== 'paragraph') { return; }
+                    replyTarget.replyUserId = replyTarget.rootUserId;
+                    replyTarget.replyUserName = replyTarget.rootUserName;
+                    refreshReplyTargetTip(layero);
+                });
+                refreshReplyTargetTip(layero);
+            },
+            yes: function (index, layero) { submitReply(index, layero); }
+        });
+    }
+
+    // 书评回复：异步加载已有回复作为上下文
+    function openBookReply(commentId) {
+        var row = null;
+        for (var i = 0; i < bookRows.length; i++) {
+            if (bookRows[i].id == commentId) { row = bookRows[i]; break; }
+        }
+        if (!row) { layer.alert('评论数据已刷新，请重试'); return; }
+        $.ajax({
+            type: 'get',
+            url: '/author/comment/replyList',
+            data: {commentId: commentId, curr: 1, limit: 50},
+            dataType: 'json',
+            success: function (data) {
+                var replies = (data.code == 200 && data.data && data.data.list) ? data.data.list : [];
+                var history = replies.length
+                    ? replies.map(function (r) { return buildReplyRow(r, 'replyContent', false); }).join('')
+                    : '<div class="acm-empty">暂无回复，你是第一个回复的</div>';
+                replyTarget = {type: 'book', commentId: commentId};
+                // 书评回复接口不支持指定目标用户，昵称不可点击；原评论用当前行作者信息
+                showReplyLayer('回复书评',
+                    buildOrigin({contentHtml: escapeHtml(row.commentContent)}, row, false),
+                    history, replies.length);
+            },
+            error: function () { layer.alert('网络异常'); }
+        });
+    }
+
+    // 段评回复：当前页数据已带 replies，直接展示
+    function openParagraphReply(rootId) {
+        var row = null;
+        for (var i = 0; i < paragraphRows.length; i++) {
+            if (paragraphRows[i].id == rootId) { row = paragraphRows[i]; break; }
+        }
+        if (!row) { layer.alert('评论数据已刷新，请重试'); return; }
+        var replies = row.replies || [];
+        var history = replies.length
+            ? replies.map(function (r) { return buildReplyRow(r, 'commentContent', true); }).join('')
+            : '<div class="acm-empty">暂无回复，你是第一个回复的</div>';
+        // 段评回复目标默认是楼主（根评论作者）；点击昵称可切换到该用户
+        var rootName = row.authorReply ? (row.authorPenName || '作者') : row.createUserName;
+        replyTarget = {
+            type: 'paragraph',
+            rootId: rootId,
+            replyUserId: row.createUserId,
+            replyUserName: rootName,
+            rootUserId: row.createUserId,
+            rootUserName: rootName
+        };
+        showReplyLayer('回复段评',
+            buildOrigin({
+                contentHtml: '<b>' + escapeHtml(row.indexName || '未知章节') + ' · 第'
+                    + ((row.paragraphIdx || 0) + 1) + '段</b><br>' + escapeHtml(row.commentContent)
+            }, row, true),
+            history, replies.length);
+    }
+
+    function submitReply(index, layero) {
+        var $dialog = $(layero);
+        var content = $.trim($dialog.find('#replyContent').val());
+        if (!content) { layer.msg('请输入回复内容'); return; }
+        if (content.length > 200) { layer.msg('回复内容不能超过200字'); return; }
+        if (!replyTarget) { layer.msg('回复目标失效，请重试'); return; }
+        var isBook = replyTarget.type === 'book';
+        var data = isBook
+            ? {commentId: replyTarget.commentId, content: content}
+            : {rootId: replyTarget.rootId, content: content,
+               replyUserId: replyTarget.replyUserId || '', replyUserName: replyTarget.replyUserName || ''};
+        $.ajax({
+            type: 'post',
+            url: isBook ? '/author/comment/replyBook' : '/author/comment/replyParagraph',
+            data: data,
+            dataType: 'json',
+            success: function (res) {
+                if (res.code == 200) {
+                    layer.close(index);
+                    layer.msg('回复成功');
+                    search(pageCurr);
+                } else {
+                    layer.alert(res.msg);
+                }
+            },
+            error: function () { layer.alert('网络异常'); }
+        });
+    }
+
+    loadBooks();
+</script>
+</html>

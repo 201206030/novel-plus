@@ -6,6 +6,10 @@
     <title>评论回复区</title>
 
     <div th:include="mobile/common/css :: css"></div>
+    <style type="text/css">
+        .cm-author-badge { display:inline-block; margin-left:8px; padding:0 6px; height:18px; line-height:18px;
+            font-size:11px; font-style:normal; color:#fff; background:#e9542c; border-radius:3px; vertical-align:middle; }
+    </style>
 </head>
 <body>
 <div id="content">
@@ -51,6 +55,11 @@
     // 防重复提交标志：replySubmitting 拦截并发提交，lastReplySubmitTime 拦截短时间内的重复提交
     var replySubmitting = false;
     var lastReplySubmitTime = 0;
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
 
     $('#txtComment').on('input propertychange', function () {
         $('#emCommentNum').html($(this).val().length + "/1000");
@@ -112,14 +121,20 @@
     }
 
     function buildReplyItem(reply, total, curr, limit, i) {
-        var photo = reply.createUserPhoto ? reply.createUserPhoto : '/images/man.png';
-        var location = reply.location ? '<span style="color:#999;margin-left:8px;">' + reply.location + '读者</span>' : '';
+        // 作者回复：笔名/头像 + 「作者」标识；普通回复：用户昵称/头像 + 属地读者
+        var photo = reply.authorReply
+            ? (reply.authorPicUrl || '/images/man.png')
+            : (reply.createUserPhoto || '/images/man.png');
+        var dispName = reply.authorReply ? (reply.authorPenName || '作者') : reply.createUserName;
+        var identity = reply.authorReply
+            ? '<em class="cm-author-badge">作者</em>'
+            : (reply.location ? '<span style="color:#999;margin-left:8px;">' + escapeHtml(reply.location) + '读者</span>' : '');
         var lou = total - ((curr - 1) * limit + i);
         return ('<div style="padding:12px;border-bottom:1px solid #eee;overflow:hidden;">' +
-            '<img src="' + photo + '" onerror="this.src=\'/images/man.png\'" style="width:40px;height:40px;border-radius:50%;float:left;object-fit:cover;">' +
+            '<img src="' + escapeHtml(photo) + '" onerror="this.src=\'/images/man.png\'" style="width:40px;height:40px;border-radius:50%;float:left;object-fit:cover;">' +
             '<div style="margin-left:52px;">' +
             '<div style="font-size:14px;">' +
-            '<span style="color:#444;">' + reply.createUserName + '</span>' + location +
+            '<span style="color:#444;">' + escapeHtml(dispName) + '</span>' + identity +
             '<span style="color:#3eaf7c;margin-right:8px;float:right;font-size:12px;">' + lou + '楼</span>' +
             '<span style="color:#999;float:right;font-size:12px;margin-right:8px;">' + reply.createTime + '</span>' +
             '</div>' +

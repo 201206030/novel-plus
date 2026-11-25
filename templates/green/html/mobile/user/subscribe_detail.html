@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'订阅明细_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        body {
+            background: #f5f7f6;
+        }
+
+        .record-tip {
+            margin: 10px 12px 0;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 18px;
+            color: #6b7c74;
+            background: rgba(62, 175, 124, .08);
+            border-radius: 8px;
+        }
+
+        #recordList {
+            padding-top: 8px;
+        }
+
+        .record-item {
+            position: relative;
+            margin: 0 12px 10px;
+            padding: 14px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .record-item.clickable:active {
+            background: #f7f9f8;
+        }
+
+        .record-item.clickable .ri-arrow {
+            display: block;
+        }
+
+        .ri-top {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+        }
+
+        .ri-book {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            padding-right: 10px;
+        }
+
+        .ri-book-name {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 22px;
+            color: #1f2d26;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ri-chapter {
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+            line-height: 20px;
+            color: #5c6b64;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ri-cost {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            margin-left: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e0764b;
+            white-space: nowrap;
+        }
+
+        .ri-bottom {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #f5f7f6;
+            font-size: 12px;
+            color: #98a8a1;
+        }
+
+        .ri-arrow {
+            display: none;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 7px;
+            height: 7px;
+            margin-left: 8px;
+            border-right: 1.5px solid #c4cec9;
+            border-top: 1.5px solid #c4cec9;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('订阅明细', null)"></div>
+
+    <div class="record-tip">订阅明细展示当前账号购买过的收费章节，点击记录可直接阅读对应章节。</div>
+
+    <div id="recordList"></div>
+    <div id="recordPage" class="page-box"></div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer"></div>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+    search(1, 10);
+
+    function search(curr, limit) {
+        $.ajax({
+            type: "get",
+            url: "/user/finance/subscribeDetail",
+            data: {curr: curr, limit: limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderRecordList(data.data);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function renderRecordList(pageBean) {
+        var list = pageBean && pageBean.list;
+        if (!list || list.length == 0) {
+            $("#recordList").html('<div class="empty-tip">暂无订阅记录~<br><a href="/" class="empty-link">去书城逛逛</a></div>');
+            $("#recordPage").html("");
+            return;
+        }
+
+        var html = "";
+        for (var i = 0; i < list.length; i++) {
+            html += buildRecordItem(list[i]);
+        }
+        $("#recordList").html(html);
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'recordPage',
+                count: pageBean.total,
+                curr: pageBean.pageNum,
+                limit: pageBean.pageSize,
+                layout: ['prev', 'page', 'next'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        search(obj.curr, obj.limit);
+                    }
+                }
+            });
+        });
+    }
+
+    function buildRecordItem(item) {
+        var bookName = escapeHtml(item.bookName || '未知小说');
+        var chapterName = escapeHtml(item.bookIndexName || '未知章节');
+        var amount = item.buyAmount == null ? '0' : item.buyAmount;
+        var canRead = item.bookId && item.bookIndexId;
+        var clickAttr = canRead
+            ? ' class="record-item clickable" onclick="readChapter(\'' + escapeHtml(item.bookId) + '\',\'' + escapeHtml(item.bookIndexId) + '\')"'
+            : ' class="record-item"';
+
+        return '<div' + clickAttr + '>' +
+            '<div class="ri-top">' +
+            '<div class="ri-book">' +
+            '<span class="ri-book-name">' + bookName + '</span>' +
+            '<span class="ri-chapter">' + chapterName + '</span>' +
+            '</div>' +
+            '<span class="ri-cost">-' + escapeHtml(amount) + ' 屋币</span>' +
+            '</div>' +
+            '<div class="ri-bottom">' +
+            '<span>订阅时间：' + escapeHtml(item.createTime) + '</span>' +
+            '<i class="ri-arrow"></i>' +
+            '</div>' +
+            '</div>';
+    }
+
+    function readChapter(bookId, indexId) {
+        location.href = '/book/' + encodeURIComponent(bookId) + '/' + encodeURIComponent(indexId) + '.html';
+    }
+
+    function escapeHtml(value) {
+        var map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'};
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+            return map[char];
+        });
+    }
+</script>
+
+</body>
+</html>

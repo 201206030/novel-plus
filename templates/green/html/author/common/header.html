@@ -75,7 +75,8 @@
                 if (!window.fetch) {
                     return;
                 }
-                fetch('/user/message/unreadCount').then(function (r) {
+                // 作家后台只展示系统通知，角标同样只统计系统通知（msgType=3）
+                fetch('/user/message/unreadCount?msgType=3').then(function (r) {
                     return r.json();
                 }).then(function (res) {
                     if (res && res.code === 200) {

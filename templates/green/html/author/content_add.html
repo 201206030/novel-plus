@@ -228,6 +228,21 @@
 <script src="/javascript/user.js" type="text/javascript"></script>
 <script src="/javascript/common.js" type="text/javascript"></script>
 
+<!-- AI 写作参数上限：由 PageController.module2 从 AiRateLimitProperties 注入，与后端拦截器保持一致 -->
+<script th:inline="javascript">
+    var AI_LIMITS = {
+        maxTextLength: /*[[${aiMaxTextLength}]]*/ 5000,
+        maxExpandRatio: /*[[${aiMaxExpandRatio}]]*/ 400,
+        maxCondenseRatio: /*[[${aiMaxCondenseRatio}]]*/ 100,
+        maxContinueLength: /*[[${aiMaxContinueLength}]]*/ 3000
+    };
+    // 静态预览或属性缺失时回退到配置默认值，避免校验拿到 null 静默失效
+    AI_LIMITS.maxTextLength = Number(AI_LIMITS.maxTextLength) || 5000;
+    AI_LIMITS.maxExpandRatio = Number(AI_LIMITS.maxExpandRatio) || 400;
+    AI_LIMITS.maxCondenseRatio = Number(AI_LIMITS.maxCondenseRatio) || 100;
+    AI_LIMITS.maxContinueLength = Number(AI_LIMITS.maxContinueLength) || 3000;
+</script>
+
 <script language="javascript" type="text/javascript">
 
 
@@ -493,78 +508,105 @@
         const selectedText = textarea.val().substring(textarea[0].selectionStart, textarea[0].selectionEnd);
 
         // 检查是否选中文本
-        if (!selectedText) {
+        if (!selectedText || !$.trim(selectedText)) {
             layer.msg('请先选中要处理的文本');
             return;
         }
+        // 与后端 max-text-length 一致，超长文本在拦截器里会被判为 7005
+        if (selectedText.length > AI_LIMITS.maxTextLength) {
+            layer.alert('选中的文本不能超过 ' + AI_LIMITS.maxTextLength + ' 字（当前 '
+                + selectedText.length + ' 字），请缩短选区后再试', {icon: 0});
+            return;
+        }
 
-        const loading = layer.load(1, {shade: 0.3});
+        let params = {text: selectedText};
+
+        // 校验全部通过后才开启 loading，避免参数输错时遮罩一直转
+        function start() {
+            const loading = layer.load(1, {shade: 0.3});
+            sendRequest(type, params, loading, textarea);
+        }
 
         // 参数配置
-        let params = {text: selectedText};
         if (type === 'stream/expand' || type === 'stream/condense') {
+            const isExpand = type === 'stream/expand';
             layer.prompt({
-                title: '请输入比例',
-                value: 2,
-                btn: ['确定', '取消'],
-                btn2: function () {
-                    layer.close(loading);
-                },
-                cancel: function () {
-                    layer.close(loading);
-                }
+                title: isExpand
+                    ? '请输入扩写倍数（大于 1，最多 ' + (AI_LIMITS.maxExpandRatio / 100) + ' 倍）'
+                    : '请输入缩写比例（0～' + (AI_LIMITS.maxCondenseRatio / 100) + '，如 0.5 表示缩到一半）',
+                value: isExpand ? 2 : 0.5,
+                btn: ['确定', '取消']
             }, function (value, index) {
-                if (isNaN(Number(value)) || isNaN(parseFloat(value))) {
-                    layer.msg('请输入正确的比例');
+                const num = Number(value);
+                if (!Number.isFinite(num) || num <= 0) {
+                    layer.msg('请输入有效的数字');
                     return;
                 }
-                if (type === 'stream/expand' && value <= 1) {
-                    layer.msg('请输入正确的比例');
+                // 后端按百分比整数校验（condense 的 ratio 是 Integer），统一取整避免浮点传参绑定失败
+                const ratio = Math.round(num * 100);
+                if (isExpand) {
+                    if (num <= 1 || ratio > AI_LIMITS.maxExpandRatio) {
+                        layer.msg('扩写倍数需大于 1 且不超过 ' + (AI_LIMITS.maxExpandRatio / 100) + ' 倍');
+                        return;
+                    }
+                } else if (num >= 1 || ratio < 1 || ratio > AI_LIMITS.maxCondenseRatio) {
+                    layer.msg('缩写比例需在 0～' + (AI_LIMITS.maxCondenseRatio / 100)
+                        + ' 之间（如 0.5），且不能过小');
                     return;
                 }
-                if (type === 'stream/condense' && (value <= 0 || value >= 1)) {
-                    layer.msg('请输入正确的比例');
-                    return;
-                }
-                params.ratio = parseFloat(value) * 100;
+                params.ratio = ratio;
                 layer.close(index);
-                sendRequest(type, params, loading, textarea);
+                start();
             });
             return;
         } else if (type === 'stream/continue') {
             layer.prompt({
-                title: '请输入续写长度（字数）',
+                title: '请输入续写长度（1～' + AI_LIMITS.maxContinueLength + ' 字）',
                 value: 200,
-                btn: ['确定', '取消'],
-                btn2: function () {
-                    layer.close(loading);
-                },
-                cancel: function () {
-                    layer.close(loading);
-                }
+                btn: ['确定', '取消']
             }, function (value, index) {
-                if (!Number.isInteger(Number(value)) || value <= 0) {
-                    layer.msg('请输入正确的长度');
+                const num = Number(value);
+                if (!Number.isInteger(num) || num <= 0 || num > AI_LIMITS.maxContinueLength) {
+                    layer.msg('续写长度需为 1～' + AI_LIMITS.maxContinueLength + ' 之间的整数');
                     return;
                 }
-                params.length = parseInt(value);
+                params.length = num;
                 layer.close(index);
-                sendRequest(type, params, loading, textarea);
+                start();
             });
             return;
         }
 
-        sendRequest(type, params, loading, textarea);
+        start();
     });
 
     function sendRequest(type, params, loading, textarea) {
-        const url = `/author/ai/${type}?text=${encodeURIComponent(params.text)}&ratio=${params.ratio}&length=${params.length}`;
+        // polish 接口没有 ratio / length 参数，拼接时排除掉
+        const parts = [`text=${encodeURIComponent(params.text)}`];
+        if (params.ratio != null) parts.push(`ratio=${params.ratio}`);
+        if (params.length != null) parts.push(`length=${params.length}`);
+        const url = `/author/ai/${type}?${parts.join('&')}`;
         const eventSource = new EventSource(url);
+        var received = false;
 
         // 监听消息事件
         eventSource.onmessage = function (event) {
-            layer.close(loading);
             const data = event.data;
+
+            // 拦截器（AiApiAuthInterceptor）在鉴权/限流/参数校验失败时返回 HTTP 200 + JSON 业务码，
+            // EventSource 会把它当成正常消息触发 onmessage。这里检测 JSON 错误体并提示用户。
+            if (!received) {
+                var parsed = tryParseAiError(data);
+                if (parsed) {
+                    eventSource.close();
+                    layer.close(loading);
+                    handleAiError(parsed);
+                    return;
+                }
+            }
+
+            received = true;
+            layer.close(loading);
             console.log('Received data:', data);
 
             textarea.val(textarea.val() + data);
@@ -577,8 +619,49 @@
             layer.close(loading);
             console.error('EventSource failed:', error);
             eventSource.close(); // 关闭连接
+            if (!received) {
+                // 没收到任何有效数据就断开，说明请求未成功（网络异常 / 服务端错误 / 登录态过期）
+                layer.alert('AI 请求失败，请确认已登录后重试；若请求过于频繁，请稍后再试', {icon: 2});
+            }
         };
 
+    }
+
+    // 尝试解析拦截器返回的 JSON 错误体（格式：{"code":1001,"msg":"..."}）
+    // 非错误响应（纯文本 AI 输出）返回 null
+    function tryParseAiError(data) {
+        if (typeof data !== 'string') return null;
+        var trimmed = data.trim();
+        if (!trimmed.startsWith('{') || !trimmed.endsWith('}')) return null;
+        try {
+            var obj = JSON.parse(trimmed);
+            if (obj && typeof obj.code === 'number' && obj.code !== 200) {
+                return obj;
+            }
+        } catch (e) {
+            // 不是合法 JSON，说明是正常的 AI 文本输出
+        }
+        return null;
+    }
+
+    // 根据业务码给出用户友好的提示
+    function handleAiError(resp) {
+        var code = resp.code;
+        var msg = resp.msg || '请求失败';
+        if (code === 1001) {
+            // 未登录：跳转登录页，保留当前页 URL 以便登录后回来
+            location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+        } else if (code === 7011) {
+            layer.alert('AI 请求过于频繁，请稍后再试', {icon: 2});
+        } else if (code === 7012) {
+            layer.alert('仅签约作家可使用 AI 辅助写作功能', {icon: 2});
+        } else if (code === 7005) {
+            layer.alert('输入参数不合法：' + msg, {icon: 2});
+        } else if (code === 4002) {
+            layer.alert('您的作家账号已被封禁，无法使用 AI 功能', {icon: 2});
+        } else {
+            layer.alert(msg, {icon: 2});
+        }
     }
 
 </script>

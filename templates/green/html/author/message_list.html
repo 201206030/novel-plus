@@ -69,14 +69,14 @@
 <script src="/javascript/common.js" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
-    // 不分类、不过滤：直接展示所有类型的消息
+    // 作家后台只展示系统通知（msgType=3），书评/段评被回复消息不在此展示
     search(1, 10);
 
     function search(curr, limit) {
         $.ajax({
             type: 'get',
             url: '/user/message/listByPage',
-            data: {'curr': curr, 'limit': limit},
+            data: {'curr': curr, 'limit': limit, 'msgType': 3},
             dataType: 'json',
             success: function (data) {
                 if (data.code == 200) {
@@ -130,43 +130,23 @@
     function buildMsgRow(msg) {
         var unread = msg.readFlag != 1;
         var dot = unread ? '<span class="msg_dot"></span>' : '';
-        // msgType：1书评被回复 2段评被回复 3系统通知；书评/段评提供查看跳转，系统通知无跳转
-        var ops = '';
-        if (msg.msgType != 3) {
-            ops += '<a onclick="openMsg(event, this)">查看</a>';
-        }
-        if (unread) {
-            ops += '<a onclick="readOne(event, ' + msg.id + ', this)">标已读</a>';
-        }
+        var ops = unread ? '<a onclick="readOne(event, ' + msg.id + ', this)">标已读</a>' : '—';
+        // 作家后台列表只含系统通知（msgType=3），发送人固定展示“系统”，无跳转链接
         return '<tr class="msg_row' + (unread ? ' msg_unread' : '') + '" data-id="' + msg.id + '"'
-            + ' data-type="' + msg.msgType + '" data-book="' + (msg.bookId || 0) + '"'
-            + ' data-index="' + (msg.bookIndexId || 0) + '" data-target="' + (msg.targetId || 0) + '"'
             + ' onclick="rowClick(this)">'
             + '<td class="msg_content">' + dot + escapeHtml(msg.content || '') + '</td>'
-            + '<td class="goread">' + escapeHtml(msg.sendUserName || (msg.msgType == 3 ? '系统' : '某用户')) + '</td>'
+            + '<td class="goread">系统</td>'
             + '<td class="goread" style="font-size:12px;color:#98a8a1;">' + escapeHtml(msg.createTime || '') + '</td>'
-            + '<td class="goread msg_ops">' + (ops || '—') + '</td>'
+            + '<td class="goread msg_ops">' + ops + '</td>'
             + '</tr>';
     }
 
-    // 整行点击：未读先标已读；书评/段评跳转被回复内容，系统通知只标已读
+    // 整行点击：系统通知无跳转，未读则仅标已读
     function rowClick(tr) {
         var $tr = $(tr);
         if ($tr.hasClass('msg_unread')) {
             markRead($tr.attr('data-id'), $tr);
         }
-        var type = $tr.attr('data-type');
-        if (type == 3) {
-            return;
-        }
-        location.href = type == 2
-            ? '/book/' + $tr.attr('data-book') + '/' + $tr.attr('data-index') + '.html'
-            : '/book/reply-' + $tr.attr('data-target') + '.html';
-    }
-
-    function openMsg(event, el) {
-        event.stopPropagation();
-        rowClick($(el).closest('tr'));
     }
 
     function readOne(event, id, el) {
@@ -174,7 +154,7 @@
         markRead(id, $(el).closest('tr'));
     }
 
-    // 标记单条已读：本地即时去高亮，服务端落库，同步刷新未读角标（只移除「标已读」，保留「查看」）
+    // 标记单条已读：本地即时去高亮，服务端落库，同步刷新未读角标
     function markRead(id, $tr) {
         $tr.removeClass('msg_unread').find('.msg_dot').remove();
         $tr.find('.msg_ops a').each(function () {
@@ -203,7 +183,7 @@
         $.ajax({
             type: 'post',
             url: '/user/message/readAll',
-            data: {},
+            data: {'msgType': 3},
             dataType: 'json',
             success: function (data) {
                 if (data.code == 200) {
