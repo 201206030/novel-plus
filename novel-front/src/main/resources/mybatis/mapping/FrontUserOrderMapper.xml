@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java2nb.novel.mapper.FrontUserOrderMapper">
+
+    <select id="listRechargeRecord" resultType="com.java2nb.novel.vo.RechargeRecordVO">
+        select                t1.id,
+               cast(t1.out_trade_no as char) out_trade_no,
+               t1.trade_no,
+               t1.pay_channel,
+               t1.total_amount,
+               t1.pay_status,
+               date_format(t1.create_time, '%Y-%m-%d %H:%i:%s') create_time,
+               date_format(t1.update_time, '%Y-%m-%d %H:%i:%s') update_time
+        from order_pay t1
+        where t1.user_id = #{userId}
+        order by t1.create_time desc, t1.id desc
+    </select>
+
+    <select id="listSubscribeDetail" resultType="com.java2nb.novel.vo.SubscribeDetailVO">
+        select t1.id,
+               cast(t1.book_id as char) book_id,
+               t1.book_name,
+               cast(t1.book_index_id as char) book_index_id,
+               t1.book_index_name,
+               t1.buy_amount,
+               date_format(t1.create_time, '%Y-%m-%d %H:%i:%s') create_time
+        from user_buy_record t1
+        where t1.user_id = #{userId}
+        order by t1.create_time desc, t1.id desc
+    </select>
+
+</mapper>

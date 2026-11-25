@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title th:text="'充值记录_' + ${application.website.name}"></title>
+
+    <div th:include="mobile/common/css :: css"></div>
+
+    <style>
+        body {
+            background: #f5f7f6;
+        }
+
+        .record-tip {
+            margin: 10px 12px 0;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 18px;
+            color: #6b7c74;
+            background: rgba(62, 175, 124, .08);
+            border-radius: 8px;
+        }
+
+        #recordList {
+            padding-top: 8px;
+        }
+
+        .record-item {
+            margin: 0 12px 10px;
+            padding: 14px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(62, 175, 124, .08);
+        }
+
+        .ri-top {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+        }
+
+        .ri-title {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .ri-amount {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2e8b62;
+        }
+
+        .ri-status {
+            margin-left: 8px;
+            padding: 2px 7px;
+            font-size: 11px;
+            line-height: 16px;
+            border-radius: 9px;
+            white-space: nowrap;
+        }
+
+        .ri-status.success {
+            color: #2e8b62;
+            background: rgba(62, 175, 124, .12);
+        }
+
+        .ri-status.pending {
+            color: #b57a1f;
+            background: rgba(235, 166, 54, .14);
+        }
+
+        .ri-status.fail {
+            color: #c45158;
+            background: rgba(224, 92, 110, .12);
+        }
+
+        .ri-time {
+            margin-left: 10px;
+            font-size: 11px;
+            color: #98a8a1;
+            white-space: nowrap;
+        }
+
+        .ri-line {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        .ri-line span {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            color: #98a8a1;
+        }
+
+        .ri-line em {
+            -webkit-flex: 1;
+            flex: 1;
+            min-width: 0;
+            margin-left: 12px;
+            color: #5c6b64;
+            font-style: normal;
+            text-align: right;
+            word-break: break-all;
+        }
+
+        .empty-tip {
+            text-align: center;
+            color: #98a8a1;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 60px 20px;
+        }
+
+        .empty-tip .empty-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(62, 175, 124, .1);
+            color: #2e8b62;
+            font-size: 13px;
+            border-radius: 16px;
+        }
+
+        .page-box {
+            text-align: center;
+            padding: 6px 12px 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="body">
+
+    <div th:replace="mobile/common/header :: pageHeader('充值记录', null)"></div>
+
+    <div class="record-tip">这里展示当前账号的充值订单记录，支付状态以支付结果为准。</div>
+
+    <div id="recordList"></div>
+    <div id="recordPage" class="page-box"></div>
+
+</div>
+
+<div th:replace="mobile/common/footer :: footer"></div>
+
+<div th:replace="mobile/common/js :: js"></div>
+
+<script>
+    search(1, 10);
+
+    function search(curr, limit) {
+        $.ajax({
+            type: "get",
+            url: "/user/finance/rechargeRecord",
+            data: {curr: curr, limit: limit},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    renderRecordList(data.data);
+                } else if (data.code == 1001) {
+                    location.href = '/user/login.html?originUrl=' + encodeURIComponent(location.href);
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert('网络异常');
+            }
+        });
+    }
+
+    function renderRecordList(pageBean) {
+        var list = pageBean && pageBean.list;
+        if (!list || list.length == 0) {
+            $("#recordList").html('<div class="empty-tip">暂无充值记录~<br><a href="/pay/index.html" class="empty-link">去充值</a></div>');
+            $("#recordPage").html("");
+            return;
+        }
+
+        var html = "";
+        for (var i = 0; i < list.length; i++) {
+            html += buildRecordItem(list[i]);
+        }
+        $("#recordList").html(html);
+
+        layui.use('laypage', function () {
+            layui.laypage.render({
+                elem: 'recordPage',
+                count: pageBean.total,
+                curr: pageBean.pageNum,
+                limit: pageBean.pageSize,
+                layout: ['prev', 'page', 'next'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        search(obj.curr, obj.limit);
+                    }
+                }
+            });
+        });
+    }
+
+    function buildRecordItem(item) {
+        var statusMap = {
+            '0': ['支付失败', 'fail'],
+            '1': ['支付成功', 'success'],
+            '2': ['未支付', 'pending']
+        };
+        var status = statusMap[String(item.payStatus)] || ['未知状态', 'pending'];
+        var channelMap = {'1': '支付宝'};
+        var channel = channelMap[String(item.payChannel)] || '支付宝';
+        var amount = item.totalAmount == null ? '0' : item.totalAmount;
+        var tradeNoLine = item.tradeNo
+            ? '<div class="ri-line"><span>交易号</span><em>' + escapeHtml(item.tradeNo) + '</em></div>'
+            : '';
+
+        return '<div class="record-item">' +
+            '<div class="ri-top">' +
+            '<div class="ri-title">' +
+            '<span class="ri-amount">+¥' + escapeHtml(amount) + '</span>' +
+            '<span class="ri-status ' + status[1] + '">' + status[0] + '</span>' +
+            '</div>' +
+            '<div class="ri-time">' + escapeHtml(item.createTime) + '</div>' +
+            '</div>' +
+            '<div class="ri-line"><span>订单号</span><em>' + escapeHtml(item.outTradeNo) + '</em></div>' +
+            '<div class="ri-line"><span>支付方式</span><em>' + channel + '</em></div>' +
+            tradeNoLine +
+            '</div>';
+    }
+
+    function escapeHtml(value) {
+        var map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'};
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+            return map[char];
+        });
+    }
+</script>
+
+</body>
+</html>

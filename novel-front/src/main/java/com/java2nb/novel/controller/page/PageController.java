@@ -168,6 +168,22 @@ public class PageController extends BaseController {
     }
 
     /**
+     * 充值记录页
+     */
+    @RequestMapping("user/recharge_record.html")
+    public String rechargeRecord() {
+        return ThreadLocalUtil.getTemplateDir() + "user/recharge_record";
+    }
+
+    /**
+     * 订阅明细页
+     */
+    @RequestMapping("user/subscribe_detail.html")
+    public String subscribeDetail() {
+        return ThreadLocalUtil.getTemplateDir() + "user/subscribe_detail";
+    }
+
+    /**
      * 账号设置页
      */
     @RequestMapping("user/setup.html")
