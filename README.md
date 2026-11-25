@@ -10,7 +10,7 @@
    </p>
 
 <p align="center">
-      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV1u7H56CEwi'>演示视频</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a> 
+      👉 <a href='https://novel.xxyopen.com'>官网</a>  |  👉 <a href='https://www.bilibili.com/video/BV1u7H56CEwi'>演示视频</a>  |  👉 <a href='https://docs.xxyopen.com/course/novelplus/1.html'>安装教程</a>  |  👉 <a href='https://skillpay.alipay.com/public/xxyopen'>Skill</a>  
 </p> 
 
 ## 项目介绍
