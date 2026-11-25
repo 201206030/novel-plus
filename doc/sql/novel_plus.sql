@@ -3531,7 +3531,7 @@ SET @exist := (SELECT COUNT(*) FROM information_schema.COLUMNS
                  AND TABLE_NAME = 'website_info'
                  AND COLUMN_NAME = 'app_down_url');
 SET @sql := IF(@exist = 0,
-               'ALTER TABLE website_info ADD COLUMN app_down_url varchar(255) NOT NULL DEFAULT ''https://mp.weixin.qq.com/s/7aKaG-ztpew1jEA15V3Vpw'' COMMENT ''APP下载地址'' AFTER logo_dark',
+               'ALTER TABLE website_info ADD COLUMN app_down_url varchar(255) NOT NULL DEFAULT ''https://www.xxyopen.com/2026/10/22/news/novel-app.html'' COMMENT ''APP下载地址'' AFTER logo_dark',
                'SELECT ''column app_down_url already exists'' msg');
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
