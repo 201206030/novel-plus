@@ -86,6 +86,21 @@
             font-weight: 600;
         }
 
+        /* 作者账号标识 */
+        .msg-item .mi-author-badge {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 0 5px;
+            height: 16px;
+            line-height: 16px;
+            font-size: 11px;
+            font-style: normal;
+            color: #fff;
+            background: #e9542c;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+
         .msg-item .mi-time {
             font-size: 11px;
             color: #98a8a1;
@@ -265,10 +280,22 @@
     }
 
     function buildMsgItem(msg) {
-        // 系统通知用专属铃铛头像，辨识度高
-        var photo = msg.msgType == 3 ? '/images/system_notice.svg' : (msg.sendUserPhoto ? msg.sendUserPhoto : '/images/default.gif');
-        var sender = msg.sendUserName ? msg.sendUserName : (msg.msgType == 3 ? '系统通知' : '某用户');
         // msgType：1书评被回复 2段评被回复 3系统通知
+        // 作者回复（书评/段评）：显示作者笔名 + 作者头像 + 「作者」标识；系统通知用铃铛头像；其余用用户昵称头像
+        var isAuthorReply = (msg.msgType == 1 || msg.msgType == 2) && msg.authorReply;
+        var photo, sender, authorBadge = '';
+        var DEFAULT_AVATAR = '/images/man.png';
+        if (isAuthorReply) {
+            photo = msg.authorPicUrl ? msg.authorPicUrl : DEFAULT_AVATAR;
+            sender = msg.authorPenName ? msg.authorPenName : '作者';
+            authorBadge = '<em class="mi-author-badge">作者</em>';
+        } else if (msg.msgType == 3) {
+            photo = '/images/system_notice.svg';
+            sender = '系统通知';
+        } else {
+            photo = msg.sendUserPhoto ? msg.sendUserPhoto : DEFAULT_AVATAR;
+            sender = msg.sendUserName ? msg.sendUserName : '某用户';
+        }
         var action = msg.msgType == 3 ? '系统通知' : (msg.msgType == 2 ? '回复了你的段评' : '回复了你的书评');
         var from = '';
         if (msg.bookName) {
@@ -283,9 +310,9 @@
             ' data-target="' + (msg.targetId || '') + '" onclick="openMsg(this)">' +
             '<span class="mi-dot"></span>' +
             '<div class="mi-top">' +
-            '<img class="mi-avatar" src="' + photo + '" onerror="this.src=\'/images/default.gif\'" alt="">' +
+            '<img class="mi-avatar" src="' + photo + '" onerror="this.src=\'/images/man.png\'" alt="">' +
             '<div class="mi-head">' +
-            '<div class="mi-title"><b>' + sender + '</b> ' + action + '</div>' +
+            '<div class="mi-title"><b>' + sender + '</b>' + authorBadge + ' ' + action + '</div>' +
             '<div class="mi-time">' + msg.createTime + '</div>' +
             '</div>' +
             '</div>' +

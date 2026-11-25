@@ -1,10 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{})">
+<head th:replace="common/header :: common_head(~{::title},~{},~{::link},~{::style})">
     <title th:text="'评论回复区'"></title>
     <link href="/css/main.css" rel="stylesheet"/>
     <link href="/css/book.css" rel="stylesheet"/>
+    <style type="text/css">
+        .cm-author-badge { display:inline-block; margin-left:8px; padding:0 7px; height:19px; line-height:19px;
+            font-size:11px; font-style:normal; font-weight:600; letter-spacing:.5px; color:#fff;
+            background:linear-gradient(135deg,#ff8a4c,#e8451f); border:1px solid #d93d18;
+            border-radius:4px; vertical-align:middle; box-shadow:0 1px 3px rgba(232,69,31,.28); }
+    </style>
 </head>
 <body>
 
@@ -74,6 +80,12 @@
 <div th:replace="common/js :: js"></div>
 <script src="/javascript/bookdetail.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
+    // HTML 转义，防止昵称/头像地址等字段注入
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     $('#txtComment').on('input propertychange', function () {
         var count = $(this).val().length;
         $('#emCommentNum').html(count + "/1000");
@@ -102,14 +114,22 @@
                     var commentList = data.data.list;
                     if (commentList.length > 0) {
                         $("#bookCommentTotal").html("(" + data.data.total + "条)");
-                        var commentListHtml = "";
+                            var commentListHtml = "";
                         for (var i = 0; i < commentList.length; i++) {
                             var comment = commentList[i];
+                            // 作者回复：显示作者笔名/头像 + 「作者」标识；普通回复：用户昵称/头像 + 属地读者
+                            var dispName = comment.authorReply ? (comment.authorPenName || '作者') : comment.createUserName;
+                            var dispPhoto = comment.authorReply
+                                ? (comment.authorPicUrl || '/images/man.png')
+                                : (comment.createUserPhoto || '/images/man.png');
+                            var dispIdentity = comment.authorReply
+                                ? '<em class="cm-author-badge">作者</em>'
+                                : (comment.location ? '<span style="padding-left: 10px" class="other">' + escapeHtml(comment.location) + '读者</span>' : '');
                             commentListHtml += ("<div class=\"comment_list cf\">" +
                                 "<div class=\"user_heads fl\" vals=\"389\">" +
-                                "<img src=\"" + (comment.createUserPhoto ? comment.createUserPhoto : '/images/man.png') + "\" class=\"user_head\" alt=\"\">" +
+                                "<img src=\"" + escapeHtml(dispPhoto) + "\" class=\"user_head\" alt=\"\">" +
                                 "<span class=\"user_level1\" style=\"display: none;\">见习</span></div>" +
-                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">" + (comment.createUserName) + "<span style='padding-left: 10px' class=\"other\">" + (comment.location ? comment.location + "读者" : '') + "</span></li><li class=\"dec\">" +
+                                "<ul class=\"pl_bar fr\">\t\t\t<li class=\"name\">" + escapeHtml(dispName) + dispIdentity + "</li><li class=\"dec\">" +
                                 comment.replyContent +
                                 "</li><li class=\"other cf\">" +
                                 "<span class=\"time fl\" style='padding-right: 10px'>" + (data.data.total - ((curr - 1) * limit + i)) + "楼</span>" +

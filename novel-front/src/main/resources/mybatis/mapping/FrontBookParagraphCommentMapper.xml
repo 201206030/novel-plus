@@ -14,9 +14,13 @@
     <select id="listByParagraph" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
         select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
                t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
-               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo,
+               (ta.id is not null) author_reply, ta.pen_name author_pen_name, ta.pic_url author_pic_url
         from book_paragraph_comment t1
         inner join user t2 on t1.create_user_id = t2.id
+        left join book bk on t1.book_id = bk.id
+        <!-- 仅当评论者正是该段评所属小说的作者时，才以作家身份展示 -->
+        left join author ta on t1.create_user_id = ta.user_id and ta.id = bk.author_id
         where t1.book_index_id = #{bookIndexId}
           and t1.paragraph_idx = #{paragraphIdx}
         order by t1.create_time asc
@@ -26,9 +30,12 @@
     <select id="getById" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
         select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
                t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
-               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo,
+               (ta.id is not null) author_reply, ta.pen_name author_pen_name, ta.pic_url author_pic_url
         from book_paragraph_comment t1
         inner join user t2 on t1.create_user_id = t2.id
+        left join book bk on t1.book_id = bk.id
+        left join author ta on t1.create_user_id = ta.user_id and ta.id = bk.author_id
         where t1.id = #{id}
     </select>
 
@@ -54,6 +61,39 @@
         from book_paragraph_comment
         where book_index_id = #{bookIndexId}
         group by paragraph_idx
+    </select>
+
+    <!-- 作家后台：按作品查询顶层段评（root_id=0），带评论人、书名、章节名 -->
+    <select id="listTopByBook" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
+        select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
+               t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo,
+               (t5.id is not null) author_reply, t5.pen_name author_pen_name, t5.pic_url author_pic_url,
+               t3.book_name, t3.pic_url, t4.index_name
+        from book_paragraph_comment t1
+        inner join user t2 on t1.create_user_id = t2.id
+        left join book t3 on t1.book_id = t3.id
+        <!-- 仅当评论者正是该段评所属小说的作者时，才以作家身份展示 -->
+        left join author t5 on t1.create_user_id = t5.user_id and t5.id = t3.author_id
+        left join book_index t4 on t1.book_index_id = t4.id
+        where t1.book_id = #{bookId}
+          and (t1.root_id = 0 or t1.root_id is null)
+        order by t1.create_time desc
+    </select>
+
+    <!-- 作家后台：按顶层段评ID批量查询回复，按时间正序 -->
+    <select id="listRepliesByRootIds" resultType="com.java2nb.novel.vo.BookParagraphCommentVO">
+        select t1.id, t1.book_id, t1.book_index_id, t1.paragraph_idx, t1.root_id, t1.reply_user_name,
+               t1.reply_count, t1.comment_content, t1.location, t1.create_user_id, t1.create_time,
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name, t2.user_photo create_user_photo,
+               (ta.id is not null) author_reply, ta.pen_name author_pen_name, ta.pic_url author_pic_url
+        from book_paragraph_comment t1
+        inner join user t2 on t1.create_user_id = t2.id
+        left join book bk on t1.book_id = bk.id
+        left join author ta on t1.create_user_id = ta.user_id and ta.id = bk.author_id
+        where t1.root_id in
+        <foreach collection="rootIds" item="rootId" open="(" separator="," close=")">#{rootId}</foreach>
+        order by t1.create_time asc
     </select>
 
 </mapper>

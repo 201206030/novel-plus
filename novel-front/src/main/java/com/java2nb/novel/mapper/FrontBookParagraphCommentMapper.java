@@ -38,6 +38,16 @@ public interface FrontBookParagraphCommentMapper {
     List<BookParagraphCommentVO> listMyParagraphComment(@Param("userId") Long userId);
 
     /**
+     * 按作品查询顶层段评（作家后台评论管理用，带评论人/书名/章节名）
+     */
+    List<BookParagraphCommentVO> listTopByBook(@Param("bookId") Long bookId);
+
+    /**
+     * 按顶层段评ID批量查询回复（作家后台评论管理用）
+     */
+    List<BookParagraphCommentVO> listRepliesByRootIds(@Param("rootIds") List<Long> rootIds);
+
+    /**
      * 顶层评论回复数+1
      */
     int addReplyCount(@Param("id") Long id);

@@ -37,6 +37,21 @@ public class UserMessageVO extends UserMessage {
      */
     private String indexName;
 
+    /**
+     * 发送人是否作家账号（send_user_id 关联到 author 表）
+     */
+    private Boolean authorReply;
+
+    /**
+     * 作家笔名（作家回复时展示，替代用户中心昵称）
+     */
+    private String authorPenName;
+
+    /**
+     * 作家头像（作家回复时展示）
+     */
+    private String authorPicUrl;
+
     @JsonSerialize(using = TimeAgoFormatSerialize.class)
     private Date createTime;
 }

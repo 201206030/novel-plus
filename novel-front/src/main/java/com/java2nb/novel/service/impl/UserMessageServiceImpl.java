@@ -64,8 +64,8 @@ public class UserMessageServiceImpl implements UserMessageService {
     }
 
     @Override
-    public long countUnread(Long userId) {
-        return userMessageMapper.countUnread(userId);
+    public long countUnread(Long userId, Byte msgType) {
+        return userMessageMapper.countUnread(userId, msgType);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class UserMessageServiceImpl implements UserMessageService {
     }
 
     @Override
-    public void markAllRead(Long userId) {
-        userMessageMapper.markAllRead(userId);
+    public void markAllRead(Long userId, Byte msgType) {
+        userMessageMapper.markAllRead(userId, msgType);
     }
 }

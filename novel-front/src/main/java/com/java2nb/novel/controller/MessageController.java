@@ -41,15 +41,16 @@ public class MessageController extends BaseController {
     }
 
     /**
-     * 未读消息数（个人中心角标用）
+     * 未读消息数（个人中心角标用），msgType 可选过滤：1书评回复 2段评回复 3系统通知
      */
     @GetMapping("unreadCount")
-    public RestResult<?> unreadCount(HttpServletRequest request) {
+    public RestResult<?> unreadCount(@RequestParam(value = "msgType", required = false) Byte msgType,
+        HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
-        return RestResult.ok(userMessageService.countUnread(userDetails.getId()));
+        return RestResult.ok(userMessageService.countUnread(userDetails.getId(), msgType));
     }
 
     /**
@@ -66,15 +67,16 @@ public class MessageController extends BaseController {
     }
 
     /**
-     * 全部标记已读
+     * 全部标记已读，msgType 可选过滤：1书评回复 2段评回复 3系统通知
      */
     @PostMapping("readAll")
-    public RestResult<Void> readAll(HttpServletRequest request) {
+    public RestResult<Void> readAll(@RequestParam(value = "msgType", required = false) Byte msgType,
+        HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(request);
         if (userDetails == null) {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
-        userMessageService.markAllRead(userDetails.getId());
+        userMessageService.markAllRead(userDetails.getId(), msgType);
         return RestResult.ok();
     }
 }

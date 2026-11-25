@@ -26,6 +26,21 @@ public class BookCommentReplyVO extends BookCommentReply {
 
     private Long unLikesCount;
 
+    /**
+     * 是否作家回复（create_user_id 关联到 author 表即为作家账号）
+     */
+    private Boolean authorReply;
+
+    /**
+     * 作家笔名（作家回复时展示，替代用户中心昵称）
+     */
+    private String authorPenName;
+
+    /**
+     * 作家头像（作家回复时展示）
+     */
+    private String authorPicUrl;
+
     @Override
     public String toString() {
         return super.toString();

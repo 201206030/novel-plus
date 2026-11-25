@@ -24,9 +24,9 @@ public interface FrontUserMessageMapper {
     List<UserMessageVO> listByPage(@Param("userId") Long userId, @Param("msgType") Byte msgType);
 
     /**
-     * 未读消息数
+     * 未读消息数（msgType 为空表示全部类型）
      */
-    long countUnread(@Param("userId") Long userId);
+    long countUnread(@Param("userId") Long userId, @Param("msgType") Byte msgType);
 
     /**
      * 单条标记已读（限本人消息）
@@ -34,7 +34,7 @@ public interface FrontUserMessageMapper {
     int markRead(@Param("userId") Long userId, @Param("id") Long id);
 
     /**
-     * 全部标记已读
+     * 全部标记已读（msgType 为空表示全部类型）
      */
-    int markAllRead(@Param("userId") Long userId);
+    int markAllRead(@Param("userId") Long userId, @Param("msgType") Byte msgType);
 }

@@ -4,16 +4,22 @@
 <mapper namespace="com.java2nb.novel.mapper.FrontBookCommentReplyMapper">
 
     <select id="listCommentReplyByPage"  resultType="com.java2nb.novel.vo.BookCommentReplyVO">
-        select t1.id,t1.reply_content,t1.location,t1.create_time,IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name,t2.user_photo create_user_photo
+        select t1.id,t1.reply_content,t1.location,t1.create_time,
+               IFNULL(NULLIF(t2.nick_name, ''), t2.username) create_user_name,t2.user_photo create_user_photo,
+               (t3.id is not null) author_reply, t3.pen_name author_pen_name, t3.pic_url author_pic_url
         from book_comment_reply t1 inner join user t2 on t1.create_user_id = t2.id
-        <trim>
+        left join book_comment bc on t1.comment_id = bc.id
+        left join book bk on bc.book_id = bk.id
+        <!-- 仅当回复者正是该评论所属小说的作者时，才以作家身份展示 -->
+        left join author t3 on t1.create_user_id = t3.user_id and t3.id = bk.author_id
+        <where>
             <if test="commentId != null">
                 and t1.comment_id = #{commentId}
             </if>
             <if test="userId != null">
                 and t1.create_user_id = #{userId}
             </if>
-        </trim>
+        </where>
         order by t1.create_time desc
 
     </select>

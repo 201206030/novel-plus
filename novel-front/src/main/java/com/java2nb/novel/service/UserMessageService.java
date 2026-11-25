@@ -29,9 +29,9 @@ public interface UserMessageService {
     PageBean<UserMessageVO> listMyMessageByPage(Long userId, Byte msgType, int page, int pageSize);
 
     /**
-     * 我的未读消息数
+     * 我的未读消息数（msgType 为空表示全部类型）
      */
-    long countUnread(Long userId);
+    long countUnread(Long userId, Byte msgType);
 
     /**
      * 单条标记已读
@@ -39,7 +39,7 @@ public interface UserMessageService {
     void markRead(Long userId, Long id);
 
     /**
-     * 全部标记已读
+     * 全部标记已读（msgType 为空表示全部类型）
      */
-    void markAllRead(Long userId);
+    void markAllRead(Long userId, Byte msgType);
 }

@@ -34,6 +34,8 @@ public enum ResponseStatus implements IResultCode {
     HAS_COMMENTS(3001, "已评价过该书籍！"),
     PARA_COMMENT_CONTENT_INVALID(3002, "段落评论不能为空且不能超过200个字！"),
     PARA_COMMENT_PARAM_INVALID(3003, "段落评论参数有误！"),
+    COMMENT_REPLY_CONTENT_INVALID(3004, "回复内容不能为空且不能超过200个字！"),
+    COMMENT_NOT_EXISTS(3005, "评论不存在或已被删除！"),
 
     /**
      * 作者相关错误
@@ -51,6 +53,7 @@ public enum ResponseStatus implements IResultCode {
     NEWS_NOT_EXISTS(5003, "该新闻不存在！"),
     INDEX_PUBLISH_TIME_INVALID(5004, "定时发布时间需晚于当前时间！"),
     INDEX_ALREADY_PUBLISHED(5005, "章节已发布，不能再撤回或改期！"),
+    BOOK_NOT_OWNED(5006, "无权管理该作品！"),
 
     /**
      * 书单相关错误

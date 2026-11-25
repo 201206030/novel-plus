@@ -374,6 +374,21 @@
             font-size: 12px;
         }
 
+        /* 作者账号标识 */
+        .pc-author-badge {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 0 5px;
+            height: 16px;
+            line-height: 16px;
+            font-size: 11px;
+            font-style: normal;
+            color: #fff;
+            background: #e9542c;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+
         .pc-item .pc-content {
             font-size: 15px;
             color: #333;
@@ -1648,11 +1663,15 @@
     // 构建单条顶层评论（含回复子列表），全部用jQuery .text()填充避免HTML注入
     function buildPcItem(item) {
         var $item = $('<div class="pc-item"></div>');
-        $item.append(buildPcAvatar(item.createUserPhoto));
+        // 作者回复：笔名/头像 + 「作者」标识；普通回复：用户昵称/头像 + 属地读者
+        var topAuthor = !!item.authorReply;
+        $item.append(buildPcAvatar(topAuthor ? item.authorPicUrl : item.createUserPhoto));
         var $main = $('<div class="pc-main"></div>');
         var $user = $('<div class="pc-user"></div>');
-        $user.append($('<span class="pc-name"></span>').text(item.createUserName));
-        if (item.location) {
+        $user.append($('<span class="pc-name"></span>').text(topAuthor ? (item.authorPenName || '作者') : item.createUserName));
+        if (topAuthor) {
+            $user.append($('<em class="pc-author-badge"></em>').text('作者'));
+        } else if (item.location) {
             $user.append($('<span class="pc-loc"></span>').text(item.location + '读者'));
         }
         $user.append($('<span class="pc-time" style="float:right"></span>').text(item.createTime));
@@ -1679,11 +1698,15 @@
 
     // 构建单条回复（回复目标始终是所属顶层评论）
     function buildPcReplyItem(rootId, r) {
+        var replyAuthor = !!r.authorReply;
         var $ri = $('<div class="pc-reply-item"></div>');
-        $ri.append(buildPcAvatar(r.createUserPhoto));
+        $ri.append(buildPcAvatar(replyAuthor ? r.authorPicUrl : r.createUserPhoto));
         var $rmain = $('<div class="pc-main"></div>');
         var $ru = $('<div class="pc-r-user"></div>');
-        $ru.append($('<span class="pc-name"></span>').text(r.createUserName));
+        $ru.append($('<span class="pc-name"></span>').text(replyAuthor ? (r.authorPenName || '作者') : r.createUserName));
+        if (replyAuthor) {
+            $ru.append($('<em class="pc-author-badge"></em>').text('作者'));
+        }
         if (r.replyUserName) {
             $ru.append($('<span class="pc-to"></span>').text('回复 ' + r.replyUserName));
         }
