@@ -38,6 +38,20 @@ public class NovelFilter implements Filter {
 
         //本地图片访问处理
         if (requestUri.contains(Constants.LOCAL_PIC_PREFIX)) {
+            // 该分支由 Filter 直接读取文件并写出响应流，不会进入 Spring MVC 的 HandlerMapping，
+            // 因此 WebMvcConfig.addCorsMappings 配置的 CorsInterceptor 不生效，必须在此手动补 CORS 头。
+            String origin = req.getHeader("Origin");
+            if (origin != null && !origin.isEmpty()) {
+                resp.setHeader("Access-Control-Allow-Origin", origin);
+                resp.setHeader("Vary", "Origin");
+                resp.setHeader("Access-Control-Allow-Credentials", "true");
+            }
+            if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+                resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+                resp.setHeader("Access-Control-Allow-Headers", "*");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                return;
+            }
             //缓存10天
             resp.setDateHeader("expires", System.currentTimeMillis()+60*60*24*10*1000);
             OutputStream out = resp.getOutputStream();

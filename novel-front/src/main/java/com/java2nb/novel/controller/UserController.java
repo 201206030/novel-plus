@@ -233,14 +233,14 @@ public class UserController extends BaseController {
         if (userDetails == null) {
             return RestResult.fail(ResponseStatus.NO_LOGIN);
         }
-        if (user.getNickName() != null) {
+        if (user.getNickName() != null && !user.getNickName().equals(userDetails.getNickName())) {
             // 校验昵称是否存在
             if(userService.checkNickName(user.getNickName())){
                 return RestResult.fail(ResponseStatus.NICKNAME_EXIST);
             }
         }
         userService.updateUserInfo(userDetails.getId(), user);
-        if (user.getNickName() != null) {
+        if (user.getNickName() != null && !user.getNickName().equals(userDetails.getNickName())) {
             userDetails.setNickName(user.getNickName());
             Map<String, Object> data = new HashMap<>(1);
             data.put("token", jwtTokenUtil.generateToken(userDetails));
